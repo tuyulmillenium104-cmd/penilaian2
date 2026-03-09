@@ -13,7 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   Calculator, TrendingUp, Info,
   Star, Zap, Target, Award, Loader2, Sparkles, FileText, Download,
-  Trophy, BarChart3, RefreshCw, GitCompare, Flag, BookOpen, Settings2
+  Trophy, BarChart3, RefreshCw, GitCompare, Flag, BookOpen, Settings2,
+  FolderKanban, ExternalLink, Users, Coins, Calendar, Clock
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -126,7 +127,12 @@ interface RallyMission {
 }
 
 export default function RallyScoreAnalyzer() {
-  const [activeTab, setActiveTab] = useState('estimator')
+  const [activeTab, setActiveTab] = useState('campaigns')
+  
+  // Campaigns
+  const [campaigns, setCampaigns] = useState<any[]>([])
+  const [isLoadingCampaigns, setIsLoadingCampaigns] = useState(false)
+  const [selectedCampaign, setSelectedCampaign] = useState<any | null>(null)
   const [content, setContent] = useState('')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   
@@ -252,6 +258,47 @@ export default function RallyScoreAnalyzer() {
   useEffect(() => {
     if (realSubmissions.length === 0) {
       fetchRealSubmissions()
+    }
+    if (campaigns.length === 0) {
+      fetchCampaigns()
+    }
+  }, [])
+  
+  // Fetch campaigns
+  const fetchCampaigns = useCallback(async () => {
+    setIsLoadingCampaigns(true)
+    try {
+      const response = await fetch('/api/rally-campaigns')
+      if (!response.ok) throw new Error('Failed to fetch campaigns')
+      const data = await response.json()
+      setCampaigns(data)
+      toast.success(`${data.length} campaigns loaded!`)
+    } catch (error) {
+      console.error('Fetch campaigns error:', error)
+      toast.error('Failed to fetch campaigns')
+    } finally {
+      setIsLoadingCampaigns(false)
+    }
+  }, [])
+  
+  // Select campaign and load missions
+  const selectCampaign = useCallback(async (campaign: any) => {
+    setSelectedCampaign(campaign)
+    // Fetch missions for this campaign
+    const address = campaign.intelligentContractAddress
+    if (address) {
+      try {
+        const response = await fetch(`/api/rally-missions?campaignAddress=${address}`)
+        if (response.ok) {
+          const data = await response.json()
+          setMissions(data)
+          if (data.length > 0) {
+            toast.success(`${data.length} missions available!`)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching missions:', error)
+      }
     }
   }, [])
   
@@ -425,6 +472,9 @@ export default function RallyScoreAnalyzer() {
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="bg-gray-800/50 border border-gray-700">
+            <TabsTrigger value="campaigns" className="data-[state=active]:bg-amber-600 data-[state=active]:text-white">
+              <FolderKanban className="w-4 h-4 mr-2" /> Campaigns
+            </TabsTrigger>
             <TabsTrigger value="estimator" className="data-[state=active]:bg-amber-600 data-[state=active]:text-white">
               <Calculator className="w-4 h-4 mr-2" /> Score Estimator
             </TabsTrigger>
@@ -432,6 +482,103 @@ export default function RallyScoreAnalyzer() {
               <Trophy className="w-4 h-4 mr-2" /> Live Rally Data
             </TabsTrigger>
           </TabsList>
+
+          {/* Campaigns Tab */}
+          <TabsContent value="campaigns" className="space-y-4">
+            {/* Campaign Header */}
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-white">Active Rally Campaigns</h2>
+              <Button onClick={fetchCampaigns} disabled={isLoadingCampaigns} variant="outline" className="border-gray-600 text-gray-300">
+                {isLoadingCampaigns ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+              </Button>
+            </div>
+            
+            {/* Loading */}
+            {isLoadingCampaigns && campaigns.length === 0 && (
+              <Card className="bg-gray-800/50 border-gray-700">
+                <CardContent className="py-12 flex flex-col items-center gap-3">
+                  <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+                  <p className="text-gray-400">Loading active campaigns...</p>
+                </CardContent>
+              </Card>
+            )}
+            
+            {/* Campaign Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {campaigns.map((campaign) => (
+                <Card 
+                  key={campaign.id}
+                  onClick={() => {
+                    selectCampaign(campaign)
+                    setActiveTab('estimator')
+                  }}
+                  className={`cursor-pointer transition-all hover:scale-[1.02] ${
+                    selectedCampaign?.id === campaign.id 
+                      ? 'bg-amber-600/20 border-amber-500' 
+                      : 'bg-gray-800/50 border-gray-700 hover:border-gray-500'
+                  }`}
+                >
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="text-base text-white">{campaign.title}</CardTitle>
+                        <p className="text-xs text-gray-500 mt-1">by {campaign.creator || 'Unknown'}</p>
+                      </div>
+                      <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/50">
+                        {campaign.token || 'TOKEN'}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {/* Stats */}
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="bg-gray-700/30 p-2 rounded flex items-center gap-2">
+                        <FolderKanban className="w-4 h-4 text-blue-400" />
+                        <div>
+                          <p className="text-gray-400">Missions</p>
+                          <p className="text-white font-bold">{campaign.missionCount || 0}</p>
+                        </div>
+                      </div>
+                      <div className="bg-gray-700/30 p-2 rounded flex items-center gap-2">
+                        <Users className="w-4 h-4 text-green-400" />
+                        <div>
+                          <p className="text-gray-400">Followers</p>
+                          <p className="text-white font-bold">{campaign.minimumFollowers || 0}-{campaign.maximumFollowers?.toLocaleString() || '∞'}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Duration */}
+                    <div className="flex items-center gap-2 text-xs text-gray-400">
+                      <Calendar className="w-3 h-3" />
+                      <span>
+                        {new Date(campaign.startDate).toLocaleDateString()} - {new Date(campaign.endDate).toLocaleDateString()}
+                      </span>
+                    </div>
+                    
+                    {/* Duration Periods */}
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <Clock className="w-3 h-3" />
+                      <span>{campaign.campaignDurationPeriods} periods × {campaign.periodLengthDays} days each</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            {/* Empty State */}
+            {!isLoadingCampaigns && campaigns.length === 0 && (
+              <Card className="bg-gray-800/50 border-gray-700">
+                <CardContent className="py-12 flex flex-col items-center gap-3">
+                  <FolderKanban className="w-8 h-8 text-gray-500" />
+                  <p className="text-gray-400">No active campaigns found</p>
+                  <Button onClick={fetchCampaigns} className="bg-amber-600 hover:bg-amber-700">
+                    <RefreshCw className="w-4 h-4 mr-2" /> Refresh
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
 
           {/* Estimator Tab */}
           <TabsContent value="estimator" className="space-y-4">

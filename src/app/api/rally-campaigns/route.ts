@@ -14,23 +14,38 @@ export async function GET() {
     
     const data = await response.json();
     
-    // Return campaigns with relevant data
+    // Return campaigns with all relevant data
     const campaigns = data.campaigns.map((c: any) => ({
       id: c.id,
       title: c.title,
       creator: c.displayCreator?.displayName || 'Unknown',
       creatorUsername: c.displayCreator?.xUsername || '',
+      creatorAvatar: c.displayCreator?.avatarUrl || '',
+      creatorProfile: c.displayCreator?.profileUrl || '',
       startDate: c.startDate,
       endDate: c.endDate,
       missionCount: c.missionCount,
       token: c.token?.symbol || 'Unknown',
+      tokenAddress: c.token?.address || '',
+      chainId: c.token?.chainId || 84532,
       totalReward: c.campaignRewards?.reduce((sum: number, r: any) => sum + (r.totalAmount || 0), 0) || 0,
+      rewards: c.campaignRewards || [],
       headerImageUrl: c.headerImageUrl,
-      organizationDescription: c.displayCreator?.organization?.description || '',
-      organizationWebsite: c.displayCreator?.organization?.websiteUrl || '',
+      minimumFollowers: c.minimumFollowers || 0,
+      maximumFollowers: c.maximumFollowers || 0,
+      onlyVerifiedUsers: c.onlyVerifiedUsers || false,
+      participating: c.participating || false,
+      userMissionProgress: c.userMissionProgress || 0,
+      campaignDurationPeriods: c.campaignDurationPeriods || 0,
+      periodLengthDays: c.periodLengthDays || 1,
+      intelligentContractAddress: c.intelligentContractAddress,
     }));
     
-    return NextResponse.json(campaigns);
+    // Filter active campaigns (endDate > now)
+    const now = new Date();
+    const activeCampaigns = campaigns.filter((c: any) => new Date(c.endDate) > now);
+    
+    return NextResponse.json(activeCampaigns);
   } catch (error) {
     console.error('Failed to fetch Rally campaigns:', error);
     return NextResponse.json(
