@@ -1,1391 +1,715 @@
 'use client'
 
-import { useState, useCallback } from 'react'
-import { Button } from '@/components/ui/button'
+import { useState, useCallback, useEffect } from 'react'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
-  Zap, FileText, Save, Trash2, Copy, Download, 
-  Plus, X, Trophy, Target, AlertTriangle, CheckCircle2, 
-  Info, TrendingUp, Percent, Award, Sparkles, RefreshCw
+  Calculator, TrendingUp, Info,
+  Star, Zap, Target, Award, Loader2, Sparkles, FileText, Download,
+  Trophy, BarChart3, RefreshCw, GitCompare
 } from 'lucide-react'
 import { toast } from 'sonner'
 
 // Types
-interface CampaignData {
-  campaignName: string
-  projectHandle: string
-  platform: string
-  contentType: string
-  campaignDescription: string
-  campaignRules: string
-  campaignStyle: string
-  requiredDisclaimer: string
-  requiredHashtags: string
-  requiredMentions: string
-  formatRequirements: string
-  forbiddenElements: string
-  knowledgeBase: string
+interface RallyAnalysis {
+  category: string
+  analysis: string
+  atto_score: string
+  atto_max_score: string
 }
 
-interface ContentItem {
+interface RallySubmission {
   id: string
-  label: string
-  content: string
+  xUsername: string
+  atemporalPoints: string
+  temporalPoints: string
+  analysis: RallyAnalysis[]
+  mission?: { title: string }
 }
 
-type PromptMode = 'rally' | 'hybrid' | 'creative'
-type DistributionCurve = 'balanced' | 'default' | 'extreme'
-
-// Mode configurations
-const MODE_CONFIG = {
-  rally: {
-    label: 'Rally Optimized',
-    description: 'Maximum scoring potential based on Rally.fun formula',
-    color: 'from-amber-600 to-orange-500',
-    badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-  },
-  hybrid: {
-    label: 'Balanced',
-    description: 'Balance between scoring and authentic voice',
-    color: 'from-emerald-600 to-teal-500',
-    badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-  },
-  creative: {
-    label: 'Pure Creative',
-    description: 'Full creative freedom, authenticity-first',
-    color: 'from-rose-600 to-pink-500',
-    badge: 'bg-rose-500/20 text-rose-300 border-rose-500/30'
-  }
+// Convert atto (10^-18) to decimal
+const attoToDecimal = (atto: string | undefined): number => {
+  if (!atto) return 0
+  return parseFloat(atto) / 1e18
 }
 
-const DISTRIBUTION_INFO = {
-  balanced: { alpha: 1, top10: '25%', top1: '5%', description: 'Fair distribution, moderate competition' },
-  default: { alpha: 3, top10: '90%', top1: '50%', description: 'Winner-takes-most, HIGH competition' },
-  extreme: { alpha: 8, top10: '99%', top1: '90%', description: 'Extreme winner-takes-all' }
-}
-
-// Helper function to generate unique ID
-const generateId = () => Math.random().toString(36).substring(2, 9)
-
-// Helper to load saved data from localStorage
-const loadSavedData = () => {
-  if (typeof window === 'undefined') return null
-  try {
-    const saved = localStorage.getItem('rally_campaign_v17')
-    return saved ? JSON.parse(saved) : null
-  } catch {
-    return null
-  }
-}
-
-const defaultCampaignData: CampaignData = {
-  campaignName: '',
-  projectHandle: '',
-  platform: '',
-  contentType: 'joke',
-  campaignDescription: '',
-  campaignRules: '',
-  campaignStyle: '',
-  requiredDisclaimer: '',
-  requiredHashtags: '',
-  requiredMentions: '',
-  formatRequirements: '',
-  forbiddenElements: '',
-  knowledgeBase: ''
-}
-
-const defaultContentItems: ContentItem[] = [
-  { id: generateId(), label: 'Content #1', content: '' }
+// Grade configuration
+const GRADE_CONFIG: { min: number; grade: string; color: string; label: string }[] = [
+  { min: 6.0, grade: 'S+', color: 'text-yellow-400', label: 'Exceptional' },
+  { min: 5.5, grade: 'S', color: 'text-amber-400', label: 'Outstanding' },
+  { min: 5.0, grade: 'A+', color: 'text-green-400', label: 'Excellent' },
+  { min: 4.5, grade: 'A', color: 'text-emerald-400', label: 'Very Good' },
+  { min: 4.0, grade: 'B+', color: 'text-teal-400', label: 'Good' },
+  { min: 3.5, grade: 'B', color: 'text-cyan-400', label: 'Above Average' },
+  { min: 3.0, grade: 'C+', color: 'text-blue-400', label: 'Average' },
+  { min: 2.0, grade: 'C', color: 'text-gray-400', label: 'Below Average' },
+  { min: 1.0, grade: 'D', color: 'text-orange-400', label: 'Poor' },
+  { min: 0, grade: 'F', color: 'text-red-400', label: 'Fail' }
 ]
 
-export default function Home() {
-  // State
-  const [currentTab, setCurrentTab] = useState('campaign')
-  const [promptMode, setPromptMode] = useState<PromptMode>('rally')
-  const [distributionCurve, setDistributionCurve] = useState<DistributionCurve>('default')
-  const [generatedPrompt, setGeneratedPrompt] = useState('')
-  const [generatedEvalPrompt, setGeneratedEvalPrompt] = useState('')
-  
-  // Campaign data with lazy initialization
-  const [campaignData, setCampaignData] = useState<CampaignData>(() => {
-    const saved = loadSavedData()
-    return saved?.campaign || defaultCampaignData
-  })
-
-  // Multi-content for evaluation
-  const [contentItems, setContentItems] = useState<ContentItem[]>(() => {
-    const saved = loadSavedData()
-    return (saved?.contentItems?.length ? saved.contentItems : defaultContentItems)
-  })
-
-  // Prompt settings
-  const [includeScoringFormula, setIncludeScoringFormula] = useState(true)
-  const [includeEngagementTips, setIncludeEngagementTips] = useState(true)
-  const [additionalInstructions, setAdditionalInstructions] = useState('')
-
-  // Evaluation settings
-  const [evalFormat, setEvalFormat] = useState('detailed')
-  const [includeImprovement, setIncludeImprovement] = useState(true)
-  const [determineWinner, setDetermineWinner] = useState(true)
-  const [includeCombinedGeneration, setIncludeCombinedGeneration] = useState(true)
-
-  // Update campaign field
-  const updateCampaign = (field: keyof CampaignData, value: string) => {
-    setCampaignData(prev => ({ ...prev, [field]: value }))
-  }
-
-  // Add new content item
-  const addContentItem = () => {
-    setContentItems(prev => [
-      ...prev,
-      { id: generateId(), label: `Content #${prev.length + 1}`, content: '' }
-    ])
-  }
-
-  // Remove content item
-  const removeContentItem = (id: string) => {
-    if (contentItems.length <= 1) {
-      toast.error('Minimal 1 konten harus ada')
-      return
-    }
-    setContentItems(prev => prev.filter(item => item.id !== id))
-  }
-
-  // Update content item
-  const updateContentItem = (id: string, content: string) => {
-    setContentItems(prev => prev.map(item => 
-      item.id === id ? { ...item, content } : item
-    ))
-  }
-
-  // Save campaign
-  const saveCampaign = () => {
-    localStorage.setItem('rally_campaign_v17', JSON.stringify({
-      campaign: campaignData,
-      contentItems
-    }))
-    toast.success('Campaign disimpan!')
-  }
-
-  // Load sample campaign
-  const loadSampleCampaign = () => {
-    setCampaignData({
-      campaignName: 'The Rally Joke Contest',
-      projectHandle: '@RallyOnChain',
-      platform: 'Base',
-      contentType: 'joke',
-      campaignDescription: 'Create a funny joke or meme about Rally Protocol. The content should be humorous, engaging, and shareable. Focus on crypto/web3 themes while being accessible to a general audience.',
-      campaignRules: '- Must mention Rally Protocol\n- Must be original content\n- No offensive language\n- Maximum 280 characters',
-      campaignStyle: 'Casual, witty, and fun. Crypto-native humor preferred.',
-      requiredDisclaimer: 'This is a submission for @RallyOnChain joke contest',
-      requiredHashtags: '#Rally #Base',
-      requiredMentions: '@RallyOnChain',
-      formatRequirements: 'Short post, max 280 characters',
-      forbiddenElements: 'No recycled jokes from 2017-2021\nNo AI-generic patterns',
-      knowledgeBase: 'Rally Protocol is a decentralized social platform on Base chain. Users can earn rewards by creating content and engaging with others.'
-    })
-    setContentItems([
-      { 
-        id: generateId(), 
-        label: 'Content #1', 
-        content: 'Why did the crypto trader bring a ladder to the bar? Because he heard the drinks were on-chain. This is a submission for @RallyOnChain joke contest #Rally #Base' 
-      },
-      { 
-        id: generateId(), 
-        label: 'Content #2', 
-        content: 'My portfolio is like a roller coaster. The only difference is roller coasters are fun, and this just makes me nauseous. This is a submission for @RallyOnChain joke contest #Rally #Base' 
-      }
-    ])
-    toast.info('Sample campaign dimuat!')
-  }
-
-  // Clear campaign form
-  const clearCampaignForm = () => {
-    setCampaignData(defaultCampaignData)
-    setContentItems([{ id: generateId(), label: 'Content #1', content: '' }])
-    toast.info('Form dibersihkan')
-  }
-
-  // Copy to clipboard
-  const copyToClipboard = (text: string, label: string) => {
-    navigator.clipboard.writeText(text)
-    toast.success(`${label} disalin ke clipboard!`)
-  }
-
-  // Generate content prompt - BASED ON ACTUAL RALLY.FUN SCORING
-  const generateContentPrompt = useCallback(() => {
-    const campaign = campaignData
-    const curve = DISTRIBUTION_INFO[distributionCurve]
-
-    // Persona section - CRITICAL FOR AUTHENTICITY
-    let personaSection = `## 🎭 PERSONA & IDENTITY
-
-You are NOT an AI. You are a **real crypto-native person** writing for Rally Protocol.
-
-**Your Identity:**
-- You've been in crypto since before it was cool
-- You've seen bull runs, bear markets, and everything in between
-- You speak like a real person, not a brand or corporation
-- You understand the culture deeply - the memes, the pain, the gains
-
-**CRITICAL RULES - VIOLATION = DISQUALIFICATION:**
-- ❌ NEVER use em dashes (—) - use regular hyphens (-)
-- ❌ NEVER use smart quotes - use straight quotes only
-- ❌ NEVER start with "In the world of..." or "Picture this..." or "Imagine..."
-- ❌ NEVER over-explain concepts to your audience
-- ❌ NEVER sound corporate, promotional, or AI-generated
-- ❌ NEVER use phrases like "delve into", "uncover", "embark on", "realm"
-
-**Your Voice:**
-- Casual, conversational, authentic
-- Short sentences, punchy delivery
-- Unexpected angles and twists
-- Insider knowledge without being gatekeepy
-- Humor that lands because it's REAL
-
-`
-
-    // Campaign context
-    let campaignContext = `## 📋 CAMPAIGN BRIEF
-
-`
-    let infoParts: string[] = []
-    if (campaign.campaignName) infoParts.push(`**Campaign:** ${campaign.campaignName}`)
-    if (campaign.projectHandle) infoParts.push(`**Brand:** ${campaign.projectHandle}`)
-    if (campaign.platform) infoParts.push(`**Platform:** ${campaign.platform}`)
-    if (campaign.contentType) infoParts.push(`**Type:** ${campaign.contentType}`)
-    if (infoParts.length > 0) {
-      campaignContext += infoParts.join(' | ') + '\n\n'
-    }
-    
-    if (campaign.campaignDescription) {
-      campaignContext += `### What They Want:\n${campaign.campaignDescription}\n\n`
-    }
-    
-    if (campaign.campaignRules) {
-      campaignContext += `### Rules (MUST FOLLOW):\n${campaign.campaignRules}\n\n`
-    }
-    
-    if (campaign.campaignStyle) {
-      campaignContext += `### Style:\n${campaign.campaignStyle}\n\n`
-    }
-    
-    if (campaign.knowledgeBase) {
-      campaignContext += `### Context You Should Know:\n${campaign.knowledgeBase}\n\n`
-    }
-
-    // MANDATORY requirements - CRITICAL
-    const hasRequirements = campaign.requiredDisclaimer || campaign.requiredHashtags || campaign.requiredMentions || campaign.formatRequirements || campaign.forbiddenElements
-    
-    if (hasRequirements) {
-      campaignContext += `---\n\n## ⚠️ MANDATORY ELEMENTS (EXACT MATCH REQUIRED)\n\n`
-      
-      if (campaign.requiredDisclaimer) {
-        campaignContext += `### DISCLAIMER (copy EXACTLY):\n\`\`\`\n${campaign.requiredDisclaimer}\n\`\`\`\n\n`
-      }
-      
-      if (campaign.requiredHashtags) {
-        campaignContext += `### HASHTAGS (include ALL): ${campaign.requiredHashtags}\n\n`
-      }
-      
-      if (campaign.requiredMentions) {
-        campaignContext += `### MENTIONS (include ALL): ${campaign.requiredMentions}\n\n`
-      }
-      
-      if (campaign.formatRequirements) {
-        campaignContext += `### FORMAT: ${campaign.formatRequirements}\n\n`
-      }
-      
-      campaignContext += `### FORBIDDEN:\n- Em dashes (—)\n- Smart quotes\n- AI-generic patterns\n`
-      if (campaign.forbiddenElements) {
-        campaign.forbiddenElements.split('\n').forEach(e => {
-          if (e.trim()) campaignContext += `- ${e.trim()}\n`
-        })
-      }
-      campaignContext += '\n'
-    }
-    
-    campaignContext += '---\n\n'
-
-    // Rally Scoring System - CORRECTED VERSION
-    let scoringSection = ''
-    
-    if (includeScoringFormula) {
-      scoringSection = `## 📊 RALLY.FUN SCORING SYSTEM (REAL FORMULA)
-
-### 🚪 FOUR GATES (0-2 each) - ALL MUST PASS
-
-**⚠️ ANY gate = 0 means 0.5x multiplier (BASICALLY DISQUALIFIED)**
-
-| Gate | What It Means | How to Score 2/2 |
-|------|---------------|------------------|
-| **Content Alignment** | Is this about the campaign topic? | Stay 100% on-topic, no tangents |
-| **Information Accuracy** | Is everything true? | Only state facts you know are correct |
-| **Campaign Compliance** | Did you follow ALL rules? | Include EVERY required element EXACTLY |
-| **Originality & Authenticity** | Does it feel HUMAN? | Write like a real person, avoid AI patterns |
-
-**Gate Multiplier Formula:**
-\`\`\`
-g_star = average of 4 gates
-M_gate = 1 + 0.5 × (g_star - 1)
-
-Range: 1.0x (all gates = 1) to 1.5x (all gates = 2)
-If ANY gate = 0: M_gate = 0.5x (PENALTY)
-\`\`\`
-
----
-
-### ⭐ TWO QUALITY METRICS (0-5 each)
-
-| Metric | What It Measures | How to Score 5/5 |
-|--------|------------------|------------------|
-| **Engagement Potential** | Will people engage? | Hook in first 3 words, emotional resonance, shareable |
-| **Technical Quality** | Is it well-written? | Clean grammar, good formatting, no errors |
-
-**Why These Matter:**
-- Quality Score = (Engagement + Technical) / 5 (max 2.0)
-- This is multiplied by your Gate Multiplier
-- High gates + high quality = maximum points
-
----
-
-### 📈 ENGAGEMENT METRICS (Dynamic)
-
-These are measured AFTER posting - you can't control them directly, but you can optimize:
-
-| Metric | How to Maximize |
-|--------|-----------------|
-| **Retweets** | Be insightful, funny, or breaking news |
-| **Likes** | Emotional resonance, relatable content |
-| **Replies** | Ask questions, be controversial (within bounds) |
-| **Quality of Replies** | Create meaningful discussion |
-| **Followers of Repliers** | Attract engagement from reputable accounts |
-
-**Pro Tip:** Rally has a "Refresh Engagement" feature - your engagement can be measured multiple times over the campaign period!
-
----
-
-### 🎯 DISTRIBUTION CURVE: ${distributionCurve.toUpperCase()} (α = ${curve.alpha})
-
-| Stat | Value |
-|------|-------|
-| Top 10% gets | **${curve.top10}** of rewards |
-| Top 1% gets | **${curve.top1}** of rewards |
-
-${distributionCurve === 'default' || distributionCurve === 'extreme' ? 
-`⚠️ **HIGH COMPETITION:** In this mode, if you're not in the top 10%, you get almost nothing. Quality is NON-NEGOTIABLE.` : 
-`This mode has fairer distribution. Consistent quality matters more than viral hits.`}
-
----
-
-`
-    }
-
-    // Mode-specific instructions
-    let modeInstructions = ''
-    if (promptMode === 'rally') {
-      modeInstructions = `## 🎯 STRATEGY: RALLY OPTIMIZED
-
-**Your Goal:** Maximum Campaign Points through perfect execution.
-
-**Priority Order:**
-1. **FIRST:** Pass all 4 gates with score 2 - this is NON-NEGOTIABLE
-2. **SECOND:** Maximize Engagement Potential (hook, emotion, shareability)
-3. **THIRD:** Perfect Technical Quality (clean, error-free)
-4. **FOURTH:** Include engagement triggers (questions, controversy, insights)
-
-**Content Focus:**
-- Lead with your strongest hook
-- Keep it punchy and memorable
-- End with engagement catalyst (question, call-to-action, or punchline)
-- Include ALL required elements EXACTLY as specified
-
-`
-    } else if (promptMode === 'hybrid') {
-      modeInstructions = `## 🎯 STRATEGY: BALANCED
-
-**Your Goal:** Score well while maintaining authentic voice.
-
-**Approach:**
-- Pass all gates (required)
-- Write authentically - your real voice
-- Don't sacrifice personality for points
-- Quality + authenticity = sustainable success
-
-**Remember:** Content that feels forced will score low on Originality gate anyway.
-
-`
-    } else {
-      modeInstructions = `## 🎯 STRATEGY: PURE CREATIVE
-
-**Your Goal:** Create the most engaging, authentic content possible.
-
-**Approach:**
-- Write what YOU would want to read
-- Ignore formulaic approaches
-- Let your unique voice shine
-- Trust that authenticity scores better than optimization
-
-**Note:** You still need to pass gates and include required elements.
-
-`
-    }
-
-    // Engagement tips
-    let engagementSection = ''
-    if (includeEngagementTips) {
-      engagementSection = `## 💡 ENGAGEMENT OPTIMIZATION TIPS
-
-### Hooks That Work:
-- Unexpected statement: "Nobody talks about..."
-- Counter-intuitive take: "The best traders I know..."
-- Insider insight: "Here's what whales don't want you to know"
-- Relatable pain: "POV: you checked your portfolio at 3am"
-- Question: "Why does everyone ignore..."
-
-### Engagement Triggers:
-- Ask a genuine question at the end
-- Make a bold (but defensible) claim
-- Share an unpopular opinion
-- Use pattern interrupt (unexpected twist)
-
-### What Kills Engagement:
-- Generic AI opening ("In today's...")
-- Over-explaining
-- Corporate speak
-- No clear point
-- Missing required elements (disqualified)
-
-### Format Tips:
-- Keep it SHORT (under 280 chars for Twitter/X)
-- Use line breaks for readability
-- Put hashtags at the end
-- Front-load your hook
-
-`
-    }
-
-    // Examples
-    let examplesSection = `## 📝 EXAMPLES
-
-### ✅ GOOD (Passes all gates, high quality):
-
-\`\`\`
-Why did the crypto trader bring a ladder to the bar?
-Because he heard the drinks were on-chain.
-
-This is a submission for @RallyOnChain joke contest #Rally #Base
-\`\`\`
-
-**Why it works:**
-- Unexpected punchline (Engagement = high)
-- Crypto-native humor (Authenticity = high)
-- All required elements present (Compliance = 2)
-- Short, clean, punchy (Technical = high)
-
-### ❌ BAD (Fails authenticity gate):
-
-\`\`\`
-In the exciting world of cryptocurrency, we often find ourselves 
-pondering the future of decentralized finance. Rally Protocol 
-is revolutionizing how we think about social engagement with 
-their innovative approach to content creation...
-
-#Rally #Base
-\`\`\`
-
-**Why it fails:**
-- Generic AI opening (Originality = 0)
-- No punchline or point (Engagement = low)
-- Missing disclaimer (Compliance = 0)
-- Corporate tone (Authenticity = 0)
-- Over-explaining (Technical = low)
-
----
-
-`
-
-    // Additional instructions
-    let additionalSection = ''
-    if (additionalInstructions) {
-      additionalSection = `## 📌 ADDITIONAL INSTRUCTIONS
-
-${additionalInstructions}
-
----
-`
-    }
-
-    // Output format
-    let outputFormat = `## 📤 OUTPUT
-
-Write ONLY the final content. No explanations, no commentary, no analysis.
-Just the content ready to copy-paste and post.
-
-`
-
-    // Combine all parts
-    const prompt = `# RALLY CONTENT GENERATION PROMPT v1.7
-## Based on ACTUAL Rally.fun Scoring System
-
----
-
-${personaSection}${campaignContext}${scoringSection}${modeInstructions}${engagementSection}${examplesSection}${additionalSection}${outputFormat}`
-
-    setGeneratedPrompt(prompt)
-    toast.success('Prompt v1.7 berhasil dibuat!')
-  }, [campaignData, promptMode, distributionCurve, includeScoringFormula, includeEngagementTips, additionalInstructions])
-
-  // Generate evaluation prompt
-  const generateEvaluationPrompt = useCallback(() => {
-    const validContents = contentItems.filter(item => item.content.trim())
-    
-    if (validContents.length === 0) {
-      toast.error('Tambahkan minimal 1 konten untuk evaluasi')
-      return
-    }
-
-    const campaign = campaignData
-
-    let evalPrompt = `# RALLY CONTENT EVALUATION PROMPT v1.7
-## Based on ACTUAL Rally.fun Scoring System
-
----
-
-## ⚠️ EVALUATION PRINCIPLES
-
-**This evaluation MUST be:**
-- **HONEST** - No sugar-coating
-- **STRICT** - Apply criteria rigorously
-- **OBJECTIVE** - Score based on evidence, not feelings
-
-**DO NOT:**
-- Inflate scores to be "nice"
-- Give partial credit where none is due
-- Ignore violations
-
----
-
-## 📋 CAMPAIGN CONTEXT
-
-`
-    let infoParts: string[] = []
-    if (campaign.campaignName) infoParts.push(`**Campaign:** ${campaign.campaignName}`)
-    if (campaign.projectHandle) infoParts.push(`**Brand:** ${campaign.projectHandle}`)
-    if (campaign.platform) infoParts.push(`**Platform:** ${campaign.platform}`)
-    if (campaign.contentType) infoParts.push(`**Type:** ${campaign.contentType}`)
-    if (infoParts.length > 0) {
-      evalPrompt += infoParts.join(' | ') + '\n\n'
-    }
-    
-    if (campaign.campaignDescription) {
-      evalPrompt += `### Description:\n${campaign.campaignDescription}\n\n`
-    }
-    
-    if (campaign.campaignRules) {
-      evalPrompt += `### Rules:\n${campaign.campaignRules}\n\n`
-    }
-
-    // Required elements
-    const hasRequired = campaign.requiredDisclaimer || campaign.requiredHashtags || campaign.requiredMentions
-    if (hasRequired) {
-      evalPrompt += `### Required Elements:\n`
-      if (campaign.requiredDisclaimer) evalPrompt += `- Disclaimer: "${campaign.requiredDisclaimer}"\n`
-      if (campaign.requiredHashtags) evalPrompt += `- Hashtags: ${campaign.requiredHashtags}\n`
-      if (campaign.requiredMentions) evalPrompt += `- Mentions: ${campaign.requiredMentions}\n`
-      evalPrompt += '\n'
-    }
-
-    // Forbidden
-    evalPrompt += `### Forbidden:\n- Em dashes (—)\n- Smart quotes\n- AI-generic patterns\n`
-    if (campaign.forbiddenElements) {
-      campaign.forbiddenElements.split('\n').forEach(e => {
-        if (e.trim()) evalPrompt += `- ${e.trim()}\n`
-      })
-    }
-    evalPrompt += '\n---\n\n'
-
-    // Contents to evaluate
-    evalPrompt += `## 📝 CONTENTS TO EVALUATE (${validContents.length} total)\n\n`
-    
-    validContents.forEach((item, index) => {
-      evalPrompt += `### Content #${index + 1}:\n\`\`\`\n${item.content}\n\`\`\`\n\n`
-    })
-
-    evalPrompt += '---\n\n'
-
-    // Evaluation criteria - CORRECTED
-    evalPrompt += `## 📊 EVALUATION CRITERIA (REAL RALLY.FUN SYSTEM)
-
-### 🚪 1. FOUR GATES (0-2 each) - CRITICAL
-
-**⚠️ ANY gate = 0 → 0.5x multiplier (PENALTY)**
-
-| Gate | 0 (FAIL) | 1 (PARTIAL) | 2 (PASS) |
-|------|----------|-------------|----------|
-| **Content Alignment** | Off-topic | Partially related | Perfectly aligned |
-| **Information Accuracy** | Contains false info | Minor inaccuracies | 100% accurate |
-| **Campaign Compliance** | Missing requirements | Minor deviations | All requirements met |
-| **Originality & Authenticity** | Generic AI/Recycled | Some originality | Feels HUMAN-written |
-
-**Gate Multiplier:**
-\`\`\`
-g_star = (G1 + G2 + G3 + G4) / 4
-M_gate = 1 + 0.5 × (g_star - 1)  [range: 0.5 - 1.5]
-\`\`\`
-
----
-
-### ⭐ 2. QUALITY METRICS (0-5 each)
-
-| Metric | 0-1 (Poor) | 2-3 (Average) | 4-5 (Excellent) |
-|--------|------------|---------------|-----------------|
-| **Engagement Potential** | No hook, boring | Some interest | Viral potential, strong hook |
-| **Technical Quality** | Errors, messy | Readable | Polished, professional |
-
-**Quality Score = (Engagement + Technical) / 5** (max 2.0)
-
----
-
-### 🧮 SCORING FORMULA
-
-\`\`\`
-Campaign Points = M_gate × Quality_Score × 100
-
-Maximum possible: 1.5 × 2.0 × 100 = 300 points (before engagement)
-\`\`\`
-
----
-
-`
-
-    // Winner determination
-    if (determineWinner && validContents.length > 1) {
-      evalPrompt += `## 🏆 WINNER DETERMINATION
-
-**Compare all ${validContents.length} contents:**
-
-1. Calculate Campaign Points for each
-2. Rank from highest to lowest
-3. Identify winner with reasoning
-4. Explain why others lost
-
-**Analysis Required:**
-- Gate scores comparison
-- Quality metrics comparison
-- Why winner wins
-- What losers need to improve
-
----
-
-`
-    }
-
-    // Combined generation
-    if (includeCombinedGeneration) {
-      evalPrompt += `## 🌟 COMBINED CONTENT GENERATION
-
-**After evaluation, generate SUPERIOR content by:**
-
-1. Taking the BEST elements from each submission
-2. Fixing ALL identified issues
-3. Ensuring ALL gates pass with 2/2
-4. Maximizing both quality metrics
-5. Making it feel AUTHENTIC and HUMAN
-
-**Output the improved content at the end.**
-
----
-
-`
-    }
-
-    // Improvement suggestions
-    if (includeImprovement) {
-      evalPrompt += `## 📈 IMPROVEMENT SUGGESTIONS
-
-**For EACH content, provide:**
-1. Specific issues identified
-2. Concrete improvement suggestions
-3. A revised version
-
----
-
-`
-    }
-
-    // Output format
-    if (evalFormat === 'json') {
-      evalPrompt += `## 📤 OUTPUT FORMAT (JSON)
-
-\`\`\`json
-{
-  "contents": [
-    {
-      "id": 1,
-      "gates": {
-        "contentAlignment": { "score": 0-2, "feedback": "..." },
-        "informationAccuracy": { "score": 0-2, "feedback": "..." },
-        "campaignCompliance": { "score": 0-2, "feedback": "..." },
-        "originalityAuthenticity": { "score": 0-2, "feedback": "..." }
-      },
-      "quality": {
-        "engagementPotential": { "score": 0-5, "feedback": "..." },
-        "technicalQuality": { "score": 0-5, "feedback": "..." }
-      },
-      "gateMultiplier": number,
-      "qualityScore": number,
-      "campaignPoints": number,
-      "rank": number
-    }
-  ],
-  "winner": { "id": number, "reason": "..." },
-  "combinedContent": "..."
+const getGrade = (points: number) => {
+  return GRADE_CONFIG.find(g => points >= g.min) || GRADE_CONFIG[GRADE_CONFIG.length - 1]
 }
-\`\`\`
-`
-    } else {
-      evalPrompt += `## 📤 OUTPUT FORMAT
 
-Provide detailed evaluation with:
+// Rally Scoring Formula
+const calculateRallyScore = (
+  gateScores: { contentAlignment: number; informationAccuracy: number; campaignCompliance: number; originality: number },
+  qualityScores: { engagementPotential: number; technicalQuality: number; replyQuality: number },
+  engagementMetrics: { likes: number; replies: number; followersOfRepliers: number; impressions: number; retweets: number }
+) => {
+  const gates = [gateScores.contentAlignment, gateScores.informationAccuracy, gateScores.campaignCompliance, gateScores.originality]
+  const minGate = Math.min(...gates)
+  const avgGate = gates.reduce((a, b) => a + b, 0) / gates.length
+  const gateSum = gates.reduce((a, b) => a + b, 0)
+  
+  let gateMultiplier: number
+  if (minGate === 0) {
+    gateMultiplier = 0.5
+  } else {
+    const gStar = avgGate / 2
+    gateMultiplier = 1 + 0.5 * (gStar * 2 - 1)
+  }
+  
+  const qualitySum = qualityScores.engagementPotential + qualityScores.technicalQuality + qualityScores.replyQuality
+  
+  const gateFactor = gateSum / 8
+  const qualityFactor = qualitySum / 15
+  
+  let atemporalPoints = gateFactor * qualityFactor * 2.5
+  if (gateMultiplier < 1) atemporalPoints *= gateMultiplier
+  atemporalPoints = Math.min(atemporalPoints, 2.43)
+  
+  const { likes, replies, followersOfRepliers, impressions, retweets } = engagementMetrics
+  const likesContrib = Math.log10(likes + 1) * 0.18
+  const repliesContrib = Math.log10(replies + 1) * 0.22
+  const retweetsContrib = Math.log10(retweets + 1) * 0.15
+  const impressionsContrib = Math.log10(impressions + 1) * 0.025
+  const followersContrib = Math.log10(followersOfRepliers + 1) * 0.41
+  const baseTemporal = 1.12
+  
+  let temporalPoints = baseTemporal + likesContrib + repliesContrib + retweetsContrib + impressionsContrib + followersContrib
+  const totalPoints = atemporalPoints + temporalPoints
+  
+  return {
+    gateMultiplier,
+    gateDetails: { ...gateScores, sum: gateSum, avg: avgGate },
+    qualityDetails: { ...qualityScores, sum: qualitySum, avg: qualitySum / 3 },
+    atemporalPoints: Math.round(atemporalPoints * 100) / 100,
+    temporalPoints: Math.round(temporalPoints * 100) / 100,
+    totalPoints: Math.round(totalPoints * 100) / 100,
+    grade: getGrade(totalPoints)
+  }
+}
 
-1. **Per-Content Analysis:**
-   - Gate scores (0-2 each) with reasoning
-   - Quality scores (0-5 each) with reasoning
-   - Gate Multiplier calculation
-   - Final Campaign Points
-
-2. **Ranking** (if multiple contents)
-
-3. **Winner Analysis** (if multiple)
-
-4. **Improvement Suggestions**
-
-5. **Combined Superior Content**
-`
+export default function RallyScoreAnalyzer() {
+  const [activeTab, setActiveTab] = useState('estimator')
+  const [content, setContent] = useState('')
+  const [campaignContext, setCampaignContext] = useState('')
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  
+  const [gateScores, setGateScores] = useState({
+    contentAlignment: 2, informationAccuracy: 2, campaignCompliance: 2, originality: 2
+  })
+  
+  const [qualityScores, setQualityScores] = useState({
+    engagementPotential: 4, technicalQuality: 4, replyQuality: 3
+  })
+  
+  const [engagementMetrics, setEngagementMetrics] = useState({
+    likes: 50, replies: 5, followersOfRepliers: 5000, impressions: 1000, retweets: 5
+  })
+  
+  const [estimatedResult, setEstimatedResult] = useState<ReturnType<typeof calculateRallyScore> | null>(null)
+  const [realSubmissions, setRealSubmissions] = useState<RallySubmission[]>([])
+  const [isLoadingReal, setIsLoadingReal] = useState(false)
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const [selectedSubmission, setSelectedSubmission] = useState<RallySubmission | null>(null)
+  
+  useEffect(() => {
+    const result = calculateRallyScore(gateScores, qualityScores, engagementMetrics)
+    setEstimatedResult(result)
+  }, [gateScores, qualityScores, engagementMetrics])
+  
+  const fetchRealSubmissions = useCallback(async () => {
+    setIsLoadingReal(true)
+    setLoadError(null)
+    try {
+      // Use local proxy API to avoid CORS issues
+      const response = await fetch('/api/rally-submissions')
+      if (!response.ok) throw new Error('Failed to fetch')
+      const data = await response.json()
+      setRealSubmissions(data)
+      toast.success(`${data.length} submissions loaded!`)
+    } catch (error) {
+      console.error('Fetch error:', error)
+      setLoadError('Failed to load Rally data. Click retry.')
+      toast.error('Failed to load Rally data')
+    } finally {
+      setIsLoadingReal(false)
     }
-
-    setGeneratedEvalPrompt(evalPrompt)
-    toast.success('Evaluation prompt v1.7 berhasil dibuat!')
-  }, [contentItems, campaignData, evalFormat, determineWinner, includeCombinedGeneration, includeImprovement])
+  }, [])
+  
+  // Auto-fetch on mount
+  useEffect(() => {
+    if (realSubmissions.length === 0) {
+      fetchRealSubmissions()
+    }
+  }, [])
+  
+  const analyzeContent = useCallback(async () => {
+    if (!content.trim()) {
+      toast.error('Masukkan konten untuk dianalisis')
+      return
+    }
+    setIsAnalyzing(true)
+    try {
+      const response = await fetch('/api/analyze-content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: content.trim(), campaignContext: campaignContext.trim() || undefined })
+      })
+      const data = await response.json()
+      if (!response.ok || !data.success) throw new Error(data.error || 'Analisis gagal')
+      
+      setGateScores({
+        contentAlignment: data.analysis.gates.contentAlignment.score,
+        informationAccuracy: data.analysis.gates.informationAccuracy.score,
+        campaignCompliance: data.analysis.gates.campaignCompliance.score,
+        originality: data.analysis.gates.originality.score
+      })
+      setQualityScores({
+        engagementPotential: data.analysis.quality.engagementPotential.score,
+        technicalQuality: data.analysis.quality.technicalQuality.score,
+        replyQuality: 3
+      })
+      toast.success('Analisis AI selesai!')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Analisis gagal')
+    } finally {
+      setIsAnalyzing(false)
+    }
+  }, [content, campaignContext])
+  
+  const loadSubmissionData = useCallback((sub: RallySubmission) => {
+    const getScore = (category: string) => {
+      const a = sub.analysis.find(x => x.category === category)
+      return a ? attoToDecimal(a.atto_score) : 0
+    }
+    setGateScores({
+      contentAlignment: getScore('Content Alignment'),
+      informationAccuracy: getScore('Information Accuracy'),
+      campaignCompliance: getScore('Campaign Compliance'),
+      originality: getScore('Originality and Authenticity')
+    })
+    setQualityScores({
+      engagementPotential: getScore('Engagement Potential'),
+      technicalQuality: getScore('Technical Quality'),
+      replyQuality: getScore('Reply Quality')
+    })
+    setEngagementMetrics({
+      likes: getScore('Likes'), replies: getScore('Replies'), retweets: getScore('Retweets'),
+      impressions: getScore('Impressions'), followersOfRepliers: getScore('Followers of Repliers')
+    })
+    setSelectedSubmission(sub)
+    setActiveTab('estimator')
+    toast.success('Data submission dimuat!')
+  }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      {/* Header */}
-      <header className="border-b border-gray-700/50 bg-gray-900/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg">
-                <Trophy className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-white">Rally Scoring Generator</h1>
-                <p className="text-xs text-gray-400">v1.7 - Based on ACTUAL Rally.fun Formula</p>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 text-white p-4 md:p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl shadow-lg shadow-amber-500/20">
+              <Calculator className="w-8 h-8 text-white" />
             </div>
-            <div className="flex items-center gap-3">
-              <Badge className={MODE_CONFIG[promptMode].badge}>
-                {MODE_CONFIG[promptMode].label}
-              </Badge>
-              <a
-                href="/download/rally-scoring-v1.7"
-                download
-                className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-sm rounded-lg transition-colors"
-              >
-                <Download className="w-4 h-4" />
-                Download HTML
-              </a>
+            <div className="text-left">
+              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
+                Rally Score Analyzer
+              </h1>
+              <p className="text-gray-400 text-sm">Calibrated with Real Rally.fun API Data</p>
             </div>
           </div>
+          
+          <Button
+            onClick={() => window.open('/rally-complete-guide.pdf', '_blank')}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all shadow-lg shadow-amber-500/20"
+          >
+            <FileText className="w-4 h-4" />
+            Open PDF Guide
+          </Button>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-6">
-        <Tabs value={currentTab} onValueChange={setCurrentTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-gray-800/50">
-            <TabsTrigger value="campaign" className="data-[state=active]:bg-amber-600">
-              <FileText className="w-4 h-4 mr-2" />
-              Campaign
-            </TabsTrigger>
-            <TabsTrigger value="content" className="data-[state=active]:bg-amber-600">
-              <Zap className="w-4 h-4 mr-2" />
-              Content
-            </TabsTrigger>
-            <TabsTrigger value="generate" className="data-[state=active]:bg-amber-600">
-              <Sparkles className="w-4 h-4 mr-2" />
-              Generate
-            </TabsTrigger>
-            <TabsTrigger value="evaluate" className="data-[state=active]:bg-amber-600">
-              <Target className="w-4 h-4 mr-2" />
-              Evaluate
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Campaign Tab */}
-          <TabsContent value="campaign" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Basic Info */}
-              <Card className="bg-gray-800/50 border-gray-700">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Info className="w-5 h-5 text-amber-500" />
-                    Basic Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label className="text-gray-300">Campaign Name</Label>
-                    <Input
-                      value={campaignData.campaignName}
-                      onChange={(e) => updateCampaign('campaignName', e.target.value)}
-                      placeholder="e.g., The Rally Joke Contest"
-                      className="bg-gray-700/50 border-gray-600 text-white"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-gray-300">Project Handle</Label>
-                      <Input
-                        value={campaignData.projectHandle}
-                        onChange={(e) => updateCampaign('projectHandle', e.target.value)}
-                        placeholder="@RallyOnChain"
-                        className="bg-gray-700/50 border-gray-600 text-white"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-gray-300">Platform</Label>
-                      <Input
-                        value={campaignData.platform}
-                        onChange={(e) => updateCampaign('platform', e.target.value)}
-                        placeholder="Base, Solana, etc."
-                        className="bg-gray-700/50 border-gray-600 text-white"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label className="text-gray-300">Content Type</Label>
-                    <Select
-                      value={campaignData.contentType}
-                      onValueChange={(v) => updateCampaign('contentType', v)}
-                    >
-                      <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="joke">Joke/Meme</SelectItem>
-                        <SelectItem value="educational">Educational</SelectItem>
-                        <SelectItem value="promotional">Promotional</SelectItem>
-                        <SelectItem value="thread">Thread</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Description & Rules */}
-              <Card className="bg-gray-800/50 border-gray-700">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-amber-500" />
-                    Details
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label className="text-gray-300">Campaign Description</Label>
-                    <Textarea
-                      value={campaignData.campaignDescription}
-                      onChange={(e) => updateCampaign('campaignDescription', e.target.value)}
-                      placeholder="What is this campaign about?"
-                      className="bg-gray-700/50 border-gray-600 text-white min-h-[80px]"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-gray-300">Campaign Rules</Label>
-                    <Textarea
-                      value={campaignData.campaignRules}
-                      onChange={(e) => updateCampaign('campaignRules', e.target.value)}
-                      placeholder="- Rule 1&#10;- Rule 2&#10;- Rule 3"
-                      className="bg-gray-700/50 border-gray-600 text-white min-h-[80px]"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-gray-300">Style Guidelines</Label>
-                    <Textarea
-                      value={campaignData.campaignStyle}
-                      onChange={(e) => updateCampaign('campaignStyle', e.target.value)}
-                      placeholder="Casual, witty, professional..."
-                      className="bg-gray-700/50 border-gray-600 text-white min-h-[60px]"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Requirements */}
-              <Card className="bg-gray-800/50 border-gray-700">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <AlertTriangle className="w-5 h-5 text-amber-500" />
-                    Required Elements
-                  </CardTitle>
-                  <CardDescription className="text-gray-400">
-                    These MUST be included EXACTLY as specified
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label className="text-gray-300">Required Disclaimer</Label>
-                    <Textarea
-                      value={campaignData.requiredDisclaimer}
-                      onChange={(e) => updateCampaign('requiredDisclaimer', e.target.value)}
-                      placeholder="Exact disclaimer text..."
-                      className="bg-gray-700/50 border-gray-600 text-white min-h-[60px]"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-gray-300">Required Hashtags</Label>
-                      <Input
-                        value={campaignData.requiredHashtags}
-                        onChange={(e) => updateCampaign('requiredHashtags', e.target.value)}
-                        placeholder="#Rally #Base"
-                        className="bg-gray-700/50 border-gray-600 text-white"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-gray-300">Required Mentions</Label>
-                      <Input
-                        value={campaignData.requiredMentions}
-                        onChange={(e) => updateCampaign('requiredMentions', e.target.value)}
-                        placeholder="@RallyOnChain"
-                        className="bg-gray-700/50 border-gray-600 text-white"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label className="text-gray-300">Format Requirements</Label>
-                    <Input
-                      value={campaignData.formatRequirements}
-                      onChange={(e) => updateCampaign('formatRequirements', e.target.value)}
-                      placeholder="Max 280 characters, single post..."
-                      className="bg-gray-700/50 border-gray-600 text-white"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Knowledge Base & Forbidden */}
-              <Card className="bg-gray-800/50 border-gray-700">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-amber-500" />
-                    Context & Restrictions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label className="text-gray-300">Knowledge Base</Label>
-                    <Textarea
-                      value={campaignData.knowledgeBase}
-                      onChange={(e) => updateCampaign('knowledgeBase', e.target.value)}
-                      placeholder="Background info about the project..."
-                      className="bg-gray-700/50 border-gray-600 text-white min-h-[80px]"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-gray-300">Forbidden Elements</Label>
-                    <Textarea
-                      value={campaignData.forbiddenElements}
-                      onChange={(e) => updateCampaign('forbiddenElements', e.target.value)}
-                      placeholder="- No recycled jokes&#10;- No offensive content&#10;- No AI-generic patterns"
-                      className="bg-gray-700/50 border-gray-600 text-white min-h-[80px]"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Actions */}
-            <div className="flex flex-wrap gap-3 justify-center">
-              <Button onClick={saveCampaign} className="bg-amber-600 hover:bg-amber-700">
-                <Save className="w-4 h-4 mr-2" />
-                Save Campaign
-              </Button>
-              <Button onClick={loadSampleCampaign} variant="outline" className="border-gray-600 text-gray-300">
-                <Info className="w-4 h-4 mr-2" />
-                Load Sample
-              </Button>
-              <Button onClick={clearCampaignForm} variant="outline" className="border-gray-600 text-gray-300">
-                <Trash2 className="w-4 h-4 mr-2" />
-                Clear Form
-              </Button>
-            </div>
-          </TabsContent>
-
-          {/* Content Tab */}
-          <TabsContent value="content" className="space-y-6">
-            <Card className="bg-gray-800/50 border-gray-700">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-amber-500" />
-                    Content to Evaluate
-                  </CardTitle>
-                  <Button onClick={addContentItem} size="sm" className="bg-amber-600 hover:bg-amber-700">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Content
-                  </Button>
-                </div>
-                <CardDescription className="text-gray-400">
-                  Add multiple content pieces to evaluate and compare
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <ScrollArea className="h-[400px] pr-4">
-                  {contentItems.map((item, index) => (
-                    <div key={item.id} className="mb-4 p-4 bg-gray-700/30 rounded-lg border border-gray-600">
-                      <div className="flex items-center justify-between mb-2">
-                        <Label className="text-gray-300 font-medium">Content #{index + 1}</Label>
-                        <Button
-                          onClick={() => removeContentItem(item.id)}
-                          size="sm"
-                          variant="ghost"
-                          className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      </div>
-                      <Textarea
-                        value={item.content}
-                        onChange={(e) => updateContentItem(item.id, e.target.value)}
-                        placeholder="Paste your content here..."
-                        className="bg-gray-700/50 border-gray-600 text-white min-h-[100px]"
-                      />
-                    </div>
-                  ))}
-                </ScrollArea>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Generate Tab */}
-          <TabsContent value="generate" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Settings */}
-              <Card className="bg-gray-800/50 border-gray-700">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Target className="w-5 h-5 text-amber-500" />
-                    Generation Settings
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Mode Selection */}
-                  <div>
-                    <Label className="text-gray-300 mb-2 block">Prompt Mode</Label>
-                    <div className="grid grid-cols-1 gap-2">
-                      {(Object.keys(MODE_CONFIG) as PromptMode[]).map((mode) => (
-                        <button
-                          key={mode}
-                          onClick={() => setPromptMode(mode)}
-                          className={`p-3 rounded-lg border text-left transition-all ${
-                            promptMode === mode
-                              ? `bg-gradient-to-r ${MODE_CONFIG[mode].color} border-transparent text-white`
-                              : 'bg-gray-700/30 border-gray-600 text-gray-300 hover:bg-gray-700/50'
-                          }`}
-                        >
-                          <div className="font-medium">{MODE_CONFIG[mode].label}</div>
-                          <div className="text-xs opacity-80">{MODE_CONFIG[mode].description}</div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <Separator className="bg-gray-700" />
-
-                  {/* Distribution Curve */}
-                  <div>
-                    <Label className="text-gray-300 mb-2 block flex items-center gap-2">
-                      <Percent className="w-4 h-4" />
-                      Distribution Curve
-                    </Label>
-                    <Select
-                      value={distributionCurve}
-                      onValueChange={(v) => setDistributionCurve(v as DistributionCurve)}
-                    >
-                      <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="balanced">Balanced (α=1) - Top 10% gets 25%</SelectItem>
-                        <SelectItem value="default">Default (α=3) - Top 10% gets 90%</SelectItem>
-                        <SelectItem value="extreme">Extreme (α=8) - Top 10% gets 99%</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {DISTRIBUTION_INFO[distributionCurve].description}
-                    </p>
-                  </div>
-
-                  <Separator className="bg-gray-700" />
-
-                  {/* Options */}
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="includeScoring"
-                        checked={includeScoringFormula}
-                        onCheckedChange={(c) => setIncludeScoringFormula(!!c)}
-                      />
-                      <Label htmlFor="includeScoring" className="text-gray-300 text-sm">
-                        Include Rally scoring formula
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="includeEngagement"
-                        checked={includeEngagementTips}
-                        onCheckedChange={(c) => setIncludeEngagementTips(!!c)}
-                      />
-                      <Label htmlFor="includeEngagement" className="text-gray-300 text-sm">
-                        Include engagement tips
-                      </Label>
-                    </div>
-                  </div>
-
-                  <Separator className="bg-gray-700" />
-
-                  {/* Additional Instructions */}
-                  <div>
-                    <Label className="text-gray-300 text-sm">Additional Instructions</Label>
-                    <Textarea
-                      value={additionalInstructions}
-                      onChange={(e) => setAdditionalInstructions(e.target.value)}
-                      placeholder="Any specific requirements..."
-                      className="bg-gray-700/50 border-gray-600 text-white mt-2 min-h-[80px]"
-                    />
-                  </div>
-
-                  <Button
-                    onClick={generateContentPrompt}
-                    className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
-                  >
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Generate Prompt v1.7
-                  </Button>
-                </CardContent>
-              </Card>
-
-              {/* Output */}
-              <div className="lg:col-span-2">
-                <Card className="bg-gray-800/50 border-gray-700 h-full">
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-white flex items-center gap-2">
-                        <FileText className="w-5 h-5 text-amber-500" />
-                        Generated Prompt
-                      </CardTitle>
-                      <div className="flex gap-2">
-                        <Button
-                          onClick={() => copyToClipboard(generatedPrompt, 'Prompt')}
-                          variant="outline"
-                          size="sm"
-                          className="border-gray-600 text-gray-300"
-                          disabled={!generatedPrompt}
-                        >
-                          <Copy className="w-4 h-4 mr-2" />
-                          Copy
-                        </Button>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <ScrollArea className="h-[500px]">
-                      <pre className="text-gray-300 text-sm whitespace-pre-wrap font-mono bg-gray-900/50 p-4 rounded-lg">
-                        {generatedPrompt || 'Click "Generate Prompt" to create a content generation prompt based on the ACTUAL Rally.fun scoring system...'}
-                      </pre>
-                    </ScrollArea>
-                  </CardContent>
-                </Card>
+        {/* Formula Info */}
+        <Card className="bg-blue-500/10 border-blue-500/30">
+          <CardContent className="py-3 px-4">
+            <div className="flex items-start gap-3">
+              <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+              <div className="text-sm text-blue-200">
+                <strong>Formula:</strong> Total = Atemporal (gate×quality×2.5) + Temporal (base + log engagement)
               </div>
-            </div>
-          </TabsContent>
-
-          {/* Evaluate Tab */}
-          <TabsContent value="evaluate" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Settings */}
-              <Card className="bg-gray-800/50 border-gray-700">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-amber-500" />
-                    Evaluation Settings
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label className="text-gray-300 mb-2 block">Output Format</Label>
-                    <Select value={evalFormat} onValueChange={setEvalFormat}>
-                      <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="detailed">Detailed Report</SelectItem>
-                        <SelectItem value="json">JSON Format</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <Separator className="bg-gray-700" />
-
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="determineWinner"
-                        checked={determineWinner}
-                        onCheckedChange={(c) => setDetermineWinner(!!c)}
-                      />
-                      <Label htmlFor="determineWinner" className="text-gray-300 text-sm">
-                        Determine winner (if 2+ contents)
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="includeCombined"
-                        checked={includeCombinedGeneration}
-                        onCheckedChange={(c) => setIncludeCombinedGeneration(!!c)}
-                      />
-                      <Label htmlFor="includeCombined" className="text-gray-300 text-sm">
-                        Generate combined superior content
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="includeImprovement"
-                        checked={includeImprovement}
-                        onCheckedChange={(c) => setIncludeImprovement(!!c)}
-                      />
-                      <Label htmlFor="includeImprovement" className="text-gray-300 text-sm">
-                        Include improvement suggestions
-                      </Label>
-                    </div>
-                  </div>
-
-                  <Separator className="bg-gray-700" />
-
-                  <Button
-                    onClick={generateEvaluationPrompt}
-                    className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
-                  >
-                    <Target className="w-4 h-4 mr-2" />
-                    Generate Evaluation Prompt
-                  </Button>
-                </CardContent>
-              </Card>
-
-              {/* Output */}
-              <div className="lg:col-span-2">
-                <Card className="bg-gray-800/50 border-gray-700 h-full">
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-white flex items-center gap-2">
-                        <FileText className="w-5 h-5 text-amber-500" />
-                        Evaluation Prompt
-                      </CardTitle>
-                      <Button
-                        onClick={() => copyToClipboard(generatedEvalPrompt, 'Evaluation Prompt')}
-                        variant="outline"
-                        size="sm"
-                        className="border-gray-600 text-gray-300"
-                        disabled={!generatedEvalPrompt}
-                      >
-                        <Copy className="w-4 h-4 mr-2" />
-                        Copy
-                      </Button>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <ScrollArea className="h-[500px]">
-                      <pre className="text-gray-300 text-sm whitespace-pre-wrap font-mono bg-gray-900/50 p-4 rounded-lg">
-                        {generatedEvalPrompt || 'Add content in the "Content" tab, then generate an evaluation prompt...'}
-                      </pre>
-                    </ScrollArea>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-
-        {/* Rally Scoring Info */}
-        <Card className="mt-8 bg-gradient-to-r from-gray-800/50 to-gray-900/50 border-amber-500/30">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Award className="w-5 h-5 text-amber-500" />
-              Rally.fun Scoring System - Quick Reference
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <h4 className="font-medium text-amber-400 mb-2">4 Gates (0-2 each)</h4>
-                <ul className="text-sm text-gray-300 space-y-1">
-                  <li>• Content Alignment</li>
-                  <li>• Information Accuracy</li>
-                  <li>• Campaign Compliance</li>
-                  <li>• Originality & Authenticity</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-medium text-amber-400 mb-2">2 Quality Metrics (0-5)</h4>
-                <ul className="text-sm text-gray-300 space-y-1">
-                  <li>• Engagement Potential</li>
-                  <li>• Technical Quality</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-medium text-amber-400 mb-2">5 Engagement Metrics</h4>
-                <ul className="text-sm text-gray-300 space-y-1">
-                  <li>• Retweets (log-scaled)</li>
-                  <li>• Likes (log-scaled)</li>
-                  <li>• Replies (log-scaled)</li>
-                  <li>• Quality of Replies</li>
-                  <li>• Followers of Repliers</li>
-                </ul>
-              </div>
-            </div>
-            <div className="mt-4 p-3 bg-amber-500/10 rounded-lg border border-amber-500/20">
-              <p className="text-sm text-amber-300">
-                <strong>Formula:</strong> Campaign Points = M_gate × Quality_Score × 100
-                <br />
-                <strong>Gate Multiplier:</strong> M_gate = 1 + 0.5 × (g_star - 1), where g_star = average of 4 gates
-              </p>
             </div>
           </CardContent>
         </Card>
-      </main>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-700/50 bg-gray-900/50 backdrop-blur-sm mt-auto">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between text-sm text-gray-500">
-            <span>Rally Scoring Generator v1.7</span>
-            <span>Based on ACTUAL Rally.fun scoring formula</span>
-          </div>
-        </div>
-      </footer>
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+          <TabsList className="bg-gray-800/50 border border-gray-700">
+            <TabsTrigger value="estimator" className="data-[state=active]:bg-amber-600 data-[state=active]:text-white">
+              <Calculator className="w-4 h-4 mr-2" /> Score Estimator
+            </TabsTrigger>
+            <TabsTrigger value="data" className="data-[state=active]:bg-amber-600 data-[state=active]:text-white">
+              <Trophy className="w-4 h-4 mr-2" /> Live Rally Data
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Estimator Tab */}
+          <TabsContent value="estimator" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Left Column */}
+              <div className="space-y-4">
+                {/* Content Input */}
+                <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-amber-400" /> Konten
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Textarea
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      placeholder="Paste konten tweet di sini..."
+                      className="bg-gray-700/50 border-gray-600 text-white min-h-[100px] resize-none"
+                    />
+                    <Input
+                      value={campaignContext}
+                      onChange={(e) => setCampaignContext(e.target.value)}
+                      placeholder="Campaign context (opsional)"
+                      className="bg-gray-700/50 border-gray-600 text-white h-9"
+                    />
+                    <Button
+                      onClick={analyzeContent}
+                      disabled={isAnalyzing || !content.trim()}
+                      className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 disabled:opacity-50"
+                    >
+                      {isAnalyzing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Menganalisis...</> : <><Sparkles className="w-4 h-4 mr-2" /> Analisis AI</>}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Gate Scores */}
+                <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Target className="w-4 h-4 text-cyan-400" /> Gate Scores (0-2)
+                    </CardTitle>
+                    <CardDescription className="text-gray-400 text-xs">Min gate = 0 → 0.5x penalty</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {[
+                      { key: 'contentAlignment', label: 'Content Alignment' },
+                      { key: 'informationAccuracy', label: 'Info Accuracy' },
+                      { key: 'campaignCompliance', label: 'Compliance' },
+                      { key: 'originality', label: 'Originality' }
+                    ].map((gate) => (
+                      <div key={gate.key}>
+                        <Label className="text-gray-400 text-xs mb-1 block">{gate.label}</Label>
+                        <div className="flex gap-1">
+                          {[0, 1, 2].map((score) => (
+                            <button
+                              key={score}
+                              onClick={() => setGateScores(prev => ({ ...prev, [gate.key]: score }))}
+                              className={`flex-1 py-2 rounded text-sm font-medium transition-all ${
+                                gateScores[gate.key as keyof typeof gateScores] === score
+                                  ? score === 0 ? 'bg-red-500 text-white' : score === 1 ? 'bg-yellow-500 text-black' : 'bg-green-500 text-white'
+                                  : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                              }`}
+                            >
+                              {score}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+
+                {/* Quality Scores */}
+                <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Star className="w-4 h-4 text-purple-400" /> Quality Scores (0-5)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {[
+                      { key: 'engagementPotential', label: 'Engagement Potential' },
+                      { key: 'technicalQuality', label: 'Technical Quality' },
+                      { key: 'replyQuality', label: 'Reply Quality' }
+                    ].map((metric) => (
+                      <div key={metric.key}>
+                        <Label className="text-gray-400 text-xs mb-1 block">{metric.label}</Label>
+                        <Select
+                          value={qualityScores[metric.key as keyof typeof qualityScores].toString()}
+                          onValueChange={(v) => setQualityScores(prev => ({ ...prev, [metric.key]: parseInt(v) }))}
+                        >
+                          <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white h-9">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {[0, 1, 2, 3, 4, 5].map((s) => (
+                              <SelectItem key={s} value={s.toString()}>{s}/5</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Middle Column */}
+              <div className="space-y-4">
+                {/* Engagement */}
+                <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-green-400" /> Engagement Projection
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label className="text-gray-400 text-xs">Likes</Label>
+                        <Input type="number" min={0} value={engagementMetrics.likes}
+                          onChange={(e) => setEngagementMetrics(prev => ({ ...prev, likes: parseInt(e.target.value) || 0 }))}
+                          className="bg-gray-700/50 border-gray-600 text-white h-9" />
+                      </div>
+                      <div>
+                        <Label className="text-gray-400 text-xs">Replies</Label>
+                        <Input type="number" min={0} value={engagementMetrics.replies}
+                          onChange={(e) => setEngagementMetrics(prev => ({ ...prev, replies: parseInt(e.target.value) || 0 }))}
+                          className="bg-gray-700/50 border-gray-600 text-white h-9" />
+                      </div>
+                      <div>
+                        <Label className="text-gray-400 text-xs">Retweets</Label>
+                        <Input type="number" min={0} value={engagementMetrics.retweets}
+                          onChange={(e) => setEngagementMetrics(prev => ({ ...prev, retweets: parseInt(e.target.value) || 0 }))}
+                          className="bg-gray-700/50 border-gray-600 text-white h-9" />
+                      </div>
+                      <div>
+                        <Label className="text-gray-400 text-xs">Impressions</Label>
+                        <Input type="number" min={0} value={engagementMetrics.impressions}
+                          onChange={(e) => setEngagementMetrics(prev => ({ ...prev, impressions: parseInt(e.target.value) || 0 }))}
+                          className="bg-gray-700/50 border-gray-600 text-white h-9" />
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-gray-400 text-xs">Followers of Repliers</Label>
+                      <Input type="number" min={0} value={engagementMetrics.followersOfRepliers}
+                        onChange={(e) => setEngagementMetrics(prev => ({ ...prev, followersOfRepliers: parseInt(e.target.value) || 0 }))}
+                        className="bg-gray-700/50 border-gray-600 text-white h-9" />
+                      <p className="text-xs text-gray-500 mt-1">Main driver untuk temporal points</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Estimated Score */}
+                {estimatedResult && (
+                  <Card className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 border-gray-700 backdrop-blur overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Award className="w-4 h-4 text-amber-400" /> Estimasi Skor
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center py-4">
+                        <div className={`text-5xl font-bold ${estimatedResult.grade.color} mb-2`}>
+                          {estimatedResult.totalPoints.toFixed(2)}
+                        </div>
+                        <div className="flex items-center justify-center gap-3">
+                          <Badge className={`${estimatedResult.grade.color} bg-gray-700/50 text-lg px-3 py-1`}>
+                            {estimatedResult.grade.grade}
+                          </Badge>
+                          <span className="text-gray-400 text-sm">{estimatedResult.grade.label}</span>
+                        </div>
+                      </div>
+                      
+                      <Separator className="bg-gray-700 my-4" />
+                      
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Gate Multiplier</span>
+                          <span className={`font-bold ${estimatedResult.gateMultiplier === 0.5 ? 'text-red-400' : estimatedResult.gateMultiplier >= 1.4 ? 'text-green-400' : 'text-white'}`}>
+                            {estimatedResult.gateMultiplier.toFixed(2)}x
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Atemporal Points</span>
+                          <span className="font-bold text-cyan-400">{estimatedResult.atemporalPoints.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Temporal Points</span>
+                          <span className="font-bold text-green-400">{estimatedResult.temporalPoints.toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Formula */}
+                {estimatedResult && (
+                  <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <BarChart3 className="w-4 h-4 text-blue-400" /> Formula Breakdown
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3 text-xs">
+                      <div className="p-2 bg-gray-700/30 rounded">
+                        <p className="text-gray-400 mb-1">Atemporal = gate_factor × quality_factor × 2.5</p>
+                        <p className="text-cyan-400">
+                          {(estimatedResult.gateDetails.sum/8).toFixed(2)} × {(estimatedResult.qualityDetails.sum/15).toFixed(2)} × 2.5 = {estimatedResult.atemporalPoints.toFixed(2)}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+
+              {/* Right Column */}
+              <div className="space-y-4">
+                {estimatedResult && (
+                  <>
+                    {/* Gate Details */}
+                    <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <Target className="w-4 h-4 text-cyan-400" /> Gate Details
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2 text-xs">
+                          {Object.entries(estimatedResult.gateDetails).filter(([k]) => !['sum', 'avg'].includes(k)).map(([key, value]) => (
+                            <div key={key} className="flex justify-between">
+                              <span className="text-gray-400 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                              <span className={`${value === 2 ? 'text-green-400' : value === 1 ? 'text-yellow-400' : 'text-red-400'}`}>
+                                {value}/2
+                              </span>
+                            </div>
+                          ))}
+                          <Separator className="bg-gray-700 my-2" />
+                          <div className="flex justify-between font-bold">
+                            <span className="text-gray-300">Sum</span>
+                            <span className="text-white">{estimatedResult.gateDetails.sum}/8</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Quality Details */}
+                    <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <Star className="w-4 h-4 text-purple-400" /> Quality Details
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2 text-xs">
+                          {Object.entries(estimatedResult.qualityDetails).filter(([k]) => !['sum', 'avg'].includes(k)).map(([key, value]) => (
+                            <div key={key} className="flex justify-between">
+                              <span className="text-gray-400 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                              <span className={value >= 4 ? 'text-green-400' : value >= 3 ? 'text-yellow-400' : 'text-red-400'}>
+                                {value}/5
+                              </span>
+                            </div>
+                          ))}
+                          <Separator className="bg-gray-700 my-2" />
+                          <div className="flex justify-between font-bold">
+                            <span className="text-gray-300">Sum</span>
+                            <span className="text-white">{estimatedResult.qualityDetails.sum}/15</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Tips */}
+                    <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+                      <CardContent className="pt-4">
+                        <p className="text-xs font-medium text-gray-400 mb-2 flex items-center gap-1">
+                          <Zap className="w-3 h-3 text-amber-400" /> Tips Maksimalkan Skor
+                        </p>
+                        <ul className="text-xs text-gray-500 space-y-1">
+                          <li>• Gate 2/2 semua → Multiplier 1.5x</li>
+                          <li>• Quality 5/5 semua → Atemporal max ~2.5</li>
+                          <li>• Followers of Repliers → Driver utama temporal</li>
+                          <li>• Replies dari influencer → temporal tinggi</li>
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  </>
+                )}
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Live Data Tab */}
+          <TabsContent value="data" className="space-y-4">
+            {/* Loading State */}
+            {isLoadingReal && (
+              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+                <CardContent className="py-12 flex flex-col items-center gap-3">
+                  <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+                  <p className="text-gray-400">Loading Rally submissions...</p>
+                </CardContent>
+              </Card>
+            )}
+            
+            {/* Error State */}
+            {!isLoadingReal && loadError && (
+              <Card className="bg-gray-800/50 border-red-500/50 backdrop-blur">
+                <CardContent className="py-12 flex flex-col items-center gap-3">
+                  <p className="text-red-400">{loadError}</p>
+                  <Button onClick={fetchRealSubmissions} className="bg-amber-600 hover:bg-amber-700">
+                    <RefreshCw className="w-4 h-4 mr-2" /> Retry
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+            
+            {/* Empty State */}
+            {!isLoadingReal && !loadError && realSubmissions.length === 0 && (
+              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+                <CardContent className="py-12 flex flex-col items-center gap-3">
+                  <Trophy className="w-8 h-8 text-gray-500" />
+                  <p className="text-gray-400">No submissions loaded yet</p>
+                  <Button onClick={fetchRealSubmissions} className="bg-amber-600 hover:bg-amber-700">
+                    <RefreshCw className="w-4 h-4 mr-2" /> Load Data
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+            
+            {/* Data Grid */}
+            {!isLoadingReal && !loadError && realSubmissions.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {realSubmissions.map((sub, i) => {
+                  const atemporal = attoToDecimal(sub.atemporalPoints)
+                  const temporal = attoToDecimal(sub.temporalPoints)
+                  const total = atemporal + temporal
+                  const grade = getGrade(total)
+                  
+                  // Get gate scores
+                  const getScore = (category: string) => {
+                    const a = sub.analysis.find(x => x.category === category)
+                    return a ? attoToDecimal(a.atto_score) : 0
+                  }
+                  
+                  return (
+                    <Card 
+                      key={i}
+                      onClick={() => loadSubmissionData(sub)}
+                      className={`cursor-pointer transition-all hover:scale-[1.02] ${
+                        selectedSubmission?.id === sub.id 
+                          ? 'bg-amber-600/20 border-amber-500' 
+                          : 'bg-gray-800/50 border-gray-700 hover:border-gray-500'
+                      }`}
+                    >
+                      <CardHeader className="pb-2">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="font-medium text-gray-200">@{sub.xUsername}</p>
+                            <p className="text-xs text-gray-500 line-clamp-1">{sub.mission?.title || 'No mission'}</p>
+                          </div>
+                          <Badge className={`${grade.color} bg-gray-700/50 text-base px-2`}>
+                            {grade.grade}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        {/* Total Score */}
+                        <div className="text-center py-2 bg-gray-700/30 rounded-lg">
+                          <p className={`text-3xl font-bold ${grade.color}`}>{total.toFixed(2)}</p>
+                          <p className="text-xs text-gray-400">Total Points</p>
+                        </div>
+                        
+                        {/* Score Breakdown */}
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div className="bg-cyan-500/10 p-2 rounded text-center">
+                            <p className="text-cyan-400 font-bold">{atemporal.toFixed(2)}</p>
+                            <p className="text-gray-500">Atemporal</p>
+                          </div>
+                          <div className="bg-green-500/10 p-2 rounded text-center">
+                            <p className="text-green-400 font-bold">{temporal.toFixed(2)}</p>
+                            <p className="text-gray-500">Temporal</p>
+                          </div>
+                        </div>
+                        
+                        {/* Gate Scores Mini */}
+                        <div className="flex justify-between text-xs">
+                          <span className="text-gray-500">Gates:</span>
+                          <div className="flex gap-1">
+                            {['Content Alignment', 'Information Accuracy', 'Campaign Compliance', 'Originality and Authenticity'].map((cat) => {
+                              const score = getScore(cat)
+                              return (
+                                <span key={cat} className={`w-5 h-5 flex items-center justify-center rounded text-xs font-bold ${
+                                  score === 2 ? 'bg-green-500/30 text-green-400' : 
+                                  score === 1 ? 'bg-yellow-500/30 text-yellow-400' : 
+                                  'bg-red-500/30 text-red-400'
+                                }`}>
+                                  {score}
+                                </span>
+                              )
+                            })}
+                          </div>
+                        </div>
+                        
+                        {/* Quality Scores Mini */}
+                        <div className="flex justify-between text-xs">
+                          <span className="text-gray-500">Quality:</span>
+                          <div className="flex gap-1">
+                            {['Engagement Potential', 'Technical Quality', 'Reply Quality'].map((cat) => {
+                              const score = getScore(cat)
+                              return (
+                                <span key={cat} className={`w-5 h-5 flex items-center justify-center rounded text-xs font-bold ${
+                                  score >= 4 ? 'bg-green-500/30 text-green-400' : 
+                                  score >= 3 ? 'bg-yellow-500/30 text-yellow-400' : 
+                                  'bg-red-500/30 text-red-400'
+                                }`}>
+                                  {score}
+                                </span>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )
+                })}
+              </div>
+            )}
+            
+            {/* Refresh Button */}
+            {!isLoadingReal && realSubmissions.length > 0 && (
+              <div className="flex justify-center">
+                <Button onClick={fetchRealSubmissions} variant="outline" className="border-gray-600 text-gray-300">
+                  <RefreshCw className="w-4 h-4 mr-2" /> Refresh Data
+                </Button>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   )
 }
