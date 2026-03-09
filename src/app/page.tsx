@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   Calculator, TrendingUp, Info,
   Star, Zap, Target, Award, Loader2, Sparkles, FileText, Download,
-  Trophy, BarChart3, RefreshCw, GitCompare
+  Trophy, BarChart3, RefreshCw, GitCompare, Flag, BookOpen, Settings2
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -108,11 +108,26 @@ const calculateRallyScore = (
   }
 }
 
+interface CampaignCriteria {
+  mission: string
+  rules: string
+  style: string
+  knowledgeBase: string
+}
+
 export default function RallyScoreAnalyzer() {
   const [activeTab, setActiveTab] = useState('estimator')
   const [content, setContent] = useState('')
-  const [campaignContext, setCampaignContext] = useState('')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  
+  // Campaign criteria
+  const [campaignCriteria, setCampaignCriteria] = useState<CampaignCriteria>({
+    mission: '',
+    rules: '',
+    style: '',
+    knowledgeBase: ''
+  })
+  const [showCampaignInput, setShowCampaignInput] = useState(false)
   
   const [gateScores, setGateScores] = useState({
     contentAlignment: 2, informationAccuracy: 2, campaignCompliance: 2, originality: 2
@@ -170,10 +185,21 @@ export default function RallyScoreAnalyzer() {
     }
     setIsAnalyzing(true)
     try {
+      // Build campaign context from criteria
+      const campaignContext = [
+        campaignCriteria.mission ? `Mission: ${campaignCriteria.mission}` : '',
+        campaignCriteria.rules ? `Rules: ${campaignCriteria.rules}` : '',
+        campaignCriteria.style ? `Style: ${campaignCriteria.style}` : '',
+        campaignCriteria.knowledgeBase ? `Knowledge Base: ${campaignCriteria.knowledgeBase}` : ''
+      ].filter(Boolean).join('. ')
+      
       const response = await fetch('/api/analyze-content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: content.trim(), campaignContext: campaignContext.trim() || undefined })
+        body: JSON.stringify({ 
+          content: content.trim(), 
+          campaignContext: campaignContext || undefined 
+        })
       })
       const data = await response.json()
       if (!response.ok || !data.success) throw new Error(data.error || 'Analisis gagal')
@@ -195,7 +221,7 @@ export default function RallyScoreAnalyzer() {
     } finally {
       setIsAnalyzing(false)
     }
-  }, [content, campaignContext])
+  }, [content, campaignCriteria])
   
   const loadSubmissionData = useCallback((sub: RallySubmission) => {
     const getScore = (category: string) => {
@@ -290,12 +316,64 @@ export default function RallyScoreAnalyzer() {
                       placeholder="Paste konten tweet di sini..."
                       className="bg-gray-700/50 border-gray-600 text-white min-h-[100px] resize-none"
                     />
-                    <Input
-                      value={campaignContext}
-                      onChange={(e) => setCampaignContext(e.target.value)}
-                      placeholder="Campaign context (opsional)"
-                      className="bg-gray-700/50 border-gray-600 text-white h-9"
-                    />
+                    {/* Campaign Criteria Input */}
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowCampaignInput(!showCampaignInput)}
+                      className="w-full border-gray-600 text-gray-300 mb-2"
+                    >
+                      <Settings2 className="w-4 h-4 mr-2" />
+                      {showCampaignInput ? 'Sembunyikan' : 'Set'} Campaign Criteria
+                    </Button>
+                    
+                    {showCampaignInput && (
+                      <div className="space-y-2 p-3 bg-gray-700/30 rounded-lg border border-gray-600">
+                        <div>
+                          <Label className="text-gray-400 text-xs flex items-center gap-1">
+                            <Flag className="w-3 h-3" /> Mission
+                          </Label>
+                          <Input
+                            value={campaignCriteria.mission}
+                            onChange={(e) => setCampaignCriteria(prev => ({ ...prev, mission: e.target.value }))}
+                            placeholder="Contoh: Post about AI technology"
+                            className="bg-gray-700/50 border-gray-600 text-white h-8 text-sm"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-gray-400 text-xs flex items-center gap-1">
+                            <Info className="w-3 h-3" /> Rules
+                          </Label>
+                          <Input
+                            value={campaignCriteria.rules}
+                            onChange={(e) => setCampaignCriteria(prev => ({ ...prev, rules: e.target.value }))}
+                            placeholder="Contoh: Must include #AI hashtag"
+                            className="bg-gray-700/50 border-gray-600 text-white h-8 text-sm"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-gray-400 text-xs flex items-center gap-1">
+                            <Zap className="w-3 h-3" /> Style
+                          </Label>
+                          <Input
+                            value={campaignCriteria.style}
+                            onChange={(e) => setCampaignCriteria(prev => ({ ...prev, style: e.target.value }))}
+                            placeholder="Contoh: Professional, Educational"
+                            className="bg-gray-700/50 border-gray-600 text-white h-8 text-sm"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-gray-400 text-xs flex items-center gap-1">
+                            <BookOpen className="w-3 h-3" /> Knowledge Base
+                          </Label>
+                          <Input
+                            value={campaignCriteria.knowledgeBase}
+                            onChange={(e) => setCampaignCriteria(prev => ({ ...prev, knowledgeBase: e.target.value }))}
+                            placeholder="Contoh: AI, Web3, Blockchain"
+                            className="bg-gray-700/50 border-gray-600 text-white h-8 text-sm"
+                          />
+                        </div>
+                      </div>
+                    )}
                     <Button
                       onClick={analyzeContent}
                       disabled={isAnalyzing || !content.trim()}

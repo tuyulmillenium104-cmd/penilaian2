@@ -22,7 +22,29 @@ function ruleBasedScoring(content: string, campaignContext?: string) {
   const hasQuestions = /\?/.test(content);
   const hasExclamation = /!/.test(content);
   
-  // Check for engagement hooks
+  // Parse campaign context
+  const contextLower = campaignContext?.toLowerCase() || '';
+  const hasMission = contextLower.includes('mission:');
+  const hasRules = contextLower.includes('rules:');
+  const hasStyle = contextLower.includes('style:');
+  const hasKnowledgeBase = contextLower.includes('knowledge base:');
+  
+  // Extract keywords from campaign context
+  const getKeywords = (label: string) => {
+    const match = contextLower.match(new RegExp(`${label}\\s*([^.]+)`));
+    return match ? match[1].toLowerCase().split(/[,\s]+/).filter(w => w.length > 2) : [];
+  };
+  
+  const missionKeywords = getKeywords('mission');
+  const rulesKeywords = getKeywords('rules');
+  const styleKeywords = getKeywords('style');
+  const kbKeywords = getKeywords('knowledge base');
+  
+  // Check content against campaign keywords
+  const keywordMatches = [...missionKeywords, ...kbKeywords].filter(kw => text.includes(kw)).length;
+  const totalKeywords = [...missionKeywords, ...kbKeywords].length;
+  
+  // Check engagement hooks
   const hasCTA = /check out|read more|learn more|don't miss|join|subscribe|follow|like|retweet|share|comment|what do you think|thoughts\?|agree\?/i.test(content);
   
   // Originality indicators
@@ -30,12 +52,31 @@ function ruleBasedScoring(content: string, campaignContext?: string) {
   const hasSpecificDetails = /\d+%|\d+\s*(percent|million|billion|thousand)|specific|exactly|precisely/i.test(content);
   
   // Gate Scores (0-2)
-  const contentAlignment = campaignContext ? 
-    (text.includes(campaignContext.toLowerCase()) ? 2 : 1) : 2;
+  
+  // Content Alignment - based on keyword matching with campaign
+  let contentAlignment: number;
+  if (campaignContext && totalKeywords > 0) {
+    const matchRatio = keywordMatches / totalKeywords;
+    contentAlignment = matchRatio >= 0.5 ? 2 : matchRatio >= 0.2 ? 1 : 0;
+  } else if (campaignContext) {
+    // Has context but no keywords extracted - check general relevance
+    contentAlignment = text.length > 50 ? 1 : 0;
+  } else {
+    // No context provided
+    contentAlignment = 2; // Assume aligned when no context
+  }
   
   const informationAccuracy = hasSpecificDetails ? 2 : (words > 10 ? 1 : 0);
   
-  const campaignCompliance = hasHashtags && words >= 10 ? 2 : (words >= 5 ? 1 : 0);
+  // Campaign Compliance - check against rules
+  let campaignCompliance: number;
+  if (hasRules && rulesKeywords.length > 0) {
+    // Check if content follows rules (e.g., hashtag requirements)
+    const hasRequiredHashtags = rulesKeywords.some(kw => kw.includes('#') && text.includes(kw));
+    campaignCompliance = hasRequiredHashtags || hasHashtags ? 2 : 1;
+  } else {
+    campaignCompliance = hasHashtags && words >= 10 ? 2 : (words >= 5 ? 1 : 0);
+  }
   
   const originality = (hasPersonalTouch && hasSpecificDetails) ? 2 : 
     (hasPersonalTouch || hasSpecificDetails) ? 1 : 0;
