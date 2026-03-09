@@ -115,6 +115,16 @@ interface CampaignCriteria {
   knowledgeBase: string
 }
 
+interface RallyMission {
+  id: string
+  campaignAddress: string
+  title: string
+  description: string
+  rules: string
+  active: boolean
+  participantsCount: number
+}
+
 export default function RallyScoreAnalyzer() {
   const [activeTab, setActiveTab] = useState('estimator')
   const [content, setContent] = useState('')
@@ -128,6 +138,12 @@ export default function RallyScoreAnalyzer() {
     knowledgeBase: ''
   })
   const [showCampaignInput, setShowCampaignInput] = useState(false)
+  
+  // Campaign link & missions
+  const [campaignLink, setCampaignLink] = useState('')
+  const [missions, setMissions] = useState<RallyMission[]>([])
+  const [selectedMission, setSelectedMission] = useState<RallyMission | null>(null)
+  const [isLoadingMissions, setIsLoadingMissions] = useState(false)
   
   const [gateScores, setGateScores] = useState({
     contentAlignment: 2, informationAccuracy: 2, campaignCompliance: 2, originality: 2
@@ -146,6 +162,67 @@ export default function RallyScoreAnalyzer() {
   const [isLoadingReal, setIsLoadingReal] = useState(false)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [selectedSubmission, setSelectedSubmission] = useState<RallySubmission | null>(null)
+  
+  // Fetch missions
+  const fetchMissions = useCallback(async (campaignAddress?: string) => {
+    setIsLoadingMissions(true)
+    try {
+      const url = campaignAddress 
+        ? `/api/rally-missions?campaignAddress=${campaignAddress}`
+        : '/api/rally-missions'
+      const response = await fetch(url)
+      if (!response.ok) throw new Error('Failed to fetch missions')
+      const data = await response.json()
+      setMissions(data)
+      if (data.length > 0) {
+        toast.success(`${data.length} missions found!`)
+      } else {
+        toast.error('No missions found for this campaign')
+      }
+    } catch (error) {
+      console.error('Fetch missions error:', error)
+      toast.error('Failed to fetch missions')
+    } finally {
+      setIsLoadingMissions(false)
+    }
+  }, [])
+  
+  // Auto-fill from selected mission
+  const applyMission = useCallback((mission: RallyMission) => {
+    setSelectedMission(mission)
+    setCampaignCriteria({
+      mission: mission.description || mission.title,
+      rules: mission.rules || '',
+      style: '',
+      knowledgeBase: ''
+    })
+    toast.success(`Applied: ${mission.title}`)
+  }, [])
+  
+  // Extract campaign address from URL
+  const extractCampaignFromUrl = useCallback((url: string) => {
+    // Try to extract campaign address from URL patterns like:
+    // https://rally.fun/campaign/0xABC... or /campaign/0xABC...
+    const match = url.match(/campaign\/([^/\?]+)/i) || url.match(/campaignAddress=([^&]+)/i)
+    return match ? match[1] : null
+  }, [])
+  
+  // Handle campaign link input
+  const handleCampaignLink = useCallback(() => {
+    if (!campaignLink.trim()) {
+      // Fetch all missions if no link
+      fetchMissions()
+      return
+    }
+    
+    const campaignAddress = extractCampaignFromUrl(campaignLink)
+    if (campaignAddress) {
+      fetchMissions(campaignAddress)
+    } else {
+      // Try as direct address
+      fetchMissions(campaignLink)
+    }
+  }, [campaignLink, fetchMissions, extractCampaignFromUrl])
   
   useEffect(() => {
     const result = calculateRallyScore(gateScores, qualityScores, engagementMetrics)
@@ -283,6 +360,65 @@ export default function RallyScoreAnalyzer() {
                 <strong>Formula:</strong> Total = Atemporal (gate×quality×2.5) + Temporal (base + log engagement)
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Campaign Link Input */}
+        <Card className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/30">
+          <CardContent className="py-3 px-4">
+            <div className="flex flex-col md:flex-row gap-3 items-end">
+              <div className="flex-1">
+                <Label className="text-gray-300 text-xs mb-1 block flex items-center gap-1">
+                  <Flag className="w-3 h-3" /> Campaign Link (opsional - auto-fill criteria)
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    value={campaignLink}
+                    onChange={(e) => setCampaignLink(e.target.value)}
+                    placeholder="https://rally.fun/campaign/0x... atau campaign address"
+                    className="bg-gray-800/50 border-gray-600 text-white h-9"
+                    onKeyDown={(e) => e.key === 'Enter' && handleCampaignLink()}
+                  />
+                  <Button
+                    onClick={handleCampaignLink}
+                    disabled={isLoadingMissions}
+                    className="bg-purple-600 hover:bg-purple-700 h-9"
+                  >
+                    {isLoadingMissions ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Fetch'}
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Mission Selector */}
+              {missions.length > 0 && (
+                <div className="md:w-64">
+                  <Label className="text-gray-300 text-xs mb-1 block">Select Mission</Label>
+                  <Select value={selectedMission?.id || ''} onValueChange={(v) => {
+                    const m = missions.find(m => m.id === v)
+                    if (m) applyMission(m)
+                  }}>
+                    <SelectTrigger className="bg-gray-800/50 border-gray-600 text-white h-9">
+                      <SelectValue placeholder={`${missions.length} missions`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {missions.map((m) => (
+                        <SelectItem key={m.id} value={m.id}>
+                          {m.title} ({m.participantsCount} participants)
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
+            
+            {/* Applied Mission Info */}
+            {selectedMission && (
+              <div className="mt-2 p-2 bg-gray-800/30 rounded text-xs">
+                <p className="text-gray-400"><strong>Mission:</strong> {selectedMission.description}</p>
+                {selectedMission.rules && <p className="text-gray-500"><strong>Rules:</strong> {selectedMission.rules}</p>}
+              </div>
+            )}
           </CardContent>
         </Card>
 
