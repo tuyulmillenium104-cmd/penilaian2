@@ -15,7 +15,8 @@ import {
   Trophy, BarChart3, RefreshCw, Flag, BookOpen,
   FolderKanban, Users, Calendar, Clock, ChevronDown, ChevronUp,
   Check, Send, Medal, Crown, Coins, ExternalLink, Globe,
-  Twitter, Verified, AlertCircle, DollarSign
+  Twitter, Verified, AlertCircle, DollarSign, Percent,
+  HelpCircle, Lightbulb, PieChart
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -100,6 +101,72 @@ const formatNumber = (num: number): string => {
   return num.toString()
 }
 
+// Calculate estimated rank and reward
+const calculateRankAndReward = (
+  score: number, 
+  leaderboard: LeaderboardEntry[], 
+  totalParticipants: number,
+  totalReward: number
+) => {
+  if (totalParticipants === 0 || totalReward === 0) {
+    return { estimatedRank: 0, topPercent: 0, estimatedReward: 0 }
+  }
+  
+  // Count how many people have higher scores
+  const higherScores = leaderboard.filter(e => e.totalPoints > score).length
+  
+  // Estimate rank based on score distribution
+  let estimatedRank = higherScores + 1
+  
+  // If we don't have full leaderboard, estimate based on typical distribution
+  if (leaderboard.length < totalParticipants) {
+    // Assume normal distribution - estimate percentile
+    const avgScore = leaderboard.length > 0 
+      ? leaderboard.reduce((sum, e) => sum + e.totalPoints, 0) / leaderboard.length 
+      : 5.0
+    
+    if (score > avgScore * 1.5) {
+      estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.01))
+    } else if (score > avgScore * 1.2) {
+      estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.05))
+    } else if (score > avgScore) {
+      estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.1))
+    } else if (score > avgScore * 0.8) {
+      estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.25))
+    } else {
+      estimatedRank = Math.floor(totalParticipants * 0.5)
+    }
+  }
+  
+  const topPercent = (estimatedRank / totalParticipants) * 100
+  
+  // Estimate reward (higher rank = higher reward)
+  // Using a power distribution where top ranks get exponentially more
+  let estimatedReward = 0
+  if (topPercent <= 1) {
+    estimatedReward = totalReward * 0.20 // Top 1% gets ~20% of pool
+  } else if (topPercent <= 5) {
+    estimatedReward = totalReward * 0.10 // Top 5% gets ~10% each
+  } else if (topPercent <= 10) {
+    estimatedReward = totalReward * 0.05 // Top 10% gets ~5% each
+  } else if (topPercent <= 25) {
+    estimatedReward = totalReward * 0.02 // Top 25% gets ~2% each
+  } else if (topPercent <= 50) {
+    estimatedReward = totalReward * 0.01 // Top 50% gets ~1% each
+  } else {
+    estimatedReward = totalReward * 0.005 // Lower half gets ~0.5% each
+  }
+  
+  // Scale by actual number of submissions per user (estimate 3 submissions per user)
+  estimatedReward = estimatedReward / 3
+  
+  return {
+    estimatedRank,
+    topPercent: Math.min(topPercent, 100),
+    estimatedReward: Math.max(estimatedReward, 0)
+  }
+}
+
 // Analysis Card Component
 const AnalysisCard = ({ 
   title, score, maxScore, analysis, icon: Icon 
@@ -145,6 +212,95 @@ const AnalysisCard = ({
         </div>
       )}
     </div>
+  )
+}
+
+// Knowledge Base Component
+const KnowledgeBaseCard = () => {
+  const [isOpen, setIsOpen] = useState(false)
+  
+  return (
+    <Card className="bg-gray-800/50 border-gray-700">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-700/30 transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-amber-400" />
+          <span className="font-medium text-white">Knowledge Base - Cara Kerja Scoring</span>
+        </div>
+        {isOpen ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+      </button>
+      {isOpen && (
+        <CardContent className="pt-0 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Atemporal Scoring */}
+            <div className="p-3 bg-cyan-500/10 rounded-lg border border-cyan-500/30">
+              <h4 className="text-cyan-400 font-medium mb-2 flex items-center gap-2">
+                <Target className="w-4 h-4" /> Atemporal Score (Kualitas Konten)
+              </h4>
+              <p className="text-xs text-gray-400 mb-2">Mengukur kualitas konten berdasarkan:</p>
+              <ul className="text-xs text-gray-300 space-y-1">
+                <li>• <strong>Content Alignment (0-2):</strong> Seberapa relevan dengan campaign</li>
+                <li>• <strong>Information Accuracy (0-2):</strong> Akurasi informasi yang disampaikan</li>
+                <li>• <strong>Campaign Compliance (0-2):</strong> Kepatuhan terhadap rules</li>
+                <li>• <strong>Originality (0-2):</strong> Keunikan dan orisinalitas konten</li>
+              </ul>
+              <div className="mt-2 p-2 bg-gray-800/50 rounded text-xs font-mono text-cyan-300">
+                = (gate_sum / 8) × (quality_sum / 15) × 2.5
+              </div>
+            </div>
+            
+            {/* Temporal Scoring */}
+            <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/30">
+              <h4 className="text-green-400 font-medium mb-2 flex items-center gap-2">
+                <TrendingUp className="w-4 h-4" /> Temporal Score (Engagement)
+              </h4>
+              <p className="text-xs text-gray-400 mb-2">Mengukur performa engagement:</p>
+              <ul className="text-xs text-gray-300 space-y-1">
+                <li>• <strong>Likes:</strong> log(likes) × 0.18</li>
+                <li>• <strong>Replies:</strong> log(replies) × 0.22</li>
+                <li>• <strong>Retweets:</strong> log(retweets) × 0.15</li>
+                <li>• <strong>Impressions:</strong> log(impressions) × 0.025</li>
+                <li>• <strong>Followers of Repliers:</strong> log(followers) × 0.41</li>
+              </ul>
+              <div className="mt-2 p-2 bg-gray-800/50 rounded text-xs font-mono text-green-300">
+                = 1.12 + sum(all_contributions)
+              </div>
+            </div>
+          </div>
+          
+          {/* Grade System */}
+          <div className="p-3 bg-amber-500/10 rounded-lg border border-amber-500/30">
+            <h4 className="text-amber-400 font-medium mb-2 flex items-center gap-2">
+              <Award className="w-4 h-4" /> Sistem Grade
+            </h4>
+            <div className="grid grid-cols-3 md:grid-cols-5 gap-2 text-xs">
+              {GRADE_CONFIG.map(g => (
+                <div key={g.grade} className="text-center p-1 bg-gray-800/50 rounded">
+                  <span className={`${g.color} font-bold`}>{g.grade}</span>
+                  <p className="text-gray-500">&gt;= {g.min}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Tips */}
+          <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/30">
+            <h4 className="text-purple-400 font-medium mb-2 flex items-center gap-2">
+              <Lightbulb className="w-4 h-4" /> Tips Meningkatkan Score
+            </h4>
+            <ul className="text-xs text-gray-300 space-y-1">
+              <li>• Pastikan konten sesuai dengan brief dan rules campaign</li>
+              <li>• Gunakan informasi faktual dan akurat</li>
+              <li>• Buat konten orisinal, hindari copy-paste</li>
+              <li>• Dorong engagement dengan pertanyaan atau CTA</li>
+              <li>• Balas reply untuk meningkatkan engagement score</li>
+            </ul>
+          </div>
+        </CardContent>
+      )}
+    </Card>
   )
 }
 
@@ -216,6 +372,15 @@ export default function RallyScoreAnalyzer() {
               missionList[0].rules ? `Rules: ${missionList[0].rules}` : ''
             ].filter(Boolean).join('\n\n'))
           }
+          
+          // Auto-fetch leaderboard for this campaign
+          const leaderboardResponse = await fetch(`/api/rally-leaderboard?campaignAddress=${campaign.intelligentContractAddress}&limit=100`)
+          if (leaderboardResponse.ok) {
+            const leaderboardData = await leaderboardResponse.json()
+            setLeaderboard(leaderboardData.leaderboard || [])
+            setTotalParticipants(leaderboardData.total || fullCampaign.participantCount || 0)
+          }
+          
           toast.success('Campaign loaded!')
         }
       } catch (error) {
@@ -317,6 +482,15 @@ export default function RallyScoreAnalyzer() {
     if (campaigns.length === 0) fetchCampaigns()
   }, [])
   
+  // Calculate rank and reward when analysis result changes
+  const rankAndReward = analysisResult && selectedCampaign ? 
+    calculateRankAndReward(
+      analysisResult.totalPoints, 
+      leaderboard, 
+      totalParticipants || selectedCampaign.participantCount,
+      selectedCampaign.totalReward
+    ) : null
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 text-white p-4 md:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -340,6 +514,9 @@ export default function RallyScoreAnalyzer() {
             <Globe className="w-3 h-3" /> LIVE DATA
           </Badge>
         </div>
+
+        {/* Knowledge Base - Always visible */}
+        <KnowledgeBaseCard />
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
@@ -498,13 +675,13 @@ export default function RallyScoreAnalyzer() {
                         <p className="text-xs text-gray-400">Selected Campaign</p>
                         <p className="text-white font-bold">{selectedCampaign.title}</p>
                         <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
-                          <span>{formatNumber(selectedCampaign.participantCount)} members</span>
+                          <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {formatNumber(selectedCampaign.participantCount)} participants</span>
                           <span>•</span>
                           <span>{selectedCampaign.missionCount} missions</span>
                           {selectedCampaign.totalReward > 0 && (
                             <>
                               <span>•</span>
-                              <span className="text-amber-400">{formatNumber(selectedCampaign.totalReward)} {selectedCampaign.token} rewards</span>
+                              <span className="text-amber-400 flex items-center gap-1"><Coins className="w-3 h-3" /> {formatNumber(selectedCampaign.totalReward)} {selectedCampaign.token}</span>
                             </>
                           )}
                         </div>
@@ -677,6 +854,69 @@ export default function RallyScoreAnalyzer() {
                       </CardContent>
                     </Card>
 
+                    {/* Rank & Reward Estimator */}
+                    {rankAndReward && selectedCampaign && (
+                      <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/30">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-lg flex items-center gap-2">
+                            <PieChart className="w-4 h-4 text-purple-400" /> Estimasi Reward & Ranking
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-3 gap-4 text-center">
+                            {/* Estimated Rank */}
+                            <div className="p-3 bg-gray-800/50 rounded-lg">
+                              <div className="flex items-center justify-center gap-1 text-gray-400 text-xs mb-1">
+                                <Trophy className="w-3 h-3" /> Estimasi Rank
+                              </div>
+                              <p className="text-2xl font-bold text-amber-400">
+                                #{rankAndReward.estimatedRank}
+                              </p>
+                              <p className="text-xs text-gray-500">dari {formatNumber(totalParticipants || selectedCampaign.participantCount)} peserta</p>
+                            </div>
+                            
+                            {/* Top % */}
+                            <div className="p-3 bg-gray-800/50 rounded-lg">
+                              <div className="flex items-center justify-center gap-1 text-gray-400 text-xs mb-1">
+                                <Percent className="w-3 h-3" /> Posisi Anda
+                              </div>
+                              <p className="text-2xl font-bold text-green-400">
+                                Top {rankAndReward.topPercent.toFixed(1)}%
+                              </p>
+                              <p className="text-xs text-gray-500">dari total peserta</p>
+                            </div>
+                            
+                            {/* Estimated Reward */}
+                            <div className="p-3 bg-gray-800/50 rounded-lg">
+                              <div className="flex items-center justify-center gap-1 text-gray-400 text-xs mb-1">
+                                <Coins className="w-3 h-3" /> Estimasi Reward
+                              </div>
+                              <p className="text-2xl font-bold text-purple-400">
+                                {formatNumber(rankAndReward.estimatedReward)}
+                              </p>
+                              <p className="text-xs text-gray-500">{selectedCampaign.token}</p>
+                            </div>
+                          </div>
+                          
+                          {/* USD Value */}
+                          {selectedCampaign.tokenUsdPrice && rankAndReward.estimatedReward > 0 && (
+                            <div className="mt-3 p-2 bg-green-500/10 rounded border border-green-500/30 text-center">
+                              <span className="text-green-400 font-medium">
+                                ≈ ${((rankAndReward.estimatedReward * selectedCampaign.tokenUsdPrice) || 0).toFixed(2)} USD
+                              </span>
+                              <span className="text-gray-500 text-xs ml-2">
+                                (@ ${selectedCampaign.tokenUsdPrice.toFixed(4)}/{selectedCampaign.token})
+                              </span>
+                            </div>
+                          )}
+                          
+                          <p className="text-xs text-gray-500 mt-3 text-center">
+                            * Estimasi berdasarkan distribusi score. Hasil aktual dapat berbeda.
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+
                     {/* Gate Scores */}
                     <Card className="bg-gray-800/50 border-gray-700">
                       <CardHeader className="pb-3">
@@ -774,6 +1014,59 @@ export default function RallyScoreAnalyzer() {
                 {isLoadingLeaderboard ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
               </Button>
             </div>
+            
+            {/* Campaign Summary */}
+            {selectedCampaign && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <Card className="bg-gray-800/50 border-gray-700 p-3">
+                  <div className="flex items-center gap-2 text-xs text-gray-400">
+                    <Users className="w-4 h-4 text-green-400" /> Total Peserta
+                  </div>
+                  <p className="text-xl font-bold text-white mt-1">{formatNumber(totalParticipants || selectedCampaign.participantCount)}</p>
+                </Card>
+                <Card className="bg-gray-800/50 border-gray-700 p-3">
+                  <div className="flex items-center gap-2 text-xs text-gray-400">
+                    <Coins className="w-4 h-4 text-amber-400" /> Total Reward
+                  </div>
+                  <p className="text-xl font-bold text-white mt-1">{formatNumber(selectedCampaign.totalReward)} {selectedCampaign.token}</p>
+                </Card>
+                <Card className="bg-gray-800/50 border-gray-700 p-3">
+                  <div className="flex items-center gap-2 text-xs text-gray-400">
+                    <FolderKanban className="w-4 h-4 text-blue-400" /> Misi
+                  </div>
+                  <p className="text-xl font-bold text-white mt-1">{selectedCampaign.missionCount}</p>
+                </Card>
+                <Card className="bg-gray-800/50 border-gray-700 p-3">
+                  <div className="flex items-center gap-2 text-xs text-gray-400">
+                    <Calendar className="w-4 h-4 text-red-400" /> Berakhir
+                  </div>
+                  <p className="text-xl font-bold text-white mt-1">{new Date(selectedCampaign.endDate).toLocaleDateString()}</p>
+                </Card>
+              </div>
+            )}
+            
+            {/* Your Position Card (if analysis done) */}
+            {analysisResult && rankAndReward && selectedCampaign && (
+              <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/30">
+                <CardContent className="py-4 px-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-amber-500/20 rounded-full">
+                        <Trophy className="w-6 h-6 text-amber-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-400">Tweet Anda akan masuk di posisi:</p>
+                        <p className="text-2xl font-bold text-amber-400">#{rankAndReward.estimatedRank} (Top {rankAndReward.topPercent.toFixed(1)}%)</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-400">Estimasi Reward:</p>
+                      <p className="text-xl font-bold text-green-400">{formatNumber(rankAndReward.estimatedReward)} {selectedCampaign.token}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             
             {isLoadingLeaderboard && leaderboard.length === 0 && (
               <Card className="bg-gray-800/50 border-gray-700">
