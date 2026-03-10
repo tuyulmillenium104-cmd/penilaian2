@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
@@ -12,46 +11,81 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   Calculator, TrendingUp, Info,
-  Star, Zap, Target, Award, Loader2, Sparkles, FileText, Download,
-  Trophy, BarChart3, RefreshCw, GitCompare, Flag, BookOpen, Settings2,
-  FolderKanban, ExternalLink, Users, Coins, Calendar, Clock
+  Star, Zap, Target, Award, Loader2, Sparkles, FileText,
+  Trophy, BarChart3, RefreshCw, Flag, BookOpen,
+  FolderKanban, Users, Calendar, Clock, ChevronDown, ChevronUp,
+  Check, Send, Medal, Crown, Coins, ExternalLink, Globe,
+  Twitter, Verified, AlertCircle, DollarSign
 } from 'lucide-react'
 import { toast } from 'sonner'
 
-// Types
-interface RallyAnalysis {
-  category: string
-  analysis: string
-  atto_score: string
-  atto_max_score: string
-}
-
-interface RallySubmission {
+// Types matching Rally API
+interface RallyCampaign {
   id: string
-  xUsername: string
-  atemporalPoints: string
-  temporalPoints: string
-  analysis: RallyAnalysis[]
-  mission?: { title: string }
+  title: string
+  intelligentContractAddress: string
+  creator: string
+  creatorUsername: string
+  creatorAvatar: string
+  creatorProfile: string
+  creatorVerified: boolean
+  brief: string
+  organizationName: string
+  organizationWebsite: string
+  organizationLogo: string
+  startDate: string
+  endDate: string
+  campaignDurationPeriods: number
+  periodLengthDays: number
+  missionCount: number
+  participantCount: number
+  token: string
+  tokenAddress: string
+  tokenLogo: string
+  tokenUsdPrice: number
+  chainId: number
+  totalReward: number
+  rewards: any[]
+  minimumFollowers: number
+  maximumFollowers: number
+  onlyVerifiedUsers: boolean
+  headerImageUrl: string
+  participating: boolean
+  userMissionProgress: number
+  missions?: RallyMission[]
 }
 
-// Convert atto (10^-18) to decimal
-const attoToDecimal = (atto: string | undefined): number => {
-  if (!atto) return 0
-  return parseFloat(atto) / 1e18
+interface RallyMission {
+  id: string
+  title: string
+  description: string
+  rules: string
+  active: boolean
+  participantsCount?: number
 }
 
-// Grade configuration
+interface LeaderboardEntry {
+  rank: number
+  username: string
+  displayName?: string
+  avatar?: string
+  verified?: boolean
+  totalPoints: number
+  topPercent: number
+  followersCount?: number
+  totalSubmissions?: number
+}
+
+// Grade configuration matching Rally's scoring
 const GRADE_CONFIG: { min: number; grade: string; color: string; label: string }[] = [
-  { min: 6.0, grade: 'S+', color: 'text-yellow-400', label: 'Exceptional' },
-  { min: 5.5, grade: 'S', color: 'text-amber-400', label: 'Outstanding' },
-  { min: 5.0, grade: 'A+', color: 'text-green-400', label: 'Excellent' },
-  { min: 4.5, grade: 'A', color: 'text-emerald-400', label: 'Very Good' },
-  { min: 4.0, grade: 'B+', color: 'text-teal-400', label: 'Good' },
-  { min: 3.5, grade: 'B', color: 'text-cyan-400', label: 'Above Average' },
-  { min: 3.0, grade: 'C+', color: 'text-blue-400', label: 'Average' },
-  { min: 2.0, grade: 'C', color: 'text-gray-400', label: 'Below Average' },
-  { min: 1.0, grade: 'D', color: 'text-orange-400', label: 'Poor' },
+  { min: 8.0, grade: 'S+', color: 'text-yellow-400', label: 'Exceptional' },
+  { min: 7.5, grade: 'S', color: 'text-amber-400', label: 'Outstanding' },
+  { min: 7.0, grade: 'A+', color: 'text-green-400', label: 'Excellent' },
+  { min: 6.5, grade: 'A', color: 'text-emerald-400', label: 'Very Good' },
+  { min: 6.0, grade: 'B+', color: 'text-teal-400', label: 'Good' },
+  { min: 5.5, grade: 'B', color: 'text-cyan-400', label: 'Above Average' },
+  { min: 5.0, grade: 'C+', color: 'text-blue-400', label: 'Average' },
+  { min: 4.0, grade: 'C', color: 'text-gray-400', label: 'Below Average' },
   { min: 0, grade: 'F', color: 'text-red-400', label: 'Fail' }
 ]
 
@@ -59,212 +93,90 @@ const getGrade = (points: number) => {
   return GRADE_CONFIG.find(g => points >= g.min) || GRADE_CONFIG[GRADE_CONFIG.length - 1]
 }
 
-// Rally Scoring Formula
-const calculateRallyScore = (
-  gateScores: { contentAlignment: number; informationAccuracy: number; campaignCompliance: number; originality: number },
-  qualityScores: { engagementPotential: number; technicalQuality: number; replyQuality: number },
-  engagementMetrics: { likes: number; replies: number; followersOfRepliers: number; impressions: number; retweets: number }
-) => {
-  const gates = [gateScores.contentAlignment, gateScores.informationAccuracy, gateScores.campaignCompliance, gateScores.originality]
-  const minGate = Math.min(...gates)
-  const avgGate = gates.reduce((a, b) => a + b, 0) / gates.length
-  const gateSum = gates.reduce((a, b) => a + b, 0)
-  
-  let gateMultiplier: number
-  if (minGate === 0) {
-    gateMultiplier = 0.5
-  } else {
-    const gStar = avgGate / 2
-    gateMultiplier = 1 + 0.5 * (gStar * 2 - 1)
-  }
-  
-  const qualitySum = qualityScores.engagementPotential + qualityScores.technicalQuality + qualityScores.replyQuality
-  
-  const gateFactor = gateSum / 8
-  const qualityFactor = qualitySum / 15
-  
-  let atemporalPoints = gateFactor * qualityFactor * 2.5
-  if (gateMultiplier < 1) atemporalPoints *= gateMultiplier
-  atemporalPoints = Math.min(atemporalPoints, 2.43)
-  
-  const { likes, replies, followersOfRepliers, impressions, retweets } = engagementMetrics
-  const likesContrib = Math.log10(likes + 1) * 0.18
-  const repliesContrib = Math.log10(replies + 1) * 0.22
-  const retweetsContrib = Math.log10(retweets + 1) * 0.15
-  const impressionsContrib = Math.log10(impressions + 1) * 0.025
-  const followersContrib = Math.log10(followersOfRepliers + 1) * 0.41
-  const baseTemporal = 1.12
-  
-  let temporalPoints = baseTemporal + likesContrib + repliesContrib + retweetsContrib + impressionsContrib + followersContrib
-  const totalPoints = atemporalPoints + temporalPoints
-  
-  return {
-    gateMultiplier,
-    gateDetails: { ...gateScores, sum: gateSum, avg: avgGate },
-    qualityDetails: { ...qualityScores, sum: qualitySum, avg: qualitySum / 3 },
-    atemporalPoints: Math.round(atemporalPoints * 100) / 100,
-    temporalPoints: Math.round(temporalPoints * 100) / 100,
-    totalPoints: Math.round(totalPoints * 100) / 100,
-    grade: getGrade(totalPoints)
-  }
+// Format large numbers
+const formatNumber = (num: number): string => {
+  if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
+  if (num >= 1000) return `${(num / 1000).toFixed(1)}K`
+  return num.toString()
 }
 
-interface CampaignCriteria {
-  mission: string
-  rules: string
-  style: string
-  knowledgeBase: string
-}
-
-interface RallyMission {
-  id: string
-  campaignAddress: string
+// Analysis Card Component
+const AnalysisCard = ({ 
+  title, score, maxScore, analysis, icon: Icon 
+}: { 
   title: string
-  description: string
-  rules: string
-  active: boolean
-  participantsCount: number
+  score: number
+  maxScore: number
+  analysis: string
+  icon: React.ElementType
+}) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const percentage = (score / maxScore) * 100
+  const scoreColor = percentage >= 80 ? 'text-green-400' : percentage >= 50 ? 'text-yellow-400' : 'text-red-400'
+  
+  return (
+    <div className="bg-gray-800/50 rounded-lg border border-gray-700 overflow-hidden">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-3 py-2 flex items-center justify-between hover:bg-gray-700/30 transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <Icon className={`w-4 h-4 ${scoreColor}`} />
+          <span className="text-sm font-medium text-white">{title}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge className={`${scoreColor} bg-gray-700/50 text-xs`}>
+            {score.toFixed(1)}/{maxScore}
+          </Badge>
+          {isOpen ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+        </div>
+      </button>
+      {isOpen && (
+        <div className="px-3 pb-2">
+          <div className="flex items-center gap-2">
+            <div className="flex-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+              <div 
+                className={`h-full ${percentage >= 80 ? 'bg-green-500' : percentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                style={{ width: `${percentage}%` }}
+              />
+            </div>
+          </div>
+          <p className="text-xs text-gray-400 mt-2 leading-relaxed">{analysis}</p>
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default function RallyScoreAnalyzer() {
   const [activeTab, setActiveTab] = useState('campaigns')
   
   // Campaigns
-  const [campaigns, setCampaigns] = useState<any[]>([])
+  const [campaigns, setCampaigns] = useState<RallyCampaign[]>([])
   const [isLoadingCampaigns, setIsLoadingCampaigns] = useState(false)
-  const [selectedCampaign, setSelectedCampaign] = useState<any | null>(null)
-  const [content, setContent] = useState('')
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [selectedCampaign, setSelectedCampaign] = useState<RallyCampaign | null>(null)
   
-  // Campaign criteria
-  const [campaignCriteria, setCampaignCriteria] = useState<CampaignCriteria>({
-    mission: '',
-    rules: '',
-    style: '',
-    knowledgeBase: ''
-  })
-  const [showCampaignInput, setShowCampaignInput] = useState(false)
-  
-  // Campaign link & missions
-  const [campaignLink, setCampaignLink] = useState('')
+  // Missions
   const [missions, setMissions] = useState<RallyMission[]>([])
   const [selectedMission, setSelectedMission] = useState<RallyMission | null>(null)
-  const [isLoadingMissions, setIsLoadingMissions] = useState(false)
   
-  const [gateScores, setGateScores] = useState({
-    contentAlignment: 2, informationAccuracy: 2, campaignCompliance: 2, originality: 2
+  // Content & Analysis
+  const [content, setContent] = useState('')
+  const [campaignContext, setCampaignContext] = useState('')
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [analysisResult, setAnalysisResult] = useState<any>(null)
+  
+  // Engagement projection
+  const [engagement, setEngagement] = useState({
+    likes: 50, replies: 5, retweets: 3, impressions: 1000, followersOfRepliers: 5000
   })
   
-  const [qualityScores, setQualityScores] = useState({
-    engagementPotential: 4, technicalQuality: 4, replyQuality: 3
-  })
+  // Leaderboard
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
+  const [totalParticipants, setTotalParticipants] = useState(0)
+  const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false)
   
-  const [engagementMetrics, setEngagementMetrics] = useState({
-    likes: 50, replies: 5, followersOfRepliers: 5000, impressions: 1000, retweets: 5
-  })
-  
-  const [estimatedResult, setEstimatedResult] = useState<ReturnType<typeof calculateRallyScore> | null>(null)
-  const [realSubmissions, setRealSubmissions] = useState<RallySubmission[]>([])
-  const [isLoadingReal, setIsLoadingReal] = useState(false)
-  const [loadError, setLoadError] = useState<string | null>(null)
-  const [selectedSubmission, setSelectedSubmission] = useState<RallySubmission | null>(null)
-  
-  // Fetch missions
-  const fetchMissions = useCallback(async (campaignAddress?: string) => {
-    setIsLoadingMissions(true)
-    try {
-      const url = campaignAddress 
-        ? `/api/rally-missions?campaignAddress=${campaignAddress}`
-        : '/api/rally-missions'
-      const response = await fetch(url)
-      if (!response.ok) throw new Error('Failed to fetch missions')
-      const data = await response.json()
-      setMissions(data)
-      if (data.length > 0) {
-        toast.success(`${data.length} missions found!`)
-      } else {
-        toast.error('No missions found for this campaign')
-      }
-    } catch (error) {
-      console.error('Fetch missions error:', error)
-      toast.error('Failed to fetch missions')
-    } finally {
-      setIsLoadingMissions(false)
-    }
-  }, [])
-  
-  // Auto-fill from selected mission
-  const applyMission = useCallback((mission: RallyMission) => {
-    setSelectedMission(mission)
-    setCampaignCriteria({
-      mission: mission.description || mission.title,
-      rules: mission.rules || '',
-      style: '',
-      knowledgeBase: ''
-    })
-    toast.success(`Applied: ${mission.title}`)
-  }, [])
-  
-  // Extract campaign address from URL
-  const extractCampaignFromUrl = useCallback((url: string) => {
-    // Try to extract campaign address from URL patterns like:
-    // https://rally.fun/campaign/0xABC... or /campaign/0xABC...
-    const match = url.match(/campaign\/([^/\?]+)/i) || url.match(/campaignAddress=([^&]+)/i)
-    return match ? match[1] : null
-  }, [])
-  
-  // Handle campaign link input
-  const handleCampaignLink = useCallback(() => {
-    if (!campaignLink.trim()) {
-      // Fetch all missions if no link
-      fetchMissions()
-      return
-    }
-    
-    const campaignAddress = extractCampaignFromUrl(campaignLink)
-    if (campaignAddress) {
-      fetchMissions(campaignAddress)
-    } else {
-      // Try as direct address
-      fetchMissions(campaignLink)
-    }
-  }, [campaignLink, fetchMissions, extractCampaignFromUrl])
-  
-  useEffect(() => {
-    const result = calculateRallyScore(gateScores, qualityScores, engagementMetrics)
-    setEstimatedResult(result)
-  }, [gateScores, qualityScores, engagementMetrics])
-  
-  const fetchRealSubmissions = useCallback(async () => {
-    setIsLoadingReal(true)
-    setLoadError(null)
-    try {
-      // Use local proxy API to avoid CORS issues
-      const response = await fetch('/api/rally-submissions')
-      if (!response.ok) throw new Error('Failed to fetch')
-      const data = await response.json()
-      setRealSubmissions(data)
-      toast.success(`${data.length} submissions loaded!`)
-    } catch (error) {
-      console.error('Fetch error:', error)
-      setLoadError('Failed to load Rally data. Click retry.')
-      toast.error('Failed to load Rally data')
-    } finally {
-      setIsLoadingReal(false)
-    }
-  }, [])
-  
-  // Auto-fetch on mount
-  useEffect(() => {
-    if (realSubmissions.length === 0) {
-      fetchRealSubmissions()
-    }
-    if (campaigns.length === 0) {
-      fetchCampaigns()
-    }
-  }, [])
-  
-  // Fetch campaigns
+  // Fetch Campaigns
   const fetchCampaigns = useCallback(async () => {
     setIsLoadingCampaigns(true)
     try {
@@ -272,36 +184,71 @@ export default function RallyScoreAnalyzer() {
       if (!response.ok) throw new Error('Failed to fetch campaigns')
       const data = await response.json()
       setCampaigns(data)
-      toast.success(`${data.length} campaigns loaded!`)
+      toast.success(`${data.length} campaigns loaded from Rally.fun!`)
     } catch (error) {
       console.error('Fetch campaigns error:', error)
-      toast.error('Failed to fetch campaigns')
+      toast.error('Failed to fetch campaigns from Rally')
     } finally {
       setIsLoadingCampaigns(false)
     }
   }, [])
   
-  // Select campaign and load missions
-  const selectCampaign = useCallback(async (campaign: any) => {
+  // Select Campaign
+  const selectCampaign = useCallback(async (campaign: RallyCampaign) => {
     setSelectedCampaign(campaign)
-    // Fetch missions for this campaign
-    const address = campaign.intelligentContractAddress
-    if (address) {
+    setAnalysisResult(null)
+    
+    if (campaign.intelligentContractAddress) {
       try {
-        const response = await fetch(`/api/rally-missions?campaignAddress=${address}`)
+        const response = await fetch(`/api/rally-campaigns?address=${campaign.intelligentContractAddress}`)
         if (response.ok) {
-          const data = await response.json()
-          setMissions(data)
-          if (data.length > 0) {
-            toast.success(`${data.length} missions available!`)
+          const fullCampaign = await response.json()
+          setSelectedCampaign(fullCampaign)
+          
+          const missionList = fullCampaign.missions || []
+          setMissions(missionList)
+          
+          if (missionList.length > 0) {
+            setSelectedMission(missionList[0])
+            setCampaignContext([
+              fullCampaign.brief ? `Brief: ${fullCampaign.brief}` : '',
+              missionList[0].description ? `Mission: ${missionList[0].description}` : '',
+              missionList[0].rules ? `Rules: ${missionList[0].rules}` : ''
+            ].filter(Boolean).join('\n\n'))
           }
+          toast.success('Campaign loaded!')
         }
       } catch (error) {
-        console.error('Error fetching missions:', error)
+        console.error('Error loading campaign:', error)
       }
     }
+    setActiveTab('analyze')
   }, [])
   
+  // Fetch Leaderboard
+  const fetchLeaderboard = useCallback(async () => {
+    setIsLoadingLeaderboard(true)
+    try {
+      const campaignAddress = selectedCampaign?.intelligentContractAddress || ''
+      const url = campaignAddress 
+        ? `/api/rally-leaderboard?campaignAddress=${campaignAddress}&limit=100`
+        : '/api/rally-leaderboard?limit=100'
+      
+      const response = await fetch(url)
+      if (!response.ok) throw new Error('Failed to fetch leaderboard')
+      const data = await response.json()
+      setLeaderboard(data.leaderboard || [])
+      setTotalParticipants(data.total || 0)
+      toast.success(`Leaderboard loaded! (${data.total || 0} participants)`)
+    } catch (error) {
+      console.error('Fetch leaderboard error:', error)
+      toast.error('Failed to fetch leaderboard')
+    } finally {
+      setIsLoadingLeaderboard(false)
+    }
+  }, [selectedCampaign])
+  
+  // Analyze Content
   const analyzeContent = useCallback(async () => {
     if (!content.trim()) {
       toast.error('Masukkan konten untuk dianalisis')
@@ -309,69 +256,67 @@ export default function RallyScoreAnalyzer() {
     }
     setIsAnalyzing(true)
     try {
-      // Build campaign context from criteria
-      const campaignContext = [
-        campaignCriteria.mission ? `Mission: ${campaignCriteria.mission}` : '',
-        campaignCriteria.rules ? `Rules: ${campaignCriteria.rules}` : '',
-        campaignCriteria.style ? `Style: ${campaignCriteria.style}` : '',
-        campaignCriteria.knowledgeBase ? `Knowledge Base: ${campaignCriteria.knowledgeBase}` : ''
-      ].filter(Boolean).join('. ')
-      
       const response = await fetch('/api/analyze-content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           content: content.trim(), 
-          campaignContext: campaignContext || undefined 
+          campaignContext: campaignContext || undefined,
+          engagement: engagement
         })
       })
       const data = await response.json()
       if (!response.ok || !data.success) throw new Error(data.error || 'Analisis gagal')
       
-      setGateScores({
-        contentAlignment: data.analysis.gates.contentAlignment.score,
-        informationAccuracy: data.analysis.gates.informationAccuracy.score,
-        campaignCompliance: data.analysis.gates.campaignCompliance.score,
-        originality: data.analysis.gates.originality.score
+      const gates = data.analysis.gates
+      const quality = data.analysis.quality
+      
+      // Calculate scores using Rally's formula
+      const gateSum = gates.contentAlignment.score + gates.informationAccuracy.score +
+                      gates.campaignCompliance.score + gates.originality.score
+      const qualitySum = quality.engagementPotential.score + quality.technicalQuality.score + quality.replyQuality.score
+      
+      // Atemporal formula (calibrated from Rally data)
+      let atemporalPoints = (gateSum / 8) * (qualitySum / 15) * 2.5
+      const minGate = Math.min(gates.contentAlignment.score, gates.informationAccuracy.score, 
+                               gates.campaignCompliance.score, gates.originality.score)
+      if (minGate === 0) atemporalPoints *= 0.5
+      atemporalPoints = Math.min(atemporalPoints, 2.43)
+      
+      // Temporal formula (calibrated from Rally data)
+      const likesContrib = Math.log10(engagement.likes + 1) * 0.18
+      const repliesContrib = Math.log10(engagement.replies + 1) * 0.22
+      const retweetsContrib = Math.log10(engagement.retweets + 1) * 0.15
+      const impressionsContrib = Math.log10(engagement.impressions + 1) * 0.025
+      const followersContrib = Math.log10(engagement.followersOfRepliers + 1) * 0.41
+      const baseTemporal = 1.12
+      
+      let temporalPoints = baseTemporal + likesContrib + repliesContrib + retweetsContrib + impressionsContrib + followersContrib
+      const totalPoints = atemporalPoints + temporalPoints
+      const grade = getGrade(totalPoints)
+      
+      setAnalysisResult({
+        gates, quality, engagement,
+        atemporalPoints: Math.round(atemporalPoints * 100) / 100,
+        temporalPoints: Math.round(temporalPoints * 100) / 100,
+        totalPoints: Math.round(totalPoints * 100) / 100,
+        grade,
+        analysisMethod: data.analysis.metadata?.analysisMethod || 'llm-enhanced'
       })
-      setQualityScores({
-        engagementPotential: data.analysis.quality.engagementPotential.score,
-        technicalQuality: data.analysis.quality.technicalQuality.score,
-        replyQuality: 3
-      })
-      toast.success('Analisis AI selesai!')
+      
+      toast.success('Analysis complete!')
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Analisis gagal')
+      toast.error(error instanceof Error ? error.message : 'Analysis failed')
     } finally {
       setIsAnalyzing(false)
     }
-  }, [content, campaignCriteria])
+  }, [content, campaignContext, engagement])
   
-  const loadSubmissionData = useCallback((sub: RallySubmission) => {
-    const getScore = (category: string) => {
-      const a = sub.analysis.find(x => x.category === category)
-      return a ? attoToDecimal(a.atto_score) : 0
-    }
-    setGateScores({
-      contentAlignment: getScore('Content Alignment'),
-      informationAccuracy: getScore('Information Accuracy'),
-      campaignCompliance: getScore('Campaign Compliance'),
-      originality: getScore('Originality and Authenticity')
-    })
-    setQualityScores({
-      engagementPotential: getScore('Engagement Potential'),
-      technicalQuality: getScore('Technical Quality'),
-      replyQuality: getScore('Reply Quality')
-    })
-    setEngagementMetrics({
-      likes: getScore('Likes'), replies: getScore('Replies'), retweets: getScore('Retweets'),
-      impressions: getScore('Impressions'), followersOfRepliers: getScore('Followers of Repliers')
-    })
-    setSelectedSubmission(sub)
-    setActiveTab('estimator')
-    toast.success('Data submission dimuat!')
+  // Auto-fetch campaigns on mount
+  useEffect(() => {
+    if (campaigns.length === 0) fetchCampaigns()
   }, [])
-
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 text-white p-4 md:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -385,89 +330,16 @@ export default function RallyScoreAnalyzer() {
               <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
                 Rally Score Analyzer
               </h1>
-              <p className="text-gray-400 text-sm">Calibrated with Real Rally.fun API Data</p>
+              <p className="text-gray-400 text-sm flex items-center gap-2">
+                Connected to Rally.fun API
+                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              </p>
             </div>
           </div>
-          
-          <Button
-            onClick={() => window.open('/rally-complete-guide.pdf', '_blank')}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white text-sm font-medium rounded-lg transition-all shadow-lg shadow-amber-500/20"
-          >
-            <FileText className="w-4 h-4" />
-            Open PDF Guide
-          </Button>
+          <Badge className="bg-green-500/20 text-green-400 border-green-500/50 flex items-center gap-1">
+            <Globe className="w-3 h-3" /> LIVE DATA
+          </Badge>
         </div>
-
-        {/* Formula Info */}
-        <Card className="bg-blue-500/10 border-blue-500/30">
-          <CardContent className="py-3 px-4">
-            <div className="flex items-start gap-3">
-              <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-blue-200">
-                <strong>Formula:</strong> Total = Atemporal (gate×quality×2.5) + Temporal (base + log engagement)
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Campaign Link Input */}
-        <Card className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/30">
-          <CardContent className="py-3 px-4">
-            <div className="flex flex-col md:flex-row gap-3 items-end">
-              <div className="flex-1">
-                <Label className="text-gray-300 text-xs mb-1 block flex items-center gap-1">
-                  <Flag className="w-3 h-3" /> Campaign Link (opsional - auto-fill criteria)
-                </Label>
-                <div className="flex gap-2">
-                  <Input
-                    value={campaignLink}
-                    onChange={(e) => setCampaignLink(e.target.value)}
-                    placeholder="https://rally.fun/campaign/0x... atau campaign address"
-                    className="bg-gray-800/50 border-gray-600 text-white h-9"
-                    onKeyDown={(e) => e.key === 'Enter' && handleCampaignLink()}
-                  />
-                  <Button
-                    onClick={handleCampaignLink}
-                    disabled={isLoadingMissions}
-                    className="bg-purple-600 hover:bg-purple-700 h-9"
-                  >
-                    {isLoadingMissions ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Fetch'}
-                  </Button>
-                </div>
-              </div>
-              
-              {/* Mission Selector */}
-              {missions.length > 0 && (
-                <div className="md:w-64">
-                  <Label className="text-gray-300 text-xs mb-1 block">Select Mission</Label>
-                  <Select value={selectedMission?.id || ''} onValueChange={(v) => {
-                    const m = missions.find(m => m.id === v)
-                    if (m) applyMission(m)
-                  }}>
-                    <SelectTrigger className="bg-gray-800/50 border-gray-600 text-white h-9">
-                      <SelectValue placeholder={`${missions.length} missions`} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {missions.map((m) => (
-                        <SelectItem key={m.id} value={m.id}>
-                          {m.title} ({m.participantsCount} participants)
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-            </div>
-            
-            {/* Applied Mission Info */}
-            {selectedMission && (
-              <div className="mt-2 p-2 bg-gray-800/30 rounded text-xs">
-                <p className="text-gray-400"><strong>Mission:</strong> {selectedMission.description}</p>
-                {selectedMission.rules && <p className="text-gray-500"><strong>Rules:</strong> {selectedMission.rules}</p>}
-              </div>
-            )}
-          </CardContent>
-        </Card>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
@@ -475,17 +347,16 @@ export default function RallyScoreAnalyzer() {
             <TabsTrigger value="campaigns" className="data-[state=active]:bg-amber-600 data-[state=active]:text-white">
               <FolderKanban className="w-4 h-4 mr-2" /> Campaigns
             </TabsTrigger>
-            <TabsTrigger value="estimator" className="data-[state=active]:bg-amber-600 data-[state=active]:text-white">
-              <Calculator className="w-4 h-4 mr-2" /> Score Estimator
+            <TabsTrigger value="analyze" className="data-[state=active]:bg-amber-600 data-[state=active]:text-white">
+              <Send className="w-4 h-4 mr-2" /> Analyze
             </TabsTrigger>
-            <TabsTrigger value="data" className="data-[state=active]:bg-amber-600 data-[state=active]:text-white">
-              <Trophy className="w-4 h-4 mr-2" /> Live Rally Data
+            <TabsTrigger value="leaderboard" className="data-[state=active]:bg-amber-600 data-[state=active]:text-white">
+              <Trophy className="w-4 h-4 mr-2" /> Leaderboard
             </TabsTrigger>
           </TabsList>
 
           {/* Campaigns Tab */}
           <TabsContent value="campaigns" className="space-y-4">
-            {/* Campaign Header */}
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-white">Active Rally Campaigns</h2>
               <Button onClick={fetchCampaigns} disabled={isLoadingCampaigns} variant="outline" className="border-gray-600 text-gray-300">
@@ -493,80 +364,113 @@ export default function RallyScoreAnalyzer() {
               </Button>
             </div>
             
-            {/* Loading */}
             {isLoadingCampaigns && campaigns.length === 0 && (
               <Card className="bg-gray-800/50 border-gray-700">
                 <CardContent className="py-12 flex flex-col items-center gap-3">
                   <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
-                  <p className="text-gray-400">Loading active campaigns...</p>
+                  <p className="text-gray-400">Loading campaigns from Rally.fun...</p>
                 </CardContent>
               </Card>
             )}
             
-            {/* Campaign Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {campaigns.map((campaign) => (
                 <Card 
                   key={campaign.id}
-                  onClick={() => {
-                    selectCampaign(campaign)
-                    setActiveTab('estimator')
-                  }}
-                  className={`cursor-pointer transition-all hover:scale-[1.02] ${
+                  onClick={() => selectCampaign(campaign)}
+                  className={`cursor-pointer transition-all hover:scale-[1.02] overflow-hidden ${
                     selectedCampaign?.id === campaign.id 
                       ? 'bg-amber-600/20 border-amber-500' 
                       : 'bg-gray-800/50 border-gray-700 hover:border-gray-500'
                   }`}
                 >
+                  {/* Header Image */}
+                  {campaign.headerImageUrl && (
+                    <div className="h-24 w-full overflow-hidden">
+                      <img src={campaign.headerImageUrl} alt="" className="w-full h-full object-cover opacity-60" />
+                    </div>
+                  )}
+                  
                   <CardHeader className="pb-2">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-base text-white">{campaign.title}</CardTitle>
-                        <p className="text-xs text-gray-500 mt-1">by {campaign.creator || 'Unknown'}</p>
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-base text-white truncate">{campaign.title}</CardTitle>
+                        <div className="flex items-center gap-2 mt-1">
+                          {campaign.creatorAvatar && (
+                            <img src={campaign.creatorAvatar} alt="" className="w-5 h-5 rounded-full" />
+                          )}
+                          <p className="text-xs text-gray-500 truncate">
+                            by {campaign.creator}
+                            {campaign.creatorVerified && <Verified className="w-3 h-3 inline ml-1 text-blue-400" />}
+                          </p>
+                        </div>
                       </div>
-                      <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/50">
-                        {campaign.token || 'TOKEN'}
-                      </Badge>
+                      <div className="flex items-center gap-1">
+                        {campaign.tokenLogo && (
+                          <img src={campaign.tokenLogo} alt="" className="w-5 h-5 rounded-full" />
+                        )}
+                        <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/50 text-xs">
+                          {campaign.token}
+                        </Badge>
+                      </div>
                     </div>
                   </CardHeader>
+                  
                   <CardContent className="space-y-3">
-                    {/* Stats */}
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="bg-gray-700/30 p-2 rounded flex items-center gap-2">
-                        <FolderKanban className="w-4 h-4 text-blue-400" />
-                        <div>
-                          <p className="text-gray-400">Missions</p>
-                          <p className="text-white font-bold">{campaign.missionCount || 0}</p>
-                        </div>
+                    {/* Brief */}
+                    {campaign.brief && (
+                      <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">{campaign.brief}</p>
+                    )}
+                    
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-3 gap-2 text-xs">
+                      <div className="bg-gray-700/30 p-2 rounded flex flex-col items-center">
+                        <FolderKanban className="w-4 h-4 text-blue-400 mb-1" />
+                        <p className="text-gray-400">Missions</p>
+                        <p className="text-white font-bold text-sm">{campaign.missionCount || 0}</p>
                       </div>
-                      <div className="bg-gray-700/30 p-2 rounded flex items-center gap-2">
-                        <Users className="w-4 h-4 text-green-400" />
-                        <div>
-                          <p className="text-gray-400">Followers</p>
-                          <p className="text-white font-bold">{campaign.minimumFollowers || 0}-{campaign.maximumFollowers?.toLocaleString() || '∞'}</p>
-                        </div>
+                      <div className="bg-gray-700/30 p-2 rounded flex flex-col items-center">
+                        <Users className="w-4 h-4 text-green-400 mb-1" />
+                        <p className="text-gray-400">Members</p>
+                        <p className="text-white font-bold text-sm">{formatNumber(campaign.participantCount || 0)}</p>
+                      </div>
+                      <div className="bg-gray-700/30 p-2 rounded flex flex-col items-center">
+                        <DollarSign className="w-4 h-4 text-amber-400 mb-1" />
+                        <p className="text-gray-400">Rewards</p>
+                        <p className="text-white font-bold text-sm">{formatNumber(campaign.totalReward || 0)}</p>
                       </div>
                     </div>
                     
-                    {/* Duration */}
-                    <div className="flex items-center gap-2 text-xs text-gray-400">
-                      <Calendar className="w-3 h-3" />
-                      <span>
-                        {new Date(campaign.startDate).toLocaleDateString()} - {new Date(campaign.endDate).toLocaleDateString()}
-                      </span>
+                    {/* Chain & Requirements */}
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-xs border-gray-600 text-gray-400 flex items-center gap-1">
+                          {campaign.chainId === 8453 ? '🔵 Base' : campaign.chainId === 84532 ? '🔷 Base Sepolia' : `Chain ${campaign.chainId}`}
+                        </Badge>
+                        {campaign.onlyVerifiedUsers && (
+                          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/50 text-xs">
+                            <Verified className="w-3 h-3 mr-1" /> Verified Only
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1 text-gray-400">
+                        <Calendar className="w-3 h-3" />
+                        <span>Ends: {new Date(campaign.endDate).toLocaleDateString()}</span>
+                      </div>
                     </div>
                     
-                    {/* Duration Periods */}
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Clock className="w-3 h-3" />
-                      <span>{campaign.campaignDurationPeriods} periods × {campaign.periodLengthDays} days each</span>
-                    </div>
+                    {/* Follower Requirements */}
+                    {campaign.minimumFollowers > 0 && (
+                      <div className="flex items-center gap-1 text-xs text-amber-400">
+                        <AlertCircle className="w-3 h-3" />
+                        <span>Min {formatNumber(campaign.minimumFollowers)} followers required</span>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))}
             </div>
             
-            {/* Empty State */}
             {!isLoadingCampaigns && campaigns.length === 0 && (
               <Card className="bg-gray-800/50 border-gray-700">
                 <CardContent className="py-12 flex flex-col items-center gap-3">
@@ -580,168 +484,117 @@ export default function RallyScoreAnalyzer() {
             )}
           </TabsContent>
 
-          {/* Estimator Tab */}
-          <TabsContent value="estimator" className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Left Column */}
+          {/* Analyze Tab */}
+          <TabsContent value="analyze" className="space-y-4">
+            {selectedCampaign && (
+              <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/30">
+                <CardContent className="py-3 px-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      {selectedCampaign.creatorAvatar && (
+                        <img src={selectedCampaign.creatorAvatar} alt="" className="w-10 h-10 rounded-full" />
+                      )}
+                      <div>
+                        <p className="text-xs text-gray-400">Selected Campaign</p>
+                        <p className="text-white font-bold">{selectedCampaign.title}</p>
+                        <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
+                          <span>{formatNumber(selectedCampaign.participantCount)} members</span>
+                          <span>•</span>
+                          <span>{selectedCampaign.missionCount} missions</span>
+                          {selectedCampaign.totalReward > 0 && (
+                            <>
+                              <span>•</span>
+                              <span className="text-amber-400">{formatNumber(selectedCampaign.totalReward)} {selectedCampaign.token} rewards</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => window.open(`https://rally.fun/campaign/${selectedCampaign.intelligentContractAddress}`, '_blank')}
+                        className="border-amber-600 text-amber-400 hover:bg-amber-600/20"
+                      >
+                        <ExternalLink className="w-4 h-4 mr-1" /> Open in Rally
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => setActiveTab('campaigns')} className="border-gray-600 text-gray-300">
+                        Change
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+            
+            {/* Campaign Details */}
+            {selectedCampaign && selectedCampaign.brief && (
+              <Card className="bg-gray-800/50 border-gray-700">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Info className="w-4 h-4 text-blue-400" /> Campaign Brief
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-gray-300">
+                  <p>{selectedCampaign.brief}</p>
+                  {selectedCampaign.organizationWebsite && (
+                    <a 
+                      href={selectedCampaign.organizationWebsite} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 mt-2 text-xs text-amber-400 hover:text-amber-300"
+                    >
+                      <Globe className="w-3 h-3" /> {selectedCampaign.organizationWebsite}
+                    </a>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+            
+            {selectedMission && (
+              <Card className="bg-gray-800/50 border-gray-700">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-amber-400" /> Mission Briefing
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-gray-300 space-y-2">
+                  <p><strong>Title:</strong> {selectedMission.title}</p>
+                  {selectedMission.description && <p><strong>Description:</strong> {selectedMission.description}</p>}
+                  {selectedMission.rules && <p><strong>Rules:</strong> {selectedMission.rules}</p>}
+                </CardContent>
+              </Card>
+            )}
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Input */}
               <div className="space-y-4">
-                {/* Content Input */}
-                <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+                <Card className="bg-gray-800/50 border-gray-700">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-amber-400" /> Konten
+                      <FileText className="w-4 h-4 text-amber-400" /> Content to Analyze
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <Textarea
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
-                      placeholder="Paste konten tweet di sini..."
-                      className="bg-gray-700/50 border-gray-600 text-white min-h-[100px] resize-none"
+                      placeholder="Paste your tweet/content here..."
+                      className="bg-gray-700/50 border-gray-600 text-white min-h-[120px] resize-none"
                     />
-                    {/* Campaign Criteria Input */}
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowCampaignInput(!showCampaignInput)}
-                      className="w-full border-gray-600 text-gray-300 mb-2"
-                    >
-                      <Settings2 className="w-4 h-4 mr-2" />
-                      {showCampaignInput ? 'Sembunyikan' : 'Set'} Campaign Criteria
-                    </Button>
-                    
-                    {showCampaignInput && (
-                      <div className="space-y-2 p-3 bg-gray-700/30 rounded-lg border border-gray-600">
-                        <div>
-                          <Label className="text-gray-400 text-xs flex items-center gap-1">
-                            <Flag className="w-3 h-3" /> Mission
-                          </Label>
-                          <Input
-                            value={campaignCriteria.mission}
-                            onChange={(e) => setCampaignCriteria(prev => ({ ...prev, mission: e.target.value }))}
-                            placeholder="Contoh: Post about AI technology"
-                            className="bg-gray-700/50 border-gray-600 text-white h-8 text-sm"
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-gray-400 text-xs flex items-center gap-1">
-                            <Info className="w-3 h-3" /> Rules
-                          </Label>
-                          <Input
-                            value={campaignCriteria.rules}
-                            onChange={(e) => setCampaignCriteria(prev => ({ ...prev, rules: e.target.value }))}
-                            placeholder="Contoh: Must include #AI hashtag"
-                            className="bg-gray-700/50 border-gray-600 text-white h-8 text-sm"
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-gray-400 text-xs flex items-center gap-1">
-                            <Zap className="w-3 h-3" /> Style
-                          </Label>
-                          <Input
-                            value={campaignCriteria.style}
-                            onChange={(e) => setCampaignCriteria(prev => ({ ...prev, style: e.target.value }))}
-                            placeholder="Contoh: Professional, Educational"
-                            className="bg-gray-700/50 border-gray-600 text-white h-8 text-sm"
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-gray-400 text-xs flex items-center gap-1">
-                            <BookOpen className="w-3 h-3" /> Knowledge Base
-                          </Label>
-                          <Input
-                            value={campaignCriteria.knowledgeBase}
-                            onChange={(e) => setCampaignCriteria(prev => ({ ...prev, knowledgeBase: e.target.value }))}
-                            placeholder="Contoh: AI, Web3, Blockchain"
-                            className="bg-gray-700/50 border-gray-600 text-white h-8 text-sm"
-                          />
-                        </div>
-                      </div>
-                    )}
                     <Button
                       onClick={analyzeContent}
                       disabled={isAnalyzing || !content.trim()}
                       className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 disabled:opacity-50"
                     >
-                      {isAnalyzing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Menganalisis...</> : <><Sparkles className="w-4 h-4 mr-2" /> Analisis AI</>}
+                      {isAnalyzing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Analyzing...</> : <><Sparkles className="w-4 h-4 mr-2" /> Analyze with AI</>}
                     </Button>
                   </CardContent>
                 </Card>
 
-                {/* Gate Scores */}
-                <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Target className="w-4 h-4 text-cyan-400" /> Gate Scores (0-2)
-                    </CardTitle>
-                    <CardDescription className="text-gray-400 text-xs">Min gate = 0 → 0.5x penalty</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {[
-                      { key: 'contentAlignment', label: 'Content Alignment' },
-                      { key: 'informationAccuracy', label: 'Info Accuracy' },
-                      { key: 'campaignCompliance', label: 'Compliance' },
-                      { key: 'originality', label: 'Originality' }
-                    ].map((gate) => (
-                      <div key={gate.key}>
-                        <Label className="text-gray-400 text-xs mb-1 block">{gate.label}</Label>
-                        <div className="flex gap-1">
-                          {[0, 1, 2].map((score) => (
-                            <button
-                              key={score}
-                              onClick={() => setGateScores(prev => ({ ...prev, [gate.key]: score }))}
-                              className={`flex-1 py-2 rounded text-sm font-medium transition-all ${
-                                gateScores[gate.key as keyof typeof gateScores] === score
-                                  ? score === 0 ? 'bg-red-500 text-white' : score === 1 ? 'bg-yellow-500 text-black' : 'bg-green-500 text-white'
-                                  : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
-                              }`}
-                            >
-                              {score}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-
-                {/* Quality Scores */}
-                <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Star className="w-4 h-4 text-purple-400" /> Quality Scores (0-5)
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {[
-                      { key: 'engagementPotential', label: 'Engagement Potential' },
-                      { key: 'technicalQuality', label: 'Technical Quality' },
-                      { key: 'replyQuality', label: 'Reply Quality' }
-                    ].map((metric) => (
-                      <div key={metric.key}>
-                        <Label className="text-gray-400 text-xs mb-1 block">{metric.label}</Label>
-                        <Select
-                          value={qualityScores[metric.key as keyof typeof qualityScores].toString()}
-                          onValueChange={(v) => setQualityScores(prev => ({ ...prev, [metric.key]: parseInt(v) }))}
-                        >
-                          <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white h-9">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {[0, 1, 2, 3, 4, 5].map((s) => (
-                              <SelectItem key={s} value={s.toString()}>{s}/5</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Middle Column */}
-              <div className="space-y-4">
-                {/* Engagement */}
-                <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+                {/* Engagement Projection */}
+                <Card className="bg-gray-800/50 border-gray-700">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
                       <Zap className="w-4 h-4 text-green-400" /> Engagement Projection
@@ -750,323 +603,231 @@ export default function RallyScoreAnalyzer() {
                   <CardContent className="space-y-3">
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <Label className="text-gray-400 text-xs">Likes</Label>
-                        <Input type="number" min={0} value={engagementMetrics.likes}
-                          onChange={(e) => setEngagementMetrics(prev => ({ ...prev, likes: parseInt(e.target.value) || 0 }))}
+                        <label className="text-gray-400 text-xs">Likes</label>
+                        <Input type="number" min={0} value={engagement.likes}
+                          onChange={(e) => setEngagement(prev => ({ ...prev, likes: parseInt(e.target.value) || 0 }))}
                           className="bg-gray-700/50 border-gray-600 text-white h-9" />
                       </div>
                       <div>
-                        <Label className="text-gray-400 text-xs">Replies</Label>
-                        <Input type="number" min={0} value={engagementMetrics.replies}
-                          onChange={(e) => setEngagementMetrics(prev => ({ ...prev, replies: parseInt(e.target.value) || 0 }))}
+                        <label className="text-gray-400 text-xs">Replies</label>
+                        <Input type="number" min={0} value={engagement.replies}
+                          onChange={(e) => setEngagement(prev => ({ ...prev, replies: parseInt(e.target.value) || 0 }))}
                           className="bg-gray-700/50 border-gray-600 text-white h-9" />
                       </div>
                       <div>
-                        <Label className="text-gray-400 text-xs">Retweets</Label>
-                        <Input type="number" min={0} value={engagementMetrics.retweets}
-                          onChange={(e) => setEngagementMetrics(prev => ({ ...prev, retweets: parseInt(e.target.value) || 0 }))}
+                        <label className="text-gray-400 text-xs">Retweets</label>
+                        <Input type="number" min={0} value={engagement.retweets}
+                          onChange={(e) => setEngagement(prev => ({ ...prev, retweets: parseInt(e.target.value) || 0 }))}
                           className="bg-gray-700/50 border-gray-600 text-white h-9" />
                       </div>
                       <div>
-                        <Label className="text-gray-400 text-xs">Impressions</Label>
-                        <Input type="number" min={0} value={engagementMetrics.impressions}
-                          onChange={(e) => setEngagementMetrics(prev => ({ ...prev, impressions: parseInt(e.target.value) || 0 }))}
+                        <label className="text-gray-400 text-xs">Impressions</label>
+                        <Input type="number" min={0} value={engagement.impressions}
+                          onChange={(e) => setEngagement(prev => ({ ...prev, impressions: parseInt(e.target.value) || 0 }))}
                           className="bg-gray-700/50 border-gray-600 text-white h-9" />
                       </div>
                     </div>
                     <div>
-                      <Label className="text-gray-400 text-xs">Followers of Repliers</Label>
-                      <Input type="number" min={0} value={engagementMetrics.followersOfRepliers}
-                        onChange={(e) => setEngagementMetrics(prev => ({ ...prev, followersOfRepliers: parseInt(e.target.value) || 0 }))}
+                      <label className="text-gray-400 text-xs">Followers of Repliers (main driver)</label>
+                      <Input type="number" min={0} value={engagement.followersOfRepliers}
+                        onChange={(e) => setEngagement(prev => ({ ...prev, followersOfRepliers: parseInt(e.target.value) || 0 }))}
                         className="bg-gray-700/50 border-gray-600 text-white h-9" />
-                      <p className="text-xs text-gray-500 mt-1">Main driver untuk temporal points</p>
                     </div>
                   </CardContent>
                 </Card>
-
-                {/* Estimated Score */}
-                {estimatedResult && (
-                  <Card className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 border-gray-700 backdrop-blur overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <Award className="w-4 h-4 text-amber-400" /> Estimasi Skor
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-center py-4">
-                        <div className={`text-5xl font-bold ${estimatedResult.grade.color} mb-2`}>
-                          {estimatedResult.totalPoints.toFixed(2)}
-                        </div>
-                        <div className="flex items-center justify-center gap-3">
-                          <Badge className={`${estimatedResult.grade.color} bg-gray-700/50 text-lg px-3 py-1`}>
-                            {estimatedResult.grade.grade}
-                          </Badge>
-                          <span className="text-gray-400 text-sm">{estimatedResult.grade.label}</span>
-                        </div>
-                      </div>
-                      
-                      <Separator className="bg-gray-700 my-4" />
-                      
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Gate Multiplier</span>
-                          <span className={`font-bold ${estimatedResult.gateMultiplier === 0.5 ? 'text-red-400' : estimatedResult.gateMultiplier >= 1.4 ? 'text-green-400' : 'text-white'}`}>
-                            {estimatedResult.gateMultiplier.toFixed(2)}x
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Atemporal Points</span>
-                          <span className="font-bold text-cyan-400">{estimatedResult.atemporalPoints.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Temporal Points</span>
-                          <span className="font-bold text-green-400">{estimatedResult.temporalPoints.toFixed(2)}</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Formula */}
-                {estimatedResult && (
-                  <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <BarChart3 className="w-4 h-4 text-blue-400" /> Formula Breakdown
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3 text-xs">
-                      <div className="p-2 bg-gray-700/30 rounded">
-                        <p className="text-gray-400 mb-1">Atemporal = gate_factor × quality_factor × 2.5</p>
-                        <p className="text-cyan-400">
-                          {(estimatedResult.gateDetails.sum/8).toFixed(2)} × {(estimatedResult.qualityDetails.sum/15).toFixed(2)} × 2.5 = {estimatedResult.atemporalPoints.toFixed(2)}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
               </div>
 
-              {/* Right Column */}
+              {/* Results */}
               <div className="space-y-4">
-                {estimatedResult && (
+                {analysisResult ? (
                   <>
-                    {/* Gate Details */}
-                    <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-sm flex items-center gap-2">
-                          <Target className="w-4 h-4 text-cyan-400" /> Gate Details
+                    {/* Score Card */}
+                    <Card className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 border-gray-700 overflow-hidden">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <Award className="w-4 h-4 text-amber-400" /> Estimated Score
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="space-y-2 text-xs">
-                          {Object.entries(estimatedResult.gateDetails).filter(([k]) => !['sum', 'avg'].includes(k)).map(([key, value]) => (
-                            <div key={key} className="flex justify-between">
-                              <span className="text-gray-400 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                              <span className={`${value === 2 ? 'text-green-400' : value === 1 ? 'text-yellow-400' : 'text-red-400'}`}>
-                                {value}/2
-                              </span>
-                            </div>
-                          ))}
-                          <Separator className="bg-gray-700 my-2" />
-                          <div className="flex justify-between font-bold">
-                            <span className="text-gray-300">Sum</span>
-                            <span className="text-white">{estimatedResult.gateDetails.sum}/8</span>
+                        <div className="text-center py-4">
+                          <div className={`text-5xl font-bold ${analysisResult.grade.color} mb-2`}>
+                            {analysisResult.totalPoints.toFixed(2)}
+                          </div>
+                          <div className="flex items-center justify-center gap-3">
+                            <Badge className={`${analysisResult.grade.color} bg-gray-700/50 text-lg px-3 py-1`}>
+                              {analysisResult.grade.grade}
+                            </Badge>
+                            <span className="text-gray-400 text-sm">{analysisResult.grade.label}</span>
+                          </div>
+                        </div>
+                        
+                        <Separator className="bg-gray-700 my-4" />
+                        
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Atemporal Points</span>
+                            <span className="font-bold text-cyan-400">{analysisResult.atemporalPoints.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Temporal Points</span>
+                            <span className="font-bold text-green-400">{analysisResult.temporalPoints.toFixed(2)}</span>
                           </div>
                         </div>
                       </CardContent>
                     </Card>
 
-                    {/* Quality Details */}
-                    <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+                    {/* Gate Scores */}
+                    <Card className="bg-gray-800/50 border-gray-700">
                       <CardHeader className="pb-3">
                         <CardTitle className="text-sm flex items-center gap-2">
-                          <Star className="w-4 h-4 text-purple-400" /> Quality Details
+                          <Target className="w-4 h-4 text-cyan-400" /> Gate Scores (0-2)
                         </CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2 text-xs">
-                          {Object.entries(estimatedResult.qualityDetails).filter(([k]) => !['sum', 'avg'].includes(k)).map(([key, value]) => (
-                            <div key={key} className="flex justify-between">
-                              <span className="text-gray-400 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                              <span className={value >= 4 ? 'text-green-400' : value >= 3 ? 'text-yellow-400' : 'text-red-400'}>
-                                {value}/5
-                              </span>
-                            </div>
-                          ))}
-                          <Separator className="bg-gray-700 my-2" />
-                          <div className="flex justify-between font-bold">
-                            <span className="text-gray-300">Sum</span>
-                            <span className="text-white">{estimatedResult.qualityDetails.sum}/15</span>
-                          </div>
-                        </div>
+                      <CardContent className="space-y-2">
+                        <AnalysisCard title="Content Alignment" score={analysisResult.gates.contentAlignment.score} maxScore={2} analysis={analysisResult.gates.contentAlignment.reason} icon={Check} />
+                        <AnalysisCard title="Information Accuracy" score={analysisResult.gates.informationAccuracy.score} maxScore={2} analysis={analysisResult.gates.informationAccuracy.reason} icon={Info} />
+                        <AnalysisCard title="Campaign Compliance" score={analysisResult.gates.campaignCompliance.score} maxScore={2} analysis={analysisResult.gates.campaignCompliance.reason} icon={Flag} />
+                        <AnalysisCard title="Originality" score={analysisResult.gates.originality.score} maxScore={2} analysis={analysisResult.gates.originality.reason} icon={Star} />
                       </CardContent>
                     </Card>
 
-                    {/* Tips */}
-                    <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
-                      <CardContent className="pt-4">
-                        <p className="text-xs font-medium text-gray-400 mb-2 flex items-center gap-1">
-                          <Zap className="w-3 h-3 text-amber-400" /> Tips Maksimalkan Skor
-                        </p>
-                        <ul className="text-xs text-gray-500 space-y-1">
-                          <li>• Gate 2/2 semua → Multiplier 1.5x</li>
-                          <li>• Quality 5/5 semua → Atemporal max ~2.5</li>
-                          <li>• Followers of Repliers → Driver utama temporal</li>
-                          <li>• Replies dari influencer → temporal tinggi</li>
-                        </ul>
+                    {/* Quality Scores */}
+                    <Card className="bg-gray-800/50 border-gray-700">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <Star className="w-4 h-4 text-purple-400" /> Quality Scores (0-5)
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        <AnalysisCard title="Engagement Potential" score={analysisResult.quality.engagementPotential.score} maxScore={5} analysis={analysisResult.quality.engagementPotential.reason} icon={Zap} />
+                        <AnalysisCard title="Technical Quality" score={analysisResult.quality.technicalQuality.score} maxScore={5} analysis={analysisResult.quality.technicalQuality.reason} icon={FileText} />
+                        <AnalysisCard title="Reply Quality" score={analysisResult.quality.replyQuality.score} maxScore={5} analysis={analysisResult.quality.replyQuality.reason} icon={TrendingUp} />
+                      </CardContent>
+                    </Card>
+
+                    {/* Formula Breakdown */}
+                    <Card className="bg-gray-800/50 border-gray-700">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <BarChart3 className="w-4 h-4 text-amber-400" /> Formula Breakdown
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3 text-xs">
+                        {/* Atemporal */}
+                        <div className="p-2 bg-cyan-500/10 rounded border border-cyan-500/30">
+                          <p className="text-cyan-400 font-medium mb-1">Atemporal Points</p>
+                          <p className="text-gray-400">
+                            = (gate_sum / 8) × (quality_sum / 15) × 2.5
+                          </p>
+                          <p className="text-white mt-1 font-mono">
+                            = ({analysisResult.gates.contentAlignment.score + analysisResult.gates.informationAccuracy.score + analysisResult.gates.campaignCompliance.score + analysisResult.gates.originality.score} / 8) 
+                            × ({analysisResult.quality.engagementPotential.score + analysisResult.quality.technicalQuality.score + analysisResult.quality.replyQuality.score} / 15) × 2.5
+                          </p>
+                          <p className="text-cyan-300 font-bold mt-1">= {analysisResult.atemporalPoints.toFixed(2)}</p>
+                        </div>
+                        
+                        {/* Temporal */}
+                        <div className="p-2 bg-green-500/10 rounded border border-green-500/30">
+                          <p className="text-green-400 font-medium mb-1">Temporal Points</p>
+                          <p className="text-gray-400">
+                            = base + log(likes)×0.18 + log(replies)×0.22 + log(retweets)×0.15 + log(impressions)×0.025 + log(followers)×0.41
+                          </p>
+                          <p className="text-white mt-1 font-mono">
+                            = 1.12 + {Math.log10(engagement.likes + 1).toFixed(2)}×0.18 + {Math.log10(engagement.replies + 1).toFixed(2)}×0.22 + {Math.log10(engagement.retweets + 1).toFixed(2)}×0.15 + {Math.log10(engagement.impressions + 1).toFixed(2)}×0.025 + {Math.log10(engagement.followersOfRepliers + 1).toFixed(2)}×0.41
+                          </p>
+                          <p className="text-green-300 font-bold mt-1">= {analysisResult.temporalPoints.toFixed(2)}</p>
+                        </div>
+                        
+                        {/* Total */}
+                        <div className="p-2 bg-amber-500/10 rounded border border-amber-500/30">
+                          <p className="text-amber-400 font-medium mb-1">Total Points</p>
+                          <p className="text-white font-mono">
+                            {analysisResult.atemporalPoints.toFixed(2)} + {analysisResult.temporalPoints.toFixed(2)} = <span className="font-bold text-lg">{analysisResult.totalPoints.toFixed(2)}</span>
+                          </p>
+                        </div>
                       </CardContent>
                     </Card>
                   </>
+                ) : (
+                  <Card className="bg-gray-800/50 border-gray-700">
+                    <CardContent className="py-12 flex flex-col items-center gap-3">
+                      <Calculator className="w-8 h-8 text-gray-500" />
+                      <p className="text-gray-400 text-center">Paste your content and click Analyze<br/>to see your estimated Rally score</p>
+                    </CardContent>
+                  </Card>
                 )}
               </div>
             </div>
           </TabsContent>
 
-          {/* Live Data Tab */}
-          <TabsContent value="data" className="space-y-4">
-            {/* Loading State */}
-            {isLoadingReal && (
-              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+          {/* Leaderboard Tab */}
+          <TabsContent value="leaderboard" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-white">Leaderboard</h2>
+                {selectedCampaign && (
+                  <p className="text-sm text-gray-400">{selectedCampaign.title} • {totalParticipants} participants</p>
+                )}
+              </div>
+              <Button onClick={fetchLeaderboard} disabled={isLoadingLeaderboard} variant="outline" className="border-gray-600 text-gray-300">
+                {isLoadingLeaderboard ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+              </Button>
+            </div>
+            
+            {isLoadingLeaderboard && leaderboard.length === 0 && (
+              <Card className="bg-gray-800/50 border-gray-700">
                 <CardContent className="py-12 flex flex-col items-center gap-3">
                   <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
-                  <p className="text-gray-400">Loading Rally submissions...</p>
+                  <p className="text-gray-400">Loading leaderboard...</p>
                 </CardContent>
               </Card>
             )}
             
-            {/* Error State */}
-            {!isLoadingReal && loadError && (
-              <Card className="bg-gray-800/50 border-red-500/50 backdrop-blur">
-                <CardContent className="py-12 flex flex-col items-center gap-3">
-                  <p className="text-red-400">{loadError}</p>
-                  <Button onClick={fetchRealSubmissions} className="bg-amber-600 hover:bg-amber-700">
-                    <RefreshCw className="w-4 h-4 mr-2" /> Retry
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
+            <div className="bg-gray-800/50 border border-gray-700 rounded-lg overflow-hidden">
+              <div className="grid grid-cols-12 gap-2 p-3 text-xs text-gray-400 border-b border-gray-700 bg-gray-700/30">
+                <div className="col-span-1">#</div>
+                <div className="col-span-5">User</div>
+                <div className="col-span-2 text-right">Points</div>
+                <div className="col-span-2 text-right">Top %</div>
+                <div className="col-span-2 text-right">Submissions</div>
+              </div>
+              
+              <div className="max-h-96 overflow-y-auto">
+                {leaderboard.map((entry, idx) => (
+                  <div key={entry.rank} className={`grid grid-cols-12 gap-2 p-3 text-sm items-center ${idx % 2 === 0 ? 'bg-gray-800/30' : ''} hover:bg-gray-700/30`}>
+                    <div className="col-span-1">
+                      {entry.rank <= 3 ? (
+                        <span className={entry.rank === 1 ? 'text-yellow-400' : entry.rank === 2 ? 'text-gray-300' : 'text-amber-600'}>
+                          {entry.rank === 1 ? <Crown className="w-4 h-4" /> : entry.rank === 2 ? <Medal className="w-4 h-4" /> : <Medal className="w-4 h-4" />}
+                        </span>
+                      ) : (
+                        <span className="text-gray-500">{entry.rank}</span>
+                      )}
+                    </div>
+                    <div className="col-span-5 flex items-center gap-2">
+                      {entry.avatar && <img src={entry.avatar} alt="" className="w-6 h-6 rounded-full" />}
+                      <div>
+                        <p className="text-white font-medium truncate">{entry.displayName || entry.username}</p>
+                        <p className="text-xs text-gray-500">@{entry.username}</p>
+                      </div>
+                      {entry.verified && <Verified className="w-3 h-3 text-blue-400" />}
+                    </div>
+                    <div className="col-span-2 text-right font-mono text-green-400">{entry.totalPoints.toFixed(2)}</div>
+                    <div className="col-span-2 text-right text-xs text-gray-400">Top {entry.topPercent.toFixed(1)}%</div>
+                    <div className="col-span-2 text-right text-xs text-gray-400">{entry.totalSubmissions || 1}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
             
-            {/* Empty State */}
-            {!isLoadingReal && !loadError && realSubmissions.length === 0 && (
-              <Card className="bg-gray-800/50 border-gray-700 backdrop-blur">
+            {!isLoadingLeaderboard && leaderboard.length === 0 && (
+              <Card className="bg-gray-800/50 border-gray-700">
                 <CardContent className="py-12 flex flex-col items-center gap-3">
                   <Trophy className="w-8 h-8 text-gray-500" />
-                  <p className="text-gray-400">No submissions loaded yet</p>
-                  <Button onClick={fetchRealSubmissions} className="bg-amber-600 hover:bg-amber-700">
-                    <RefreshCw className="w-4 h-4 mr-2" /> Load Data
-                  </Button>
+                  <p className="text-gray-400">Select a campaign to view leaderboard</p>
                 </CardContent>
               </Card>
-            )}
-            
-            {/* Data Grid */}
-            {!isLoadingReal && !loadError && realSubmissions.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {realSubmissions.map((sub, i) => {
-                  const atemporal = attoToDecimal(sub.atemporalPoints)
-                  const temporal = attoToDecimal(sub.temporalPoints)
-                  const total = atemporal + temporal
-                  const grade = getGrade(total)
-                  
-                  // Get gate scores
-                  const getScore = (category: string) => {
-                    const a = sub.analysis.find(x => x.category === category)
-                    return a ? attoToDecimal(a.atto_score) : 0
-                  }
-                  
-                  return (
-                    <Card 
-                      key={i}
-                      onClick={() => loadSubmissionData(sub)}
-                      className={`cursor-pointer transition-all hover:scale-[1.02] ${
-                        selectedSubmission?.id === sub.id 
-                          ? 'bg-amber-600/20 border-amber-500' 
-                          : 'bg-gray-800/50 border-gray-700 hover:border-gray-500'
-                      }`}
-                    >
-                      <CardHeader className="pb-2">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="font-medium text-gray-200">@{sub.xUsername}</p>
-                            <p className="text-xs text-gray-500 line-clamp-1">{sub.mission?.title || 'No mission'}</p>
-                          </div>
-                          <Badge className={`${grade.color} bg-gray-700/50 text-base px-2`}>
-                            {grade.grade}
-                          </Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="space-y-3">
-                        {/* Total Score */}
-                        <div className="text-center py-2 bg-gray-700/30 rounded-lg">
-                          <p className={`text-3xl font-bold ${grade.color}`}>{total.toFixed(2)}</p>
-                          <p className="text-xs text-gray-400">Total Points</p>
-                        </div>
-                        
-                        {/* Score Breakdown */}
-                        <div className="grid grid-cols-2 gap-2 text-xs">
-                          <div className="bg-cyan-500/10 p-2 rounded text-center">
-                            <p className="text-cyan-400 font-bold">{atemporal.toFixed(2)}</p>
-                            <p className="text-gray-500">Atemporal</p>
-                          </div>
-                          <div className="bg-green-500/10 p-2 rounded text-center">
-                            <p className="text-green-400 font-bold">{temporal.toFixed(2)}</p>
-                            <p className="text-gray-500">Temporal</p>
-                          </div>
-                        </div>
-                        
-                        {/* Gate Scores Mini */}
-                        <div className="flex justify-between text-xs">
-                          <span className="text-gray-500">Gates:</span>
-                          <div className="flex gap-1">
-                            {['Content Alignment', 'Information Accuracy', 'Campaign Compliance', 'Originality and Authenticity'].map((cat) => {
-                              const score = getScore(cat)
-                              return (
-                                <span key={cat} className={`w-5 h-5 flex items-center justify-center rounded text-xs font-bold ${
-                                  score === 2 ? 'bg-green-500/30 text-green-400' : 
-                                  score === 1 ? 'bg-yellow-500/30 text-yellow-400' : 
-                                  'bg-red-500/30 text-red-400'
-                                }`}>
-                                  {score}
-                                </span>
-                              )
-                            })}
-                          </div>
-                        </div>
-                        
-                        {/* Quality Scores Mini */}
-                        <div className="flex justify-between text-xs">
-                          <span className="text-gray-500">Quality:</span>
-                          <div className="flex gap-1">
-                            {['Engagement Potential', 'Technical Quality', 'Reply Quality'].map((cat) => {
-                              const score = getScore(cat)
-                              return (
-                                <span key={cat} className={`w-5 h-5 flex items-center justify-center rounded text-xs font-bold ${
-                                  score >= 4 ? 'bg-green-500/30 text-green-400' : 
-                                  score >= 3 ? 'bg-yellow-500/30 text-yellow-400' : 
-                                  'bg-red-500/30 text-red-400'
-                                }`}>
-                                  {score}
-                                </span>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-              </div>
-            )}
-            
-            {/* Refresh Button */}
-            {!isLoadingReal && realSubmissions.length > 0 && (
-              <div className="flex justify-center">
-                <Button onClick={fetchRealSubmissions} variant="outline" className="border-gray-600 text-gray-300">
-                  <RefreshCw className="w-4 h-4 mr-2" /> Refresh Data
-                </Button>
-              </div>
             )}
           </TabsContent>
         </Tabs>
