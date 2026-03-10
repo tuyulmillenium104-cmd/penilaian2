@@ -16,7 +16,8 @@ import {
   FolderKanban, Users, Calendar, Clock, ChevronDown, ChevronUp,
   Check, Send, Medal, Crown, Coins, ExternalLink, Globe,
   Twitter, Verified, AlertCircle, DollarSign, Percent,
-  HelpCircle, Lightbulb, PieChart, Layers, Hash
+  HelpCircle, Lightbulb, PieChart, Layers, Hash, Settings,
+  ClipboardList, AwardIcon, Shield, MapPin, Link2
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -34,12 +35,34 @@ interface RallyCampaign {
   organizationName: string
   organizationWebsite: string
   organizationLogo: string
+  // Briefing sections
+  style?: string
+  styleDescription?: string
+  additionalInfo?: string
+  aboutOrganization?: string
+  knowledgeBase?: string
+  contentEvaluationCriteria?: any
+  distributionType?: string
+  distributionDescription?: string
+  participationRequirements?: {
+    minimumFollowers: number
+    maximumFollowers: number
+    onlyVerifiedUsers: boolean
+    requiredChains?: number[]
+    geoRestrictions?: string[]
+    whitelistEnabled?: boolean
+  }
+  scoringType?: string
+  scoringDescription?: string
+  // Dates
   startDate: string
   endDate: string
   campaignDurationPeriods: number
   periodLengthDays: number
+  // Stats
   missionCount: number
   participantCount: number
+  // Token & Rewards
   token: string
   tokenAddress: string
   tokenLogo: string
@@ -47,9 +70,11 @@ interface RallyCampaign {
   chainId: number
   totalReward: number
   rewards: any[]
+  // Requirements
   minimumFollowers: number
   maximumFollowers: number
   onlyVerifiedUsers: boolean
+  // Images
   headerImageUrl: string
   participating: boolean
   userMissionProgress: number
@@ -94,14 +119,12 @@ const getGrade = (points: number) => {
   return GRADE_CONFIG.find(g => points >= g.min) || GRADE_CONFIG[GRADE_CONFIG.length - 1]
 }
 
-// Format large numbers
 const formatNumber = (num: number): string => {
   if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
   if (num >= 1000) return `${(num / 1000).toFixed(1)}K`
   return num.toString()
 }
 
-// Calculate estimated rank and reward
 const calculateRankAndReward = (
   score: number, 
   leaderboard: LeaderboardEntry[], 
@@ -112,13 +135,9 @@ const calculateRankAndReward = (
     return { estimatedRank: 0, topPercent: 0, estimatedReward: 0 }
   }
   
-  // Count how many people have higher scores
   const higherScores = leaderboard.filter(e => e.totalPoints > score).length
-  
-  // Estimate rank based on score distribution
   let estimatedRank = higherScores + 1
   
-  // If we don't have full leaderboard, estimate based on typical distribution
   if (leaderboard.length < totalParticipants) {
     const avgScore = leaderboard.length > 0 
       ? leaderboard.reduce((sum, e) => sum + e.totalPoints, 0) / leaderboard.length 
@@ -139,21 +158,13 @@ const calculateRankAndReward = (
   
   const topPercent = (estimatedRank / totalParticipants) * 100
   
-  // Estimate reward (higher rank = higher reward)
   let estimatedReward = 0
-  if (topPercent <= 1) {
-    estimatedReward = totalReward * 0.20
-  } else if (topPercent <= 5) {
-    estimatedReward = totalReward * 0.10
-  } else if (topPercent <= 10) {
-    estimatedReward = totalReward * 0.05
-  } else if (topPercent <= 25) {
-    estimatedReward = totalReward * 0.02
-  } else if (topPercent <= 50) {
-    estimatedReward = totalReward * 0.01
-  } else {
-    estimatedReward = totalReward * 0.005
-  }
+  if (topPercent <= 1) estimatedReward = totalReward * 0.20
+  else if (topPercent <= 5) estimatedReward = totalReward * 0.10
+  else if (topPercent <= 10) estimatedReward = totalReward * 0.05
+  else if (topPercent <= 25) estimatedReward = totalReward * 0.02
+  else if (topPercent <= 50) estimatedReward = totalReward * 0.01
+  else estimatedReward = totalReward * 0.005
   
   estimatedReward = estimatedReward / 3
   
@@ -212,271 +223,316 @@ const AnalysisCard = ({
   )
 }
 
-// Knowledge Base Component - Rally Style
-const KnowledgeBaseCard = () => {
-  const [isOpen, setIsOpen] = useState(false)
+// Collapsible Section Component
+const CollapsibleSection = ({ 
+  title, icon: Icon, iconColor, children, defaultOpen = false 
+}: { 
+  title: string
+  icon: React.ElementType
+  iconColor: string
+  children: React.ReactNode
+  defaultOpen?: boolean
+}) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen)
   
   return (
-    <Card className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/30">
+    <Card className="bg-gray-800/50 border-gray-700 overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-700/20 transition-colors rounded-lg"
+        className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-700/30 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-500/20 rounded-lg">
-            <BookOpen className="w-5 h-5 text-blue-400" />
+          <div className={`p-1.5 rounded-lg bg-gray-700/50`}>
+            <Icon className={`w-4 h-4 ${iconColor}`} />
           </div>
-          <div className="text-left">
-            <span className="font-semibold text-white">Knowledge Base</span>
-            <p className="text-xs text-gray-400">Pelajari cara kerja scoring Rally</p>
-          </div>
+          <span className="font-medium text-white">{title}</span>
         </div>
         {isOpen ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
       </button>
       {isOpen && (
-        <CardContent className="pt-0 space-y-4">
-          {/* Quick Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            <div className="p-2 bg-gray-800/50 rounded-lg text-center">
-              <p className="text-lg font-bold text-cyan-400">0-2</p>
-              <p className="text-xs text-gray-400">Gate Score</p>
-            </div>
-            <div className="p-2 bg-gray-800/50 rounded-lg text-center">
-              <p className="text-lg font-bold text-purple-400">0-5</p>
-              <p className="text-xs text-gray-400">Quality Score</p>
-            </div>
-            <div className="p-2 bg-gray-800/50 rounded-lg text-center">
-              <p className="text-lg font-bold text-green-400">~5.0</p>
-              <p className="text-xs text-gray-400">Avg Score</p>
-            </div>
-            <div className="p-2 bg-gray-800/50 rounded-lg text-center">
-              <p className="text-lg font-bold text-amber-400">8.0+</p>
-              <p className="text-xs text-gray-400">S+ Grade</p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Atemporal Scoring */}
-            <div className="p-3 bg-cyan-500/10 rounded-lg border border-cyan-500/30">
-              <h4 className="text-cyan-400 font-medium mb-2 flex items-center gap-2">
-                <Target className="w-4 h-4" /> Atemporal Score (Kualitas Konten)
-              </h4>
-              <p className="text-xs text-gray-400 mb-2">Mengukur kualitas konten berdasarkan:</p>
-              <ul className="text-xs text-gray-300 space-y-1">
-                <li>• <strong>Content Alignment (0-2):</strong> Relevansi dengan campaign</li>
-                <li>• <strong>Information Accuracy (0-2):</strong> Akurasi informasi</li>
-                <li>• <strong>Campaign Compliance (0-2):</strong> Kepatuhan rules</li>
-                <li>• <strong>Originality (0-2):</strong> Keunikan konten</li>
-              </ul>
-              <div className="mt-2 p-2 bg-gray-800/50 rounded text-xs font-mono text-cyan-300">
-                = (gate_sum / 8) × (quality_sum / 15) × 2.5
-              </div>
-            </div>
-            
-            {/* Temporal Scoring */}
-            <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/30">
-              <h4 className="text-green-400 font-medium mb-2 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4" /> Temporal Score (Engagement)
-              </h4>
-              <p className="text-xs text-gray-400 mb-2">Mengukur performa engagement:</p>
-              <ul className="text-xs text-gray-300 space-y-1">
-                <li>• <strong>Likes:</strong> log(likes) × 0.18</li>
-                <li>• <strong>Replies:</strong> log(replies) × 0.22</li>
-                <li>• <strong>Retweets:</strong> log(retweets) × 0.15</li>
-                <li>• <strong>Impressions:</strong> log(impressions) × 0.025</li>
-                <li>• <strong>Followers:</strong> log(followers) × 0.41</li>
-              </ul>
-              <div className="mt-2 p-2 bg-gray-800/50 rounded text-xs font-mono text-green-300">
-                = 1.12 + sum(all_contributions)
-              </div>
-            </div>
-          </div>
-          
-          {/* Grade System */}
-          <div className="p-3 bg-amber-500/10 rounded-lg border border-amber-500/30">
-            <h4 className="text-amber-400 font-medium mb-2 flex items-center gap-2">
-              <Award className="w-4 h-4" /> Sistem Grade
-            </h4>
-            <div className="grid grid-cols-5 md:grid-cols-9 gap-2 text-xs">
-              {GRADE_CONFIG.map(g => (
-                <div key={g.grade} className="text-center p-1 bg-gray-800/50 rounded">
-                  <span className={`${g.color} font-bold`}>{g.grade}</span>
-                  <p className="text-gray-500 text-[10px]">&gt;= {g.min}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          {/* Tips */}
-          <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/30">
-            <h4 className="text-purple-400 font-medium mb-2 flex items-center gap-2">
-              <Lightbulb className="w-4 h-4" /> Tips Meningkatkan Score
-            </h4>
-            <ul className="text-xs text-gray-300 space-y-1">
-              <li>• Pastikan konten sesuai dengan brief dan rules campaign</li>
-              <li>• Gunakan informasi faktual dan akurat</li>
-              <li>• Buat konten orisinal, hindari copy-paste</li>
-              <li>• Dorong engagement dengan pertanyaan atau CTA</li>
-              <li>• Balas reply untuk meningkatkan engagement score</li>
-            </ul>
-          </div>
+        <CardContent className="pt-0 pb-4">
+          {children}
         </CardContent>
       )}
     </Card>
   )
 }
 
-// Campaign Stats Card - Rally Style
-const CampaignStatsCard = ({ campaign, totalParticipants }: { campaign: RallyCampaign, totalParticipants: number }) => {
+// Campaign Briefing Component - Rally Style
+const CampaignBriefingCard = ({ campaign }: { campaign: RallyCampaign }) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-      <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/30 p-4">
-        <div className="flex items-center gap-2">
-          <div className="p-2 bg-green-500/20 rounded-lg">
-            <Users className="w-5 h-5 text-green-400" />
+    <div className="space-y-3">
+      {/* Style */}
+      {campaign.style && (
+        <CollapsibleSection title="Style" icon={Zap} iconColor="text-purple-400" defaultOpen={true}>
+          <div className="space-y-2">
+            <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/50">
+              {campaign.style}
+            </Badge>
+            {campaign.styleDescription && (
+              <p className="text-sm text-gray-300">{campaign.styleDescription}</p>
+            )}
+            {campaign.scoringDescription && (
+              <div className="mt-2 p-2 bg-gray-700/30 rounded-lg">
+                <p className="text-xs text-gray-400">{campaign.scoringDescription}</p>
+              </div>
+            )}
           </div>
-          <div>
-            <p className="text-xs text-gray-400">Total Peserta</p>
-            <p className="text-xl font-bold text-white">{formatNumber(totalParticipants || campaign.participantCount)}</p>
-          </div>
-        </div>
-      </Card>
+        </CollapsibleSection>
+      )}
       
-      <Card className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/30 p-4">
-        <div className="flex items-center gap-2">
-          <div className="p-2 bg-amber-500/20 rounded-lg">
-            <Coins className="w-5 h-5 text-amber-400" />
+      {/* Additional Information */}
+      {(campaign.additionalInfo || campaign.aboutOrganization) && (
+        <CollapsibleSection title="Additional Information" icon={Info} iconColor="text-blue-400">
+          <div className="space-y-2 text-sm text-gray-300">
+            {campaign.aboutOrganization && (
+              <div>
+                <p className="text-xs text-gray-500 mb-1">About {campaign.organizationName || 'Organization'}</p>
+                <p>{campaign.aboutOrganization}</p>
+              </div>
+            )}
+            {campaign.additionalInfo && <p>{campaign.additionalInfo}</p>}
           </div>
-          <div>
-            <p className="text-xs text-gray-400">Total Reward</p>
-            <p className="text-xl font-bold text-white">{formatNumber(campaign.totalReward)} <span className="text-sm text-amber-400">{campaign.token}</span></p>
-          </div>
-        </div>
-      </Card>
+        </CollapsibleSection>
+      )}
       
-      <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/30 p-4">
-        <div className="flex items-center gap-2">
-          <div className="p-2 bg-blue-500/20 rounded-lg">
-            <FolderKanban className="w-5 h-5 text-blue-400" />
+      {/* Knowledge Base */}
+      {campaign.knowledgeBase && (
+        <CollapsibleSection title="Knowledge Base" icon={BookOpen} iconColor="text-cyan-400">
+          <div className="text-sm text-gray-300 whitespace-pre-line leading-relaxed">
+            {campaign.knowledgeBase}
           </div>
-          <div>
-            <p className="text-xs text-gray-400">Total Misi</p>
-            <p className="text-xl font-bold text-white">{campaign.missionCount}</p>
-          </div>
-        </div>
-      </Card>
+        </CollapsibleSection>
+      )}
       
-      <Card className="bg-gradient-to-br from-red-500/10 to-pink-500/10 border-red-500/30 p-4">
-        <div className="flex items-center gap-2">
-          <div className="p-2 bg-red-500/20 rounded-lg">
-            <Calendar className="w-5 h-5 text-red-400" />
+      {/* Content Evaluation Criteria */}
+      {campaign.contentEvaluationCriteria && (
+        <CollapsibleSection title="Content Evaluation Criteria" icon={ClipboardList} iconColor="text-amber-400">
+          <div className="space-y-2">
+            {Object.entries(campaign.contentEvaluationCriteria).map(([key, criteria]: [string, any]) => (
+              <div key={key} className="p-2 bg-gray-700/30 rounded-lg">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-medium text-white">{criteria.name || key}</span>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs border-gray-600">
+                      Max: {criteria.maxScore}
+                    </Badge>
+                    <Badge className={`text-xs ${criteria.weight === 'High' ? 'bg-red-500/20 text-red-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                      {criteria.weight}
+                    </Badge>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-400">{criteria.description}</p>
+              </div>
+            ))}
           </div>
-          <div>
-            <p className="text-xs text-gray-400">Berakhir</p>
-            <p className="text-xl font-bold text-white">{new Date(campaign.endDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</p>
+        </CollapsibleSection>
+      )}
+      
+      {/* Distribution Type */}
+      {campaign.distributionType && (
+        <CollapsibleSection title="Distribution Type" icon={PieChart} iconColor="text-green-400">
+          <div className="space-y-2">
+            <Badge className="bg-green-500/20 text-green-400 border-green-500/50">
+              {campaign.distributionType}
+            </Badge>
+            {campaign.distributionDescription && (
+              <p className="text-sm text-gray-300">{campaign.distributionDescription}</p>
+            )}
           </div>
-        </div>
-      </Card>
+        </CollapsibleSection>
+      )}
+      
+      {/* Participation Requirements */}
+      {campaign.participationRequirements && (
+        <CollapsibleSection title="Participation Requirements" icon={Shield} iconColor="text-red-400">
+          <div className="space-y-2">
+            {/* Follower Requirements */}
+            {(campaign.participationRequirements.minimumFollowers > 0 || campaign.participationRequirements.maximumFollowers > 0) && (
+              <div className="flex items-center gap-2 p-2 bg-gray-700/30 rounded-lg">
+                <Users className="w-4 h-4 text-gray-400" />
+                <span className="text-sm text-gray-300">
+                  {campaign.participationRequirements.minimumFollowers > 0 && campaign.participationRequirements.maximumFollowers > 0
+                    ? `${formatNumber(campaign.participationRequirements.minimumFollowers)} - ${formatNumber(campaign.participationRequirements.maximumFollowers)} followers required`
+                    : campaign.participationRequirements.minimumFollowers > 0
+                    ? `Min ${formatNumber(campaign.participationRequirements.minimumFollowers)} followers required`
+                    : `Max ${formatNumber(campaign.participationRequirements.maximumFollowers)} followers`}
+                </span>
+              </div>
+            )}
+            
+            {/* Verified Only */}
+            {campaign.participationRequirements.onlyVerifiedUsers && (
+              <div className="flex items-center gap-2 p-2 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                <Verified className="w-4 h-4 text-blue-400" />
+                <span className="text-sm text-blue-400">Verified accounts only</span>
+              </div>
+            )}
+            
+            {/* Whitelist */}
+            {campaign.participationRequirements.whitelistEnabled && (
+              <div className="flex items-center gap-2 p-2 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                <AlertCircle className="w-4 h-4 text-amber-400" />
+                <span className="text-sm text-amber-400">Whitelist enabled</span>
+              </div>
+            )}
+            
+            {/* Geo Restrictions */}
+            {campaign.participationRequirements.geoRestrictions && campaign.participationRequirements.geoRestrictions.length > 0 && (
+              <div className="flex items-center gap-2 p-2 bg-red-500/10 rounded-lg border border-red-500/20">
+                <MapPin className="w-4 h-4 text-red-400" />
+                <span className="text-sm text-red-400">
+                  Restricted regions: {campaign.participationRequirements.geoRestrictions.join(', ')}
+                </span>
+              </div>
+            )}
+            
+            {/* No special requirements */}
+            {!campaign.participationRequirements.onlyVerifiedUsers && 
+             campaign.participationRequirements.minimumFollowers === 0 && 
+             campaign.participationRequirements.maximumFollowers === 0 && (
+              <div className="flex items-center gap-2 p-2 bg-green-500/10 rounded-lg border border-green-500/20">
+                <Check className="w-4 h-4 text-green-400" />
+                <span className="text-sm text-green-400">Open to all participants</span>
+              </div>
+            )}
+          </div>
+        </CollapsibleSection>
+      )}
     </div>
   )
 }
 
-// Your Position Card - Rally Style
+// Campaign Stats Card
+const CampaignStatsCard = ({ campaign, totalParticipants }: { campaign: RallyCampaign, totalParticipants: number }) => (
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/30 p-4">
+      <div className="flex items-center gap-2">
+        <div className="p-2 bg-green-500/20 rounded-lg">
+          <Users className="w-5 h-5 text-green-400" />
+        </div>
+        <div>
+          <p className="text-xs text-gray-400">Total Peserta</p>
+          <p className="text-xl font-bold text-white">{formatNumber(totalParticipants || campaign.participantCount)}</p>
+        </div>
+      </div>
+    </Card>
+    
+    <Card className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/30 p-4">
+      <div className="flex items-center gap-2">
+        <div className="p-2 bg-amber-500/20 rounded-lg">
+          <Coins className="w-5 h-5 text-amber-400" />
+        </div>
+        <div>
+          <p className="text-xs text-gray-400">Total Reward</p>
+          <p className="text-xl font-bold text-white">{formatNumber(campaign.totalReward)} <span className="text-sm text-amber-400">{campaign.token}</span></p>
+        </div>
+      </div>
+    </Card>
+    
+    <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/30 p-4">
+      <div className="flex items-center gap-2">
+        <div className="p-2 bg-blue-500/20 rounded-lg">
+          <FolderKanban className="w-5 h-5 text-blue-400" />
+        </div>
+        <div>
+          <p className="text-xs text-gray-400">Total Misi</p>
+          <p className="text-xl font-bold text-white">{campaign.missionCount}</p>
+        </div>
+      </div>
+    </Card>
+    
+    <Card className="bg-gradient-to-br from-red-500/10 to-pink-500/10 border-red-500/30 p-4">
+      <div className="flex items-center gap-2">
+        <div className="p-2 bg-red-500/20 rounded-lg">
+          <Calendar className="w-5 h-5 text-red-400" />
+        </div>
+        <div>
+          <p className="text-xs text-gray-400">Berakhir</p>
+          <p className="text-xl font-bold text-white">{new Date(campaign.endDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</p>
+        </div>
+      </div>
+    </Card>
+  </div>
+)
+
+// Your Position Card
 const YourPositionCard = ({ 
-  rank, 
-  topPercent, 
-  reward, 
-  token, 
-  tokenUsdPrice 
+  rank, topPercent, reward, token, tokenUsdPrice 
 }: { 
   rank: number
   topPercent: number
   reward: number
   token: string
   tokenUsdPrice?: number
-}) => {
-  return (
-    <Card className="bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-purple-500/20 border-amber-500/50 overflow-hidden">
-      <div className="absolute top-0 right-0 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl" />
-      <CardContent className="py-4 px-4 relative">
-        <div className="flex items-center gap-2 mb-3">
-          <Trophy className="w-5 h-5 text-amber-400" />
-          <span className="text-sm font-semibold text-amber-400">Tweet Anda Akan Masuk:</span>
+}) => (
+  <Card className="bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-purple-500/20 border-amber-500/50 overflow-hidden">
+    <div className="absolute top-0 right-0 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl" />
+    <CardContent className="py-4 px-4 relative">
+      <div className="flex items-center gap-2 mb-3">
+        <Trophy className="w-5 h-5 text-amber-400" />
+        <span className="text-sm font-semibold text-amber-400">Tweet Anda Akan Masuk:</span>
+      </div>
+      
+      <div className="grid grid-cols-3 gap-4">
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-1 mb-1">
+            <Hash className="w-4 h-4 text-gray-400" />
+            <span className="text-3xl font-bold text-white">{rank}</span>
+          </div>
+          <p className="text-xs text-gray-400">Estimasi Ranking</p>
         </div>
         
-        <div className="grid grid-cols-3 gap-4">
-          {/* Rank */}
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-1 mb-1">
-              <Hash className="w-4 h-4 text-gray-400" />
-              <span className="text-3xl font-bold text-white">{rank}</span>
-            </div>
-            <p className="text-xs text-gray-400">Estimasi Ranking</p>
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-1 mb-1">
+            <Percent className="w-4 h-4 text-gray-400" />
+            <span className="text-3xl font-bold text-green-400">{topPercent.toFixed(1)}%</span>
           </div>
-          
-          {/* Top % */}
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-1 mb-1">
-              <Percent className="w-4 h-4 text-gray-400" />
-              <span className="text-3xl font-bold text-green-400">{topPercent.toFixed(1)}%</span>
-            </div>
-            <p className="text-xs text-gray-400">Top Persentase</p>
-          </div>
-          
-          {/* Reward */}
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-1 mb-1">
-              <Coins className="w-4 h-4 text-gray-400" />
-              <span className="text-2xl font-bold text-purple-400">{formatNumber(reward)}</span>
-            </div>
-            <p className="text-xs text-gray-400">Estimasi {token}</p>
-          </div>
+          <p className="text-xs text-gray-400">Top Persentase</p>
         </div>
         
-        {tokenUsdPrice && reward > 0 && (
-          <div className="mt-3 p-2 bg-green-500/20 rounded-lg border border-green-500/30 text-center">
-            <span className="text-green-400 font-medium">
-              ≈ ${(reward * tokenUsdPrice).toFixed(2)} USD
-            </span>
-            <span className="text-gray-400 text-xs ml-2">
-              (@ ${tokenUsdPrice.toFixed(4)}/{token})
-            </span>
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-1 mb-1">
+            <Coins className="w-4 h-4 text-gray-400" />
+            <span className="text-2xl font-bold text-purple-400">{formatNumber(reward)}</span>
           </div>
-        )}
-      </CardContent>
-    </Card>
-  )
-}
+          <p className="text-xs text-gray-400">Estimasi {token}</p>
+        </div>
+      </div>
+      
+      {tokenUsdPrice && reward > 0 && (
+        <div className="mt-3 p-2 bg-green-500/20 rounded-lg border border-green-500/30 text-center">
+          <span className="text-green-400 font-medium">≈ ${(reward * tokenUsdPrice).toFixed(2)} USD</span>
+          <span className="text-gray-400 text-xs ml-2">(@ ${tokenUsdPrice.toFixed(4)}/{token})</span>
+        </div>
+      )}
+    </CardContent>
+  </Card>
+)
 
 export default function RallyScoreAnalyzer() {
   const [activeTab, setActiveTab] = useState('campaigns')
   
-  // Campaigns
   const [campaigns, setCampaigns] = useState<RallyCampaign[]>([])
   const [isLoadingCampaigns, setIsLoadingCampaigns] = useState(false)
   const [selectedCampaign, setSelectedCampaign] = useState<RallyCampaign | null>(null)
   
-  // Missions
   const [missions, setMissions] = useState<RallyMission[]>([])
   const [selectedMission, setSelectedMission] = useState<RallyMission | null>(null)
   
-  // Content & Analysis
   const [content, setContent] = useState('')
   const [campaignContext, setCampaignContext] = useState('')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysisResult, setAnalysisResult] = useState<any>(null)
   
-  // Engagement projection
   const [engagement, setEngagement] = useState({
     likes: 50, replies: 5, retweets: 3, impressions: 1000, followersOfRepliers: 5000
   })
   
-  // Leaderboard
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [totalParticipants, setTotalParticipants] = useState(0)
   const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false)
   
-  // Fetch Campaigns
   const fetchCampaigns = useCallback(async () => {
     setIsLoadingCampaigns(true)
     try {
@@ -484,16 +540,15 @@ export default function RallyScoreAnalyzer() {
       if (!response.ok) throw new Error('Failed to fetch campaigns')
       const data = await response.json()
       setCampaigns(data)
-      toast.success(`${data.length} campaigns loaded from Rally.fun!`)
+      toast.success(`${data.length} campaigns loaded!`)
     } catch (error) {
       console.error('Fetch campaigns error:', error)
-      toast.error('Failed to fetch campaigns from Rally')
+      toast.error('Failed to fetch campaigns')
     } finally {
       setIsLoadingCampaigns(false)
     }
   }, [])
   
-  // Select Campaign
   const selectCampaign = useCallback(async (campaign: RallyCampaign) => {
     setSelectedCampaign(campaign)
     setAnalysisResult(null)
@@ -512,12 +567,12 @@ export default function RallyScoreAnalyzer() {
             setSelectedMission(missionList[0])
             setCampaignContext([
               fullCampaign.brief ? `Brief: ${fullCampaign.brief}` : '',
+              fullCampaign.knowledgeBase ? `Knowledge: ${fullCampaign.knowledgeBase.substring(0, 500)}` : '',
               missionList[0].description ? `Mission: ${missionList[0].description}` : '',
               missionList[0].rules ? `Rules: ${missionList[0].rules}` : ''
             ].filter(Boolean).join('\n\n'))
           }
           
-          // Auto-fetch leaderboard
           const leaderboardResponse = await fetch(`/api/rally-leaderboard?campaignAddress=${campaign.intelligentContractAddress}&limit=100`)
           if (leaderboardResponse.ok) {
             const leaderboardData = await leaderboardResponse.json()
@@ -534,7 +589,6 @@ export default function RallyScoreAnalyzer() {
     setActiveTab('analyze')
   }, [])
   
-  // Fetch Leaderboard
   const fetchLeaderboard = useCallback(async () => {
     setIsLoadingLeaderboard(true)
     try {
@@ -548,16 +602,14 @@ export default function RallyScoreAnalyzer() {
       const data = await response.json()
       setLeaderboard(data.leaderboard || [])
       setTotalParticipants(data.total || 0)
-      toast.success(`Leaderboard loaded! (${data.total || 0} participants)`)
+      toast.success(`Leaderboard loaded!`)
     } catch (error) {
-      console.error('Fetch leaderboard error:', error)
       toast.error('Failed to fetch leaderboard')
     } finally {
       setIsLoadingLeaderboard(false)
     }
   }, [selectedCampaign])
   
-  // Analyze Content
   const analyzeContent = useCallback(async () => {
     if (!content.trim()) {
       toast.error('Masukkan konten untuk dianalisis')
@@ -590,14 +642,13 @@ export default function RallyScoreAnalyzer() {
       if (minGate === 0) atemporalPoints *= 0.5
       atemporalPoints = Math.min(atemporalPoints, 2.43)
       
-      const likesContrib = Math.log10(engagement.likes + 1) * 0.18
-      const repliesContrib = Math.log10(engagement.replies + 1) * 0.22
-      const retweetsContrib = Math.log10(engagement.retweets + 1) * 0.15
-      const impressionsContrib = Math.log10(engagement.impressions + 1) * 0.025
-      const followersContrib = Math.log10(engagement.followersOfRepliers + 1) * 0.41
-      const baseTemporal = 1.12
+      const temporalPoints = 1.12 + 
+        Math.log10(engagement.likes + 1) * 0.18 +
+        Math.log10(engagement.replies + 1) * 0.22 +
+        Math.log10(engagement.retweets + 1) * 0.15 +
+        Math.log10(engagement.impressions + 1) * 0.025 +
+        Math.log10(engagement.followersOfRepliers + 1) * 0.41
       
-      let temporalPoints = baseTemporal + likesContrib + repliesContrib + retweetsContrib + impressionsContrib + followersContrib
       const totalPoints = atemporalPoints + temporalPoints
       const grade = getGrade(totalPoints)
       
@@ -607,7 +658,6 @@ export default function RallyScoreAnalyzer() {
         temporalPoints: Math.round(temporalPoints * 100) / 100,
         totalPoints: Math.round(totalPoints * 100) / 100,
         grade,
-        analysisMethod: data.analysis.metadata?.analysisMethod || 'llm-enhanced'
       })
       
       toast.success('Analysis complete!')
@@ -623,12 +673,7 @@ export default function RallyScoreAnalyzer() {
   }, [])
   
   const rankAndReward = analysisResult && selectedCampaign ? 
-    calculateRankAndReward(
-      analysisResult.totalPoints, 
-      leaderboard, 
-      totalParticipants || selectedCampaign.participantCount,
-      selectedCampaign.totalReward
-    ) : null
+    calculateRankAndReward(analysisResult.totalPoints, leaderboard, totalParticipants || selectedCampaign.participantCount, selectedCampaign.totalReward) : null
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 text-white p-4 md:p-6">
@@ -653,9 +698,6 @@ export default function RallyScoreAnalyzer() {
             <Globe className="w-3 h-3" /> LIVE DATA
           </Badge>
         </div>
-
-        {/* Knowledge Base */}
-        <KnowledgeBaseCard />
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
@@ -684,7 +726,7 @@ export default function RallyScoreAnalyzer() {
               <Card className="bg-gray-800/50 border-gray-700">
                 <CardContent className="py-12 flex flex-col items-center gap-3">
                   <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
-                  <p className="text-gray-400">Loading campaigns from Rally.fun...</p>
+                  <p className="text-gray-400">Loading campaigns...</p>
                 </CardContent>
               </Card>
             )}
@@ -721,22 +763,17 @@ export default function RallyScoreAnalyzer() {
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
-                        {campaign.tokenLogo && (
-                          <img src={campaign.tokenLogo} alt="" className="w-5 h-5 rounded-full" />
-                        )}
-                        <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/50 text-xs">
-                          {campaign.token}
-                        </Badge>
+                        {campaign.tokenLogo && <img src={campaign.tokenLogo} alt="" className="w-5 h-5 rounded-full" />}
+                        <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/50 text-xs">{campaign.token}</Badge>
                       </div>
                     </div>
                   </CardHeader>
                   
                   <CardContent className="space-y-3">
                     {campaign.brief && (
-                      <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">{campaign.brief}</p>
+                      <p className="text-xs text-gray-400 line-clamp-2">{campaign.brief}</p>
                     )}
                     
-                    {/* Stats Grid - Rally Style */}
                     <div className="grid grid-cols-3 gap-2">
                       <div className="bg-blue-500/10 border border-blue-500/20 p-2 rounded-lg text-center">
                         <FolderKanban className="w-4 h-4 text-blue-400 mx-auto mb-1" />
@@ -757,11 +794,11 @@ export default function RallyScoreAnalyzer() {
                     
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs border-gray-600 text-gray-400">
+                        <Badge variant="outline" className="border-gray-600 text-gray-400">
                           {campaign.chainId === 8453 ? '🔵 Base' : `Chain ${campaign.chainId}`}
                         </Badge>
                         {campaign.onlyVerifiedUsers && (
-                          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/50 text-xs">
+                          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/50">
                             <Verified className="w-3 h-3 mr-1" /> Verified
                           </Badge>
                         )}
@@ -782,15 +819,6 @@ export default function RallyScoreAnalyzer() {
                 </Card>
               ))}
             </div>
-            
-            {!isLoadingCampaigns && campaigns.length === 0 && (
-              <Card className="bg-gray-800/50 border-gray-700">
-                <CardContent className="py-12 flex flex-col items-center gap-3">
-                  <FolderKanban className="w-8 h-8 text-gray-500" />
-                  <p className="text-gray-400">No active campaigns found</p>
-                </CardContent>
-              </Card>
-            )}
           </TabsContent>
 
           {/* Analyze Tab */}
@@ -811,12 +839,9 @@ export default function RallyScoreAnalyzer() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button variant="outline" size="sm" 
                           onClick={() => window.open(`https://rally.fun/campaign/${selectedCampaign.intelligentContractAddress}`, '_blank')}
-                          className="border-amber-600 text-amber-400 hover:bg-amber-600/20"
-                        >
+                          className="border-amber-600 text-amber-400 hover:bg-amber-600/20">
                           <ExternalLink className="w-4 h-4 mr-1" /> Open in Rally
                         </Button>
                         <Button variant="outline" size="sm" onClick={() => setActiveTab('campaigns')} className="border-gray-600 text-gray-300">
@@ -829,29 +854,13 @@ export default function RallyScoreAnalyzer() {
                 
                 {/* Campaign Stats */}
                 <CampaignStatsCard campaign={selectedCampaign} totalParticipants={totalParticipants} />
+                
+                {/* Campaign Briefing Sections */}
+                <CampaignBriefingCard campaign={selectedCampaign} />
               </>
             )}
             
-            {/* Campaign Brief */}
-            {selectedCampaign && selectedCampaign.brief && (
-              <Card className="bg-gray-800/50 border-gray-700">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Info className="w-4 h-4 text-blue-400" /> Campaign Brief
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm text-gray-300">
-                  <p>{selectedCampaign.brief}</p>
-                  {selectedCampaign.organizationWebsite && (
-                    <a href={selectedCampaign.organizationWebsite} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 mt-2 text-xs text-amber-400 hover:text-amber-300">
-                      <Globe className="w-3 h-3" /> {selectedCampaign.organizationWebsite}
-                    </a>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-            
+            {/* Mission Briefing */}
             {selectedMission && (
               <Card className="bg-gray-800/50 border-gray-700">
                 <CardHeader className="pb-3">
@@ -893,7 +902,6 @@ export default function RallyScoreAnalyzer() {
                   </CardContent>
                 </Card>
 
-                {/* Engagement Projection */}
                 <Card className="bg-gray-800/50 border-gray-700">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
@@ -928,7 +936,7 @@ export default function RallyScoreAnalyzer() {
                       </div>
                     </div>
                     <div>
-                      <label className="text-gray-400 text-xs">Followers of Repliers (main driver)</label>
+                      <label className="text-gray-400 text-xs">Followers of Repliers</label>
                       <Input type="number" min={0} value={engagement.followersOfRepliers}
                         onChange={(e) => setEngagement(prev => ({ ...prev, followersOfRepliers: parseInt(e.target.value) || 0 }))}
                         className="bg-gray-700/50 border-gray-600 text-white h-9" />
@@ -941,9 +949,7 @@ export default function RallyScoreAnalyzer() {
               <div className="space-y-4">
                 {analysisResult ? (
                   <>
-                    {/* Score Card */}
                     <Card className="bg-gradient-to-br from-gray-800/80 to-gray-900/80 border-gray-700 overflow-hidden">
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
                       <CardHeader className="pb-2">
                         <CardTitle className="text-lg flex items-center gap-2">
                           <Award className="w-4 h-4 text-amber-400" /> Estimated Score
@@ -977,7 +983,6 @@ export default function RallyScoreAnalyzer() {
                       </CardContent>
                     </Card>
 
-                    {/* Your Position */}
                     {rankAndReward && selectedCampaign && (
                       <YourPositionCard 
                         rank={rankAndReward.estimatedRank}
@@ -988,7 +993,6 @@ export default function RallyScoreAnalyzer() {
                       />
                     )}
 
-                    {/* Gate Scores */}
                     <Card className="bg-gray-800/50 border-gray-700">
                       <CardHeader className="pb-3">
                         <CardTitle className="text-sm flex items-center gap-2">
@@ -1003,7 +1007,6 @@ export default function RallyScoreAnalyzer() {
                       </CardContent>
                     </Card>
 
-                    {/* Quality Scores */}
                     <Card className="bg-gray-800/50 border-gray-700">
                       <CardHeader className="pb-3">
                         <CardTitle className="text-sm flex items-center gap-2">
@@ -1021,7 +1024,7 @@ export default function RallyScoreAnalyzer() {
                   <Card className="bg-gray-800/50 border-gray-700">
                     <CardContent className="py-12 flex flex-col items-center gap-3">
                       <Calculator className="w-8 h-8 text-gray-500" />
-                      <p className="text-gray-400 text-center">Paste your content and click Analyze<br/>to see your estimated Rally score</p>
+                      <p className="text-gray-400 text-center">Paste your content and click Analyze</p>
                     </CardContent>
                   </Card>
                 )}
@@ -1034,21 +1037,15 @@ export default function RallyScoreAnalyzer() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold text-white">Leaderboard</h2>
-                {selectedCampaign && (
-                  <p className="text-sm text-gray-400">{selectedCampaign.title}</p>
-                )}
+                {selectedCampaign && <p className="text-sm text-gray-400">{selectedCampaign.title}</p>}
               </div>
               <Button onClick={fetchLeaderboard} disabled={isLoadingLeaderboard} variant="outline" className="border-gray-600 text-gray-300">
                 {isLoadingLeaderboard ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
               </Button>
             </div>
             
-            {/* Campaign Stats */}
-            {selectedCampaign && (
-              <CampaignStatsCard campaign={selectedCampaign} totalParticipants={totalParticipants} />
-            )}
+            {selectedCampaign && <CampaignStatsCard campaign={selectedCampaign} totalParticipants={totalParticipants} />}
             
-            {/* Your Position (if analysis done) */}
             {analysisResult && rankAndReward && selectedCampaign && (
               <YourPositionCard 
                 rank={rankAndReward.estimatedRank}
@@ -1059,16 +1056,6 @@ export default function RallyScoreAnalyzer() {
               />
             )}
             
-            {isLoadingLeaderboard && leaderboard.length === 0 && (
-              <Card className="bg-gray-800/50 border-gray-700">
-                <CardContent className="py-12 flex flex-col items-center gap-3">
-                  <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
-                  <p className="text-gray-400">Loading leaderboard...</p>
-                </CardContent>
-              </Card>
-            )}
-            
-            {/* Leaderboard Table - Rally Style */}
             <Card className="bg-gray-800/50 border-gray-700 overflow-hidden">
               <div className="grid grid-cols-12 gap-2 p-4 text-xs text-gray-400 bg-gray-700/30 border-b border-gray-700">
                 <div className="col-span-1 font-medium">Rank</div>
@@ -1091,22 +1078,14 @@ export default function RallyScoreAnalyzer() {
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                           entry.rank === 1 ? 'bg-yellow-500/20' : entry.rank === 2 ? 'bg-gray-400/20' : 'bg-amber-600/20'
                         }`}>
-                          {entry.rank === 1 ? (
-                            <Crown className="w-5 h-5 text-yellow-400" />
-                          ) : entry.rank === 2 ? (
-                            <Medal className="w-5 h-5 text-gray-300" />
-                          ) : (
-                            <Medal className="w-5 h-5 text-amber-600" />
-                          )}
+                          {entry.rank === 1 ? <Crown className="w-5 h-5 text-yellow-400" /> : 
+                           entry.rank === 2 ? <Medal className="w-5 h-5 text-gray-300" /> : 
+                           <Medal className="w-5 h-5 text-amber-600" />}
                         </div>
-                      ) : (
-                        <span className="text-gray-400 font-medium">#{entry.rank}</span>
-                      )}
+                      ) : <span className="text-gray-400 font-medium">#{entry.rank}</span>}
                     </div>
                     <div className="col-span-5 flex items-center gap-3">
-                      {entry.avatar && (
-                        <img src={entry.avatar} alt="" className="w-8 h-8 rounded-full border-2 border-gray-600" />
-                      )}
+                      {entry.avatar && <img src={entry.avatar} alt="" className="w-8 h-8 rounded-full border-2 border-gray-600" />}
                       <div className="min-w-0">
                         <div className="flex items-center gap-1">
                           <p className="text-white font-medium truncate">{entry.displayName || entry.username}</p>
@@ -1115,30 +1094,15 @@ export default function RallyScoreAnalyzer() {
                         <p className="text-xs text-gray-500">@{entry.username}</p>
                       </div>
                     </div>
+                    <div className="col-span-2 text-right font-mono text-green-400 font-medium">{entry.totalPoints.toFixed(2)}</div>
                     <div className="col-span-2 text-right">
-                      <span className="font-mono text-green-400 font-medium">{entry.totalPoints.toFixed(2)}</span>
+                      <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">Top {entry.topPercent.toFixed(1)}%</Badge>
                     </div>
-                    <div className="col-span-2 text-right">
-                      <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
-                        Top {entry.topPercent.toFixed(1)}%
-                      </Badge>
-                    </div>
-                    <div className="col-span-2 text-right text-gray-400">
-                      {entry.totalSubmissions || 1} posts
-                    </div>
+                    <div className="col-span-2 text-right text-gray-400">{entry.totalSubmissions || 1} posts</div>
                   </div>
                 ))}
               </div>
             </Card>
-            
-            {!isLoadingLeaderboard && leaderboard.length === 0 && (
-              <Card className="bg-gray-800/50 border-gray-700">
-                <CardContent className="py-12 flex flex-col items-center gap-3">
-                  <Trophy className="w-8 h-8 text-gray-500" />
-                  <p className="text-gray-400">Select a campaign to view leaderboard</p>
-                </CardContent>
-              </Card>
-            )}
           </TabsContent>
         </Tabs>
       </div>
