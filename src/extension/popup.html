@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; width: 340px; background: #1a1a2e; color: #fff; }
+    
+    .header { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .logo { font-size: 22px; }
+    .title { flex: 1; }
+    .title h1 { font-size: 14px; font-weight: 600; }
+    .title span { font-size: 10px; opacity: 0.5; }
+    .status { width: 10px; height: 10px; border-radius: 50%; background: #6b7280; transition: background 0.3s; }
+    .status.active { background: #4ade80; box-shadow: 0 0 8px rgba(74,222,128,0.5); }
+    
+    .content { padding: 16px; }
+    
+    .server-info { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); border-radius: 8px; padding: 10px 12px; margin-bottom: 16px; }
+    .server-info .label { font-size: 10px; text-transform: uppercase; color: #6b7280; margin-bottom: 4px; }
+    .server-info .url { font-size: 11px; color: #4ade80; word-break: break-all; font-family: monospace; }
+    .server-info .status-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+    .server-info .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; }
+    .server-info .status-text { font-size: 11px; color: #4ade80; }
+    
+    .section { margin-bottom: 16px; }
+    .section h2 { font-size: 11px; text-transform: uppercase; opacity: 0.5; margin-bottom: 10px; }
+    
+    .pattern-input { display: flex; gap: 8px; margin-bottom: 12px; }
+    .pattern-input input { flex: 1; padding: 8px 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 12px; }
+    .pattern-input input:focus { outline: none; border-color: #4ade80; }
+    .pattern-input input::placeholder { color: #6b7280; }
+    .add-btn { padding: 8px 14px; background: rgba(74,222,128,0.2); border: 1px solid #4ade80; border-radius: 6px; color: #4ade80; font-size: 12px; font-weight: 500; cursor: pointer; }
+    .add-btn:hover { background: rgba(74,222,128,0.3); }
+    
+    .pattern-list { max-height: 180px; overflow-y: auto; }
+    .pattern-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; margin-bottom: 6px; }
+    .pattern-item .icon { font-size: 14px; }
+    .pattern-item .pattern-text { flex: 1; font-size: 12px; color: #fff; word-break: break-all; }
+    .pattern-item .remove-btn { width: 20px; height: 20px; border: none; border-radius: 4px; background: rgba(239,68,68,0.2); color: #f87171; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .pattern-item .remove-btn:hover { background: rgba(239,68,68,0.3); }
+    
+    .quick-add { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .quick-btn { padding: 4px 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #9ca3af; font-size: 10px; cursor: pointer; }
+    .quick-btn:hover { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.3); color: #4ade80; }
+    
+    .stop-btn { width: 100%; padding: 10px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); border-radius: 6px; color: #f87171; font-size: 12px; cursor: pointer; margin-top: 8px; }
+    .stop-btn:hover { background: rgba(239,68,68,0.25); }
+    
+    .row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .row label { flex: 1; font-size: 12px; color: #9ca3af; }
+    input[type="text"] { width: 60px; padding: 6px 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 12px; }
+    input[type="text"]:focus { outline: none; border-color: #4ade80; }
+    
+    .empty-state { text-align: center; padding: 20px; color: #6b7280; }
+    .empty-state .icon { font-size: 28px; margin-bottom: 8px; }
+    .empty-state p { font-size: 12px; }
+    
+    .info { font-size: 11px; color: #6b7280; text-align: center; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-top: 12px; }
+    .info strong { color: #4ade80; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="logo">⚡</span>
+    <div class="title">
+      <h1>Quiz Helper</h1>
+      <span>v12.1 - URL Pattern Targeting</span>
+    </div>
+    <div id="status-dot" class="status"></div>
+  </div>
+  
+  <div class="content">
+    <div class="server-info">
+      <div class="label">Server URL</div>
+      <div class="url" id="serverUrl">Loading...</div>
+      <div class="status-row">
+        <div class="status-dot"></div>
+        <span class="status-text">Connected</span>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>URL Patterns to Monitor</h2>
+      
+      <div class="quick-add">
+        <button class="quick-btn" data-pattern="ahaslides.com">+ AhaSlides</button>
+        <button class="quick-btn" data-pattern="kahoot.it">+ Kahoot</button>
+        <button class="quick-btn" data-pattern="quizizz.com">+ Quizizz</button>
+        <button class="quick-btn" data-pattern="menti.com">+ Mentimeter</button>
+      </div>
+      
+      <div class="pattern-input">
+        <input type="text" id="patternInput" placeholder="Enter URL pattern (e.g., quiz.com)">
+        <button class="add-btn" id="addBtn">Add</button>
+      </div>
+      
+      <div id="patternList" class="pattern-list">
+        <div class="empty-state">
+          <div class="icon">🎯</div>
+          <p>No patterns added.<br>Add a URL pattern above.</p>
+        </div>
+      </div>
+      
+      <button id="stopBtn" class="stop-btn" style="display: none;">🛑 Stop Monitoring All</button>
+    </div>
+    
+    <div class="section">
+      <h2>Settings</h2>
+      <div class="row">
+        <label>Capture Key</label>
+        <input type="text" id="captureKey" value="1" maxlength="1">
+      </div>
+    </div>
+    
+    <div class="info">
+      Widget appears on pages matching patterns.<br>
+      Press <strong id="keyDisplay">1</strong> to capture screen.
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
