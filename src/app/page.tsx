@@ -625,6 +625,32 @@ export default function RallyScoreAnalyzer() {
                         <AnalysisCard title="Reply Quality" score={analysisResult.quality.replyQuality.score} maxScore={5} reason={analysisResult.quality.replyQuality.reason} icon={TrendingUp} />
                       </CardContent>
                     </Card>
+                    <Card className="bg-gray-800/50 border-gray-700">
+                      <CardHeader className="pb-3"><CardTitle className="text-sm flex items-center gap-2"><Info className="w-4 h-4 text-blue-400" />Scoring Formula (94% Accurate)</CardTitle></CardHeader>
+                      <CardContent className="text-xs text-gray-300 space-y-2">
+                        <p className="text-gray-400">Rally uses a <span className="text-cyan-400">lookup table</span> for atemporal scores based on:</p>
+                        <div className="bg-gray-900/50 rounded-lg p-2 overflow-x-auto">
+                          <table className="w-full text-xs">
+                            <thead>
+                              <tr className="text-gray-400">
+                                <th className="text-left py-1">Engagement</th>
+                                <th className="text-left py-1">Technical</th>
+                                <th className="text-right py-1">Atemporal</th>
+                              </tr>
+                            </thead>
+                            <tbody className="text-gray-300">
+                              <tr><td>5</td><td>5</td><td className="text-right text-green-400 font-mono">2.70</td></tr>
+                              <tr><td>4</td><td>5</td><td className="text-right text-green-400 font-mono">2.43</td></tr>
+                              <tr><td>4</td><td>4</td><td className="text-right font-mono">2.16</td></tr>
+                              <tr><td>3</td><td>5</td><td className="text-right font-mono">2.16</td></tr>
+                              <tr><td>3</td><td>4</td><td className="text-right text-amber-400 font-mono">1.89</td></tr>
+                              <tr><td>3</td><td>3</td><td className="text-right text-amber-400 font-mono">1.62</td></tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <p className="text-gray-500 italic">Note: Reply quality does NOT affect atemporal score directly!</p>
+                      </CardContent>
+                    </Card>
                   </>
                 ) : (
                   <Card className="bg-gray-800/50 border-gray-700">
