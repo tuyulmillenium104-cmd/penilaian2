@@ -81,10 +81,16 @@ export async function GET(request: NextRequest) {
       const fivesCount = [engagementScore, technical, reply].filter(s => s >= 4.8).length;
       
       // RALLY'S ACTUAL FORMULA (discovered through pattern analysis):
-      // Rally uses a LOOKUP TABLE based on engagement + technical scores only!
-      // Reply quality does NOT affect atemporal score at all!
+      // Atemporal = Base (lookup from Eng+Tech) × Gate Multiplier
+      // Gate Scores (alignment, accuracy, compliance, originality) affect atemporal!
       
-      // Lookup table discovered from real Rally data
+      // Extract gate scores
+      const gateTotal = (qualityScores.alignment || 0) + 
+                        (qualityScores.accuracy || 0) + 
+                        (qualityScores.compliance || 0) + 
+                        (qualityScores.originality || 0);
+      
+      // Lookup table for MAX atemporal (when all gates = 2)
       const lookupKey = `${Math.round(engagementScore)}_${Math.round(technical)}`;
       
       const lookupTable: Record<string, number> = {
@@ -97,31 +103,63 @@ export async function GET(request: NextRequest) {
         '5_5': 2.70
       };
       
-      let ourAtemporal: number;
+      let baseAtemporal: number;
       
       // Use lookup table if exact match, otherwise interpolate
       if (lookupTable[lookupKey]) {
-        ourAtemporal = lookupTable[lookupKey];
+        baseAtemporal = lookupTable[lookupKey];
       } else {
         // Fallback: interpolate based on formula
-        // Rally caps at 2.70 and has minimum based on eng+tech
         const baseScore = Math.min(engagementScore, technical) * 0.54;
         const bonusScore = Math.max(engagementScore, technical) * 0.27;
-        ourAtemporal = Math.min(baseScore + bonusScore, 2.70);
+        baseAtemporal = Math.min(baseScore + bonusScore, 2.70);
       }
       
-      // Ensure we don't exceed Rally's cap
-      ourAtemporal = Math.min(ourAtemporal, 2.70);
+      // Apply gate multiplier
+      // Gate Total 8 (perfect) → full atemporal
+      // Gate Total 6-7 → reduced atemporal
+      // Discovered: gate 6 → 0.889, gate 7 → ~1.0, gate 8 → 1.0
+      // Also: low accuracy (1) causes additional reduction
+      let gateMultiplier = 1.0;
+      if (gateTotal <= 6) {
+        gateMultiplier = 0.889; // 2.16 / 2.43
+      } else if (gateTotal === 7) {
+        // Gate 7 with accuracy < 2 or compliance < 2 gets reduced
+        if (qualityScores.accuracy < 2 || qualityScores.compliance < 2) {
+          gateMultiplier = 0.889;
+        } else {
+          gateMultiplier = 1.0;
+        }
+      }
       
-      // Calculate temporal using IMPROVED formula
-      // Optimized scaling factors based on 200 sample analysis
-      const likesContrib = (engagementMetrics.likes || 0) * 0.0045;
-      const repliesContrib = (engagementMetrics.replies || 0) * 0.009;
-      const retweetsContrib = (engagementMetrics.retweets || 0) * 0.016;
-      const impressionsContrib = (engagementMetrics.impressions || 0) * 0.00009;
-      const followersContrib = (engagementMetrics.followersOfRepliers || 0) * 0.000009;
+      const ourAtemporal = Math.min(baseAtemporal * gateMultiplier, 2.70);
       
-      const ourTemporal = Math.min(4.2, 0.5 + likesContrib + repliesContrib + retweetsContrib + impressionsContrib + followersContrib);
+      // Calculate temporal using RALLY'S ACTUAL FORMULA
+      // Rally uses base ~2.9 + logarithmic engagement contributions
+      // Discovered from 100+ sample analysis
+      const TEMPORAL_BASE = 2.9;
+      const TEMPORAL_MAX = 4.2;
+      
+      // Logarithmic contributions (Rally-style)
+      const likesLog = Math.log10((engagementMetrics.likes || 0) + 1);
+      const repliesLog = Math.log10((engagementMetrics.replies || 0) + 1);
+      const retweetsLog = Math.log10((engagementMetrics.retweets || 0) + 1);
+      const impressionsLog = Math.log10((engagementMetrics.impressions || 0) + 1);
+      const followersLog = Math.log10((engagementMetrics.followersOfRepliers || 0) + 1);
+      
+      // Coefficients calibrated from Rally data (reduced for better fit)
+      // Rally seems to have stronger dampening on high engagement
+      const likesContrib = likesLog * 0.08;
+      const repliesContrib = repliesLog * 0.12;
+      const retweetsContrib = retweetsLog * 0.15;
+      const impressionsContrib = impressionsLog * 0.015;
+      const followersContrib = followersLog * 0.008;
+      
+      // Apply engagement quality factor (dampen if low engagement diversity)
+      const totalEngagement = (engagementMetrics.likes || 0) + (engagementMetrics.replies || 0) + (engagementMetrics.retweets || 0);
+      const diversityBonus = totalEngagement > 0 && (engagementMetrics.retweets || 0) > 10 ? 0.1 : 0;
+      
+      const ourTemporal = Math.min(TEMPORAL_MAX, TEMPORAL_BASE + likesContrib + repliesContrib + retweetsContrib + impressionsContrib + followersContrib + diversityBonus);
       
       // Compare
       const atemporalDiff = Math.abs(rallyAtemporal - ourAtemporal);

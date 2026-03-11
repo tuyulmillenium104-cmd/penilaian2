@@ -79,22 +79,22 @@ export async function GET(request: NextRequest) {
             replyQuality: { name: 'Reply Quality', description: 'Kualitas interaksi', maxScore: 5, weight: 'Low', multiplier: 0.04 }
           },
           
-          // Scoring formula components (calibrated)
+          // Scoring formula components (calibrated from real Rally data)
           scoringFormula: {
-            atemporalBase: 0.5,
-            atemporalMax: 1.5,
-            temporalBase: 0.6,
-            temporalMax: 1.5,
-            totalMax: 3.0,
+            atemporalBase: 0.27, // Minimum from lookup table
+            atemporalMax: 2.70,  // Max from lookup (Eng=5, Tech=5)
+            temporalBase: 2.9,   // Base for temporal calculation
+            temporalMax: 4.2,    // Max temporal achievable
+            totalMax: 6.9,       // Total max possible
             gradeThresholds: [
-              { min: 2.8, grade: 'S+', description: 'Exceptional - Top 1%' },
-              { min: 2.6, grade: 'S', description: 'Outstanding - Top 5%' },
-              { min: 2.4, grade: 'A+', description: 'Excellent - Top 10%' },
-              { min: 2.2, grade: 'A', description: 'Very Good - Top 25%' },
-              { min: 2.0, grade: 'B+', description: 'Good - Above Average' },
-              { min: 1.7, grade: 'B', description: 'Average' },
-              { min: 1.3, grade: 'C+', description: 'Below Average' },
-              { min: 1.0, grade: 'C', description: 'Poor' },
+              { min: 6.0, grade: 'S+', description: 'Exceptional - Top 1%' },
+              { min: 5.5, grade: 'S', description: 'Outstanding - Top 5%' },
+              { min: 5.0, grade: 'A+', description: 'Excellent - Top 10%' },
+              { min: 4.5, grade: 'A', description: 'Very Good - Top 25%' },
+              { min: 4.0, grade: 'B+', description: 'Good - Above Average' },
+              { min: 3.5, grade: 'B', description: 'Average' },
+              { min: 3.0, grade: 'C+', description: 'Below Average' },
+              { min: 2.5, grade: 'C', description: 'Poor' },
               { min: 0, grade: 'F', description: 'Fail / Violation' }
             ]
           }
@@ -126,13 +126,13 @@ export async function GET(request: NextRequest) {
         missionCount: campaign.missionCount || (Array.isArray(missionsRes) ? missionsRes.length : 0),
         participantCount,
         
-        // Token & Rewards
+        // Token & Rewards - Only count claimable on_chain rewards
         token: campaign.token?.symbol || 'Unknown',
         tokenAddress: campaign.token?.address || '',
         tokenLogo: campaign.token?.logoUri || '',
         tokenUsdPrice: campaign.token?.usdPrice || 0,
         chainId: campaign.token?.chainId || 8453,
-        totalReward: campaign.campaignRewards?.reduce((sum: number, r: any) => sum + (r.totalAmount || 0), 0) || 0,
+        totalReward: campaign.campaignRewards?.find((r: any) => r.claimable === true && r.source === 'on_chain')?.totalAmount || 0,
         rewards: campaign.campaignRewards || [],
         
         headerImageUrl: campaign.headerImageUrl || '',
@@ -153,8 +153,33 @@ export async function GET(request: NextRequest) {
     }
     
     // Return all campaigns with essential data
-    const campaigns = data.campaigns.filter((c: any) => new Date(c.endDate) > new Date())
-      .map((c: any) => ({
+    // Fetch participant counts for each campaign in parallel
+    const activeCampaigns = data.campaigns.filter((c: any) => new Date(c.endDate) > new Date());
+    
+    // Fetch participant counts for top 20 campaigns in parallel
+    const participantCounts = await Promise.all(
+      activeCampaigns.slice(0, 20).map(async (c: any) => {
+        try {
+          const lbRes = await fetch(`https://app.rally.fun/api/leaderboard?campaignAddress=${c.intelligentContractAddress}&limit=2000`);
+          if (lbRes.ok) {
+            const lbData = await lbRes.json();
+            return { address: c.intelligentContractAddress, count: Array.isArray(lbData) ? lbData.length : (lbData.total || 0) };
+          }
+        } catch (e) {
+          // Ignore errors
+        }
+        return { address: c.intelligentContractAddress, count: 0 };
+      })
+    );
+    
+    const participantMap = new Map(participantCounts.map(p => [p.address.toLowerCase(), p.count]));
+    
+    const campaigns = activeCampaigns.map((c: any) => {
+      // Only count claimable on_chain rewards, exclude admin_added RLP points
+      const claimableReward = c.campaignRewards?.find((r: any) => r.claimable === true && r.source === 'on_chain');
+      const totalReward = claimableReward?.totalAmount || 0;
+      
+      return {
         id: c.id, title: c.title, intelligentContractAddress: c.intelligentContractAddress,
         creator: c.displayCreator?.displayName || 'Unknown',
         creatorUsername: c.displayCreator?.xUsername || '',
@@ -166,17 +191,19 @@ export async function GET(request: NextRequest) {
         style: determineScoringStyle(c, []),
         distributionType: determineDistributionType(c),
         startDate: c.startDate, endDate: c.endDate,
-        missionCount: c.missionCount || 0, participantCount: 0,
-        token: c.token?.symbol || 'Unknown',
-        tokenLogo: c.token?.logoUri || '',
+        missionCount: c.missionCount || 0,
+        participantCount: participantMap.get(c.intelligentContractAddress?.toLowerCase()) || 0,
+        token: claimableReward?.token?.symbol || c.token?.symbol || 'Unknown',
+        tokenLogo: claimableReward?.token?.logoUri || c.token?.logoUri || '',
         tokenUsdPrice: c.token?.usdPrice || 0,
         chainId: c.token?.chainId || 8453,
-        totalReward: c.campaignRewards?.reduce((sum: number, r: any) => sum + (r.totalAmount || 0), 0) || 0,
+        totalReward: totalReward,
         minimumFollowers: c.minimumFollowers || 0,
         maximumFollowers: c.maximumFollowers || 0,
         onlyVerifiedUsers: c.onlyVerifiedUsers || false,
         headerImageUrl: c.headerImageUrl || ''
-      }));
+      };
+    });
     
     return NextResponse.json(campaigns);
   } catch (error) {

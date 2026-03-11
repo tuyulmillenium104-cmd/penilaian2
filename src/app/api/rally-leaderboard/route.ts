@@ -7,7 +7,8 @@ export async function GET(request: NextRequest) {
 
   try {
     // Build URL for Rally leaderboard API
-    let url = `https://app.rally.fun/api/leaderboard?limit=${limit}`;
+    // Always fetch with high limit to get accurate total count
+    let url = `https://app.rally.fun/api/leaderboard?limit=2000`;
     if (campaignAddress) {
       url += `&campaignAddress=${campaignAddress}`;
     }
@@ -22,17 +23,22 @@ export async function GET(request: NextRequest) {
 
     const data = await response.json();
 
-    // Get total count
-    const totalParticipants = Array.isArray(data) ? data.length : (data.total || 0);
+    // Get total count from full data
+    const allEntries = Array.isArray(data) ? data : (data.leaderboard || data.items || []);
+    const totalParticipants = allEntries.length;
+
+    // Slice to requested limit for display
+    const entries = allEntries.slice(0, limit);
 
     // Return full leaderboard with all relevant data
-    const leaderboard = (Array.isArray(data) ? data : data.leaderboard || data.items || []).map((entry: any) => ({
+    const leaderboard = entries.map((entry: any) => ({
       rank: entry.rank,
       username: entry.user?.xUsername || entry.username || 'Unknown',
       displayName: entry.user?.xName || entry.username || 'Unknown',
       avatar: entry.user?.xAvatar || '',
       verified: entry.user?.xVerified || false,
       followersCount: entry.user?.xFollowersCount || 0,
+      points: parseFloat(entry.points || entry.totalPoints || 0) / 1e18, // Already converted
       totalPoints: parseFloat(entry.points || entry.totalPoints || 0) / 1e18,
       referralBonus: parseFloat(entry.referralBonus || 0) / 1e18,
       totalSubmissions: entry.totalSubmissions || 1,
