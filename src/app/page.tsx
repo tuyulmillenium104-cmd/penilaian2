@@ -865,8 +865,8 @@ export default function RallyScoreAnalyzer() {
       if (!response.ok) throw new Error('Failed to fetch leaderboard')
       const data = await response.json()
       setLeaderboard(data.leaderboard || [])
-      setTotalParticipants(data.total || 0)
-      toast.success('Leaderboard loaded!')
+      setTotalParticipants(data.total || selectedCampaign?.participantCount || 0)
+      toast.success(`Leaderboard loaded! (${data.leaderboard?.length || 0} entries)`)
     } catch (error) {
       toast.error('Failed to fetch leaderboard')
     } finally {

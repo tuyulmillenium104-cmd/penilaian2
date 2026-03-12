@@ -6,6 +6,25 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(searchParams.get('limit') || '100');
   
   try {
+    // First, get the campaign info to know total participants
+    let totalParticipants = 0;
+    if (campaignAddress) {
+      try {
+        const campaignResponse = await fetch(`https://app.rally.fun/api/campaigns/${campaignAddress}`, {
+          headers: { 'Accept': 'application/json' },
+        });
+        if (campaignResponse.ok) {
+          const campaignData = await campaignResponse.json();
+          // Use lastSyncedSubmissionCount as total participants estimate
+          // This represents total submissions in the campaign
+          totalParticipants = campaignData.lastSyncedSubmissionCount || campaignData.participantCount || 0;
+        }
+      } catch (e) {
+        console.error('Failed to fetch campaign info:', e);
+      }
+    }
+    
+    // Then get the leaderboard
     let url = 'https://app.rally.fun/api/leaderboard';
     if (campaignAddress) {
       url += `?campaignAddress=${campaignAddress}&limit=${limit}`;
@@ -25,11 +44,16 @@ export async function GET(request: NextRequest) {
     
     // Transform data
     const rawData = Array.isArray(data) ? data : data.leaderboard || [];
-    const totalParticipants = data.total || rawData.length;
+    
+    // Use actual total participants from campaign, or fallback to leaderboard length
+    if (totalParticipants === 0) {
+      totalParticipants = data.total || rawData.length;
+    }
     
     const leaderboard = rawData.map((entry: any, index: number) => {
       const rank = entry.rank || index + 1;
-      // Calculate topPercent based on rank and total participants
+      // Calculate topPercent based on actual total participants
+      // Rank 1 of 815 = 0.12% (Top 0.1%)
       const topPercent = totalParticipants > 0 ? (rank / totalParticipants) * 100 : 0;
       
       return {
