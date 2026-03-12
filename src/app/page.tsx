@@ -86,16 +86,17 @@ interface LeaderboardEntry {
   totalSubmissions?: number
 }
 
-// Grade configuration - Updated based on real Rally scoring (0-1000+ scale)
+// Grade configuration - Updated based on Elite Rally Masterclass (0-10 scale)
+// Real Rally scores: Rank 1 = 8.14, Rank 100 = ~4.0
 const GRADE_CONFIG: { min: number; grade: string; color: string; label: string }[] = [
-  { min: 900, grade: 'S+', color: 'text-yellow-400', label: 'Exceptional' },
-  { min: 750, grade: 'S', color: 'text-amber-400', label: 'Outstanding' },
-  { min: 600, grade: 'A+', color: 'text-green-400', label: 'Excellent' },
-  { min: 500, grade: 'A', color: 'text-emerald-400', label: 'Very Good' },
-  { min: 400, grade: 'B+', color: 'text-teal-400', label: 'Good' },
-  { min: 300, grade: 'B', color: 'text-cyan-400', label: 'Above Average' },
-  { min: 200, grade: 'C+', color: 'text-blue-400', label: 'Average' },
-  { min: 100, grade: 'C', color: 'text-gray-400', label: 'Below Average' },
+  { min: 8.0, grade: 'S+', color: 'text-yellow-400', label: 'Elite (Top 1%)' },
+  { min: 7.0, grade: 'S', color: 'text-amber-400', label: 'Outstanding (Top 5%)' },
+  { min: 6.0, grade: 'A+', color: 'text-green-400', label: 'Excellent (Top 10%)' },
+  { min: 5.0, grade: 'A', color: 'text-emerald-400', label: 'Very Good (Top 25%)' },
+  { min: 4.0, grade: 'B+', color: 'text-teal-400', label: 'Good (Top 50%)' },
+  { min: 3.0, grade: 'B', color: 'text-cyan-400', label: 'Above Average' },
+  { min: 2.0, grade: 'C+', color: 'text-blue-400', label: 'Average' },
+  { min: 1.0, grade: 'C', color: 'text-gray-400', label: 'Below Average' },
   { min: 0, grade: 'F', color: 'text-red-400', label: 'Fail' }
 ]
 
@@ -108,17 +109,27 @@ const formatNumber = (num: number): string => {
 
 const calculateRankAndReward = (score: number, leaderboard: LeaderboardEntry[], totalParticipants: number, totalReward: number) => {
   if (totalParticipants === 0 || totalReward === 0) return { estimatedRank: 0, topPercent: 0, estimatedReward: 0 }
+  
+  // Count how many have higher scores
   const higherScores = leaderboard.filter(e => e.totalPoints > score).length
   let estimatedRank = higherScores + 1
+  
+  // If leaderboard is incomplete, estimate rank based on score distribution
+  // Based on Elite Masterclass: Rank 1 ~ 8.14, Rank 100 ~ 4.0
   if (leaderboard.length < totalParticipants) {
-    const avgScore = leaderboard.length > 0 ? leaderboard.reduce((sum, e) => sum + e.totalPoints, 0) / leaderboard.length : 5.0
-    if (score > avgScore * 1.5) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.01))
-    else if (score > avgScore * 1.2) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.05))
-    else if (score > avgScore) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.1))
-    else if (score > avgScore * 0.8) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.25))
-    else estimatedRank = Math.floor(totalParticipants * 0.5)
+    if (score >= 8.0) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.001))
+    else if (score >= 7.0) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.01))
+    else if (score >= 6.0) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.05))
+    else if (score >= 5.0) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.10))
+    else if (score >= 4.0) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.25))
+    else if (score >= 3.0) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.50))
+    else estimatedRank = Math.floor(totalParticipants * 0.75)
   }
+  
   const topPercent = (estimatedRank / totalParticipants) * 100
+  
+  // Reward distribution (Default: alpha=3, power law)
+  // Top 10% get ~90% of rewards
   let estimatedReward = 0
   if (topPercent <= 1) estimatedReward = totalReward * 0.20
   else if (topPercent <= 5) estimatedReward = totalReward * 0.10
@@ -126,7 +137,10 @@ const calculateRankAndReward = (score: number, leaderboard: LeaderboardEntry[], 
   else if (topPercent <= 25) estimatedReward = totalReward * 0.02
   else if (topPercent <= 50) estimatedReward = totalReward * 0.01
   else estimatedReward = totalReward * 0.005
+  
+  // Divide by 3 for per-period estimate
   estimatedReward = estimatedReward / 3
+  
   return { estimatedRank, topPercent: Math.min(topPercent, 100), estimatedReward: Math.max(estimatedReward, 0) }
 }
 
@@ -370,25 +384,26 @@ const ScoreOptimizerGuide = () => {
         <CardContent className="py-4 px-4">
           <div className="flex items-center gap-3 mb-3">
             <Rocket className="w-6 h-6 text-yellow-400" />
-            <h2 className="text-xl font-bold text-yellow-400">Score Optimizer Guide</h2>
+            <h2 className="text-xl font-bold text-yellow-400">Elite Rally Masterclass</h2>
           </div>
-          <p className="text-gray-300 text-sm">Panduan lengkap untuk mencapai <span className="text-yellow-400 font-bold">SKOR MAKSIMAL</span> di Rally</p>
-          <p className="text-xs text-gray-500 mt-2">Based on real Rally submission: 507 points = TOP 28%</p>
+          <p className="text-gray-300 text-sm">Panduan lengkap untuk mencapai <span className="text-yellow-400 font-bold">SKOR ELITE (8.0+)</span> di Rally</p>
+          <p className="text-xs text-gray-500 mt-2">Based on Elite Rally Masterclass | Real Data: Rank 1 = 8.14, Scale: 0-10</p>
         </CardContent>
       </Card>
       
       <Card className="bg-gray-800/50 border-amber-500/30">
-        <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Trophy className="w-5 h-5 text-amber-400" />RALLY SCORING SYSTEM (REAL)</CardTitle></CardHeader>
+        <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Trophy className="w-5 h-5 text-amber-400" />ELITE SCORING SYSTEM (0-10 Scale)</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           <div className="bg-amber-500/10 rounded-lg p-3 border border-amber-500/30">
-            <p className="text-xs text-amber-400 font-medium mb-2">TOTAL SCORE = ATEMPORAL + TEMPORAL</p>
+            <p className="text-xs text-amber-400 font-medium mb-2">ELITE FORMULA:</p>
             <div className="font-mono text-xs text-gray-300 space-y-1">
-              <p className="text-green-400">Example (Real Submission):</p>
-              <p>• Gate Scores: 1,2,1,2 (6/8 total)</p>
-              <p>• Quality Scores: 4,5,5 (14/15 total)</p>
-              <p>• Engagement: 107 likes, 17 replies, 4 RT</p>
-              <p>• Total: <span className="text-amber-400 font-bold">507 points</span></p>
-              <p>• Rank: <span className="text-green-400">TOP 28%</span></p>
+              <p className="text-cyan-400">Total = M_gate × (Quality + Engagement)</p>
+              <p></p>
+              <p className="text-green-400">Real Leaderboard Data (Grvt 2.5):</p>
+              <p>• Rank 1: <span className="text-amber-400 font-bold">8.14 points</span></p>
+              <p>• Rank 2: <span className="text-amber-400">7.95 points</span></p>
+              <p>• Rank 100: ~4.0 points</p>
+              <p>• Elite Target: <span className="text-yellow-400">8.0+ for Top 1%</span></p>
             </div>
           </div>
         </CardContent>
@@ -396,16 +411,16 @@ const ScoreOptimizerGuide = () => {
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card className="bg-gray-800/50 border-cyan-500/30">
-          <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Star className="w-5 h-5 text-cyan-400" />ATEMPORAL (Quality-Based)</CardTitle></CardHeader>
+          <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Star className="w-5 h-5 text-cyan-400" />GATE MULTIPLIER (0.5x - 1.5x)</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <div className="bg-cyan-500/10 rounded-lg p-3 border border-cyan-500/30">
               <p className="text-xs text-cyan-400 font-medium mb-2">FORMULA:</p>
               <div className="font-mono text-xs text-gray-300 space-y-1">
-                <p>Base: 50 points</p>
-                <p>+ (GateSum/8) × 100</p>
-                <p>+ (QualitySum/15) × 150</p>
+                <p>M_gate = 1 + 0.5 × (g_star - 1)</p>
+                <p>g_star = avg(G1, G2, G3, G4)</p>
                 <p></p>
-                <p className="text-gray-500">Max: ~300 points</p>
+                <p className="text-green-400">All gates 2/2 → 1.5x (MAX)</p>
+                <p className="text-red-400">Any gate 0/2 → 0.5x (PENALTY)</p>
               </div>
             </div>
             <div className="text-xs text-gray-400">
@@ -413,21 +428,23 @@ const ScoreOptimizerGuide = () => {
               <p>• Content Alignment</p>
               <p>• Information Accuracy</p>
               <p>• Campaign Compliance</p>
-              <p>• Originality & Authenticity</p>
+              <p>• <span className="text-amber-400">Originality & Authenticity</span> (CRITICAL!)</p>
             </div>
           </CardContent>
         </Card>
         <Card className="bg-gray-800/50 border-green-500/30">
-          <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Zap className="w-5 h-5 text-green-400" />TEMPORAL (Engagement)</CardTitle></CardHeader>
+          <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Zap className="w-5 h-5 text-green-400" />ENGAGEMENT WEIGHTS</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <div className="bg-green-500/10 rounded-lg p-3 border border-green-500/30">
-              <p className="text-xs text-green-400 font-medium mb-2">FORMULA:</p>
+              <p className="text-xs text-green-400 font-medium mb-2">ELITE WEIGHTS:</p>
               <div className="font-mono text-xs text-gray-300 space-y-1">
-                <p>Likes: log₁₀(likes+1) × 80</p>
-                <p>Replies: log₁₀(replies+1) × 120</p>
-                <p>Retweets: log₁₀(retweets+1) × 50</p>
-                <p>Impressions: log₁₀(impr+1) × 20</p>
-                <p>Followers: log₁₀(followers+1) × 50</p>
+                <p>• <span className="text-amber-400 font-bold">Followers of Repliers: 35%</span></p>
+                <p>• Replies: 25%</p>
+                <p>• Likes: 15%</p>
+                <p>• Retweets: 15%</p>
+                <p>• Impressions: 10%</p>
+                <p></p>
+                <p className="text-cyan-400">FR is KEY - Quality &gt; Quantity!</p>
               </div>
             </div>
             <div className="text-xs text-gray-400">
@@ -439,35 +456,55 @@ const ScoreOptimizerGuide = () => {
           </CardContent>
         </Card>
       </div>
-      <Card className="bg-gray-800/50 border-amber-500/30">
-        <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Flag className="w-5 h-5 text-amber-400" />GATE SCORES (Wajib Lulus!)</CardTitle></CardHeader>
+      <Card className="bg-gray-800/50 border-red-500/30">
+        <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><AlertTriangle className="w-5 h-5 text-red-400" />AI DETECTION KILL LIST</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          <ChecklistItem id="gate1" text="Content Alignment = 2: Konten RELEVAN dengan campaign" critical checked={checkedItems.has('gate1')} onToggle={toggleItem} />
-          <ChecklistItem id="gate2" text="Information Accuracy = 2: Informasi AKURAT" critical checked={checkedItems.has('gate2')} onToggle={toggleItem} />
-          <ChecklistItem id="gate3" text="Campaign Compliance = 2: Memenuhi SEMUA aturan" critical checked={checkedItems.has('gate3')} onToggle={toggleItem} />
-          <ChecklistItem id="gate4" text="Originality = 2: Konten ORIGINAL" critical checked={checkedItems.has('gate4')} onToggle={toggleItem} />
-          <div className="mt-3 p-3 bg-red-500/10 rounded-lg border border-red-500/30">
-            <AlertTriangle className="w-4 h-4 text-red-400 inline mr-2" />
-            <span className="text-red-300 text-sm font-medium">Gate = 0 → Score turun 50%!</span>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="p-2 bg-red-500/10 rounded border border-red-500/30">
+              <p className="text-red-400 font-medium">NEVER Use:</p>
+              <p className="text-gray-400">• Em dashes (—)</p>
+              <p className="text-gray-400">• "In the world of..."</p>
+              <p className="text-gray-400">• "delve into", "realm"</p>
+              <p className="text-gray-400">• Smart quotes ""</p>
+            </div>
+            <div className="p-2 bg-green-500/10 rounded border border-green-500/30">
+              <p className="text-green-400 font-medium">USE Instead:</p>
+              <p className="text-gray-300">• Regular hyphens (-)</p>
+              <p className="text-gray-300">• Start mid-thought</p>
+              <p className="text-gray-300">• "dig into", "world"</p>
+              <p className="text-gray-300">• Straight quotes ""</p>
+            </div>
+          </div>
+          <div className="mt-2 p-2 bg-amber-500/10 rounded-lg border border-amber-500/30">
+            <p className="text-amber-300 text-xs font-medium">⚠️ Originality = 0/2 akan mengurangi skor 50%! Gunakan suara manusia yang natural.</p>
           </div>
         </CardContent>
       </Card>
-      <Card className="bg-gray-800/50 border-purple-500/30">
-        <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Star className="w-5 h-5 text-purple-400" />QUALITY SCORES (Target: 5/5)</CardTitle></CardHeader>
+      <Card className="bg-gray-800/50 border-amber-500/30">
+        <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Flag className="w-5 h-5 text-amber-400" />GATE CHECKLIST (Target: 2/2 semua)</CardTitle></CardHeader>
         <CardContent className="space-y-2">
-          <ChecklistItem id="q1" text="Engagement Potential = 5: Hook kuat, mengundang interaksi" checked={checkedItems.has('q1')} onToggle={toggleItem} />
-          <ChecklistItem id="q2" text="Technical Quality = 5: Penulisan BAIK, struktur jelas" checked={checkedItems.has('q2')} onToggle={toggleItem} />
+          <ChecklistItem id="gate1" text="Content Alignment = 2: Konten RELEVAN dengan campaign" critical checked={checkedItems.has('gate1')} onToggle={toggleItem} />
+          <ChecklistItem id="gate2" text="Information Accuracy = 2: Informasi AKURAT & terverifikasi" critical checked={checkedItems.has('gate2')} onToggle={toggleItem} />
+          <ChecklistItem id="gate3" text="Campaign Compliance = 2: Memenuhi SEMUA aturan & hashtags" critical checked={checkedItems.has('gate3')} onToggle={toggleItem} />
+          <ChecklistItem id="gate4" text="Originality = 2: Suara MANUSIA, unik, bukan AI" critical checked={checkedItems.has('gate4')} onToggle={toggleItem} />
+        </CardContent>
+      </Card>
+      <Card className="bg-gray-800/50 border-purple-500/30">
+        <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Star className="w-5 h-5 text-purple-400" />QUALITY CHECKLIST (Target: 5/5)</CardTitle></CardHeader>
+        <CardContent className="space-y-2">
+          <ChecklistItem id="q1" text="Engagement Potential = 5: Hook kuat di 3 kata pertama" checked={checkedItems.has('q1')} onToggle={toggleItem} />
+          <ChecklistItem id="q2" text="Technical Quality = 5: Error-free, format bersih" checked={checkedItems.has('q2')} onToggle={toggleItem} />
           <ChecklistItem id="q3" text="Reply Quality = 5: Memancing DISKUSI berkualitas" checked={checkedItems.has('q3')} onToggle={toggleItem} />
         </CardContent>
       </Card>
       <Card className="bg-gray-800/50 border-blue-500/30">
-        <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Lightbulb className="w-5 h-5 text-blue-400" />TIPS UNTUK SKOR TINGGI</CardTitle></CardHeader>
+        <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Lightbulb className="w-5 h-5 text-blue-400" />ELITE TIPS</CardTitle></CardHeader>
         <CardContent className="space-y-2 text-sm text-gray-300">
-          <p>• <strong>Hook kuat:</strong> "Breaking:", "Hot take:", "Thread 🧵:"</p>
-          <p>• <strong>Specific details:</strong> Angka, data, pengalaman konkret</p>
-          <p>• <strong>CTA di akhir:</strong> "What's your take?", "Agree or disagree?"</p>
-          <p>• <strong>Authentic voice:</strong> Hindari pola AI-generated</p>
-          <p>• <strong>Thread length:</strong> 5-11 tweets untuk depth</p>
+          <p>• <strong>Hook kuat:</strong> "Nobody talks about...", "Hot take:", "POV:"</p>
+          <p>• <strong>Personal angle:</strong> "I lost...", "My portfolio...", "tbh,"</p>
+          <p>• <strong>CTA di akhir:</strong> "Thoughts?", "What's your take?"</p>
+          <p>• <strong>Kontraksi:</strong> "don't", "can't", "won't" (natural voice)</p>
+          <p>• <strong>FR Strategy:</strong> Tag akun besar, buat konten yang influencer mau reply</p>
         </CardContent>
       </Card>
     </div>
@@ -857,45 +894,54 @@ export default function RallyScoreAnalyzer() {
       const gateSum = gates.contentAlignment.score + gates.informationAccuracy.score + gates.campaignCompliance.score + gates.originality.score
       const qualitySum = quality.engagementPotential.score + quality.technicalQuality.score + quality.replyQuality.score
       
-      // Rally-style scoring based on real submission data
-      // Gate contribution (0-8 possible, normalized)
-      const gateNormalized = gateSum / 8  // 0-1 scale
+      // ELITE RALLY SCORING (0-10 scale based on real Rally data)
+      // Real Leaderboard: Rank 1 = 8.14, Rank 100 = ~4.0
       
-      // Quality contribution (0-15 possible, normalized)
-      const qualityNormalized = qualitySum / 15  // 0-1 scale
-      
-      // Atemporal points: Base + quality-based multiplier
-      // Real data: gateSum=6/8, qualitySum=14/15 → contributed to ~200-250 points
-      const atemporalPoints = 50 + (gateNormalized * 100) + (qualityNormalized * 150)
-      
-      // Temporal points: Engagement-based (majority of points)
-      // Real data: 107 likes, 17 replies, 4 retweets, 1518 impressions, 4183 followers
-      // Formula adjusted to produce ~250-300 points for this engagement
-      const likesContrib = Math.log10(engagement.likes + 1) * 80
-      const repliesContrib = Math.log10(engagement.replies + 1) * 120
-      const retweetsContrib = Math.log10(engagement.retweets + 1) * 50
-      const impressionsContrib = Math.log10(engagement.impressions + 1) * 20
-      const followersContrib = Math.log10(engagement.followersOfRepliers + 1) * 50
-      
-      const temporalPoints = likesContrib + repliesContrib + retweetsContrib + impressionsContrib + followersContrib
-      
-      // Gate penalty: If any gate is 0, apply penalty
+      // 1. Gate Multiplier (M_gate): 0.5x - 1.5x
+      // M_gate = 1 + 0.5 * (g_star - 1), where g_star = average of gate scores
+      const gStar = gateSum / 4
       const minGate = Math.min(gates.contentAlignment.score, gates.informationAccuracy.score, gates.campaignCompliance.score, gates.originality.score)
-      const penaltyMultiplier = minGate === 0 ? 0.5 : 1
+      const gateMultiplier = minGate === 0 ? 0.5 : 1 + 0.5 * (gStar - 1)  // 0.5 to 1.5
       
-      const totalPoints = Math.round((atemporalPoints + temporalPoints) * penaltyMultiplier)
+      // 2. Quality Score (0-10 scale)
+      // Normalized from 0-15 to 0-5, then scaled
+      const qualityScore = (qualitySum / 15) * 5  // 0-5 range
       
-      // Grade based on total points (Rally scale: 0-1000+)
+      // 3. Temporal Points (Engagement-based, log-scaled)
+      // Based on Elite Masterclass weights: FR > Replies > Likes > RT > Impressions
+      const logLikes = Math.log10(engagement.likes + 1)
+      const logReplies = Math.log10(engagement.replies + 1)
+      const logRetweets = Math.log10(engagement.retweets + 1)
+      const logImpressions = Math.log10(engagement.impressions + 1)
+      const logFollowers = Math.log10(engagement.followersOfRepliers + 1)
+      
+      // Engagement contribution (0-5 scale)
+      // FR is highest weighted (Elite Masterclass insight)
+      const engagementScore = Math.min(5, 
+        (logFollowers * 0.35) +      // Followers of Repliers - HIGHEST weight
+        (logReplies * 0.25) +         // Replies
+        (logLikes * 0.15) +           // Likes
+        (logRetweets * 0.15) +        // Retweets
+        (logImpressions * 0.10)       // Impressions
+      )
+      
+      // 4. Total Score (0-10 scale)
+      // Formula: M_gate * (Quality + Engagement)
+      const rawScore = qualityScore + engagementScore  // 0-10 base
+      const totalPoints = Math.round(rawScore * gateMultiplier * 100) / 100  // Round to 2 decimals
+      
+      // Grade based on total points (0-10 scale)
       const grade = getGrade(totalPoints)
       
       setAnalysisResult({ 
         gates, 
         quality, 
         engagement, 
-        atemporalPoints: Math.round(atemporalPoints * penaltyMultiplier), 
-        temporalPoints: Math.round(temporalPoints * penaltyMultiplier), 
+        atemporalPoints: Math.round(qualityScore * gateMultiplier * 100) / 100, 
+        temporalPoints: Math.round(engagementScore * gateMultiplier * 100) / 100, 
         totalPoints, 
-        grade 
+        grade,
+        gateMultiplier: Math.round(gateMultiplier * 100) / 100
       })
       toast.success('Analysis complete!')
     } catch (error) {

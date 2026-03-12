@@ -24,21 +24,31 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
     
     // Transform data
-    const leaderboard = (Array.isArray(data) ? data : data.leaderboard || []).map((entry: any, index: number) => ({
-      rank: entry.rank || index + 1,
-      username: entry.xUsername || entry.username || 'Unknown',
-      displayName: entry.displayName || entry.xDisplayName || entry.xUsername || 'Unknown',
-      avatar: entry.avatarUrl || entry.xAvatarUrl || '',
-      verified: entry.xVerified || false,
-      totalPoints: (entry.totalPoints || entry.points || 0) / 1e18,
-      topPercent: entry.topPercent || entry.topPercentage || 0,
-      followersCount: entry.followersCount || entry.xFollowersCount || 0,
-      totalSubmissions: entry.totalSubmissions || entry.submissionCount || 0
-    }));
+    const rawData = Array.isArray(data) ? data : data.leaderboard || [];
+    const totalParticipants = data.total || rawData.length;
+    
+    const leaderboard = rawData.map((entry: any, index: number) => {
+      const rank = entry.rank || index + 1;
+      // Calculate topPercent based on rank and total participants
+      const topPercent = totalParticipants > 0 ? (rank / totalParticipants) * 100 : 0;
+      
+      return {
+        rank,
+        username: entry.xUsername || entry.username || 'Unknown',
+        displayName: entry.displayName || entry.xDisplayName || entry.xUsername || 'Unknown',
+        avatar: entry.avatarUrl || entry.xAvatarUrl || '',
+        verified: entry.xVerified || false,
+        // Rally returns scores in atto format (10^-18), convert to 0-10 scale
+        totalPoints: (entry.totalPoints || entry.points || 0) / 1e18,
+        topPercent: topPercent,
+        followersCount: entry.followersCount || entry.xFollowersCount || 0,
+        totalSubmissions: entry.totalSubmissions || entry.submissionCount || 0
+      };
+    });
     
     return NextResponse.json({
       leaderboard,
-      total: leaderboard.length
+      total: totalParticipants
     });
   } catch (error) {
     console.error('Failed to fetch leaderboard:', error);
