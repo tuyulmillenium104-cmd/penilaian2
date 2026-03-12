@@ -84,6 +84,20 @@ interface LeaderboardEntry {
   topPercent: number
   followersCount?: number
   totalSubmissions?: number
+  estimatedReward?: number
+  token?: string
+}
+
+interface LeaderboardResponse {
+  leaderboard: LeaderboardEntry[]
+  total: number
+  campaignInfo?: {
+    totalReward: number
+    token: string
+    tokenUsdPrice: number
+    rewards: { amount: number; token: string; tokenLogo: string | null; claimable: boolean }[]
+    alpha: number
+  }
 }
 
 // Grade configuration - Updated based on Elite Rally Masterclass (0-10 scale)
@@ -843,7 +857,7 @@ export default function RallyScoreAnalyzer() {
           
           const leaderboardResponse = await fetch(`/api/rally-leaderboard?campaignAddress=${campaign.intelligentContractAddress}&limit=100`)
           if (leaderboardResponse.ok) {
-            const leaderboardData = await leaderboardResponse.json()
+            const leaderboardData: LeaderboardResponse = await leaderboardResponse.json()
             setLeaderboard(leaderboardData.leaderboard || [])
             setTotalParticipants(leaderboardData.total || fullCampaign.participantCount || 0)
           }
@@ -863,10 +877,10 @@ export default function RallyScoreAnalyzer() {
       const url = campaignAddress ? `/api/rally-leaderboard?campaignAddress=${campaignAddress}&limit=100` : '/api/rally-leaderboard?limit=100'
       const response = await fetch(url)
       if (!response.ok) throw new Error('Failed to fetch leaderboard')
-      const data = await response.json()
+      const data: LeaderboardResponse = await response.json()
       setLeaderboard(data.leaderboard || [])
       setTotalParticipants(data.total || selectedCampaign?.participantCount || 0)
-      toast.success(`Leaderboard loaded! (${data.leaderboard?.length || 0} entries)`)
+      toast.success('Leaderboard loaded!')
     } catch (error) {
       toast.error('Failed to fetch leaderboard')
     } finally {
@@ -1175,6 +1189,25 @@ export default function RallyScoreAnalyzer() {
                 {isLoadingLeaderboard ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
               </Button>
             </div>
+            
+            {/* Reward Summary */}
+            {selectedCampaign && (
+              <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/30">
+                <CardContent className="py-3 px-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Coins className="w-5 h-5 text-amber-400" />
+                      <span className="text-sm text-gray-300">Total Reward Pool:</span>
+                      <span className="text-lg font-bold text-amber-400">{formatNumber(selectedCampaign.totalReward)} {selectedCampaign.token}</span>
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      {totalParticipants} participants
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+            
             <Card className="bg-gray-800/50 border-gray-700">
               <CardContent className="p-0">
                 <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
@@ -1185,6 +1218,7 @@ export default function RallyScoreAnalyzer() {
                         <th className="text-left p-3 text-gray-400 text-xs font-medium">User</th>
                         <th className="text-right p-3 text-gray-400 text-xs font-medium">Points</th>
                         <th className="text-right p-3 text-gray-400 text-xs font-medium">Top %</th>
+                        <th className="text-right p-3 text-gray-400 text-xs font-medium">Est. Reward</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1201,13 +1235,31 @@ export default function RallyScoreAnalyzer() {
                           </td>
                           <td className="p-3">
                             <div className="flex items-center gap-2">
-                              {entry.avatar && <img src={entry.avatar} alt="" className="w-6 h-6 rounded-full" />}
-                              <span className="text-white text-sm">{entry.displayName || entry.username}</span>
+                              {entry.avatar ? (
+                                <img src={entry.avatar} alt="" className="w-6 h-6 rounded-full" />
+                              ) : (
+                                <div className="w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center">
+                                  <span className="text-xs text-gray-300">{entry.displayName?.[0] || entry.username?.[0] || '?'}</span>
+                                </div>
+                              )}
+                              <div className="flex flex-col">
+                                <span className="text-white text-sm">{entry.displayName || entry.username}</span>
+                                {entry.username !== entry.displayName && entry.username !== 'Unknown' && (
+                                  <span className="text-xs text-gray-500">@{entry.username}</span>
+                                )}
+                              </div>
                               {entry.verified && <Verified className="w-3 h-3 text-blue-400" />}
                             </div>
                           </td>
                           <td className="p-3 text-right"><span className="text-white font-bold">{entry.totalPoints.toFixed(2)}</span></td>
                           <td className="p-3 text-right"><Badge className={`text-xs ${entry.topPercent <= 1 ? 'bg-yellow-500/20 text-yellow-400' : entry.topPercent <= 5 ? 'bg-green-500/20 text-green-400' : entry.topPercent <= 10 ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-500/20 text-gray-400'}`}>Top {entry.topPercent.toFixed(1)}%</Badge></td>
+                          <td className="p-3 text-right">
+                            {entry.estimatedReward && entry.estimatedReward > 0 ? (
+                              <span className="text-green-400 font-medium">{formatNumber(entry.estimatedReward)} {entry.token}</span>
+                            ) : (
+                              <span className="text-gray-500 text-xs">-</span>
+                            )}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
