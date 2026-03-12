@@ -324,3 +324,60 @@ ACCURACY METRICS:
 - Temporal Match: 91.3%
 - Overall Match: 95.1%
 - Samples Tested: 200
+
+---
+Task ID: 12
+Agent: Main Agent
+Task: Real Rally Data Analysis - Score Scale Discovery
+
+Work Log:
+- Fetched real Rally campaign data from Grvt 2.5 campaign
+- Fetched leaderboard data showing actual Rally scores
+- CRITICAL DISCOVERY: Rally uses 0-10 scale, NOT 0-1000+!
+- Created comprehensive comparison PDF document
+
+REAL RALLY DATA:
+Campaign: Grvt 2.5
+- Participants: 775
+- Reward: 5,000 USDT + 50,000 RLP
+- Requirements: Tag @grvt_io, screenshot, 11% mention, $250 unlock, referral link
+
+LEADERBOARD SCORES (Real Rally):
+| Rank | Username | Score |
+|------|----------|-------|
+| 1    | spacejunnk | 8.14 |
+| 2    | ivyhas1 | 7.95 |
+| 3    | elliederler2 | 7.54 |
+| 10   | SYNEX98_36 | 6.87 |
+| 50   | GamefiMaster | 6.07 |
+
+KEY FINDINGS:
+1. Score Scale: 0-10 (NOT 0-1000+ as previously assumed)
+2. Top score: ~8.14 (not 900+)
+3. Average score: 6-7
+4. My scoring system was off by factor of ~100x!
+
+ACCURACY COMPARISON:
+| Component | My System | Real Rally | Match |
+|-----------|-----------|------------|-------|
+| Gate Components | 4 gates (0-2 each) | 4 gates (0-2 each) | YES |
+| Quality Components | 3 qualities (0-5 each) | 3 qualities (0-5 each) | YES |
+| Score Scale | 0-1000+ | 0-10 | NO |
+| Formula Weights | Wrong | Unknown | PARTIAL |
+
+Stage Summary:
+- Major discovery: Score scale completely wrong
+- Gate and Quality components are accurate
+- Need to recalculate all formulas to match 0-10 scale
+- Created Rally_Comparison_Analysis.pdf documenting all findings
+
+FILES CREATED:
+- Rally_Content_Creation_Guide.pdf (114 KB) - AI content guide
+- Rally_Comparison_Analysis.pdf (77 KB) - Real data comparison
+
+CORRECTED FORMULA (TO IMPLEMENTE):
+Total Score = (Gates/8) x 4 + (Quality/15) x 3 + Temporal Points
+- Gates contribution: 0-4 points
+- Quality contribution: 0-3 points
+- Temporal: 1-3 points
+- Total range: 0-10 points
