@@ -4,47 +4,44 @@ export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const campaignAddress = searchParams.get('campaignAddress');
   const limit = parseInt(searchParams.get('limit') || '100');
-
+  
   try {
-    // Build URL for Rally leaderboard API
-    let url = `https://app.rally.fun/api/leaderboard?limit=${limit}`;
+    let url = 'https://app.rally.fun/api/leaderboard';
     if (campaignAddress) {
-      url += `&campaignAddress=${campaignAddress}`;
+      url += `?campaignAddress=${campaignAddress}&limit=${limit}`;
+    } else {
+      url += `?limit=${limit}`;
     }
-
+    
     const response = await fetch(url, {
       headers: { 'Accept': 'application/json' },
     });
-
+    
     if (!response.ok) {
-      return NextResponse.json({ error: 'Failed to fetch leaderboard' }, { status: response.status });
+      throw new Error(`Rally API error: ${response.status}`);
     }
-
+    
     const data = await response.json();
-
-    // Get total count
-    const totalParticipants = Array.isArray(data) ? data.length : (data.total || 0);
-
-    // Return full leaderboard with all relevant data
-    const leaderboard = (Array.isArray(data) ? data : data.leaderboard || data.items || []).map((entry: any) => ({
-      rank: entry.rank,
-      username: entry.user?.xUsername || entry.username || 'Unknown',
-      displayName: entry.user?.xName || entry.username || 'Unknown',
-      avatar: entry.user?.xAvatar || '',
-      verified: entry.user?.xVerified || false,
-      followersCount: entry.user?.xFollowersCount || 0,
-      totalPoints: parseFloat(entry.points || entry.totalPoints || 0) / 1e18,
-      referralBonus: parseFloat(entry.referralBonus || 0) / 1e18,
-      totalSubmissions: entry.totalSubmissions || 1,
-      topPercent: totalParticipants > 0 ? (entry.rank / totalParticipants) * 100 : 0,
+    
+    // Transform data
+    const leaderboard = (Array.isArray(data) ? data : data.leaderboard || []).map((entry: any, index: number) => ({
+      rank: entry.rank || index + 1,
+      username: entry.xUsername || entry.username || 'Unknown',
+      displayName: entry.displayName || entry.xDisplayName || entry.xUsername || 'Unknown',
+      avatar: entry.avatarUrl || entry.xAvatarUrl || '',
+      verified: entry.xVerified || false,
+      totalPoints: (entry.totalPoints || entry.points || 0) / 1e18,
+      topPercent: entry.topPercent || entry.topPercentage || 0,
+      followersCount: entry.followersCount || entry.xFollowersCount || 0,
+      totalSubmissions: entry.totalSubmissions || entry.submissionCount || 0
     }));
-
+    
     return NextResponse.json({
-      total: totalParticipants,
-      leaderboard: leaderboard,
+      leaderboard,
+      total: leaderboard.length
     });
   } catch (error) {
-    console.error('Failed to fetch Rally leaderboard:', error);
+    console.error('Failed to fetch leaderboard:', error);
     return NextResponse.json({ error: 'Failed to fetch leaderboard' }, { status: 500 });
   }
 }
