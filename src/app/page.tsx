@@ -80,6 +80,8 @@ interface LeaderboardEntry {
   displayName?: string
   avatar?: string
   verified?: boolean
+  basePoints: number
+  referralBonus: number
   totalPoints: number
   topPercent: number
   followersCount?: number
@@ -91,26 +93,35 @@ interface LeaderboardEntry {
 interface LeaderboardResponse {
   leaderboard: LeaderboardEntry[]
   total: number
+  missionCount?: number
+  stats?: {
+    topScore: number
+    avgScore: number
+    avgSubmissions: number
+    participantsWithSubmissions: number
+    totalRewardPool: number
+  }
   campaignInfo?: {
     totalReward: number
     token: string
     tokenUsdPrice: number
-    rewards: { amount: number; token: string; tokenLogo: string | null; claimable: boolean }[]
+    tokenDecimals: number
     alpha: number
+    rewards: { amount: number; token: string; tokenLogo: string | null; claimable: boolean }[]
   }
 }
 
-// Grade configuration - Updated based on Elite Rally Masterclass (0-10 scale)
-// Real Rally scores: Rank 1 = 8.14, Rank 100 = ~4.0
+// Grade configuration - Updated based on Real Rally API Data (0-1000 scale)
+// Real Rally scores: Rank 1 = ~800, Rank 100 = ~200
 const GRADE_CONFIG: { min: number; grade: string; color: string; label: string }[] = [
-  { min: 8.0, grade: 'S+', color: 'text-yellow-400', label: 'Elite (Top 1%)' },
-  { min: 7.0, grade: 'S', color: 'text-amber-400', label: 'Outstanding (Top 5%)' },
-  { min: 6.0, grade: 'A+', color: 'text-green-400', label: 'Excellent (Top 10%)' },
-  { min: 5.0, grade: 'A', color: 'text-emerald-400', label: 'Very Good (Top 25%)' },
-  { min: 4.0, grade: 'B+', color: 'text-teal-400', label: 'Good (Top 50%)' },
-  { min: 3.0, grade: 'B', color: 'text-cyan-400', label: 'Above Average' },
-  { min: 2.0, grade: 'C+', color: 'text-blue-400', label: 'Average' },
-  { min: 1.0, grade: 'C', color: 'text-gray-400', label: 'Below Average' },
+  { min: 700, grade: 'S+', color: 'text-yellow-400', label: 'Elite (Top 1%)' },
+  { min: 600, grade: 'S', color: 'text-amber-400', label: 'Outstanding (Top 5%)' },
+  { min: 500, grade: 'A+', color: 'text-green-400', label: 'Excellent (Top 10%)' },
+  { min: 400, grade: 'A', color: 'text-emerald-400', label: 'Very Good (Top 25%)' },
+  { min: 300, grade: 'B+', color: 'text-teal-400', label: 'Good (Top 50%)' },
+  { min: 200, grade: 'B', color: 'text-cyan-400', label: 'Above Average' },
+  { min: 100, grade: 'C+', color: 'text-blue-400', label: 'Average' },
+  { min: 50, grade: 'C', color: 'text-gray-400', label: 'Below Average' },
   { min: 0, grade: 'F', color: 'text-red-400', label: 'Fail' }
 ]
 
@@ -129,14 +140,14 @@ const calculateRankAndReward = (score: number, leaderboard: LeaderboardEntry[], 
   let estimatedRank = higherScores + 1
   
   // If leaderboard is incomplete, estimate rank based on score distribution
-  // Based on Elite Masterclass: Rank 1 ~ 8.14, Rank 100 ~ 4.0
+  // Based on Real Rally Data: Rank 1 ~ 800, Rank 100 ~ 200
   if (leaderboard.length < totalParticipants) {
-    if (score >= 8.0) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.001))
-    else if (score >= 7.0) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.01))
-    else if (score >= 6.0) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.05))
-    else if (score >= 5.0) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.10))
-    else if (score >= 4.0) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.25))
-    else if (score >= 3.0) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.50))
+    if (score >= 700) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.001))
+    else if (score >= 600) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.01))
+    else if (score >= 500) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.05))
+    else if (score >= 400) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.10))
+    else if (score >= 300) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.25))
+    else if (score >= 200) estimatedRank = Math.max(1, Math.floor(totalParticipants * 0.50))
     else estimatedRank = Math.floor(totalParticipants * 0.75)
   }
   
@@ -400,24 +411,24 @@ const ScoreOptimizerGuide = () => {
             <Rocket className="w-6 h-6 text-yellow-400" />
             <h2 className="text-xl font-bold text-yellow-400">Elite Rally Masterclass</h2>
           </div>
-          <p className="text-gray-300 text-sm">Panduan lengkap untuk mencapai <span className="text-yellow-400 font-bold">SKOR ELITE (8.0+)</span> di Rally</p>
-          <p className="text-xs text-gray-500 mt-2">Based on Elite Rally Masterclass | Real Data: Rank 1 = 8.14, Scale: 0-10</p>
+          <p className="text-gray-300 text-sm">Panduan lengkap untuk mencapai <span className="text-yellow-400 font-bold">SKOR ELITE (700+)</span> di Rally</p>
+          <p className="text-xs text-gray-500 mt-2">Based on Real Rally API Data | Rank 1 = ~800, Scale: 0-1000</p>
         </CardContent>
       </Card>
       
       <Card className="bg-gray-800/50 border-amber-500/30">
-        <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Trophy className="w-5 h-5 text-amber-400" />ELITE SCORING SYSTEM (0-10 Scale)</CardTitle></CardHeader>
+        <CardHeader className="pb-2"><CardTitle className="text-lg flex items-center gap-2"><Trophy className="w-5 h-5 text-amber-400" />ELITE SCORING SYSTEM (0-1000 Scale)</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           <div className="bg-amber-500/10 rounded-lg p-3 border border-amber-500/30">
             <p className="text-xs text-amber-400 font-medium mb-2">ELITE FORMULA:</p>
             <div className="font-mono text-xs text-gray-300 space-y-1">
               <p className="text-cyan-400">Total = M_gate × (Quality + Engagement)</p>
               <p></p>
-              <p className="text-green-400">Real Leaderboard Data (Grvt 2.5):</p>
-              <p>• Rank 1: <span className="text-amber-400 font-bold">8.14 points</span></p>
-              <p>• Rank 2: <span className="text-amber-400">7.95 points</span></p>
-              <p>• Rank 100: ~4.0 points</p>
-              <p>• Elite Target: <span className="text-yellow-400">8.0+ for Top 1%</span></p>
+              <p className="text-green-400">Real Leaderboard Data:</p>
+              <p>• Rank 1: <span className="text-amber-400 font-bold">~800 points</span></p>
+              <p>• Rank 2: <span className="text-amber-400">~690 points</span></p>
+              <p>• Rank 100: ~200 points</p>
+              <p>• Elite Target: <span className="text-yellow-400">700+ for Top 1%</span></p>
             </div>
           </div>
         </CardContent>
@@ -965,8 +976,8 @@ export default function RallyScoreAnalyzer() {
       const gateSum = gates.contentAlignment.score + gates.informationAccuracy.score + gates.campaignCompliance.score + gates.originality.score
       const qualitySum = quality.engagementPotential.score + quality.technicalQuality.score + quality.replyQuality.score
       
-      // ELITE RALLY SCORING (0-10 scale based on real Rally data)
-      // Real Leaderboard: Rank 1 = 8.14, Rank 100 = ~4.0
+      // ELITE RALLY SCORING (0-1000 scale based on real Rally API data)
+      // Real Leaderboard: Rank 1 = ~800, Rank 100 = ~200
       
       // 1. Gate Multiplier (M_gate): 0.5x - 1.5x
       // M_gate = 1 + 0.5 * (g_star - 1), where g_star = average of gate scores
@@ -974,9 +985,9 @@ export default function RallyScoreAnalyzer() {
       const minGate = Math.min(gates.contentAlignment.score, gates.informationAccuracy.score, gates.campaignCompliance.score, gates.originality.score)
       const gateMultiplier = minGate === 0 ? 0.5 : 1 + 0.5 * (gStar - 1)  // 0.5 to 1.5
       
-      // 2. Quality Score (0-10 scale)
-      // Normalized from 0-15 to 0-5, then scaled
-      const qualityScore = (qualitySum / 15) * 5  // 0-5 range
+      // 2. Quality Score (0-500 scale)
+      // Normalized from 0-15 to 0-5, then scaled to 0-500
+      const qualityScore = (qualitySum / 15) * 500  // 0-500 range
       
       // 3. Temporal Points (Engagement-based, log-scaled)
       // Based on Elite Masterclass weights: FR > Replies > Likes > RT > Impressions
@@ -986,22 +997,22 @@ export default function RallyScoreAnalyzer() {
       const logImpressions = Math.log10(engagement.impressions + 1)
       const logFollowers = Math.log10(engagement.followersOfRepliers + 1)
       
-      // Engagement contribution (0-5 scale)
+      // Engagement contribution (0-500 scale)
       // FR is highest weighted (Elite Masterclass insight)
-      const engagementScore = Math.min(5, 
-        (logFollowers * 0.35) +      // Followers of Repliers - HIGHEST weight
-        (logReplies * 0.25) +         // Replies
-        (logLikes * 0.15) +           // Likes
-        (logRetweets * 0.15) +        // Retweets
-        (logImpressions * 0.10)       // Impressions
+      const engagementScore = Math.min(500, 
+        (logFollowers * 35) +      // Followers of Repliers - HIGHEST weight
+        (logReplies * 25) +         // Replies
+        (logLikes * 15) +           // Likes
+        (logRetweets * 15) +        // Retweets
+        (logImpressions * 10)       // Impressions
       )
       
-      // 4. Total Score (0-10 scale)
+      // 4. Total Score (0-1000 scale)
       // Formula: M_gate * (Quality + Engagement)
-      const rawScore = qualityScore + engagementScore  // 0-10 base
+      const rawScore = qualityScore + engagementScore  // 0-1000 base
       const totalPoints = Math.round(rawScore * gateMultiplier * 100) / 100  // Round to 2 decimals
       
-      // Grade based on total points (0-10 scale)
+      // Grade based on total points (0-1000 scale)
       const grade = getGrade(totalPoints)
       
       setAnalysisResult({ 
@@ -1227,7 +1238,7 @@ export default function RallyScoreAnalyzer() {
                     <CardContent className="py-12 flex flex-col items-center gap-3">
                       <Calculator className="w-8 h-8 text-gray-500" />
                       <p className="text-gray-400 text-center">Paste content to analyze</p>
-                      <p className="text-xs text-gray-500">Score range: 0 - 8+ points</p>
+                      <p className="text-xs text-gray-500">Score range: 0 - 1000 points</p>
                     </CardContent>
                   </Card>
                 )}
@@ -1251,11 +1262,17 @@ export default function RallyScoreAnalyzer() {
             {selectedCampaign && (
               <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/30">
                 <CardContent className="py-3 px-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Coins className="w-5 h-5 text-amber-400" />
-                      <span className="text-sm text-gray-300">Total Reward Pool:</span>
-                      <span className="text-lg font-bold text-amber-400">{formatNumber(selectedCampaign.totalReward)} {selectedCampaign.token}</span>
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2">
+                        <Coins className="w-5 h-5 text-amber-400" />
+                        <span className="text-sm text-gray-300">Reward Pool:</span>
+                        <span className="text-lg font-bold text-amber-400">{formatNumber(selectedCampaign.totalReward)} {selectedCampaign.token}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-400">
+                        <FolderKanban className="w-4 h-4" />
+                        <span>{selectedCampaign.missionCount || 1} Missions</span>
+                      </div>
                     </div>
                     <div className="text-xs text-gray-400">
                       {totalParticipants} participants
@@ -1273,7 +1290,10 @@ export default function RallyScoreAnalyzer() {
                       <tr>
                         <th className="text-left p-3 text-gray-400 text-xs font-medium">Rank</th>
                         <th className="text-left p-3 text-gray-400 text-xs font-medium">User</th>
-                        <th className="text-right p-3 text-gray-400 text-xs font-medium">Points</th>
+                        <th className="text-center p-3 text-gray-400 text-xs font-medium">Subs</th>
+                        <th className="text-right p-3 text-gray-400 text-xs font-medium">Base</th>
+                        <th className="text-right p-3 text-gray-400 text-xs font-medium">Referral</th>
+                        <th className="text-right p-3 text-gray-400 text-xs font-medium">Total</th>
                         <th className="text-right p-3 text-gray-400 text-xs font-medium">Top %</th>
                         <th className="text-right p-3 text-gray-400 text-xs font-medium">Est. Reward</th>
                       </tr>
@@ -1308,8 +1328,23 @@ export default function RallyScoreAnalyzer() {
                               {entry.verified && <Verified className="w-3 h-3 text-blue-400" />}
                             </div>
                           </td>
-                          <td className="p-3 text-right"><span className="text-white font-bold">{entry.totalPoints.toFixed(2)}</span></td>
-                          <td className="p-3 text-right"><Badge className={`text-xs ${entry.topPercent <= 1 ? 'bg-yellow-500/20 text-yellow-400' : entry.topPercent <= 5 ? 'bg-green-500/20 text-green-400' : entry.topPercent <= 10 ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-500/20 text-gray-400'}`}>Top {entry.topPercent.toFixed(1)}%</Badge></td>
+                          <td className="p-3 text-center">
+                            <Badge className="bg-gray-600/50 text-gray-300 text-xs">{entry.totalSubmissions || 0}</Badge>
+                          </td>
+                          <td className="p-3 text-right">
+                            <span className="text-cyan-400">{entry.basePoints?.toFixed(2) || '0.00'}</span>
+                          </td>
+                          <td className="p-3 text-right">
+                            <span className="text-green-400">+{entry.referralBonus?.toFixed(2) || '0.00'}</span>
+                          </td>
+                          <td className="p-3 text-right">
+                            <span className="text-white font-bold">{entry.totalPoints.toFixed(2)}</span>
+                          </td>
+                          <td className="p-3 text-right">
+                            <Badge className={`text-xs ${entry.topPercent <= 1 ? 'bg-yellow-500/20 text-yellow-400' : entry.topPercent <= 5 ? 'bg-green-500/20 text-green-400' : entry.topPercent <= 10 ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-500/20 text-gray-400'}`}>
+                              Top {entry.topPercent.toFixed(1)}%
+                            </Badge>
+                          </td>
                           <td className="p-3 text-right">
                             {entry.estimatedReward && entry.estimatedReward > 0 ? (
                               <span className="text-green-400 font-medium">{formatNumber(entry.estimatedReward)} {entry.token}</span>
