@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rally Score Comparison - Analysis Accuracy Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: white; }
+        .card { background: #1e293b; border-radius: 12px; padding: 20px; margin: 16px; }
+        .score-good { color: #22c55e; }
+        .score-medium { color: #f59e0b; }
+        .score-bad { color: #ef4444; }
+        .match { background: #065f46; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .nomatch { background: #991b1b; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+    </style>
+</head>
+<body class="p-8">
+    <h1 class="text-3xl font-bold mb-2">🧪 Rally Score Comparison</h1>
+    <p class="text-gray-400 mb-8">Testing analysis accuracy against real Rally submissions</p>
+    
+    <div id="results"></div>
+    
+    <div class="card mt-8">
+        <h2 class="text-xl font-bold mb-4">📊 Accuracy Summary</h2>
+        <div id="summary"></div>
+    </div>
+
+    <script>
+        const realSubmissions = [
+            {
+                id: 1,
+                username: 'mpaya35',
+                tweet: `Building on @n4vib_'s "non-obvious use cases": I'd use @rallyonchain to reward localization leads—people who turn complex updates into accurate, native-language threads. 
+
+That's real adoption: clarity over clout.`,
+                rallyAtemporal: 2.16,
+                rallyTemporal: 2.14,
+                rallyTotal: 4.30,
+                rallyAnalysis: {
+                    contentAlignment: 2.0,
+                    informationAccuracy: 2.0,
+                    campaignCompliance: 2.0,
+                    originality: 2.0,
+                    engagementPotential: 4.0,
+                    technicalQuality: 4.0,
+                    replyQuality: 4.0
+                }
+            },
+            {
+                id: 2,
+                username: 'oxdavinci',
+                tweet: `Reputation in marketing is broken.
+
+Brands spend on impressions that aren't real.
+Creators compete with bots and fake accounts.
+Both sides are stuck with vanity metrics that don't show true impact.
+
+@rallyonchain changes this with AI validators built on GenLayer.`,
+                rallyAtemporal: 1.98,
+                rallyTemporal: 2.02,
+                rallyTotal: 4.00,
+                rallyAnalysis: {
+                    contentAlignment: 2.0,
+                    informationAccuracy: 2.0,
+                    campaignCompliance: 2.0,
+                    originality: 1.0, // Rally gave lower score
+                    engagementPotential: 4.0,
+                    technicalQuality: 4.0,
+                    replyQuality: 4.0
+                }
+            },
+            {
+                id: 3,
+                username: 'decatilion_',
+                tweet: `✨ Imagine if Wikipedia editors like @martin034548 had their work judged by @RallyOnChain… 
+
+AI validators could score edits on clarity, accuracy & impact rewarding real value instantly, on-chain, without bias. 
+
+👉 Would you trust AI to score your contributions?`,
+                rallyAtemporal: 2.43,
+                rallyTemporal: 1.53,
+                rallyTotal: 3.96,
+                rallyAnalysis: {
+                    contentAlignment: 2.0,
+                    informationAccuracy: 2.0,
+                    campaignCompliance: 2.0,
+                    originality: 2.0,
+                    engagementPotential: 4.0,
+                    technicalQuality: 4.0,
+                    replyQuality: 4.0
+                }
+            }
+        ];
+
+        async function analyzeTweet(submission) {
+            const response = await fetch('/api/analyze-content', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    content: submission.tweet,
+                    campaignContext: 'Rally campaign about AI-powered content scoring platform',
+                    rules: 'Must mention @RallyOnChain'
+                })
+            });
+            return await response.json();
+        }
+
+        function getGrade(total) {
+            if (total >= 4.0) return 'S+';
+            if (total >= 3.5) return 'S';
+            if (total >= 3.0) return 'A+';
+            if (total >= 2.5) return 'A';
+            if (total >= 2.0) return 'B+';
+            if (total >= 1.5) return 'B';
+            if (total >= 1.0) return 'C';
+            return 'F';
+        }
+
+        function calculateMatch(myScore, rallyScore) {
+            const diff = Math.abs(myScore - rallyScore);
+            const percent = (1 - diff / Math.max(myScore, rallyScore)) * 100;
+            return { diff, percent: percent.toFixed(1) };
+        }
+
+        async function runTests() {
+            const resultsDiv = document.getElementById('results');
+            const summaryDiv = document.getElementById('summary');
+            
+            let totalDiff = 0;
+            let totalTests = 0;
+            let html = '';
+
+            for (const sub of realSubmissions) {
+                totalTests++;
+                const result = await analyzeTweet(sub);
+                
+                if (result.success) {
+                    const my = result.scoring;
+                    const rally = sub.rallyAnalysis;
+                    
+                    const atemporalDiff = Math.abs(my.atemporalPoints - sub.rallyAtemporal);
+                    const temporalDiff = Math.abs(my.temporalPoints - sub.rallyTemporal);
+                    const totalDiffScore = Math.abs(my.totalPoints - sub.rallyTotal);
+                    
+                    // Gate comparison
+                    const myGates = result.analysis.gates;
+                    const gateMatch = 
+                        (Math.abs(myGates.contentAlignment.score - rally.contentAlignment) <= 0.5) &&
+                        (Math.abs(myGates.informationAccuracy.score - rally.informationAccuracy) <= 0.5) &&
+                        (Math.abs(myGates.campaignCompliance.score - rally.campaignCompliance) <= 0.5);
+                        (Math.abs(myGates.originality.score - rally.originality) <= 0.5);
+
+                    totalDiff += totalDiffScore;
+
+                    const matchClass = totalDiffScore < 1.0 ? 'match' : 'nomatch';
+                    
+                    html += `
+                        <div class="card">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="text-xl font-bold">@${sub.username}</span>
+                                <span class="${matchClass}">${totalDiffScore < 1.0 ? '✅ CLOSE' : '⚠️ OFF'}</span>
+                            </div>
+                            
+                            <div class="mb-4 p-3 bg-black/30 rounded-lg">
+                                <p class="text-sm text-gray-400 mb-2">Tweet:</p>
+                                <p class="text-white text-sm">"${sub.tweet.substring(0, 150)}..."</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <p class="text-sm text-gray-400">Atemporal</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-lg font-bold ${atemporalDiff < 0.5 ? 'score-good' : 'score-bad'}">
+                                            My: ${my.atemporalPoints.toFixed(2)}
+                                        </span>
+                                        <span class="text-lg font-bold score-medium">
+                                            Rally: ${sub.rallyAtemporal}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-400">Temporal</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-lg font-bold ${temporalDiff < 0.5 ? 'score-good' : 'score-bad'}">
+                                            My: ${my.temporalPoints.toFixed(2)}
+                                        </span>
+                                        <span class="text-lg font-bold score-medium">
+                                            Rally: ${sub.rallyTemporal}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-black/20 p-3 rounded-lg mb-4">
+                                <p class="text-sm text-gray-400 mb-2">Gate Scores Comparison</p>
+                                <div class="grid grid-cols-4 gap-2 text-sm">
+                                    <div>
+                                        <p class="text-gray-500">Alignment</p>
+                                        <p class="${Math.abs(myGates.contentAlignment.score - rally.contentAlignment) <= 0.5 ? 'text-green-400' : 'text-red-400'}">
+                                            My: ${myGates.contentAlignment.score} / Rally: ${rally.contentAlignment}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">Accuracy</p>
+                                        <p class="${Math.abs(myGates.informationAccuracy.score - rally.informationAccuracy) <= 0.5 ? 'text-green-400' : 'text-red-400'}">
+                                            My: ${myGates.informationAccuracy.score} / Rally: ${rally.informationAccuracy}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">Compliance</p>
+                                        <p class="${Math.abs(myGates.campaignCompliance.score - rally.campaignCompliance) <= 0.5 ? 'text-green-400' : 'text-red-400'}">
+                                            My: ${myGates.campaignCompliance.score} / Rally: ${rally.campaignCompliance}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">Originality</p>
+                                        <p class="${Math.abs(myGates.originality.score - rally.originality) <= 0.5 ? 'text-green-400' : 'text-red-400'}">
+                                            My: ${myGates.originality.score} / Rally: ${rally.originality}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center py-3">
+                                <p class="text-2xl font-bold">
+                                    Total Score: <span class="${totalDiffScore < 1.0 ? 'score-good' : 'score-bad'}">${my.totalPoints.toFixed(2)}</span> 
+                                    vs <span class="score-medium">${sub.rallyTotal}</span>
+                                </p>
+                                <p class="text-sm text-gray-400">Difference: ${totalDiffScore.toFixed(2)} (${((1 - totalDiffScore/sub.rallyTotal)*100).toFixed(1)}% off)</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            const avgDiff = totalDiff / totalTests;
+            const accuracy = (1 - avgDiff / 4.0) * 100; // Using 4.0 as max score
+
+            summaryDiv.innerHTML = `
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                        <p class="text-4xl font-bold text-green-400">${accuracy.toFixed(1)}%</p>
+                        <p class="text-sm text-gray-400">Overall Accuracy</p>
+                    </div>
+                    <div>
+                        <p class="text-4xl font-bold text-yellow-400">${(avgDiff).toFixed(2)}</p>
+                        <p class="text-sm text-gray-400">Avg Score Diff</p>
+                    </div>
+                    <div>
+                        <p class="text-4xl font-bold text-blue-400">${totalTests}</p>
+                        <p class="text-sm text-gray-400">Tests Run</p>
+                    </div>
+                </div>
+                <div class="mt-4 p-4 bg-red-900/30 rounded-lg">
+                    <p class="text-sm font-bold mb-2">⚠️ KEY FINDING</p>
+                    <p class="text-sm">My scoring formula produces scores that are ~50-65% lower than Rally's actual scores. The formula needs recalibration.</p>
+                    <p class="text-sm text-gray-400 mt-2">My max total: ~2.0 | Rally max total: ~5.0+</p>
+                </div>
+            `;
+        }
+
+        runTests();
+    </script>
+</body>
+</html>

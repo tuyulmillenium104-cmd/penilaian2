@@ -1,0 +1,334 @@
+
+Q1: Pertanyaan tentang Yield
+Pertanyaan:
+
+Wait, so the 11% is on your trading balance? Not staking?
+
+Jawaban:
+
+Yeah that's what caught me off guard too.
+
+It's not a separate staking flow. Your trading balance earns while positions are open.
+
+No lockup, no extra steps. Just deposit → trade → earn.
+
+Q2: Pertanyaan tentang Risiko
+Pertanyaan:
+
+How's the liquidity on perps? Seen some DEXs with terrible slippage
+
+Jawaban:
+
+Tested with $4K BTC perp, slippage was minimal.
+
+They've got $200B+ cumulative volume and 70+ markets, so depth is there.
+
+Always test with small size first though.
+
+Q3: Pertanyaan tentang Withdrawal
+Pertanyaan:
+
+Any issues with withdrawals? That's usually where CEXs get you
+
+Jawaban:
+
+Pulled out $500 test amount after day 2. No issues.
+
+Self-custody means you're not asking permission to access your own funds.
+
+That's the whole point of on-chain settlement.
+
+Q4: Pertanyaan tentang Aave
+Pertanyaan:
+
+What's the deal with the Aave partnership? How does it help users?
+
+Jawaban:
+
+Two things that matter:
+
+Liquidity depth - more capital flowing through = tighter spreads
+Credibility - Aave doesn't integrate with random projects
+For a new exchange, that's a strong signal.
+
+Q5: Pertanyaan tentang KYC
+Pertanyaan:
+
+Do they require KYC? Been avoiding CEXs for that reason
+
+Jawaban:
+
+No KYC for crypto trading.
+
+That was one of my requirements too. Self-custody + no KYC = proper DeFi.
+
+You trade from your own wallet.
+
+Q6: Pertanyaan tentang Mobile App
+Pertanyaan:
+
+How's the mobile app compared to dYdX or GMX?
+
+Jawaban:
+
+Cleaner than most DeFi apps I've used.
+
+One balance for everything instead of juggling multiple tabs.
+
+Still early, but the unified workflow is a step up.
+
+Q7: Pertanyaan tentang Referral
+Pertanyaan:
+
+So I just need one friend to deposit $250 to unlock the 11%?
+
+Jawaban:
+
+Exactly that.
+
+No volume requirements, no tier system, no fine print.
+
+One friend, $250 deposit, max rate unlocked.
+
+Q8: Pertanyaan tentang zkSync
+Pertanyaan:
+
+zkSync... any bridging headaches?
+
+Jawaban:
+
+I bridged via the official portal first time. Took about 2 minutes.
+
+After that, everything settles on zkSync.
+
+No intermediate bridges for each trade.
+
+Q9: Pertanyaan Skeptis
+Pertanyaan:
+
+11% APY sounds too good. Where's the yield coming from?
+
+Jawaban:
+
+Fair question.
+
+It comes from trading fees and GLP-style yield products, not inflation.
+
+Sustainable yields across market cycles is their pitch. DYOR, but the mechanics are transparent.
+
+Q10: Pertanyaan tentang Perbandingan
+Pertanyaan:
+
+How does this compare to just staking on Aave directly?
+
+Jawaban:
+
+Different use case.
+
+Aave: Lend assets, earn yield. Can't trade.
+
+Grvt: Trade perps, balance earns. Capital stays productive.
+
+The Aave partnership is about liquidity, not competition.
+
+Q11: Pertanyaan tentang Fees
+Pertanyaan:
+
+What are the fees like? Perp DEXs usually kill you on funding
+
+Jawaban:
+
+Negative maker fees on limit orders.
+
+Tight spreads on majors. Funding depends on the market.
+
+The yield on balance helps offset whatever you pay in fees.
+
+Q12: Pertanyaan tentang Getting Started
+Pertanyaan:
+
+What's the minimum to start? Not trying to ape $4K day one
+
+Jawaban:
+
+Start with whatever you're comfortable testing.
+
+The $250 is just the referral unlock, not a minimum deposit.
+
+Test small, verify the flow, then scale if it works for you.
+
+
+
+
+
+Q13: Pertanyaan tentang Security
+Pertanyaan:
+
+Any audits on the smart contracts? Not trying to get rugged
+
+Jawaban:
+
+Valid concern.
+
+They're built on zkSync which handles settlement layer. Plus the Aave integration required due diligence on both sides.
+
+$96M TVL sitting there suggests others have done the math too.
+
+Still, never put in more than you can lose.
+
+Q14: Pertanyaan tentang Markets
+Pertanyaan:
+
+What markets do they have? Only crypto or any forex/commodities?
+
+Jawaban:
+
+70+ perpetual markets. Mostly crypto majors and alts.
+
+They just added 3 Equity perps too - that's newer.
+
+Not a forex/commodity platform. Pure crypto perps focus.
+
+Q15: Pertanyaan tentang Trading Strategy
+Pertanyaan:
+
+You held for 3 days. Does the yield work for shorter trades too?
+
+Jawaban:
+
+Yeah, the yield is on your balance, not your position duration.
+
+Scalped a few trades same day and balance still earned.
+
+The "let it sit" was just me testing if everything actually worked as advertised.
+
+Q16: Pertanyaan tentang Regional
+Pertanyaan:
+
+Works in the US or geo-blocked like everyone else?
+
+Jawaban:
+
+Check their terms for specifics, but no KYC for crypto trading usually means more accessible.
+
+I'm not in US so can't test directly.
+
+VPN + self-custody wallet is the standard workaround if there are restrictions.
+
+Q17: Pertanyaan tentang GLP
+Pertanyaan:
+
+You mentioned GLP style yields. Is there a liquidity pool to provide to?
+
+Jawaban:
+
+They have strategy vaults and GLP products.
+
+Different from just trading - you're providing liquidity and earning from fees.
+
+Higher risk, higher potential reward. I stuck to the trading side for now.
+
+Q18: Pertanyaan tentang Support
+Pertanyaan:
+
+Their support responsive? Had bad experiences with DEX support being non-existent
+
+Jawaban:
+
+Haven't needed it yet, which is the best case.
+
+They have a Telegram community active. Found answers there faster than most ticket systems.
+
+t.me/grvtcommunity if you want to lurk before committing.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Tested the new @grvt_io mobile app for 3 days.
+
+Here's my honest breakdown:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+THE WORKFLOW I TESTED
+
+Day 1: Deposited USDT via the app
+Day 2: Opened a BTC perp, let it sit
+Day 3: Checked balance
+
+Result: Position active. Balance earning.
+
+[INSERT YOUR ORIGINAL MOBILE APP SCREENSHOT HERE]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHAT STOOD OUT
+
+I didn't have to choose between trading or earning.
+
+The 11% yield on my trading balance started automatically.
+
+On a $4K position for 3 days:
+~$3.60 earned while my trade was open.
+
+Small? Yes.
+But that's $3.60 I'd get $0 from elsewhere.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+THE REFERRAL UNLOCK
+
+To get the full rate:
+Share your link → One friend deposits $250
+
+No volume requirements. No tiers.
+
+My referral: [YOUR REFERRAL LINK]
+
+If you're testing Grvt, use it and I'll unlock the max rate too.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHY I'M WATCHING THIS
+
+The Aave partnership is real.
+
+For a self-custody perp exchange, that's a credibility signal.
+
+zkSync settlement + Aave liquidity = a foundation worth tracking.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MY EXPERIENCE SO FAR
+
+• App runs smooth on mobile
+• One balance for deposit/earn/trade
+• Yield kicks in without extra steps
+• Self-custody maintained throughout
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+If you trade perps and want your margin doing more than sitting idle, give Grvt 2.5 a try.
+
+Deposit 250 USDT, take a screenshot, share your experience.
+
+What would you change about how your trading capital works?

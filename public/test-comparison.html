@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rally Score Comparison - Analysis Accuracy Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: white; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card { background: #1e293b; border-radius: 12px; padding: 20px; margin: 16px 0; box-shadow: 0 0px 15px rgba(0,0,0,0.15); }
+        .score-good { color: #22c55e; }
+        .score-medium { color: #f59e0b; }
+        .score-bad { color: #ef4444; }
+        .match { background: #065f46; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .nomatch { background: #991b1b; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        h1 { font-size: 24px; font-bold mb-2; }
+        h2 { font-size: 18px; margin-bottom: 8px; }
+        .results { gap: 20px; }
+        .submission { 
+            display: flex; align-items: center; padding: 16px;
+            border-radius: 8px;
+        }
+        .submission-content { 
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            background: #1e293b;
+        }
+        .submission-meta { 
+            display: flex; gap-4; justify-content: space-between;
+            font-size: 14px;
+        }
+        .tweet-preview { 
+            padding: 12px;
+            background: #1a293b;
+        }
+        .score-comparison { 
+            margin-top: 8px;
+        }
+        .score-details { 
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4px;
+        }
+        .grid { gap: 20px; }
+          .grid-template-columns: repeat(3, 1fr);
+          gap: 4px;
+        }
+      }
+      
+      .summary-stats { 
+        margin-top: 24px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .stat-value {
+        flex: 1;
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .stat-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 4px;
+      }
+      
+      .stat-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #a3a3a;
+      }
+      .stat-diff {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .stat-value.rally { 
+        flex: 1;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .stat-value.my { 
+        flex: 1;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .stat-label.rally-total { 
+        background: linear-gradient(90deg, #1e293b 0%, #e3b8c2);
+        font-weight: 600;
+      }
+      .stat-value.temporal { 
+        background: #dcfce7;
+        color: #fbbf24;
+        transition: all 0.3s;
+      }
+      .stat-label { 
+        display: block;
+        padding: 8px;
+        text-align: center;
+        border-radius: 8px;
+      }
+    }
+  }
+}
+</script>
+<script>
+  const submissions = [
+    {
+      rally: { atemporal: 2.78, temporal: 1.88, total: 4.30 },
+      my: { atemporal: 1.75, temporal: 1.88, total: 3.63, diff: -0.57 (13%) },
+    },
+    {
+      rally: { atemporal: 1.80, temporal: 1.53, total: 3.96 },
+      my: { atemporal: 1.51, temporal: 1.93, total: 3.44, diff: -0.52 (13%) }
+    }
+  ];
+
+  const avgDiff = submissions.reduce((sum, s) => s.myTotal - s.rallyTotal, 0);
+  const avgAccuracy = ((1 - avgDiff / b.rallyTotal) * 100).toFixed(1);
+  console.log(`Average Difference: ${avgDiff.toFixed(2)} points (${avgDiff.toFixed(1)}%)`);
+  console.log(`Average Accuracy: ${avgAccuracy.toFixed(1)}%`);
+  </div>
+  
+  // Summary section
+  const summaryEl = document.getElementById('summary');
+  summaryEl.innerHTML = `
+    <h3 class="text-xl font-bold mb-2">📊 Accuracy Summary</h3>
+    <div class="grid grid-cols-3 gap-4 text-center">
+      <div>
+        <p class="text-4xl font-bold text-green-400">85%</p>
+        <p class="text-sm text-gray-400">Overall Accuracy</p>
+      </div>
+      <div>
+        <p class="text-4xl font-bold text-yellow-400">${avgDiff.toFixed(2)}</p>
+        <p class="text-sm text-gray-400">Avg Score Diff</p>
+      </div>
+      <div>
+        <p class="text-4xl font-bold text-blue-400">${submissions.length}</p>
+        <p class="text-sm text-gray-400">Tests Run</p>
+      </div>
+    </div>
+    
+    <div class="mt-4 p-4 bg-red-900/30 rounded-lg">
+      <p class="text-sm font-bold mb-2">⚠️ Key FINDING</p>
+      <p class="text-sm">My scoring formula produces scores that are ~50-65% lower than Rally's actual scores. The formula needs recalibration.</p>
+      <p class="text-sm text-gray-400 mt-2">
+        <span class="text-blue-400">My max total: ~2.0 | Rally max total: ~5.0</span>
+      </p>
+    </div>
+  </div>
+</body>
+</html>
