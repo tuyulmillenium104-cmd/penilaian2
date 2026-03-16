@@ -31,10 +31,10 @@ async function fetchCampaignDetail(address: string) {
   
   const campaign = await detailRes.json();
   
-  // Fetch participant count
+  // Fetch participant count from leaderboard
   let participantCount = 0;
   try {
-    const leaderboardRes = await fetch(`https://app.rally.fun/api/leaderboard?campaignAddress=${address}&limit=2000`);
+    const leaderboardRes = await fetch(`https://app.rally.fun/api/leaderboard?campaignAddress=${campaign.intelligentContractAddress || address}&limit=2000`);
     if (leaderboardRes.ok) {
       const leaderboardData = await leaderboardRes.json();
       participantCount = Array.isArray(leaderboardData) ? leaderboardData.length : 0;
@@ -43,12 +43,12 @@ async function fetchCampaignDetail(address: string) {
     console.error('Failed to fetch participant count:', e);
   }
   
-  // Calculate primary reward (first claimable token)
+  // Get primary reward (first claimable)
   const primaryReward = campaign.campaignRewards?.find((r: any) => r.claimable === true) || campaign.campaignRewards?.[0];
   const totalPrimaryReward = primaryReward?.totalAmount || 0;
   const primaryToken = primaryReward?.token?.symbol || campaign.token?.symbol || 'Unknown';
   
-  // Format all rewards for display
+  // Format all rewards
   const rewards = (campaign.campaignRewards || []).map((r: any) => ({
     amount: r.totalAmount,
     token: r.token?.symbol || 'Unknown',
@@ -56,38 +56,43 @@ async function fetchCampaignDetail(address: string) {
     claimable: r.claimable !== false
   }));
   
+  // Get organization from displayCreator
+  const org = campaign.displayCreator?.organization || {};
+  const creator = campaign.displayCreator || {};
+  
   const detail = {
     id: campaign.id,
     title: campaign.title,
     intelligentContractAddress: campaign.intelligentContractAddress,
     
     // Creator info
-    creator: campaign.displayCreator?.displayName || campaign.user?.xName || 'Unknown',
-    creatorUsername: campaign.displayCreator?.xUsername || campaign.user?.xUsername || '',
-    creatorAvatar: campaign.displayCreator?.avatarUrl || campaign.user?.xAvatar || '',
-    creatorProfile: campaign.displayCreator?.profileUrl || '',
-    creatorVerified: campaign.displayCreator?.xVerified || campaign.user?.xVerified || false,
+    creator: creator.displayName || campaign.user?.xName || 'Unknown',
+    creatorUsername: creator.xUsername || campaign.user?.xUsername || '',
+    creatorAvatar: creator.avatarUrl || campaign.user?.xAvatar || '',
+    creatorProfile: creator.profileUrl || '',
+    creatorVerified: creator.xVerified || campaign.user?.xVerified || false,
     
     // Organization
-    organizationName: campaign.displayCreator?.organization?.name || '',
-    organizationWebsite: campaign.displayCreator?.organization?.websiteUrl || '',
-    organizationLogo: campaign.displayCreator?.organization?.logoUrl || '',
-    organizationDescription: campaign.displayCreator?.organization?.description || '',
+    organizationName: org.name || '',
+    organizationWebsite: org.websiteUrl || '',
+    organizationLogo: org.logoUrl || '',
+    organizationDescription: org.description || '',
     
-    // Campaign details - THESE ARE THE KEY FIELDS!
-    goal: campaign.goal || '',  // Main description/brief
+    // Campaign details - THE KEY FIELDS!
+    goal: campaign.goal || '',
     knowledgeBase: campaign.knowledgeBase || '',
     rules: campaign.rules || '',
     style: campaign.style || '',
+    brief: org.description || '',  // For backward compatibility
     
-    // Rewards - FIXED!
+    // Rewards
     token: primaryToken,
     tokenAddress: campaign.token?.address || '',
-    tokenLogo: campaign.token?.logoUri || '',
-    tokenUsdPrice: campaign.token?.usdPrice || 0,
+    tokenLogo: campaign.token?.logoUri || primaryReward?.token?.logoUri || '',
+    tokenUsdPrice: campaign.token?.usdPrice || primaryReward?.token?.usdPrice || 0,
     chainId: campaign.token?.chainId || 8453,
-    totalReward: totalPrimaryReward,  // Primary reward only
-    rewards: rewards,  // All rewards for display
+    totalReward: totalPrimaryReward,
+    rewards: rewards,
     
     // Stats
     missionCount: campaign.missionCount || campaign.missions?.length || 0,
@@ -105,13 +110,13 @@ async function fetchCampaignDetail(address: string) {
     periodLengthDays: campaign.periodLengthDays || 14,
     
     // Images
-    headerImageUrl: campaign.headerImageUrl || campaign.displayCreator?.organization?.defaultCampaignHeaderUrl || '',
+    headerImageUrl: campaign.headerImageUrl || org.defaultCampaignHeaderUrl || '',
     
     // Status
     participating: campaign.participating || false,
     userMissionProgress: campaign.userMissionProgress || 0,
     
-    // Missions - with full details
+    // Missions
     missions: (campaign.missions || []).map((m: any) => ({
       id: m.id,
       title: m.title,
@@ -150,22 +155,42 @@ async function fetchCampaignFromList(address: string) {
   }
   
   // Return basic info
+  const org = campaign.displayCreator?.organization || {};
+  const creator = campaign.displayCreator || {};
+  const primaryReward = campaign.campaignRewards?.find((r: any) => r.claimable === true) || campaign.campaignRewards?.[0];
+  
   return NextResponse.json({
     id: campaign.id,
     title: campaign.title,
     intelligentContractAddress: campaign.intelligentContractAddress,
-    creator: campaign.displayCreator?.displayName || 'Unknown',
-    creatorUsername: campaign.displayCreator?.xUsername || '',
-    creatorAvatar: campaign.displayCreator?.avatarUrl || '',
-    token: campaign.token?.symbol || 'Unknown',
-    tokenLogo: campaign.token?.logoUri || '',
-    totalReward: campaign.campaignRewards?.[0]?.totalAmount || 0,
+    creator: creator.displayName || 'Unknown',
+    creatorUsername: creator.xUsername || '',
+    creatorAvatar: creator.avatarUrl || '',
+    brief: org.description || '',
+    organizationName: org.name || '',
+    organizationWebsite: org.websiteUrl || '',
+    organizationLogo: org.logoUrl || '',
+    token: primaryReward?.token?.symbol || campaign.token?.symbol || 'Unknown',
+    tokenAddress: campaign.token?.address || '',
+    tokenLogo: campaign.token?.logoUri || primaryReward?.token?.logoUri || '',
+    tokenUsdPrice: campaign.token?.usdPrice || 0,
+    totalReward: primaryReward?.totalAmount || 0,
+    rewards: (campaign.campaignRewards || []).map((r: any) => ({
+      amount: r.totalAmount,
+      token: r.token?.symbol || 'Unknown',
+      tokenLogo: r.token?.logoUri || null,
+      claimable: r.claimable !== false
+    })),
+    missionCount: campaign.missionCount || 0,
+    participantCount: 0,
+    minimumFollowers: campaign.minimumFollowers || 0,
+    maximumFollowers: campaign.maximumFollowers || 0,
+    onlyVerifiedUsers: campaign.onlyVerifiedUsers || false,
     startDate: campaign.startDate,
     endDate: campaign.endDate,
-    missionCount: campaign.missionCount || 0,
-    headerImageUrl: campaign.headerImageUrl || '',
-    minimumFollowers: campaign.minimumFollowers || 0,
-    onlyVerifiedUsers: campaign.onlyVerifiedUsers || false
+    headerImageUrl: campaign.headerImageUrl || org.defaultCampaignHeaderUrl || '',
+    participating: campaign.participating || false,
+    userMissionProgress: campaign.userMissionProgress || 0,
   });
 }
 
@@ -185,6 +210,7 @@ async function fetchAllCampaigns() {
     let participantCount = 0;
     const now = new Date();
     
+    // Only fetch leaderboard for active campaigns
     if (new Date(c.endDate) > now && c.intelligentContractAddress) {
       try {
         const lbRes = await fetch(`https://app.rally.fun/api/leaderboard?campaignAddress=${c.intelligentContractAddress}&limit=2000`);
@@ -195,6 +221,10 @@ async function fetchAllCampaigns() {
       } catch (e) {}
     }
     
+    // Get organization and creator
+    const org = c.displayCreator?.organization || {};
+    const creator = c.displayCreator || {};
+    
     // Primary reward (first claimable)
     const primaryReward = c.campaignRewards?.find((r: any) => r.claimable === true) || c.campaignRewards?.[0];
     
@@ -202,15 +232,15 @@ async function fetchAllCampaigns() {
       id: c.id,
       title: c.title,
       intelligentContractAddress: c.intelligentContractAddress,
-      creator: c.displayCreator?.displayName || 'Unknown',
-      creatorUsername: c.displayCreator?.xUsername || '',
-      creatorAvatar: c.displayCreator?.avatarUrl || '',
-      creatorProfile: c.displayCreator?.profileUrl || '',
-      creatorVerified: c.displayCreator?.xVerified || false,
-      brief: c.displayCreator?.organization?.description || '',
-      organizationName: c.displayCreator?.organization?.name || '',
-      organizationWebsite: c.displayCreator?.organization?.websiteUrl || '',
-      organizationLogo: c.displayCreator?.organization?.logoUrl || '',
+      creator: creator.displayName || 'Unknown',
+      creatorUsername: creator.xUsername || '',
+      creatorAvatar: creator.avatarUrl || '',
+      creatorProfile: creator.profileUrl || '',
+      creatorVerified: creator.xVerified || false,
+      brief: org.description || '',
+      organizationName: org.name || '',
+      organizationWebsite: org.websiteUrl || '',
+      organizationLogo: org.logoUrl || '',
       token: primaryReward?.token?.symbol || c.token?.symbol || 'Unknown',
       tokenAddress: c.token?.address || '',
       tokenLogo: c.token?.logoUri || primaryReward?.token?.logoUri || '',
@@ -230,7 +260,7 @@ async function fetchAllCampaigns() {
       onlyVerifiedUsers: c.onlyVerifiedUsers || false,
       startDate: c.startDate,
       endDate: c.endDate,
-      headerImageUrl: c.headerImageUrl || c.displayCreator?.organization?.defaultCampaignHeaderUrl || '',
+      headerImageUrl: c.headerImageUrl || org.defaultCampaignHeaderUrl || '',
       participating: c.participating || false,
       userMissionProgress: c.userMissionProgress || 0,
     };
@@ -238,7 +268,11 @@ async function fetchAllCampaigns() {
   
   let campaigns = await Promise.all(campaignPromises);
   const now = new Date();
+  
+  // Filter active campaigns
   campaigns = campaigns.filter((c: any) => new Date(c.endDate) > now);
+  
+  // Sort by participant count (most popular first)
   campaigns.sort((a: any, b: any) => b.participantCount - a.participantCount);
   
   return NextResponse.json(campaigns);

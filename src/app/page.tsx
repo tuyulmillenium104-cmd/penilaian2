@@ -80,6 +80,8 @@ interface LeaderboardEntry {
   displayName?: string
   avatar?: string
   verified?: boolean
+  basePoints: number
+  referralBonus: number
   totalPoints: number
   topPercent: number
   followersCount?: number
@@ -91,12 +93,20 @@ interface LeaderboardEntry {
 interface LeaderboardResponse {
   leaderboard: LeaderboardEntry[]
   total: number
+  missionCount?: number
+  stats?: {
+    topScore: number
+    avgScore: number
+    avgSubmissions: number
+    participantsWithSubmissions: number
+    totalRewardPool: number
+  }
   campaignInfo?: {
     totalReward: number
     token: string
     tokenUsdPrice: number
-    rewards: { amount: number; token: string; tokenLogo: string | null; claimable: boolean }[]
     alpha: number
+    rewards: { amount: number; token: string; tokenLogo: string | null; claimable: boolean }[]
   }
 }
 
@@ -1194,11 +1204,17 @@ export default function RallyScoreAnalyzer() {
             {selectedCampaign && (
               <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/30">
                 <CardContent className="py-3 px-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Coins className="w-5 h-5 text-amber-400" />
-                      <span className="text-sm text-gray-300">Total Reward Pool:</span>
-                      <span className="text-lg font-bold text-amber-400">{formatNumber(selectedCampaign.totalReward)} {selectedCampaign.token}</span>
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2">
+                        <Coins className="w-5 h-5 text-amber-400" />
+                        <span className="text-sm text-gray-300">Reward Pool:</span>
+                        <span className="text-lg font-bold text-amber-400">{formatNumber(selectedCampaign.totalReward)} {selectedCampaign.token}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-400">
+                        <FolderKanban className="w-4 h-4" />
+                        <span>{selectedCampaign.missionCount || 1} Missions</span>
+                      </div>
                     </div>
                     <div className="text-xs text-gray-400">
                       {totalParticipants} participants
@@ -1216,7 +1232,10 @@ export default function RallyScoreAnalyzer() {
                       <tr>
                         <th className="text-left p-3 text-gray-400 text-xs font-medium">Rank</th>
                         <th className="text-left p-3 text-gray-400 text-xs font-medium">User</th>
-                        <th className="text-right p-3 text-gray-400 text-xs font-medium">Points</th>
+                        <th className="text-center p-3 text-gray-400 text-xs font-medium">Subs</th>
+                        <th className="text-right p-3 text-gray-400 text-xs font-medium">Base</th>
+                        <th className="text-right p-3 text-gray-400 text-xs font-medium">Referral</th>
+                        <th className="text-right p-3 text-gray-400 text-xs font-medium">Total</th>
                         <th className="text-right p-3 text-gray-400 text-xs font-medium">Top %</th>
                         <th className="text-right p-3 text-gray-400 text-xs font-medium">Est. Reward</th>
                       </tr>
@@ -1251,8 +1270,23 @@ export default function RallyScoreAnalyzer() {
                               {entry.verified && <Verified className="w-3 h-3 text-blue-400" />}
                             </div>
                           </td>
-                          <td className="p-3 text-right"><span className="text-white font-bold">{entry.totalPoints.toFixed(2)}</span></td>
-                          <td className="p-3 text-right"><Badge className={`text-xs ${entry.topPercent <= 1 ? 'bg-yellow-500/20 text-yellow-400' : entry.topPercent <= 5 ? 'bg-green-500/20 text-green-400' : entry.topPercent <= 10 ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-500/20 text-gray-400'}`}>Top {entry.topPercent.toFixed(1)}%</Badge></td>
+                          <td className="p-3 text-center">
+                            <Badge className="bg-gray-600/50 text-gray-300 text-xs">{entry.totalSubmissions || 0}</Badge>
+                          </td>
+                          <td className="p-3 text-right">
+                            <span className="text-cyan-400">{entry.basePoints?.toFixed(2) || entry.totalPoints?.toFixed(2) || '0.00'}</span>
+                          </td>
+                          <td className="p-3 text-right">
+                            <span className="text-green-400">+{entry.referralBonus?.toFixed(2) || '0.00'}</span>
+                          </td>
+                          <td className="p-3 text-right">
+                            <span className="text-white font-bold">{entry.totalPoints?.toFixed(2) || '0.00'}</span>
+                          </td>
+                          <td className="p-3 text-right">
+                            <Badge className={`text-xs ${entry.topPercent <= 1 ? 'bg-yellow-500/20 text-yellow-400' : entry.topPercent <= 5 ? 'bg-green-500/20 text-green-400' : entry.topPercent <= 10 ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-500/20 text-gray-400'}`}>
+                              Top {entry.topPercent?.toFixed(1) || '0.0'}%
+                            </Badge>
+                          </td>
                           <td className="p-3 text-right">
                             {entry.estimatedReward && entry.estimatedReward > 0 ? (
                               <span className="text-green-400 font-medium">{formatNumber(entry.estimatedReward)} {entry.token}</span>

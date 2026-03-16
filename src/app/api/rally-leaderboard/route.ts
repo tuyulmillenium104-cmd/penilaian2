@@ -8,12 +8,13 @@ export async function GET(request: NextRequest) {
   try {
     // First, get the campaign info to know total participants and rewards
     let totalParticipants = 0;
+    let missionCount = 0;
     let campaignRewards: any[] = [];
     let primaryReward: any = null;
     let totalReward = 0;
     let token = 'Unknown';
     let tokenUsdPrice = 0;
-    let alpha = 3; // Default distribution curve
+    let alpha = 3;
     
     if (campaignAddress) {
       try {
@@ -22,26 +23,26 @@ export async function GET(request: NextRequest) {
         });
         if (campaignResponse.ok) {
           const campaignData = await campaignResponse.json();
-          // Use lastSyncedSubmissionCount as total participants estimate
-          totalParticipants = campaignData.lastSyncedSubmissionCount || campaignData.participantCount || 0;
+          totalParticipants = campaignData.lastSyncedSubmissionCount || 0;
+          missionCount = campaignData.missionCount || 1;
           campaignRewards = campaignData.campaignRewards || [];
           alpha = campaignData.alpha || 3;
           
-          // Get primary reward
+          // Get primary reward (first claimable)
           primaryReward = campaignRewards.find((r: any) => r.claimable === true) || campaignRewards[0];
           totalReward = primaryReward?.totalAmount || 0;
           token = primaryReward?.token?.symbol || campaignData.token?.symbol || 'Unknown';
-          tokenUsdPrice = campaignData.token?.usdPrice || 0;
+          tokenUsdPrice = campaignData.token?.usdPrice || primaryReward?.token?.usdPrice || 0;
         }
       } catch (e) {
         console.error('Failed to fetch campaign info:', e);
       }
     }
     
-    // Then get the leaderboard
+    // Get the leaderboard
     let url = 'https://app.rally.fun/api/leaderboard';
     if (campaignAddress) {
-      url += `?campaignAddress=${campaignAddress}&limit=${limit}`;
+      url += `?campaignAddress=${campaignAddress}&limit=1000`;
     } else {
       url += `?limit=${limit}`;
     }
@@ -59,66 +60,97 @@ export async function GET(request: NextRequest) {
     // Transform data
     const rawData = Array.isArray(data) ? data : data.leaderboard || [];
     
-    // Use actual total participants from campaign, or fallback to leaderboard length
-    if (totalParticipants === 0) {
-      totalParticipants = data.total || rawData.length;
-    }
+    // Use actual leaderboard length as total participants (most accurate)
+    // Override lastSyncedSubmissionCount which may be outdated
+    totalParticipants = rawData.length;
     
-    const leaderboard = rawData.map((entry: any, index: number) => {
-      const rank = entry.rank || index + 1;
-      // Calculate topPercent based on actual total participants
+    // Calculate sum of points for proportional distribution
+    let totalPointsSum = 0;
+    rawData.forEach((entry: any) => {
+      totalPointsSum += Number(entry.points || 0);
+    });
+    
+    const leaderboard = rawData.map((entry: any) => {
+      const rank = entry.rank;
+      
+      // Points are in atto format (10^-18), convert to readable scale
+      const basePoints = Number(entry.points || 0) / 1e18;
+      const referralBonus = Number(entry.referralBonus || 0) / 1e18;
+      const totalScore = basePoints + referralBonus;
+      
+      // Calculate top percent
       const topPercent = totalParticipants > 0 ? (rank / totalParticipants) * 100 : 0;
       
-      // Get user data from nested user object
+      // Get user data
       const userData = entry.user || {};
+      const username = userData.xUsername || entry.username || 'Unknown';
+      const displayName = userData.xName || userData.xUsername || username;
       
-      // Calculate estimated reward based on rank (power law distribution with alpha)
+      // Calculate estimated reward (proportional to points)
       let estimatedReward = 0;
-      if (totalReward > 0 && totalParticipants > 0) {
-        // Power law distribution: reward proportional to rank^(-alpha)
-        // Simplified estimation based on percentile
-        if (topPercent <= 1) estimatedReward = totalReward * 0.20;
-        else if (topPercent <= 5) estimatedReward = totalReward * 0.10;
-        else if (topPercent <= 10) estimatedReward = totalReward * 0.05;
-        else if (topPercent <= 25) estimatedReward = totalReward * 0.02;
-        else if (topPercent <= 50) estimatedReward = totalReward * 0.01;
-        else estimatedReward = totalReward * 0.005;
-        // Divide by number of periods (typically 1-3)
-        estimatedReward = estimatedReward / (1 || 1);
+      if (totalReward > 0 && totalPointsSum > 0) {
+        estimatedReward = totalReward * (Number(entry.points || 0) / totalPointsSum);
       }
       
       return {
         rank,
-        username: userData.xUsername || entry.xUsername || entry.username || 'Unknown',
-        displayName: userData.xName || entry.xName || entry.displayName || userData.xUsername || 'Unknown',
-        avatar: userData.xAvatar || entry.xAvatar || entry.avatarUrl || '',
-        verified: userData.xVerified || entry.xVerified || false,
-        // Rally returns scores in atto format (10^-18), convert to 0-10 scale
-        totalPoints: (entry.totalPoints || entry.points || 0) / 1e18,
-        topPercent: topPercent,
-        followersCount: userData.xFollowersCount || entry.followersCount || 0,
-        totalSubmissions: entry.totalSubmissions || entry.submissionCount || 0,
+        username,
+        displayName,
+        avatar: userData.xAvatar || '',
+        verified: userData.xVerified || false,
+        followersCount: userData.xFollowersCount || 0,
+        // Base points from submissions (what Rally ranks by)
+        basePoints: Math.round(basePoints * 100) / 100,
+        // Referral bonus
+        referralBonus: Math.round(referralBonus * 100) / 100,
+        // Total (base + referral)
+        totalPoints: Math.round(totalScore * 100) / 100,
+        // Stats
+        topPercent: Math.round(topPercent * 100) / 100,
+        totalSubmissions: entry.totalSubmissions || 0,
         // Reward estimation
         estimatedReward: Math.round(estimatedReward * 100) / 100,
-        token: token
+        token,
+        tokenUsdPrice
       };
     });
     
+    // Sort by rank
+    const sortedLeaderboard = leaderboard
+      .sort((a, b) => a.rank - b.rank)
+      .slice(0, limit);
+    
+    // Calculate stats
+    const topScore = sortedLeaderboard[0]?.totalPoints || 0;
+    const avgScore = sortedLeaderboard.length > 0 
+      ? sortedLeaderboard.reduce((sum, e) => sum + e.totalPoints, 0) / sortedLeaderboard.length 
+      : 0;
+    const avgSubmissions = sortedLeaderboard.length > 0
+      ? sortedLeaderboard.reduce((sum, e) => sum + e.totalSubmissions, 0) / sortedLeaderboard.length
+      : 0;
+    
     return NextResponse.json({
-      leaderboard,
+      leaderboard: sortedLeaderboard,
       total: totalParticipants,
-      // Campaign reward info
+      missionCount,
+      stats: {
+        topScore: Math.round(topScore * 100) / 100,
+        avgScore: Math.round(avgScore * 100) / 100,
+        avgSubmissions: Math.round(avgSubmissions * 10) / 10,
+        participantsWithSubmissions: rawData.length,
+        totalRewardPool: totalReward
+      },
       campaignInfo: {
         totalReward,
         token,
         tokenUsdPrice,
+        alpha,
         rewards: campaignRewards.map((r: any) => ({
           amount: r.totalAmount,
           token: r.token?.symbol || 'Unknown',
           tokenLogo: r.token?.logoUri || null,
           claimable: r.claimable !== false
-        })),
-        alpha
+        }))
       }
     });
   } catch (error) {
