@@ -1037,7 +1037,7 @@ export default function RallyScoreAnalyzer() {
                         <CardTitle className="text-base text-white truncate">{campaign.title}</CardTitle>
                         <div className="flex items-center gap-2 mt-1">
                           {campaign.creatorAvatar && <img src={campaign.creatorAvatar} alt="" className="w-5 h-5 rounded-full" />}
-                          <p className="text-xs text-gray-500 truncate">by {campaign.creator}{campaign.creatorVerified && <Verified className="w-3 h-3 inline ml-1 text-blue-400" />}</p>
+                          <p className="text-xs text-gray-500 truncate">by {campaign.creator}{campaign.creatorUsername && <span className="text-gray-600"> (@{campaign.creatorUsername})</span>}{campaign.creatorVerified && <Verified className="w-3 h-3 inline ml-1 text-blue-400" />}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
@@ -1065,6 +1065,16 @@ export default function RallyScoreAnalyzer() {
                         <p className="text-[10px] text-gray-400">Rewards</p>
                       </div>
                     </div>
+                    {/* All Rewards */}
+                    {campaign.rewards && campaign.rewards.length > 1 && (
+                      <div className="flex flex-wrap gap-1">
+                        {campaign.rewards.map((r: any, i: number) => (
+                          <Badge key={i} className={`${r.claimable ? 'bg-green-500/20 text-green-400' : 'bg-gray-600/50 text-gray-400'} text-[10px]`}>
+                            {formatNumber(r.amount)} {r.token}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2">
                         <Badge variant="outline" className="border-gray-600 text-gray-400">{campaign.chainId === 8453 ? '🔵 Base' : `Chain ${campaign.chainId}`}</Badge>
