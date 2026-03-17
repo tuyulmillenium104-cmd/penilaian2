@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"analysis\": {\n    \"technical_level_flow\": {\n      \"assessment\": \"The thread follows a somewhat inverted technical flow, starting with a high-level problem statement (DeFi hacks) and then diving deeper into technical concepts before returning to high-level benefits. The flow is: HIGH → MEDIUM → HIGH → MEDIUM → HIGH → MEDIUM → LOW.\",\n      \"score\": 3,\n      \"feedback\": \"The thread doesn't follow the ideal LOW → MEDIUM → HIGH → MEDIUM → LOW progression. It starts with a complex topic (DeFi hacks) and then introduces more technical concepts (smart contracts, AI agents) without sufficient foundational explanation for less technical readers.\"\n    },\n    \"emotional_arc\": {\n      \"assessment\": \"The thread creates an emotional arc by starting with a problem (funds being lost), building tension (traditional courts can't help), raising stakes (AI disputes), and then offering resolution (Internet Court). The peak is around tweet 3 with the question about AI conflicts.\",\n      \"score\": 4,\n      \"feedback\": \"Strong emotional arc that moves from problem to solution effectively. The peak tension is well-placed in the middle, creating curiosity before revealing the solution. However, the resolution could be more emotionally impactful.\"\n    },\n    \"information_density\": {\n      \"assessment\": \"The information density is uneven. Tweets 1-2 and 6-7 are relatively dense with facts and concepts, while tweets 3-5 have more questions and explanatory content. The thread could benefit from better balance.\",\n      \"score\": 3,\n      \"feedback\": \"Some tweets contain too much information for a single post (especially tweets 1 and 6), while others are more conversational. Better balance would improve readability and comprehension.\"\n    },\n    \"viral_mechanics_placement\": {\n      \"assessment\": \"The thread includes two direct engagement questions (tweets 3 and 7), with the second one positioned at the end. The first question is placed earlier in the thread, which is good for early engagement but might reduce the impact of the final CTA.\",\n      \"score\": 3,\n      \"feedback\": \"Engagement questions are included but could be better placed. The first question at tweet 3 might cause readers to engage before understanding the full solution. Placing both questions at the end would create stronger momentum toward the final CTA.\"\n    },\n    \"cta_positioning\": {\n      \"assessment\": \"The main CTA (internetcourt.org) appears in tweets 1, 4, and 7, providing reinforcement. The final CTA is positioned at the end with a question, which is good for engagement, but the website link only appears in the first and last tweets.\",\n      \"score\": 4,\n      \"feedback\": \"Good reinforcement of the CTA throughout the thread. However, adding the link to more tweets (especially tweet 4 and 6) would increase conversion opportunities. The final question effectively drives engagement toward the CTA.\"\n    },\n    \"overall_structure\": {\n      \"assessment\": \"The thread has a logical flow from problem to solution, with good reinforcement of key points. However, the technical level progression could be improved, and information density is uneven. The emotional arc is strong, and CTAs are well-placed.\",\n      \"score\": 3.4,\n      \"feedback\": \"The thread effectively communicates the value proposition of Internet Court but could be optimized for broader audience understanding. Starting with more accessible content and gradually increasing technical depth would improve engagement from a wider audience.\"\n    }\n  }\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1773763844,
+  "id": "20260318001028406bd908c4d34b78",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "20260318001028406bd908c4d34b78",
+  "usage": {
+    "completion_tokens": 737,
+    "prompt_tokens": 357,
+    "total_tokens": 1094
+  }
+}

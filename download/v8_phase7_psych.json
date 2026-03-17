@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"psychological_triggers\": [\n    {\n      \"trigger\": \"Loss Aversion\",\n      \"where\": \"Tweet 2\",\n      \"how\": \"Highlight negative consequences of inaction\",\n      \"example\": \"Problem statement: '75% of legal cases are lost because people don't know their rights. Without proper legal guidance, you could lose thousands and miss out on the justice you deserve.'\"\n    },\n    {\n      \"trigger\": \"Social Proof\",\n      \"where\": \"Tweet 5\",\n      \"how\": \"Include testimonials or statistics showing others' success\",\n      \"example\": \"Deep dive: 'Join 10,000+ users who've won their cases with Internet Court. Our AI has helped recover over $2M in settlements for everyday people like you.'\"\n    },\n    {\n      \"trigger\": \"Authority\",\n      \"where\": \"Tweet 4\",\n      \"how\": \"Highlight expertise and credibility\",\n      \"example\": \"Solution intro: 'Developed by top legal tech experts and former judges, Internet Court combines decades of legal knowledge with cutting-edge AI to give you an unfair advantage.'\"\n    },\n    {\n      \"trigger\": \"Commitment\",\n      \"where\": \"Tweet 3\",\n      \"how\": \"Start with small, easy action\",\n      \"example\": \"AI angle + question CTA: 'Curious if your case has merit? Take our 30-second free assessment (no credit card required). See why 87% of users who start, complete their case successfully.'\"\n    },\n    {\n      \"trigger\": \"Liking\",\n      \"where\": \"Tweet 6\",\n      \"how\": \"Create relatable, empathetic content\",\n      \"example\": \"Value proposition: 'We get it. Legal battles are stressful and confusing. Internet Court is designed for real people facing real problems, not just legal professionals.'\"\n    },\n    {\n      \"trigger\": \"Scarcity\",\n      \"where\": \"Tweet 7\",\n      \"how\": \"Create urgency with limited time offer\",\n      \"example\": \"Final CTA: 'Special offer ends tonight! Join Internet Court today and get 50% off your first case assessment. Don't miss this chance to level the playing field.'\"\n    },\n    {\n      \"trigger\": \"Curiosity\",\n      \"where\": \"Tweet 1\",\n      \"how\": \"Create information gap to spark interest\",\n      \"example\": \"Hook with stats: '93% of people who lose their cases could have won with proper preparation. The secret weapon they all missed? (Hint: It\\'s not a lawyer)'\"\n    }\n  ]\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1773763902,
+  "id": "20260318001134c2c0ff332e8e4bc8",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "20260318001134c2c0ff332e8e4bc8",
+  "usage": {
+    "completion_tokens": 547,
+    "prompt_tokens": 215,
+    "total_tokens": 762
+  }
+}

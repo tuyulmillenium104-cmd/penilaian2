@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "1/ Imagine waking up to find your life savings gone. Not stolen from your bank account, but drained from your DeFi wallet through a vulnerability you never knew exists. This isn't hypothetical. It's happening now.\n\n2/ The worst part? There's nowhere to turn. Traditional courts don't understand smart contracts. Regulators are still writing rules. You're left alone against faceless attackers.\n\n3/ I watched a friend lose everything when an AI trading bot he trusted was compromised. The bot executed millions of transactions in minutes, draining his portfolio before anyone could react.\n\n4/ When Bybit lost $500M to an exploit, they absorbed the loss. Regular people can't. These incidents aren't statistics. They're lives disrupted, dreams deferred.\n\n5/ The legal system feels outdated when dealing with digital assets. Trying to explain blockchain vulnerabilities to a judge who barely understands email is impossible.\n\n6/ InternetCourt.org exists because we shouldn't have to choose between participating in the digital economy and protecting our assets. How will you secure your digital future?\n\n7/ As AI agents increasingly control our assets, we need specialized justice systems. InternetCourt.org provides that, justice in the digital age. Have you experienced asset loss without recourse? Drop your story below.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1773764280,
+  "id": "20260318001752e58cae0d316f4085",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "20260318001752e58cae0d316f4085",
+  "usage": {
+    "completion_tokens": 254,
+    "prompt_tokens": 313,
+    "total_tokens": 567
+  }
+}

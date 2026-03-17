@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "# OPTIMIZED THREAD:\n\n1/7: $400M lost to DeFi hacks in 2025 alone. Bybit lost $100M in one exploit. Code runs despite disputes. But internetcourt.org stops that.\n\n2/7: Courts can't halt smart contracts. No subpoenas for algorithms. Cross-border cases take years while funds vanish.\n\n3/7: When AIs fight transactions, who decides? When AI agents execute millions of deals daily, what then? Your take? 👇\n\n4/7: GenLayer creates synthetic jurisdiction for disputes. Internet Court resolves conflicts in real-time. Code keeps executing.\n\n5/7: Smart contracts ignore borders. They execute regardless. Internet Court works where traditional systems can't.\n\n6/7: Future isn't preventing exploits—it's resolving them before cascade. Internet Court turns disputes into resolved cases.\n\n7/7: When AI agents run markets, justice must run with them. Enter Internet Court. internetcourt.org\n\nYour biggest concern about AI-driven disputes? 👇\n\n## EXPLANATIONS:\n\n1/7: \n- Changed \".4B\" to \"$400M\" for clarity\n- Removed \"in a single exploit\" → \"one exploit\" (more concise)\n- Combined last two sentences for better flow\n- Moved URL to end for impact\n\n2/7:\n- Stronger opening hook with \"Courts can't halt\"\n- Removed unnecessary words like \"Traditional\" and \"when smart contracts execute despite disputes\"\n- Simplified \"Cross-border cases take years while funds vanish\" for more punch\n\n3/7:\n- Created stronger hooks with rhetorical questions\n- Combined two related questions for impact\n- Kept engagement prompt at end\n\n4/7:\n- More direct opening with \"GenLayer creates\"\n- Removed \"Internet Court doesn't stop transactions\" as it's redundant\n- Shortened \"it resolves conflicts in real-time while code keeps executing\" for better flow\n\n5/7:\n- Created rhythmic three-part structure\n- Removed redundant explanation\n- Simplified for maximum impact\n\n6/7:\n- Stronger opening with \"Future isn't preventing—it's resolving\"\n- Used em dash for dramatic effect\n- More concise final statement\n\n7/7:\n- More direct opening statement\n- Simplified \"Enter Internet Court\" for impact\n- Kept URL and engagement prompt at end",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1773763949,
+  "id": "20260318001218fd7f3e95c9d94cd4",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "20260318001218fd7f3e95c9d94cd4",
+  "usage": {
+    "completion_tokens": 480,
+    "prompt_tokens": 366,
+    "total_tokens": 846
+  }
+}

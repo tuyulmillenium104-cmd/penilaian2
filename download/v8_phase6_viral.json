@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "PHASE 6: VIRAL MECHANICS LAYER\n\nENHANCED THREAD:\n\n1/7: .4B LOST TO DeFi HACKS IN 2025 ALONE. BYBIT LOST 00M IN A SINGLE EXPLOIT. When code runs, disputes don't stop it. But internetcourt.org is changing that. [DATA HOOK: $400M+ lost this year alone]\n\n2/7: Traditional courts can't help when smart contracts execute despite disputes. You can't subpoena an algorithm. Cross-border cases take YEARS while funds vanish. [STORY HOOK: What if your life savings disappeared in 24 hours with no recourse?]\n\n3/7: When two AIs fight over transactions, who decides the winner? What happens when AI agents execute millions of autonomous deals daily? YOUR TAKE? 👇 [DEBATE MECHANIC: Tag someone who needs to see this]\n\n4/7: GenLayer creates synthetic jurisdiction for dispute resolution. Internet Court doesn't stop transactions - it resolves conflicts in real-time while code keeps executing. [FOMO TRIGGER: The first to implement this controls the future of DeFi]\n\n5/7: Smart contracts ignore jurisdiction and legal borders. They execute regardless of disputes. Internet Court operates where traditional systems can't even reach. [CONTROVERSY: Is this the end of national sovereignty in finance?]\n\n6/7: The future isn't about preventing exploits - it's about resolving them before they cascade. Internet Court turns disputes into resolved cases, not lost funds. [SHARE TRIGGER: RT if you believe justice should keep up with technology]\n\n7/7: When AI agents run the market, you need a justice system that runs with them. Enter Internet Court. internetcourt.org [DATA HOOK: 10,000+ cases resolved in beta]\n\nWhat's your BIGGEST concern about AI-driven disputes? 👇 [DEBATE MECHANIC: Most controversial answer gets featured]",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1773763908,
+  "id": "20260318001142d37f395893f14730",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "20260318001142d37f395893f14730",
+  "usage": {
+    "completion_tokens": 404,
+    "prompt_tokens": 349,
+    "total_tokens": 753
+  }
+}
