@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://kleros.io",
+    "name": "Kleros: Homepage",
+    "snippet": "The blockchain dispute resolution layer. Fast, open and affordable justice for all.",
+    "host_name": "kleros.io",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://docs.kleros.io/products/court/famous-kleros-cases",
+    "name": "Famous Kleros Cases",
+    "snippet": "8 Apr 2025 — ... resolution . Case #532 ended with a ruling in favor of the \"Yes\" option, settling more than $2.5M (at the time) of payouts. Learn all about ...",
+    "host_name": "docs.kleros.io",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://moritzlaw.osu.edu/sites/default/files/2022-08/10-%20BERGOLLA%2055-98.pdf",
+    "name": "Kleros: A Socio-Legal Case Study Of Decentralized Justice",
+    "snippet": "2022 · Cited by 43 — This article uses Kleros as a socio-legal case study of a token-based business providing cutting-edge decentralized blockchain arbitration services.1 According ... 44 pages",
+    "host_name": "moritzlaw.osu.edu",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://docs.kleros.io/integrations/types-of-integrations/1.-dispute-resolution-integration-plan/integration-tools/dispute-resolver",
+    "name": "Dispute Resolver",
+    "snippet": "21 Apr 2025 — Kleros Dispute Resolver allows users to create, manage, and interact with disputes on the Kleros protocol. It provides a user-friendly interface ...",
+    "host_name": "docs.kleros.io",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://link.springer.com/article/10.1365/s43439-023-00086-x",
+    "name": "Kleros as a decentralised dispute resolution system - Springer",
+    "snippet": "2023 · Cited by 28 — As of November 2021, it had resolved around 1000 disputes with 14,000 registered users [21]. The statistics associated with the project are ...",
+    "host_name": "link.springer.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

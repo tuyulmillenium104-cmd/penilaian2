@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://www.sciencedirect.com/science/article/pii/S2667295226000024",
+    "name": "Decentralized finance security: A survey of attacks, defenses, and open challenges",
+    "snippet": "2026 — The technical and code layer encompasses vulnerabilities arising from how DeFi protocols are implemented as smart contracts and is a primary ...\n2026 — Beyond syntactic vulnerabilities, many severe DeFi exploits stem from conceptual design or implementation errors: the code faithfully implements ...",
+    "host_name": "www.sciencedirect.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.halborn.com/blog/post/year-in-review-the-biggest-defi-hacks-of-2025",
+    "name": "Year in Review: The Biggest DeFi Hacks of 2025",
+    "snippet": "Year in Review: The Biggest DeFi Hacks of 2025 ... In 2025, only six hacks exceeded $50 million in losses, compared to the eight that met this threshold in 2024.",
+    "host_name": "www.halborn.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.zealynx.io/blogs/2025-exploit-lessons",
+    "name": "2025 DeFi Hacks: $3.4B Exploit Lessons You Must Know",
+    "snippet": "Jan 10, 2026 — Bybit $1.5B hack explained: What went wrong in 2025's biggest DeFi exploits (Cetus, Balancer, SwissBorg). Learn how to prevent blind signing ...",
+    "host_name": "www.zealynx.io",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://forklog.com/en/maturity-in-question-defis-paradoxical-2025",
+    "name": "DeFi's 2025 Paradox: Growth Amidst Lingering Questions of Maturity",
+    "snippet": "Jan 5, 2026 — The core problem contradicting Buterin's safety thesis persists—hacks have not stopped. Attacks on Stream Finance or Balancer are mere examples.",
+    "host_name": "forklog.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://hacken.io/discover/smart-contract-vulnerabilities",
+    "name": "Top 10 Smart Contract Vulnerabilities in 2025 (With Real Hacks & How to Prevent Them)",
+    "snippet": "Dec 10, 2025 — In Q1 2024, smart contract exploits led to almost $45 million in losses across 16 incidents, averaging $2.8 million per exploit. This ...",
+    "host_name": "hacken.io",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

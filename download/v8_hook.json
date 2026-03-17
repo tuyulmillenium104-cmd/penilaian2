@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "When AI agents start stealing $400M in DeFi hacks, who's gonna sue the algorithm? Traditional courts can't handle code disputes, but internetcourt.org can. The future of digital justice is here.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1773763001,
+  "id": "202603172356394da6e1a946ff4ab8",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "202603172356394da6e1a946ff4ab8",
+  "usage": {
+    "completion_tokens": 43,
+    "prompt_tokens": 218,
+    "total_tokens": 261
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "1. $400M lost to DeFi hacks in 2025. Bybit alone lost $500M. The market is in FEAR, but what if we told you disputes don't have to cost millions?\n\n---\n\n2. Traditional courts can't help when smart contracts execute despite disputes. You can't subpoena an algorithm, and cross-border cases take years.\n\n---\n\n3. What happens when AI agents execute millions of autonomous transactions daily? Who resolves disputes when code runs but humans disagree? What's your solution? 👇\n\n---\n\n4. GenLayer creates synthetic jurisdiction for dispute resolution. Internet Court doesn't stop transactions—it resolves conflicts in real-time while code continues executing.\n\n---\n\n5. Smart contracts don't care about jurisdiction or legal borders. They execute regardless of disputes. Internet Court operates where traditional systems can't reach.\n\n---\n\n6. The future isn't about preventing exploits—it's about resolving them before they cascade. Internet Court turns disputes into resolved cases, not lost funds.\n\n---\n\n7. When AI agents run the market, you need a justice system that runs with them. Enter Internet Court. internetcourt.org. What's your biggest concern about AI-driven disputes?",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1773763026,
+  "id": "2026031723570005ae259d92be435d",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "2026031723570005ae259d92be435d",
+  "usage": {
+    "completion_tokens": 235,
+    "prompt_tokens": 324,
+    "total_tokens": 559
+  }
+}

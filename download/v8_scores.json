@@ -1,0 +1,22 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\n  \"G1_CONTENT_ALIGNMENT\": {\n    \"score\": 2,\n    \"explanation\": \"The thread accurately aligns with what appears to be a campaign for Internet Court, focusing on dispute resolution in DeFi and AI-driven transactions. The terminology is precise regarding smart contracts, exploits, and jurisdiction concepts. The brand voice is authoritative and solution-oriented.\"\n  },\n  \"G2_INFORMATION_ACCURACY\": {\n    \"score\": 1,\n    \"explanation\": \"The thread makes claims about financial losses ($4B in 2025, $0.5B from Bybit) that appear to be hypothetical or future-looking rather than verified facts. The technical concepts about smart contracts and dispute resolution are generally accurate, but the specific financial figures lack verification.\"\n  },\n  \"G3_CAMPAIGN_COMPLIANCE\": {\n    \"score\": 2,\n    \"explanation\": \"The thread includes the required mention (internetcourt.org) in multiple tweets without starting with it. There are no banned elements like em dashes present. The campaign appears to follow compliance guidelines.\"\n  },\n  \"G4_ORIGINALITY\": {\n    \"score\": 1,\n    \"explanation\": \"The concept of dispute resolution for smart contracts and AI agents is not particularly fresh. The thread follows a common pattern of problem-solution structure seen in many crypto/blockchain campaigns. While well-written, it doesn't offer a uniquely novel perspective.\"\n  },\n  \"EP_ENGAGEMENT_POTENTIAL\": {\n    \"score\": 3,\n    \"explanation\": \"The thread starts with a strong hook mentioning significant financial losses. It effectively triggers concern about security in DeFi. The reply CTAs ('What's your take?', 'What's your biggest concern?') encourage engagement. However, it lacks strong viral mechanics or highly shareable elements beyond the core concept.\"\n  },\n  \"TQ_TECHNICAL_QUALITY\": {\n    \"score\": 4,\n    \"explanation\": \"The thread is well-written with proper grammar and spelling. All tweets are within character limits. The structure flows logically from problem to solution. However, there's some inconsistency in formatting (e.g., some sentences start with lowercase, others with uppercase).\"\n  }\n}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1773763068,
+  "id": "20260317235740f3b5766f290b47a0",
+  "model": "glm-4-plus",
+  "object": "chat.completion",
+  "request_id": "20260317235740f3b5766f290b47a0",
+  "usage": {
+    "completion_tokens": 464,
+    "prompt_tokens": 463,
+    "total_tokens": 927
+  }
+}
