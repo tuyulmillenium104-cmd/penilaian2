@@ -1,0 +1,2084 @@
+# RALLY WORKFLOW V7.0 - FINAL EDITION
+## Internal Standard 2x Lebih Ketat dari Rally | Target: Top 0.1% | Level 5 Maximum Standard
+
+================================================================================
+                    PHILOSOPHY: OVER-ENGINEERED EXCELLENCE
+================================================================================
+
+**PRINSIP UTAMA:**
+"Jika Rally menganggap 'bagus', kita anggap 'belum cukup'"
+
+V7.0 menggunakan standar internal yang 2x lebih ketat:
+- Gates: Rally 0-2 → V7.0 0-4 (Pass = 4/4 per gate)
+- Quality: Rally 0-5 → V7.0 0-8 (Pass = 8/8 per component)
+
+================================================================================
+                    LEVEL DEFINISI STANDAR (V7.0)
+================================================================================
+
+| Level | Nama | Gate Score | Quality Score | Master Score | Target |
+|-------|------|------------|---------------|--------------|--------|
+| Level 0 | Below Rally | < 8/16 | < 10/16 | < 16/32 | TIDAK LAYAK |
+| Level 1 | Rally Minimum | 8/16 | 10/16 | 16-19/32 | Minimum Rally |
+| Level 2 | Rally Standard | 12/16 | 12/16 | 20-23/32 | Target normal |
+| Level 3 | Rally Excellent | 14/16 | 14/16 | 24-27/32 | Target V5.0 |
+| Level 4 | Beyond Rally | 15/16 | 15/16 | 28-31/32 | Target V6.0 |
+| **Level 5** | **MAXIMUM STANDARD** | **16/16** | **16/16** | **32/32** | **V7.0 TARGET** |
+
+**V7.0 TARGET: LEVEL 5 - MAXIMUM STANDARD**
+- Gate Score: 16/16 (100%)
+- Quality Score: 16/16 (100%)
+- Master Score: 32/32 (100%)
+
+================================================================================
+                    WORKFLOW FLOW DIAGRAM (V7.0 FINAL)
+================================================================================
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    V7.0 WORKFLOW FLOW (CORRECTED)                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  PHASE 0: Pre-Workflow Preparation                                          │
+│      ↓                                                                       │
+│  PHASE 1: Campaign Research (API)                                           │
+│      ↓                                                                       │
+│  PHASE 1.5: Leaderboard Analysis + Viral Content Gap                        │
+│      ↓                                                                       │
+│  PHASE 1.6: Timing Optimization + Trend Jacking                             │
+│      ↓                                                                       │
+│  PHASE 2: Knowledge Base Extraction                                         │
+│      ↓                                                                       │
+│  PHASE 3: Originality + Emotion + Viral Strategy                            │
+│      ↓                                                                       │
+│  PHASE 4: Thread Structure                                                  │
+│      ↓                                                                       │
+│  PHASE 5: Invisible Influence Strategy (NEW - tanpa mention)                │
+│      ↓                                                                       │
+│  PHASE 6: Viral Mechanics Layer                                             │
+│      ↓                                                                       │
+│  PHASE 7: Psychological Triggers                                            │
+│      ↓                                                                       │
+│  PHASE 8: Network Effect Amplification (FR Strategy)                        │
+│      ↓                                                                       │
+│  PHASE 9: Micro-Optimization                                                │
+│      ↓                                                                       │
+│  PHASE 10: Multi-Version Generation                                         │
+│      ↓                                                                       │
+│  PHASE 11: Benchmark Comparison                                             │
+│      ↓                                                                       │
+│  ┌──────────────────────────────────────┐                                   │
+│  │  PHASE 12: Quality Scoring System    │ ◄──────────┐                     │
+│  └──────────────────────────────────────┘            │                     │
+│      ↓                                                │                     │
+│  PHASE 13: Iterative Refinement                      │                     │
+│      │                                                │                     │
+│      ├─► FAIL? ─────────────────────────────────────┘                     │
+│      │       (Loop back to Phase 12 for RE-SCORING)                        │
+│      ↓                                                                       │
+│      PASS?                                                                   │
+│      ↓                                                                       │
+│  PHASE 14: Pre-Submit Re-Analysis                                           │
+│      ↓                                                                       │
+│  PHASE 15: Pre-Submit Checklist (V7.0)                                      │
+│      ↓                                                                       │
+│  ★ SUBMIT ★                                                                 │
+│      ↓                                                                       │
+│  PHASE 16: Post-Submit Engagement Warfare                                   │
+│      ↓                                                                       │
+│  PHASE 17: Performance Tracking                                             │
+│      ↓                                                                       │
+│  PHASE 18: A/B Testing Framework                                            │
+│      ↓                                                                       │
+│  PHASE 19: Refresh Engagement Strategy                                      │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+★ KEY PRINCIPLE: Semua ENHANCEMENT phase (5-8) dilakukan SEBELUM Quality Scoring
+★ KEY PRINCIPLE: Iterative Refinement WAJIB loop ke Quality Scoring untuk re-score
+
+================================================================================
+                    SECTION 1: RALLY SCORING SYSTEM (FOUNDATION)
+================================================================================
+
+--------------------------------------------------------------------------------
+1.1 THE 11 OFFICIAL METRICS
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    RALLY SCORING BREAKDOWN                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  GATES (4 metrik, wajib PASS semua):                                        │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ G1: Content Alignment (0-2)                                        │   │
+│  │     - Message accuracy, terminology, brand consistency             │   │
+│  │ G2: Information Accuracy (0-2)                                      │   │
+│  │     - Technical accuracy, consistency with official materials       │   │
+│  │ G3: Campaign Compliance (0-2)                                       │   │
+│  │     - Hashtags, mentions, format, style guidelines                  │   │
+│  │ G4: Originality & Authenticity (0-2)                                │   │
+│  │     - Fresh perspective, personal insights, natural language        │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  QUALITY (2 metrik, 0-5 scale):                                             │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ EP: Engagement Potential (0-5)                                      │   │
+│  │     - Hook effectiveness, CTA quality, content structure            │   │
+│  │ TQ: Technical Quality (0-5)                                         │   │
+│  │     - Grammar, formatting, platform optimization                    │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  ENGAGEMENT (5 metrik, dynamic):                                            │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ RT: Retweets → log(RT+1)                                            │   │
+│  │ LK: Likes → log(LK+1)                                               │   │
+│  │ RP: Replies → log(RP+1)                                             │   │
+│  │ QR: Quality of Replies → AI score 0-1                               │   │
+│  │ FR: Followers of Repliers → log(Total+1) ★ CHEAT CODE               │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  ★ IMPRESSIONS = TIDAK DIHITUNG (hanya tampil di UI)                       │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+1.2 GATE MULTIPLIER FORMULA
+--------------------------------------------------------------------------------
+
+gate_pass = min(G1, G2, G3, G4) > 0  (SEMUA gate harus > 0)
+g_star = avg(G1, G2, G3, G4)         (Rata-rata gate score)
+M_gate = 1 + β × (g_star - 1)        (β = 0.5, Multiplier 0.5x - 1.5x)
+
+GATE MULTIPLIER TABLE:
+
+| Gate Scores | g_star | M_gate | Effect |
+|-------------|--------|--------|--------|
+| All 2/2 | 2.0 | 1.5x | MAXIMUM BONUS |
+| All 1.5/2 | 1.5 | 1.25x | GOOD BONUS |
+| All 1/2 | 1.0 | 1.0x | BASELINE |
+| Mixed 1-2 | ~1.5 | ~1.25x | PARTIAL |
+| Any 0/2 | FAIL | N/A | DISQUALIFIED |
+
+★ CRITICAL: All gates 2/2 = 50% BONUS to entire score!
+
+--------------------------------------------------------------------------------
+1.3 FR CHEAT CODE (EXPLAINED)
+--------------------------------------------------------------------------------
+
+FR Formula: log(Sum of Followers of All Repliers + 1)
+
+CALCULATION EXAMPLES:
+| Scenario | Total Followers | FR Score | Equivalent |
+|----------|-----------------|----------|------------|
+| 1 reply from 100K account | 100,000 | log(100001) ≈ 5.0 | = 100,000 likes |
+| 10 replies from 10K each | 100,000 | log(100001) ≈ 5.0 | = 100,000 RTs |
+| 1 reply from 1M account | 1,000,000 | log(1000001) ≈ 6.0 | = 1,000,000 likes |
+| 100 replies from 100 each | 10,000 | log(10001) ≈ 4.0 | = 10,000 likes |
+
+★ KEY INSIGHT: 1 reply from influencer > 100 replies from small accounts!
+
+================================================================================
+                    SECTION 2: ENHANCED GATE SYSTEM (0-4 SCALE)
+================================================================================
+
+--------------------------------------------------------------------------------
+2.1 G1 - CONTENT ALIGNMENT (0-4)
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    G1 CONTENT ALIGNMENT - 4 ASPECTS                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  RALLY STANDARD: 0-2 (Pass = 2)                                             │
+│  V7.0 STANDARD: 0-4 (Pass = 4)                                              │
+│                                                                              │
+│  Each aspect = 1 point. ALL 4 must be achieved for PASS.                    │
+│                                                                              │
+│  ASPECT 1: CORE MESSAGE ACCURACY (0-1)                                      │
+│  Question: Is the main point 100% accurate?                                 │
+│  1 point = Main message is perfectly aligned with campaign goals            │
+│  0 point = Any misalignment, confusion, or wrong emphasis                   │
+│  CHECK:                                                                      │
+│  [ ] Does the first tweet capture the core value proposition?               │
+│  [ ] Is the main claim accurate (not exaggerated)?                          │
+│  [ ] Would the project team approve this message?                           │
+│                                                                              │
+│  ASPECT 2: TERMINOLOGY PRECISION (0-1)                                      │
+│  Question: Are ALL terms used correctly?                                    │
+│  1 point = Every technical term matches official documentation              │
+│  0 point = Any term used incorrectly or inconsistently                      │
+│  CHECK:                                                                      │
+│  [ ] Project name spelled correctly?                                        │
+│  [ ] Technical terms match whitepaper/docs?                                 │
+│  [ ] No made-up terms or misused jargon?                                    │
+│  [ ] Token names/tickers correct?                                           │
+│                                                                              │
+│  ASPECT 3: BRAND VOICE CONSISTENCY (0-1)                                    │
+│  Question: Does it match the project's tone and style?                      │
+│  1 point = Perfect match with brand guidelines                              │
+│  0 point = Tone mismatch or style inconsistency                             │
+│  CHECK:                                                                      │
+│  [ ] Tone matches campaign requirements?                                    │
+│  [ ] Formal/informal level appropriate?                                     │
+│  [ ] No conflicting messaging?                                              │
+│  [ ] Values aligned with project mission?                                   │
+│                                                                              │
+│  ASPECT 4: VALUE PROPOSITION CLARITY (0-1)                                  │
+│  Question: Is the benefit crystal clear to the reader?                      │
+│  1 point = Reader immediately understands what they gain                    │
+│  0 point = Benefit is unclear, hidden, or missing                           │
+│  CHECK:                                                                      │
+│  [ ] Can a newcomer understand the value in 5 seconds?                      │
+│  [ ] Is there a clear "what's in it for me"?                                │
+│  [ ] No confusing or contradictory benefits?                                │
+│                                                                              │
+│  G1 TOTAL: ___/4 | V7.0 REQUIREMENT: 4/4 MANDATORY                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+2.2 G2 - INFORMATION ACCURACY (0-4)
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    G2 INFORMATION ACCURACY - 4 ASPECTS                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ASPECT 1: TECHNICAL FACTS VERIFICATION (0-1)                               │
+│  Question: Are all numbers, stats, and data points correct?                 │
+│  1 point = Every number/data verified from official sources                 │
+│  0 point = Any unverified or incorrect data                                 │
+│  CHECK:                                                                      │
+│  [ ] All percentages verified?                                              │
+│  [ ] All dates correct?                                                     │
+│  [ ] All monetary values accurate?                                          │
+│  [ ] All technical specs correct?                                           │
+│                                                                              │
+│  ASPECT 2: SOURCE VERIFICATION (0-1)                                        │
+│  Question: Are all claims backed by knowledge base?                         │
+│  1 point = Every claim traceable to KB/API/official source                  │
+│  0 point = Any claim without source or contradicts source                   │
+│  CHECK:                                                                      │
+│  [ ] Can each claim be verified?                                            │
+│  [ ] No assumptions presented as facts?                                     │
+│  [ ] Sources cited if needed?                                               │
+│                                                                              │
+│  ASPECT 3: NO MISLEADING INFORMATION (0-1)                                  │
+│  Question: Is nothing taken out of context?                                 │
+│  1 point = All info presented in proper context                             │
+│  0 point = Any cherry-picking, out of context, or misleading               │
+│  CHECK:                                                                      │
+│  [ ] No quotes taken out of context?                                        │
+│  [ ] No data presented misleadingly?                                        │
+│  [ ] No hidden caveats?                                                     │
+│  [ ] No exaggeration of capabilities?                                       │
+│                                                                              │
+│  ASPECT 4: COMPLETENESS (0-1)                                               │
+│  Question: Is key information not omitted?                                  │
+│  1 point = All essential info included, nothing critical missing            │
+│  0 point = Critical info omitted or incomplete                              │
+│  CHECK:                                                                      │
+│  [ ] Are all key features mentioned?                                        │
+│  [ ] Are important caveats included?                                        │
+│  [ ] Is the full picture presented?                                         │
+│                                                                              │
+│  G2 TOTAL: ___/4 | V7.0 REQUIREMENT: 4/4 MANDATORY                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+2.3 G3 - CAMPAIGN COMPLIANCE (0-4)
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    G3 CAMPAIGN COMPLIANCE - 4 ASPECTS                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ASPECT 1: REQUIRED MENTIONS (0-1)                                          │
+│  Question: Are ALL required handles included correctly?                     │
+│  1 point = Every required mention present and correct                       │
+│  0 point = Missing mention, wrong handle, or broken mention                 │
+│  CHECK:                                                                      │
+│  [ ] All required @mentions present?                                        │
+│  [ ] Handles spelled correctly?                                             │
+│  [ ] Mentions placed appropriately?                                         │
+│                                                                              │
+│  ASPECT 2: REQUIRED HASHTAGS (0-1)                                          │
+│  Question: Are ALL required hashtags present?                               │
+│  1 point = Every required hashtag present, spelled correctly                │
+│  0 point = Missing hashtag, typo, or wrong hashtag                          │
+│  CHECK:                                                                      │
+│  [ ] All required #hashtags present?                                        │
+│  [ ] Hashtags spelled correctly?                                            │
+│  [ ] Hashtags placed optimally? (not in hook tweet)                         │
+│                                                                              │
+│  ASPECT 3: REQUIRED LINKS (0-1)                                             │
+│  Question: Is the required link placed correctly?                           │
+│  1 point = Link present, correct URL, optimal placement                     │
+│  0 point = Missing link, wrong URL, or bad placement                        │
+│  CHECK:                                                                      │
+│  [ ] Required link present?                                                 │
+│  [ ] URL correct and working?                                               │
+│  [ ] Link NOT in Tweet 1?                                                   │
+│  [ ] Not using shortened URL?                                               │
+│                                                                              │
+│  ASPECT 4: FORMAT & STYLE GUIDELINES (0-1)                                  │
+│  Question: Does content meet all format requirements?                       │
+│  1 point = Every format/style guideline followed                            │
+│  0 point = Any format violation or style mismatch                           │
+│  CHECK:                                                                      │
+│  [ ] Thread vs single tweet correct?                                        │
+│  [ ] Character limits respected?                                            │
+│  [ ] Any specific formatting requirements met?                              │
+│  [ ] Tone matches guidelines?                                               │
+│                                                                              │
+│  G3 TOTAL: ___/4 | V7.0 REQUIREMENT: 4/4 MANDATORY                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+2.4 G4 - ORIGINALITY & AUTHENTICITY (0-4)
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    G4 ORIGINALITY & AUTHENTICITY - 4 ASPECTS                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ASPECT 1: FRESH PERSPECTIVE (0-1)                                          │
+│  Question: Is this NOT a copy-paste or generic content?                     │
+│  1 point = Unique angle not seen in top performers                          │
+│  0 point = Generic, templated, or copied approach                           │
+│  CHECK:                                                                      │
+│  [ ] Does this have a unique angle?                                         │
+│  [ ] Is this different from top 10 performers?                              │
+│  [ ] No obvious template feel?                                              │
+│                                                                              │
+│  ASPECT 2: PERSONAL INSIGHT (0-1)                                           │
+│  Question: Is there a unique viewpoint or opinion?                          │
+│  1 point = Clear personal opinion/insight that adds value                   │
+│  0 point = No personal take, just facts recitation                          │
+│  CHECK:                                                                      │
+│  [ ] Is there an "I think" or "I believe"?                                  │
+│  [ ] Is there personal experience?                                          │
+│  [ ] Is there original analysis?                                            │
+│                                                                              │
+│  ASPECT 3: NATURAL LANGUAGE (0-1)                                           │
+│  Question: Does it sound human, not AI-generated?                           │
+│  1 point = Reads like natural speech, no AI patterns                        │
+│  0 point = Sounds robotic, polished, or AI-like                             │
+│  CHECK:                                                                      │
+│  [ ] No Kill List phrases?                                                  │
+│  [ ] Has contractions (isn't, don't)?                                       │
+│  [ ] Has fragments and casual tone?                                         │
+│  [ ] Read aloud = sounds like speech?                                       │
+│                                                                              │
+│  ASPECT 4: AUTHENTIC VOICE (0-1)                                            │
+│  Question: Does it have genuine personality?                                │
+│  1 point = Distinct voice that feels real and relatable                     │
+│  0 point = Generic, personality-free, or forced                             │
+│  CHECK:                                                                      │
+│  [ ] Has personality?                                                       │
+│  [ ] Has emotional authenticity?                                            │
+│  [ ] Not trying too hard?                                                   │
+│  [ ] Feels like a real person wrote it?                                     │
+│                                                                              │
+│  G4 TOTAL: ___/4 | V7.0 REQUIREMENT: 4/4 MANDATORY                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+2.5 GATE SCORE SUMMARY
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    GATE SCORE SUMMARY (V7.0)                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  | Gate | Aspect 1 | Aspect 2 | Aspect 3 | Aspect 4 | TOTAL |              │
+│  |------|----------|----------|----------|----------|-------|               │
+│  | G1   | ___/1    | ___/1    | ___/1    | ___/1    | ___/4 |              │
+│  | G2   | ___/1    | ___/1    | ___/1    | ___/1    | ___/4 |              │
+│  | G3   | ___/1    | ___/1    | ___/1    | ___/1    | ___/4 |              │
+│  | G4   | ___/1    | ___/1    | ___/1    | ___/1    | ___/4 |              │
+│  |      |          |          |          |          |       |               │
+│  |      |          |          |          | TOTAL:   | ___/16|              │
+│                                                                              │
+│  V7.0 REQUIREMENTS:                                                          │
+│  - G1: 4/4 MANDATORY                                                        │
+│  - G2: 4/4 MANDATORY                                                        │
+│  - G3: 4/4 MANDATORY                                                        │
+│  - G4: 4/4 MANDATORY                                                        │
+│  - TOTAL: 16/16 MANDATORY                                                   │
+│                                                                              │
+│  ★ ANY aspect at 0 = ENTIRE GATE FAILS                                      │
+│  ★ ANY gate below 4/4 = CONTENT NOT READY FOR SUBMISSION                    │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    SECTION 3: ENHANCED QUALITY SYSTEM (0-8 SCALE)
+================================================================================
+
+--------------------------------------------------------------------------------
+3.1 EP - ENGAGEMENT POTENTIAL (0-8)
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    EP ENGAGEMENT POTENTIAL - 8 ASPECTS                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  RALLY STANDARD: 0-5 (Max = 5)                                              │
+│  V7.0 STANDARD: 0-8 (Pass = 8)                                              │
+│                                                                              │
+│  Each aspect = 1 point. ALL 8 must be achieved for PASS.                    │
+│                                                                              │
+│  ASPECT 1: HOOK PRESENCE (0-1)                                              │
+│  Question: Does the first tweet open with maximum impact?                   │
+│  1 point = Hook stops scroll, creates immediate interest                    │
+│  0 point = Weak opening, doesn't grab attention                             │
+│  CHECK:                                                                      │
+│  [ ] First line creates curiosity or emotion?                               │
+│  [ ] Would you stop scrolling to read this?                                 │
+│  [ ] Not boring or generic?                                                 │
+│                                                                              │
+│  ASPECT 2: EMOTIONAL TRIGGER (0-1)                                          │
+│  Question: Does content create a visceral feeling?                          │
+│  1 point = Strong emotional response possible (pain, desire, fear)          │
+│  0 point = No emotional content or weak emotion                             │
+│  CHECK:                                                                      │
+│  [ ] Can you FEEL something reading this?                                   │
+│  [ ] Is there an emotional arc through the thread?                          │
+│  [ ] Emotion is authentic, not forced?                                      │
+│                                                                              │
+│  ASPECT 3: CURIOSITY GAP (0-1)                                              │
+│  Question: Does reader NEED to know more?                                   │
+│  1 point = Creates strong curiosity that demands satisfaction               │
+│  0 point = No curiosity or easily satisfied                                 │
+│  CHECK:                                                                      │
+│  [ ] Is there a "wait, what happens next?" feeling?                         │
+│  [ ] Is information revealed progressively?                                 │
+│  [ ] Does the hook promise something the thread delivers?                    │
+│                                                                              │
+│  ASPECT 4: REPLY CTA (0-1)                                                  │
+│  Question: Is there a contest/challenge format CTA?                         │
+│  1 point = Contest or challenge CTA that demands response                   │
+│  0 point = No CTA, weak CTA, or basic question only                         │
+│  CHECK:                                                                      │
+│  [ ] Is there a contest/challenge CTA?                                      │
+│  [ ] Is it easy to reply to?                                                │
+│  [ ] Is it in Tweet 1 or Tweet 7?                                           │
+│  [ ] Is it compelling (not generic)?                                        │
+│                                                                              │
+│  ASPECT 5: SHARE TRIGGER (0-1)                                              │
+│  Question: Is this worth retweeting?                                        │
+│  1 point = Highly shareable, provides social currency                       │
+│  0 point = Not worth sharing or low value                                   │
+│  CHECK:                                                                      │
+│  [ ] Would YOU retweet this?                                                │
+│  [ ] Does sharing make you look good?                                       │
+│  [ ] Is there utility or entertainment value?                               │
+│                                                                              │
+│  ASPECT 6: INFLUENCER BAIT (0-1)                                            │
+│  Question: Is there strategy for high-follower engagement?                  │
+│  1 point = Content designed to attract high-FR replies                      │
+│  0 point = No influencer targeting strategy                                 │
+│  CHECK:                                                                      │
+│  [ ] Is content designed for high-FR potential?                             │
+│  [ ] Is there invisible influence strategy?                                 │
+│  [ ] Will influencers WANT to engage?                                       │
+│                                                                              │
+│  ASPECT 7: CONTROVERSY/DEBATE (0-1)                                         │
+│  Question: Does this spark discussion?                                      │
+│  1 point = Has controversial angle that invites debate                      │
+│  0 point = Safe, boring, nothing to discuss                                 │
+│  CHECK:                                                                      │
+│  [ ] Is there an "unpopular opinion" or hot take?                           │
+│  [ ] Is there a challenge to common belief?                                 │
+│  [ ] Is there a "change my mind" element?                                   │
+│                                                                              │
+│  ASPECT 8: VIRAL MECHANICS (0-1)                                            │
+│  Question: Is this built for maximum spread?                                │
+│  1 point = Multiple viral elements working together                         │
+│  0 point = Missing viral mechanics or flat content                          │
+│  CHECK:                                                                      │
+│  [ ] Has emotional trigger?                                                 │
+│  [ ] Has share trigger?                                                     │
+│  [ ] Has reply bait?                                                        │
+│  [ ] Has controversy?                                                       │
+│  [ ] Has influencer angle?                                                  │
+│  [ ] At least 4 of 5 present?                                               │
+│                                                                              │
+│  EP TOTAL: ___/8 | V7.0 REQUIREMENT: 8/8 MANDATORY                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+3.2 TQ - TECHNICAL QUALITY (0-8)
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    TQ TECHNICAL QUALITY - 8 ASPECTS                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  RALLY STANDARD: 0-5 (Max = 5)                                              │
+│  V7.0 STANDARD: 0-8 (Pass = 8)                                              │
+│                                                                              │
+│  ASPECT 1: GRAMMAR (0-1)                                                    │
+│  Question: Is there zero grammar error?                                     │
+│  1 point = Perfect grammar, no mistakes                                     │
+│  0 point = Any grammar error present                                        │
+│  CHECK:                                                                      │
+│  [ ] Subject-verb agreement correct?                                        │
+│  [ ] Tense consistent throughout?                                           │
+│  [ ] No fragments that confuse meaning?                                     │
+│                                                                              │
+│  ASPECT 2: SPELLING (0-1)                                                   │
+│  Question: Is there zero typo?                                              │
+│  1 point = Zero spelling errors                                             │
+│  0 point = Any spelling error                                               │
+│  CHECK:                                                                      │
+│  [ ] All words spelled correctly?                                           │
+│  [ ] Proper nouns correct?                                                  │
+│  [ ] No autocorrect fails?                                                  │
+│                                                                              │
+│  ASPECT 3: CHARACTER LIMIT (0-1)                                            │
+│  Question: Are all tweets under 280 characters?                             │
+│  1 point = Every tweet ≤ 280 characters                                     │
+│  0 point = Any tweet over 280 characters                                    │
+│  CHECK:                                                                      │
+│  [ ] Tweet 1: ___ chars                                                     │
+│  [ ] Tweet 2: ___ chars                                                     │
+│  [ ] Tweet 3: ___ chars                                                     │
+│  [ ] Tweet 4: ___ chars                                                     │
+│  [ ] Tweet 5: ___ chars                                                     │
+│  [ ] Tweet 6: ___ chars                                                     │
+│  [ ] Tweet 7: ___ chars                                                     │
+│                                                                              │
+│  ASPECT 4: NO KILL LIST (0-1)                                               │
+│  Question: Is content free of ALL banned phrases?                           │
+│  1 point = Zero Kill List items detected                                    │
+│  0 point = Any Kill List item present                                       │
+│  KILL LIST CHECK:                                                           │
+│  [ ] No "delves" / "delve into"                                             │
+│  [ ] No em dashes (—)                                                       │
+│  [ ] No "realm"                                                             │
+│  [ ] No "revolutionize"                                                     │
+│  [ ] No "transform"                                                         │
+│  [ ] No "It's not just X, it's Y"                                           │
+│  [ ] No "#1", "#2" patterns                                                 │
+│  [ ] No "landscape"                                                         │
+│  [ ] No "crucial" / "paramount"                                             │
+│  [ ] No perfect grammar (too polished)                                      │
+│                                                                              │
+│  ASPECT 5: NATURAL FLOW (0-1)                                               │
+│  Question: Does it read like natural speech?                                │
+│  1 point = Sounds like human talking, not writing                           │
+│  0 point = Sounds written, formal, or robotic                               │
+│  CHECK:                                                                      │
+│  [ ] Has contractions (isn't, don't, that's)?                               │
+│  [ ] Has fragments? (Short. Punchy.)                                        │
+│  [ ] Has parenthetical asides? (like this)                                  │
+│  [ ] Read aloud = sounds natural?                                           │
+│                                                                              │
+│  ASPECT 6: FORMATTING CLEAN (0-1)                                           │
+│  Question: Is formatting optimized for Twitter?                             │
+│  1 point = Clean formatting, no issues                                      │
+│  0 point = Formatting problems present                                      │
+│  CHECK:                                                                      │
+│  [ ] No "#1", "#2", "#3" numbering patterns                                 │
+│  [ ] No smart quotes (use straight quotes)                                  │
+│  [ ] No excessive punctuation!!!                                            │
+│  [ ] No weird spacing issues                                                │
+│  [ ] Emojis used appropriately (not excessive)                              │
+│                                                                              │
+│  ASPECT 7: THREAD STRUCTURE (0-1)                                           │
+│  Question: Does thread flow logically?                                      │
+│  1 point = Perfect structure, logical flow, emotional arc                   │
+│  0 point = Confusing structure or poor flow                                 │
+│  CHECK:                                                                      │
+│  [ ] Tweet 1: Hook + CTA                                                    │
+│  [ ] Tweet 2-3: Problem/Solution                                            │
+│  [ ] Tweet 4-5: Deep dive                                                   │
+│  [ ] Tweet 6: Summary                                                       │
+│  [ ] Tweet 7: CTA + Link                                                    │
+│                                                                              │
+│  ASPECT 8: PLATFORM OPTIMIZED (0-1)                                         │
+│  Question: Is content built specifically for Twitter/X?                     │
+│  1 point = Fully optimized for Twitter algorithm and user behavior          │
+│  0 point = Generic content that could be anywhere                           │
+│  CHECK:                                                                      │
+│  [ ] Link NOT in Tweet 1?                                                   │
+│  [ ] Hashtags max 1-2 per tweet?                                            │
+│  [ ] No hashtag in Tweet 1?                                                 │
+│  [ ] Reply CTA present?                                                     │
+│  [ ] Built for engagement (not just info)?                                  │
+│                                                                              │
+│  TQ TOTAL: ___/8 | V7.0 REQUIREMENT: 8/8 MANDATORY                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+3.3 QUALITY SCORE SUMMARY
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    QUALITY SCORE SUMMARY (V7.0)                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  | Component | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | TOTAL |                     │
+│  |-----------|---|---|---|---|---|---|---|---|-------|                      │
+│  | EP        |___|___|___|___|___|___|___|___| ___/8 |                      │
+│  | TQ        |___|___|___|___|___|___|___|___| ___/8 |                      │
+│  |           |   |   |   |   |   |   |   |   |       |                      │
+│  |           |   |   |   |   |   |   |   | TOTAL: |___/16 |                │
+│                                                                              │
+│  V7.0 REQUIREMENTS:                                                          │
+│  - EP: 8/8 MANDATORY                                                        │
+│  - TQ: 8/8 MANDATORY                                                        │
+│  - TOTAL: 16/16 MANDATORY                                                   │
+│                                                                              │
+│  ★ ANY aspect at 0 = ENTIRE COMPONENT FAILS                                 │
+│  ★ ANY component below 8/8 = CONTENT NOT READY FOR SUBMISSION               │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    SECTION 4: MASTER SCORE CARD
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    V7.0 MASTER SCORE CARD                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  GATE SCORES (16 points total):                                             │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ G1 Content Alignment     | ___/4 | 4/4 REQUIRED                      │   │
+│  │ G2 Information Accuracy  | ___/4 | 4/4 REQUIRED                      │   │
+│  │ G3 Campaign Compliance   | ___/4 | 4/4 REQUIRED                      │   │
+│  │ G4 Originality           | ___/4 | 4/4 REQUIRED                      │   │
+│  │                          |       |                                   │   │
+│  │ GATE TOTAL               | ___/16| 16/16 MANDATORY                   │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  QUALITY SCORES (16 points total):                                          │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ EP Engagement Potential | ___/8 | 8/8 REQUIRED                      │   │
+│  │ TQ Technical Quality    | ___/8 | 8/8 REQUIRED                      │   │
+│  │                         |       |                                   │   │
+│  │ QUALITY TOTAL           | ___/16| 16/16 MANDATORY                   │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  ═══════════════════════════════════════════════════════════════════════    │
+│                                                                              │
+│  V7.0 MASTER SCORE: ___/32                                                  │
+│                                                                              │
+│  ═══════════════════════════════════════════════════════════════════════    │
+│                                                                              │
+│  | Master Score | Level | Classification | Status |                        │
+│  |--------------|-------|----------------|--------|                         │
+│  | **32/32** | **Level 5** | **MAXIMUM STANDARD** | ✅ READY |             │
+│  | 28-31/32 | Level 4 | Beyond Rally | ⚠️ REVISE |                        │
+│  | 24-27/32 | Level 3 | Rally Excellent | ⚠️ REVISE |                     │
+│  | 20-23/32 | Level 2 | Rally Standard | ⚠️ REVISE |                      │
+│  | 16-19/32 | Level 1 | Rally Minimum | ⚠️ REVISE |                       │
+│  | < 16/32 | Level 0 | Below Standard | ❌ NOT READY |                     │
+│                                                                              │
+│  ★ V7.0 RULE: ONLY 32/32 = READY FOR SUBMISSION                             │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 0: PRE-WORKFLOW PREPARATION
+================================================================================
+
+OBJECTIVE: Gather all campaign information + SELECT STRATEGY
+
+--------------------------------------------------------------------------------
+0.1 CAMPAIGN INFORMATION CHECKLIST
+--------------------------------------------------------------------------------
+
+[ ] Campaign Address: _________________________________
+[ ] Mission Number: _____
+[ ] Mission Title: _________________________________
+[ ] Required Mentions: _________________________________
+[ ] Required Topics: _________________________________
+[ ] Required Links: _________________________________
+[ ] Tone Guidelines: _________________________________
+
+--------------------------------------------------------------------------------
+0.2 API DATA COLLECTION
+--------------------------------------------------------------------------------
+
+API CALLS REQUIRED:
+
+1. GET CAMPAIGN DETAILS:
+   https://app.rally.fun/api/campaigns/{campaignAddress}
+   
+   EXTRACT:
+   - metricWeights array
+   - Distribution curve (α value)
+   - Required mentions, topics, links
+   - Tone guidelines
+   - gateWeights array
+
+2. GET LEADERBOARD:
+   https://app.rally.fun/api/leaderboard?campaignAddress={address}&limit=10
+   
+   EXTRACT:
+   - Top performer scores
+   - Gate scores and multipliers
+   - Engagement metrics
+
+--------------------------------------------------------------------------------
+0.3 METRIC WEIGHTS ANALYSIS
+--------------------------------------------------------------------------------
+
+| Index | Metric | Weight | Priority | Strategy Focus |
+|-------|--------|--------|----------|----------------|
+| 0 | EP | _____ | High/Med/Low | Quality focus |
+| 1 | TQ | _____ | High/Med/Low | Quality focus |
+| 2 | RT | _____ | High/Med/Low | Viral mechanics |
+| 3 | LK | _____ | High/Med/Low | Broad appeal |
+| 4 | RP | _____ | High/Med/Low | Reply strategy |
+| 5 | QR | _____ | High/Med/Low | Quality replies |
+| 6 | FR | _____ | High/Med/Low | Influencer strategy |
+| 7 | ??? | _____ | High/Med/Low | Research needed |
+
+★ STRATEGY: Align content with HIGHEST weight metrics
+
+--------------------------------------------------------------------------------
+0.4 ACCOUNT TYPE CHECK
+--------------------------------------------------------------------------------
+
+[ ] Is user X Premium? [ ] Yes [ ] No
+    → Non-Premium + link = ZERO median engagement!
+    
+[ ] Is link REQUIRED in main tweet? [ ] Yes [ ] No
+    → If yes AND non-Premium: Use reply strategy or request Premium
+
+--------------------------------------------------------------------------------
+0.5 DISTRIBUTION CURVE STRATEGY
+--------------------------------------------------------------------------------
+
+Identified curve: [ ] Balanced (α=1.0) [ ] Default (α=3.0) [ ] Extreme (α=8.0)
+
+| Curve | Strategy |
+|-------|----------|
+| Balanced | Multiple good submissions OK, consistent effort |
+| Default | Focus on ONE excellent submission, high quality |
+| Extreme | Only #1 matters, go all-in on single best |
+
+================================================================================
+                    PHASE 1: CAMPAIGN RESEARCH (API)
+================================================================================
+
+OBJECTIVE: Get all campaign data from API
+
+API ENDPOINTS:
+
+1. GET ALL CAMPAIGNS:
+   https://app.rally.fun/api/campaigns
+
+2. GET CAMPAIGN DETAIL:
+   https://app.rally.fun/api/campaigns/{campaignAddress}
+
+3. GET LEADERBOARD:
+   https://app.rally.fun/api/leaderboard?campaignAddress={address}&limit=10
+
+================================================================================
+            PHASE 1.5: LEADERBOARD ANALYSIS + VIRAL CONTENT GAP
+================================================================================
+
+OBJECTIVE: Analyze top performers AND identify viral content gaps
+
+--------------------------------------------------------------------------------
+1.5.1 TOP PERFORMER ANALYSIS TEMPLATE
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    TOP PERFORMER + VIRAL ANALYSIS                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Rank #: _____ | Score: _____ | Engagement Rate: _____                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ GATE ANALYSIS:                                                              │
+│ | G1 | G2 | G3 | G4 | Gate Multiplier |                                      │
+│ |----|----|----|----|-----------------|                                       │
+│ | __/2 | __/2 | __/2 | __/2 | __x |                                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ ENGAGEMENT ANALYSIS:                                                        │
+│ | RT | LK | RP | QR | FR |                                                     │
+│ |----|----|----|----|----|                                                      │
+│ | __ | __ | __ | __/5 | _____ |                                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ ★ FR ANALYSIS (CRITICAL):                                                   │
+│ | Total Followers of Repliers | FR Log Score | % of Engagement |             │
+│ | _____________________ | ____________ | ______% |                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ VIRAL ANALYSIS:                                                              │
+│ [ ] Controversial angle? [ ] Share-worthy? [ ] Memorable hook?             │
+│ [ ] Emotional trigger? [ ] Challenge reader?                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ GAP IDENTIFICATION:                                                          │
+│ What viral element is MISSING from top performers?                         │
+│ ________________________________________________________________________   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPPORTUNITY:                                                                 │
+│ How can I be FIRST to add this viral element?                              │
+│ ________________________________________________________________________   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+            PHASE 1.6: TIMING OPTIMIZATION + TREND JACKING
+================================================================================
+
+OBJECTIVE: Post at optimal time + identify trend jacking opportunities
+
+--------------------------------------------------------------------------------
+1.6.1 OPTIMAL POSTING TIMES
+--------------------------------------------------------------------------------
+
+| Day | Best Time (EST) | UTC | Engagement Level |
+|-----|-----------------|-----|------------------|
+| Monday | 9 AM | 14:00 | HIGH |
+| Tuesday | 9-11 AM | 14:00-16:00 | HIGH |
+| **Wednesday** | **9 AM** | **14:00** | **PEAK** |
+| Thursday | 10 AM - 5 PM | 15:00-22:00 | HIGH |
+| Friday | 9 AM | 14:00 | MEDIUM |
+| Saturday | 9-11 AM | 14:00-16:00 | LOW-MEDIUM |
+| Sunday | 9 AM - 12 PM | 14:00-17:00 | LOW |
+
+CRYPTO TWITTER SPECIFIC:
+| Audience | Best Window (EST) |
+|----------|-------------------|
+| US Crypto | 9-11 AM EST |
+| EU Crypto | 3-5 AM EST |
+| Asia Crypto | 8-10 PM EST |
+| Global Mix | 9-11 AM EST |
+
+--------------------------------------------------------------------------------
+1.6.2 TREND JACKING WINDOWS
+--------------------------------------------------------------------------------
+
+| Situation | Action |
+|-----------|--------|
+| BTC +5% in 24h | Post immediately (FOMO high) |
+| BTC -5% in 24h | Post with fear angle |
+| Major crypto news | Jack the trend within 30 min |
+| Low volatility | Schedule for optimal window |
+
+★ RULE: Schedule post for OPTIMAL WINDOW based on target audience
+★ RULE: For trend jacking, act within 30 minutes
+
+================================================================================
+                    PHASE 2: KNOWLEDGE BASE EXTRACTION
+================================================================================
+
+OBJECTIVE: Extract all technical facts + identify FR/controversy opportunities
+
+--------------------------------------------------------------------------------
+2.1 FACTS VERIFICATION TEMPLATE
+--------------------------------------------------------------------------------
+
+| # | Claim | Source | Verified | Controversial Angle |
+|---|-------|--------|----------|---------------------|
+| 1 | _____________ | KB/API | [ ] Y [ ] N | _____________ |
+
+--------------------------------------------------------------------------------
+2.2 FR-FOCUSED FACT MINING
+--------------------------------------------------------------------------------
+
+For each fact, ask:
+1. "Which facts could attract high-follower accounts?"
+2. "What topics would make influencers want to reply?"
+3. "What's the contrarian or controversial take?"
+
+| Fact | Standard Presentation | Controversial Angle | FR Potential |
+|------|----------------------|---------------------|--------------|
+| Example: 1.33x leverage | "Get 1.33x exposure" | "Why 1.33x? Because 2x+ destroys holders" | High |
+
+================================================================================
+                    PHASE 3: ORIGINALITY + EMOTION + VIRAL STRATEGY
+================================================================================
+
+--------------------------------------------------------------------------------
+3.1 EMOTION LIBRARY (6 CORE EMOTIONS)
+--------------------------------------------------------------------------------
+
+| Emotion | When to Use | Hook Example |
+|---------|-------------|--------------|
+| **PAIN** | Problem-focused | "3am liquidation check. Am I still alive?" |
+| **DESIRE** | Outcome-focused | "Imagine holding BTC without the death spiral." |
+| **FEAR** | Risk-focused | "What if your position wipes tomorrow?" |
+| **BELONGING** | Community-focused | "Every holder has been there." |
+| **CONTROVERSY** | Debate-focused | "Unpopular opinion: [X] is wrong" |
+| **CHALLENGE** | Engagement-focused | "95% get this wrong. Which camp are you?" |
+
+EMOTION SELECTION GUIDE:
+| Campaign Type | Best Emotion | Reason |
+|---------------|--------------|--------|
+| New product launch | DESIRE | Show what's possible |
+| Risk product | PAIN + FEAR | Address concerns |
+| Community building | BELONGING | Create connection |
+| Educational | PAIN → DESIRE | Problem → Solution |
+| Contrarian take | CONTROVERSY | Challenge assumptions |
+| Viral growth | CHALLENGE | Maximum engagement |
+
+--------------------------------------------------------------------------------
+3.2 HOOK TEMPLATES BY EMOTION
+--------------------------------------------------------------------------------
+
+**PAIN HOOK:**
+```
+[Specific painful moment]. [Broader implication]. Here's what changed.
+
+EXAMPLE:
+"3am. Phone screen bright. Checking if I'm still alive.
+That was my life with leverage. Every. Single. Night.
+Then I found something different."
+```
+
+**CONTROVERSY HOOK:**
+```
+unpopular opinion: [common belief] is wrong.
+
+[Contrarian evidence]
+
+Change my mind. I dare you. 👇
+```
+
+**CHALLENGE HOOK:**
+```
+95% of [audience] get this wrong.
+
+[Facts]
+
+Which camp are you in?
+[A] [option A]
+[B] [option B]
+
+Reply below 👇
+```
+
+--------------------------------------------------------------------------------
+3.3 KILL LIST (COMPLETE)
+--------------------------------------------------------------------------------
+
+| Pattern | Status | Detection Level |
+|---------|--------|-----------------|
+| Em dashes (—) | ❌ BANNED | HIGH |
+| Smart quotes "" | ❌ BANNED | MEDIUM |
+| **"Delves" / "Delve into"** | ❌ BANNED | **HIGHEST** |
+| "realm" | ❌ BANNED | HIGH |
+| "revolutionize" | ❌ BANNED | HIGH |
+| "transform" | ❌ BANNED | HIGH |
+| "it's worth noting" | ❌ BANNED | HIGH |
+| "crucial" | ❌ BANNED | HIGH |
+| "paramount" | ❌ BANNED | HIGH |
+| "landscape" | ❌ BANNED | HIGH |
+| "in conclusion" | ❌ BANNED | HIGH |
+| **"It's not just X, it's Y"** | ❌ BANNED | **HIGH** |
+| Perfect grammar | ❌ BANNED | MEDIUM |
+| "#[number]" | ❌ BANNED | HIGH |
+
+★ RULE: Read tweet out loud. If it sounds like a blog post, REVISE.
+★ RULE: Search for "delve" - if found, DELETE IMMEDIATELY.
+
+================================================================================
+                    PHASE 4: THREAD STRUCTURE (COMPLETE)
+================================================================================
+
+--------------------------------------------------------------------------------
+4.1 FORMAT DECISION MATRIX
+--------------------------------------------------------------------------------
+
+| Use THREAD When... | Use SINGLE TWEET When... |
+|--------------------|--------------------------|
+| Topic has 3+ distinct points | Topic is one main idea |
+| Need to build narrative | Quick insight/hot take |
+| Technical explanation needed | Simple announcement |
+| Want more engagement time | Breaking news/timing critical |
+
+FORMAT SCORE CALCULATOR:
+1. Does topic have 3+ distinct points? [ ] YES [ ] NO
+2. Need to explain HOW something works? [ ] YES [ ] NO
+3. Want to maximize engagement time? [ ] YES [ ] NO
+4. Targeting crypto-natives (not general)? [ ] YES [ ] NO
+5. Not time-sensitive? [ ] YES [ ] NO
+
+SCORING:
+- 0-2 points → SINGLE TWEET
+- 3-5 points → THREAD (7 tweets max)
+
+--------------------------------------------------------------------------------
+4.2 THREAD STRUCTURE (7 TWEETS = OPTIMAL)
+--------------------------------------------------------------------------------
+
+| Tweet | Technical Level | Audience | Focus | Viral Mechanic |
+|-------|-----------------|----------|-------|----------------|
+| 1 | LOW | EVERYONE | Hook + Reply CTA | CONTROVERSY |
+| 2 | LOW-MEDIUM | MOST | Problem | RELATABLE PAIN |
+| 3 | MEDIUM | INTERESTED | Solution + Reply CTA | AHA MOMENT |
+| 4 | MEDIUM-HIGH | ENGAGED | How it works | CONTRAST |
+| 5 | HIGH | TECHNICAL | Deep dive | HARD TRUTH |
+| 6 | MEDIUM | ENGAGED | Value summary | CHECKLIST |
+| 7 | LOW | EVERYONE | CTA + Link + Reply CTA | FOMO + CONTEST |
+
+★ RULE: 7 tweets = OPTIMAL sweet spot (research verified)
+★ RULE: Start accessible, graduate to technical, end accessible
+
+--------------------------------------------------------------------------------
+4.3 FIRST TWEET PRIORITY RULE
+--------------------------------------------------------------------------------
+
+**RESEARCH FINDING:** "Hook determines reach 10 vs 10,000"
+
+★ V7.0 RULE: Spend 60% of content creation time on TWEET 1
+
+TWEET 1 VIRAL CHECKLIST (10-POINT for V7.0):
+| Check | Question | Required |
+|-------|----------|----------|
+| [ ] | EMOTIONAL? | Can you FEEL it? |
+| [ ] | CURIOSITY? | Must know more? |
+| [ ] | REPLY CTA? | Easy to respond? |
+| [ ] | NO LINK? | Link penalty avoided |
+| [ ] | NO HASHTAG? | Hook not diluted |
+| [ ] | SHORT? | Under 200 chars ideal |
+| [ ] | NATURAL? | Read aloud = speech |
+| [ ] | CONTROVERSIAL? | Challenges reader? |
+| [ ] | SHARE-WORTHY? | Would YOU retweet? |
+| [ ] | FR POTENTIAL? | High-follower appeal? |
+
+★ RULE: If Tweet 1 scores < 9/10, REWRITE
+
+--------------------------------------------------------------------------------
+4.4 LINK OPTIMIZATION STRATEGY
+--------------------------------------------------------------------------------
+
+THE LINK PENALTY REALITY:
+| Account Type | Link Placement | Reach Impact |
+|--------------|----------------|--------------|
+| Non-Premium | Link in main tweet | **ZERO median engagement** |
+| Premium | Single link | -20% to -50% |
+| Any | Multiple links | -70% |
+| Any | Shortened URL | Additional -10% |
+
+LINK PLACEMENT STRATEGY:
+
+NON-PREMIUM ACCOUNT:
+- OPTION A: Link in REPLY (RECOMMENDED)
+- OPTION B: Link in LAST tweet of thread
+- OPTION C: "Link in bio" strategy
+
+PREMIUM ACCOUNT:
+- Link in tweet 5-6 (near end)
+- Reply strategy still recommended
+
+★ RULE: NEVER put link in Tweet 1 (hook tweet)
+★ RULE: Link in LAST tweet or REPLY only
+★ RULE: NEVER use shortened URLs
+
+--------------------------------------------------------------------------------
+4.5 HASHTAG OPTIMIZATION
+--------------------------------------------------------------------------------
+
+THE HASHTAG REALITY:
+| Hashtag Count | Engagement Impact | V7.0 Rule |
+|---------------|-------------------|-----------|
+| 0 | Baseline | ✅ OK for hooks |
+| 1 | **+100% (2x)** | ✅ OPTIMAL |
+| 2 | +80% | ✅ GOOD |
+| 3+ | **-21%** | ❌ AVOID |
+
+HASHTAG RULES:
+1. MAXIMUM 1-2 hashtags per tweet
+2. NEVER put hashtag in hook tweet (Tweet 1)
+3. Place hashtag at END of tweet
+4. If campaign requires 3+ hashtags, split across tweets
+
+================================================================================
+                    PHASE 5: INVISIBLE INFLUENCE STRATEGY
+================================================================================
+
+OBJECTIVE: Menarik perhatian akun besar TANPA mention langsung (aman untuk gate)
+
+--------------------------------------------------------------------------------
+5.1 MENGAPA TIDAK BOLEH MENTION LANGSUNG?
+--------------------------------------------------------------------------------
+
+Mention langsung bisa melanggar:
+- **G3 Campaign Compliance** - jika ada required mentions tertentu
+- **G4 Originality** - terlihat "clout chasing" atau tidak autentik
+- **Campaign Guidelines** - jika tidak boleh mention di luar required
+
+★ SOLUSI: Invisible Influence Strategy (menarik tanpa tag)
+
+--------------------------------------------------------------------------------
+5.2 STRATEGI KEYWORD/TOPIC TARGETING
+--------------------------------------------------------------------------------
+
+Akun besar **search dan follow** keyword tertentu:
+
+| Target | Keyword yang Mereka Monitor | Contoh di Hook |
+|--------|----------------------------|----------------|
+| DeFi Influencers | "DeFi", "yield", "protocol" | "This DeFi protocol just changed everything" |
+| Crypto News Bot | "Breaking", "🚨", "Just in" | "🚨 Something big just happened" |
+| Project Team | Project name, token ticker | "Kleros just solved the oracle problem" |
+| Alpha Callers | "Alpha", "Gem", "Hidden" | "Hidden alpha nobody's talking about" |
+| Tech Influencers | "Code", "Build", "Ship" | "This code ships itself" |
+
+**Mereka akan menemukan konten Anda via search!**
+
+--------------------------------------------------------------------------------
+5.3 STRATEGI HASHTAG TARGETING
+--------------------------------------------------------------------------------
+
+| Target | Hashtag yang Mereka Monitor |
+|--------|----------------------------|
+| Crypto | #crypto #DeFi #web3 |
+| Tech | #build #shipping #code |
+| Arbitrum | #arbitrum #l2 |
+| General | #breaking #alpha |
+
+★ RULE: Gunakan hashtag yang relevan dengan target audience
+
+--------------------------------------------------------------------------------
+5.4 STRATEGI CONTENT FORMAT MAGNET
+--------------------------------------------------------------------------------
+
+Format yang membuat akun besar **secara natural** tertarik:
+
+| Format | Mengapa Menarik | Example |
+|--------|-----------------|---------|
+| **Contrarian take** | Mereka suka debat | "Everyone's wrong about X. Here's why." |
+| **Data reveal** | News bot auto-pickup | "New data: X just hit Y" |
+| **First to report** | Scoop hunter notice | "Nobody's talking about X yet" |
+| **Thread format** | Aggregator love | "🧵 Here's what you missed:" |
+| **Hot take** | Engagement magnet | "Unpopular opinion: X is overrated" |
+
+--------------------------------------------------------------------------------
+5.5 STRATEGI TIMING ALIGNMENT
+--------------------------------------------------------------------------------
+
+Post saat mereka online → Muncul di feed mereka (bukan mention)
+
+| Target | Post Time (UTC) | Mereka Melihat Di |
+|--------|-----------------|-------------------|
+| US East | 13:00-15:00 | Timeline/FYP |
+| US West | 18:00-21:00 | Timeline/FYP |
+| EU | 08:00-11:00 | Timeline/FYP |
+| Asia | 00:00-03:00 | Timeline/FYP |
+
+--------------------------------------------------------------------------------
+5.6 STRATEGI POST-SUBMIT (DI LUAR KONTEN YANG DI-SCORE)
+--------------------------------------------------------------------------------
+
+```
+KONTEN UTAMA (Submit ke Rally):
+→ Tidak ada nama/mention sama sekali
+→ Murni konten berkualitas
+→ Patuh semua gates ✅
+
+SETELAH SUBMIT (TIDAK ADA DI SCORING):
+→ Quote tweet influencer: "This connects to what I wrote here [link]"
+→ Reply ke thread influencer: "Wrote more about this [link]"
+→ Mereka lihat di notifikasi
+→ FR potential meningkat dari engagement mereka
+```
+
+★ PENTING: Post-submit activity TIDAK mempengaruhi gate score
+
+--------------------------------------------------------------------------------
+5.7 INVISIBLE INFLUENCE CHECKLIST
+--------------------------------------------------------------------------------
+
+| Check | Question | Status |
+|-------|----------|--------|
+| [ ] | Keyword target ada di hook? | Mereka bisa search |
+| [ ] | Hashtag relevan digunakan? | Mereka follow hashtag |
+| [ ] | Format magnet diterapkan? | Algorithm push ke mereka |
+| [ ] | Timing sesuai target? | Muncul di feed mereka |
+| [ ] | TIDAK ada mention langsung? | Aman untuk gates ✅ |
+
+================================================================================
+                    PHASE 6: VIRAL MECHANICS LAYER
+================================================================================
+
+OBJECTIVE: Tambahkan viral mechanics ke konten (SEBELUM Quality Scoring)
+
+--------------------------------------------------------------------------------
+6.1 VIRAL ANGLE FRAMEWORK
+--------------------------------------------------------------------------------
+
+| Angle | Best For | Hook Example | Risk Level |
+|-------|----------|--------------|------------|
+| **CONTROVERSY** | High engagement | "Unpopular opinion: [X] is wrong" | Medium |
+| **HOT TAKE** | Viral potential | "I said what I said: [X]" | Medium-High |
+| **PERSONAL STORY** | Trust building | "I lost $X when [Y] happened" | Low |
+| **MEME FORMAT** | Culture fit | "[X] be like: [Y]" | Low |
+| **FEAR/URGENCY** | Action trigger | "95% of [X] will fail" | Medium |
+| **FOMO** | Conversion | "Only [X] people will get this" | Low |
+| **CHALLENGE** | Reply bait | "Change my mind. I dare you." | Medium |
+
+--------------------------------------------------------------------------------
+6.2 CONTROVERSY ANGLE BLUEPRINT
+--------------------------------------------------------------------------------
+
+STRUCTURE:
+1. Controversial statement (hook)
+2. Explanation (why you believe it)
+3. Evidence (facts from KB)
+4. Challenge (invite disagreement)
+5. Call to action
+
+EXAMPLE TEMPLATE:
+```
+unpopular opinion: [common belief] is wrong.
+
+here's why: [your reasoning]
+
+[data/fact from knowledge base]
+
+if this hurts, you know I'm right.
+
+[CTA] 👇
+```
+
+SAFE CONTROVERSY RULES:
+- ✅ Challenge ideas, not people
+- ✅ Be provocative, not offensive
+- ✅ Have facts to back claims
+- ❌ No personal attacks
+- ❌ No misinformation
+- ❌ No prohibited topics
+
+--------------------------------------------------------------------------------
+6.3 SHARE TRIGGER MECHANICS
+--------------------------------------------------------------------------------
+
+| Trigger | How It Works | Implementation |
+|---------|--------------|----------------|
+| **Identity** | "This is SO me" | Use shared experiences |
+| **Validation** | "I was right!" | Confirm their beliefs |
+| **Utility** | "This is useful" | Checklists, summaries |
+| **Entertainment** | "This is funny" | Meme formats, contrasts |
+| **Outrage** | "Can you believe this?" | Expose problems |
+| **Inspiration** | "I can do this too" | Success stories |
+
+--------------------------------------------------------------------------------
+6.4 REPLY BAIT ENGINEERING
+--------------------------------------------------------------------------------
+
+| Technique | Template | Effectiveness |
+|-----------|----------|---------------|
+| **Contest** | "Best [X] wins a reply from me" | +400% replies |
+| **Challenge** | "Change my mind. I dare you." | +300% replies |
+| **Question** | "What's your [X]? Reply below" | +200% replies |
+| **Choice** | "[A] or [B]? Pick one 👇" | +250% replies |
+| **Emotion Hook** | "Drop a 📍 if you've felt this" | +150% replies |
+| **Story Request** | "Tell me your worst [X] story" | +180% replies |
+
+REPLY STRATEGY CHECKLIST:
+| Tweet | Has Reply CTA? | Type |
+|-------|----------------|------|
+| 1 (Hook) | ✅ MUST HAVE | Contest/Challenge |
+| 3-4 (Middle) | ✅ RECOMMENDED | Question/Choice |
+| 7 (CTA) | ✅ MUST HAVE | Story/Contest |
+
+★ RULE: Minimum 2 reply CTAs per thread
+★ RULE: At least ONE must be contest/challenge format
+
+================================================================================
+                    PHASE 7: PSYCHOLOGICAL TRIGGERS
+================================================================================
+
+OBJECTIVE: Tambahkan psychological triggers (SEBELUM Quality Scoring)
+
+--------------------------------------------------------------------------------
+7.1 CORE PSYCHOLOGICAL TRIGGERS (8 TOTAL)
+--------------------------------------------------------------------------------
+
+| Trigger | Description | Tweet Application |
+|---------|-------------|-------------------|
+| **Loss Aversion** | Fear of losing > desire to gain | "95% of leveraged positions fail" |
+| **Social Proof** | Others doing it makes it valid | "Join [X] others who..." |
+| **Scarcity** | Limited availability increases value | "Only [X] spots left" |
+| **Authority** | Expert opinions trusted | "[Expert] says..." |
+| **Reciprocity** | Give to receive | "Here's what I learned (free)" |
+| **Commitment** | Small yes leads to big yes | "Drop a 🔥 if you agree" |
+| **Liking** | Trust those we like | Be relatable, human |
+| **FOMO** | Fear of missing out | "Don't miss [X]" |
+
+--------------------------------------------------------------------------------
+7.2 TRIGGER COMBINATIONS
+--------------------------------------------------------------------------------
+
+| Combination | Effect | Example |
+|-------------|--------|---------|
+| Loss Aversion + FOMO | Maximum urgency | "Miss this and lose [X]" |
+| Social Proof + Authority | Trust amplifier | "[X] experts use this" |
+| Scarcity + FOMO | Action compulsion | "Only [X] left, going fast" |
+| Loss Aversion + Story | Emotional impact | "I lost [X], don't make my mistake" |
+
+--------------------------------------------------------------------------------
+7.3 FEAR/DESIRE BALANCE
+--------------------------------------------------------------------------------
+
+**RATIO: 30% Fear / 70% Desire**
+
+| Too Much Fear | Balanced | Too Much Desire |
+|---------------|----------|-----------------|
+| "You'll lose everything" | "Don't lose, here's how to win" | "You'll get rich" |
+| Paralyzes action | Motivates action | Sounds like scam |
+| Low trust | High trust | Low credibility |
+
+================================================================================
+                    PHASE 8: NETWORK EFFECT AMPLIFICATION
+================================================================================
+
+OBJECTIVE: Optimasi FR strategy (SEBELUM Quality Scoring)
+
+--------------------------------------------------------------------------------
+8.1 FR STRATEGY SUMMARY
+--------------------------------------------------------------------------------
+
+**KEY INSIGHT:** 10 replies from 100K follower accounts > 100 replies from 100 follower accounts
+
+| Strategy | Implementation | Expected FR Boost |
+|----------|----------------|-------------------|
+| Content magnet | Create reply-worthy content | +300% |
+| Timing alignment | Post saat mereka online | +200% |
+| Keyword targeting | Use keywords mereka monitor | +150% |
+| Format matching | Use format mereka suka | +100% |
+
+--------------------------------------------------------------------------------
+8.2 FR-OPTIMIZED CONTENT (TANPA MENTION)
+--------------------------------------------------------------------------------
+
+WHAT MAKES HIGH-FOLLOWER ACCOUNTS REPLY (WITHOUT TAGGING):
+
+| Trigger | Example (No Mention) |
+|---------|----------------------|
+| Contrarian on their topic | "Everyone's wrong about [their topic]. Here's why." |
+| Data they haven't seen | "New data: [insight]" |
+| Extension of their idea | "Taking [concept] to the next level..." |
+| Respectful challenge | "Actually, the data shows [X]..." |
+| Validation | "This [concept] is underrated" |
+
+--------------------------------------------------------------------------------
+8.3 QUOTE TWEET STRATEGY (POST-SUBMIT)
+--------------------------------------------------------------------------------
+
+| Tactic | How | Effect |
+|--------|-----|--------|
+| Self-quote | Quote your own thread | +40% reach |
+| Quote relevant content | Add your take on trending tweet | +100% visibility |
+| Quote with question | "Thoughts on this?" | +150% engagement |
+
+================================================================================
+                    PHASE 9: MICRO-OPTIMIZATION
+================================================================================
+
+OBJECTIVE: Word and character level optimization (SEBELUM Quality Scoring)
+
+--------------------------------------------------------------------------------
+9.1 WORD-LEVEL OPTIMIZATION
+--------------------------------------------------------------------------------
+
+| Check | Action |
+|-------|--------|
+| Any word > 3 syllables? | Consider shorter alternative |
+| Any passive voice? | Convert to active |
+| Any filler words? | Remove (very, really, just, that) |
+| Any jargon without context? | Add context or simplify |
+| Any repeated words? | Replace with synonyms |
+
+--------------------------------------------------------------------------------
+9.2 CHARACTER-LEVEL OPTIMIZATION
+--------------------------------------------------------------------------------
+
+| Check | Action |
+|-------|--------|
+| Tweet > 280 chars? | Trim unnecessary words |
+| Sentences > 20 words? | Break into shorter sentences |
+| Paragraphs > 3 sentences? | Break into separate tweets |
+| Any unnecessary punctuation? | Remove |
+
+--------------------------------------------------------------------------------
+9.3 READABILITY CHECK
+--------------------------------------------------------------------------------
+
+Read each tweet OUT LOUD:
+- Does it sound like natural speech?
+- Can you say it in one breath?
+- Would you actually say this to a friend?
+
+★ RULE: If it sounds written, REWRITE
+★ RULE: Natural speech = higher trust
+
+================================================================================
+                    PHASE 10: MULTI-VERSION GENERATION
+================================================================================
+
+OBJECTIVE: Create 5 different versions, then select the best
+
+--------------------------------------------------------------------------------
+10.1 WHY MULTI-VERSION?
+--------------------------------------------------------------------------------
+
+PROBLEM WITH SINGLE VERSION:
+- No comparison baseline
+- No optimization opportunity
+- Subjective quality assessment
+
+MULTI-VERSION BENEFITS:
+- Objective comparison possible
+- Multiple angles tested
+- Data-driven selection
+
+--------------------------------------------------------------------------------
+10.2 FIVE VERSIONS TO CREATE
+--------------------------------------------------------------------------------
+
+VERSION 1: CONTROVERSY ANGLE
+- Lead with unpopular opinion
+- Challenge common belief
+- Invite debate
+
+VERSION 2: PAIN POINT ANGLE
+- Lead with relatable suffering
+- Emotional connection
+- Community building
+
+VERSION 3: DESIRE ANGLE
+- Lead with outcome
+- Aspirational content
+- FOMO creation
+
+VERSION 4: FEAR ANGLE
+- Lead with risk/scare
+- Loss aversion trigger
+- Urgency creation
+
+VERSION 5: STORY ANGLE
+- Lead with personal narrative
+- Vulnerability/authenticity
+- Trust building
+
+--------------------------------------------------------------------------------
+10.3 VERSION COMPARISON TEMPLATE
+--------------------------------------------------------------------------------
+
+| Aspect | V1: Controversy | V2: Pain | V3: Desire | V4: Fear | V5: Story |
+|--------|-----------------|----------|------------|----------|-----------|
+| Hook Strength (1-5) | ___ | ___ | ___ | ___ | ___ |
+| Reply Potential (1-5) | ___ | ___ | ___ | ___ | ___ |
+| FR Potential (1-5) | ___ | ___ | ___ | ___ | ___ |
+| Emotional Impact (1-5) | ___ | ___ | ___ | ___ | ___ |
+| Share-Worthy (1-5) | ___ | ___ | ___ | ___ | ___ |
+| **TOTAL** | ___/25 | ___/25 | ___/25 | ___/25 | ___/25 |
+
+★ SELECT: Version with highest total score
+
+================================================================================
+                    PHASE 11: BENCHMARK COMPARISON
+================================================================================
+
+OBJECTIVE: Beat the top performer
+
+--------------------------------------------------------------------------------
+11.1 COMPARISON MATRIX
+--------------------------------------------------------------------------------
+
+| Aspect | Top Performer | Your Content | Win? |
+|--------|---------------|--------------|------|
+| Gate Score | ___/8 | ___/16 | [ ] |
+| EP Score | ___/5 | ___/8 | [ ] |
+| TQ Score | ___/5 | ___/8 | [ ] |
+| Reply CTA Quality | ___/5 | ___/5 | [ ] |
+| Hook Strength | ___/5 | ___/5 | [ ] |
+| FR Potential | ___/5 | ___/5 | [ ] |
+| **TOTAL** | ___/30 | ___/30 | ___ |
+
+★ GOAL: Win in at least 4/6 categories
+
+================================================================================
+                    PHASE 12: QUALITY SCORING SYSTEM
+================================================================================
+
+OBJECTIVE: Score konten SETELAH semua enhancement selesai
+
+--------------------------------------------------------------------------------
+12.1 GATE SCORING (V7.0 - 0-4 Scale)
+--------------------------------------------------------------------------------
+
+### G1 Content Alignment (4/4 REQUIRED):
+[ ] Aspect 1: Core Message Accuracy - 100% accurate
+[ ] Aspect 2: Terminology Precision - All terms correct
+[ ] Aspect 3: Brand Voice Consistency - Perfect match
+[ ] Aspect 4: Value Proposition Clarity - Crystal clear
+
+### G2 Information Accuracy (4/4 REQUIRED):
+[ ] Aspect 1: Technical Facts Verification - All verified
+[ ] Aspect 2: Source Verification - All claims backed
+[ ] Aspect 3: No Misleading Information - Proper context
+[ ] Aspect 4: Completeness - Nothing critical omitted
+
+### G3 Campaign Compliance (4/4 REQUIRED):
+[ ] Aspect 1: Required Mentions - All present
+[ ] Aspect 2: Required Hashtags - All present
+[ ] Aspect 3: Required Links - Correct placement
+[ ] Aspect 4: Format & Style Guidelines - All met
+
+### G4 Originality (4/4 REQUIRED):
+[ ] Aspect 1: Fresh Perspective - Unique angle
+[ ] Aspect 2: Personal Insight - Has personal take
+[ ] Aspect 3: Natural Language - Sounds human
+[ ] Aspect 4: Authentic Voice - Has personality
+
+**GATE TOTAL: ___/16**
+
+--------------------------------------------------------------------------------
+12.2 QUALITY SCORING (V7.0 - 0-8 Scale)
+--------------------------------------------------------------------------------
+
+### EP Engagement Potential (8/8 REQUIRED):
+[ ] Aspect 1: Hook Presence - Stops scroll
+[ ] Aspect 2: Emotional Trigger - Creates feeling
+[ ] Aspect 3: Curiosity Gap - Demands satisfaction
+[ ] Aspect 4: Reply CTA - Contest/challenge format
+[ ] Aspect 5: Share Trigger - Worth retweeting
+[ ] Aspect 6: Influencer Bait - High-FR potential
+[ ] Aspect 7: Controversy/Debate - Sparks discussion
+[ ] Aspect 8: Viral Mechanics - Multiple elements
+
+### TQ Technical Quality (8/8 REQUIRED):
+[ ] Aspect 1: Grammar - Zero errors
+[ ] Aspect 2: Spelling - Zero typos
+[ ] Aspect 3: Character Limit - All ≤ 280
+[ ] Aspect 4: No Kill List - Zero banned phrases
+[ ] Aspect 5: Natural Flow - Sounds like speech
+[ ] Aspect 6: Formatting Clean - No issues
+[ ] Aspect 7: Thread Structure - Logical flow
+[ ] Aspect 8: Platform Optimized - Built for Twitter
+
+**QUALITY TOTAL: ___/16**
+
+--------------------------------------------------------------------------------
+12.3 HES CHECK (4-POINT)
+--------------------------------------------------------------------------------
+
+| Check | Question | Pass/Fail |
+|-------|----------|-----------|
+| [ ] | EMOTIONAL HOOK? | Can you FEEL it? |
+| [ ] | REPLY CTA? | Contest/Challenge format? |
+| [ ] | CURIOSITY GAP? | Must know more? |
+| [ ] | NO AI PATTERNS? | No Kill List items? |
+
+SCORING:
+- 4/4 = ✅ PROCEED
+- 3/4 = ⚠️ REVISE
+- < 3/4 = ❌ MAJOR REVISION
+
+--------------------------------------------------------------------------------
+12.4 HES CALCULATOR (100-POINT)
+--------------------------------------------------------------------------------
+
+| Component | Max Score | Your Score |
+|-----------|-----------|------------|
+| Emotional Resonance (ER) | 25 pts | _____ |
+| Curiosity Gap (CG) | 25 pts | _____ |
+| Broad Appeal (BA) | 25 pts | _____ |
+| Clarity (CL) | 25 pts | _____ |
+| **TOTAL HES** | **100 pts** | _____ |
+
+★ V7.0 RULE: Submit only if HES >= 90
+
+--------------------------------------------------------------------------------
+12.5 VIRAL SCORE CHECK
+--------------------------------------------------------------------------------
+
+| Viral Element | Present? | Score (0-1) |
+|---------------|----------|-------------|
+| Controversial/challenge angle | [ ] | ___ |
+| Share-worthy format | [ ] | ___ |
+| Reply bait (contest/challenge) | [ ] | ___ |
+| Emotional trigger | [ ] | ___ |
+| Cultural relevance | [ ] | ___ |
+| Memorable hook | [ ] | ___ |
+| FOMO/urgency | [ ] | ___ |
+| Personal story element | [ ] | ___ |
+| Contrast/comparison | [ ] | ___ |
+| Call-out/identity trigger | [ ] | ___ |
+
+**VIRAL SCORE: ___/10**
+
+★ V7.0 RULE: Viral Score must be ≥ 8 to submit
+
+--------------------------------------------------------------------------------
+12.6 MASTER SCORE CALCULATION
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    V7.0 MASTER SCORE CARD                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  GATE TOTAL:      ___/16     (REQUIREMENT: 16/16)                           │
+│  QUALITY TOTAL:   ___/16     (REQUIREMENT: 16/16)                           │
+│  MASTER SCORE:    ___/32     (REQUIREMENT: 32/32)                           │
+│                                                                              │
+│  HES SCORE:       ___/100    (REQUIREMENT: ≥ 90)                            │
+│  VIRAL SCORE:     ___/10     (REQUIREMENT: ≥ 8)                             │
+│                                                                              │
+│  ═══════════════════════════════════════════════════════════════════════    │
+│                                                                              │
+│  DECISION:                                                                   │
+│  [ ] MASTER SCORE = 32/32 → PROCEED TO PHASE 14                             │
+│  [ ] MASTER SCORE < 32/32 → PROCEED TO PHASE 13 (ITERATE)                   │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 13: ITERATIVE REFINEMENT
+================================================================================
+
+OBJECTIVE: Refine content up to 3 iterations if Master Score < 32/32
+
+--------------------------------------------------------------------------------
+13.1 REFINEMENT TRIGGERS
+--------------------------------------------------------------------------------
+
+Start refinement if ANY of these are true:
+- Gate Score < 16/16
+- Quality Score < 16/16
+- Master Score < 32/32
+- HES Score < 90
+- Viral Score < 8
+- Tweet 1 score < 9/10
+- ANY Gate aspect at 0
+- ANY Quality aspect at 0
+- Kill List phrase found
+
+--------------------------------------------------------------------------------
+13.2 REFINEMENT PROCESS
+--------------------------------------------------------------------------------
+
+ITERATION 1:
+1. Fix all trigger issues
+2. Return to PHASE 12 for RE-SCORING ← ★ EXPLICIT LOOP
+3. If passes → PROCEED TO PHASE 14
+4. If fails → Iteration 2
+
+ITERATION 2:
+1. Rewrite weak elements
+2. Enhance emotional impact
+3. Return to PHASE 12 for RE-SCORING ← ★ EXPLICIT LOOP
+4. If passes → PROCEED TO PHASE 14
+5. If fails → Iteration 3
+
+ITERATION 3 (MAXIMUM):
+1. Complete rewrite if needed
+2. Focus on Tweet 1 (60% of effort)
+3. Return to PHASE 12 for RE-SCORING ← ★ EXPLICIT LOOP
+4. PROCEED TO PHASE 14 regardless (max iterations reached)
+
+★ RULE: Maximum 3 refinement iterations
+★ RULE: MUST re-score after EVERY iteration (RETURN TO PHASE 12)
+
+--------------------------------------------------------------------------------
+13.3 ITERATION LOG
+--------------------------------------------------------------------------------
+
+| Iteration | Issues Found | Fixes Applied | New Score | Status |
+|-----------|--------------|---------------|-----------|--------|
+| 1 | ___________ | ___________ | ___/32 | [ ] Pass [ ] Fail |
+| 2 | ___________ | ___________ | ___/32 | [ ] Pass [ ] Fail |
+| 3 | ___________ | ___________ | ___/32 | [ ] Pass [ ] Fail |
+
+================================================================================
+                    PHASE 14: PRE-SUBMIT RE-ANALYSIS
+================================================================================
+
+OBJECTIVE: Final check before submission
+
+--------------------------------------------------------------------------------
+14.1 UNIQUENESS VERIFICATION
+--------------------------------------------------------------------------------
+
+| Your Element | Still Unique? | Similar Count | Action |
+|--------------|---------------|---------------|--------|
+| Opening hook | [ ] | ___ | PROCEED/REVISE |
+| Framework | [ ] | ___ | PROCEED/REVISE |
+| Close/CTA | [ ] | ___ | PROCEED/REVISE |
+
+--------------------------------------------------------------------------------
+14.2 VIRAL UNIQUENESS CHECK
+--------------------------------------------------------------------------------
+
+| Question | Answer | Action |
+|----------|--------|--------|
+| Has anyone used this controversial angle? | [ ] Yes [ ] No | If yes, pivot |
+| Is this the HOTTEST take on this topic? | [ ] Yes [ ] No | If no, escalate |
+| Would YOU share this? | [ ] Yes [ ] No | If no, rewrite |
+
+--------------------------------------------------------------------------------
+14.3 FINAL DECISION
+--------------------------------------------------------------------------------
+
+[ ] ALL CHECKS PASS → PROCEED TO PHASE 15
+[ ] ANY CHECK FAIL → RETURN TO APPROPRIATE PHASE
+
+================================================================================
+                    PHASE 15: PRE-SUBMIT CHECKLIST (V7.0)
+================================================================================
+
+--------------------------------------------------------------------------------
+15.1 GATES (All must be 4/4)
+--------------------------------------------------------------------------------
+
+[ ] G1 Content Alignment: 4/4
+[ ] G2 Information Accuracy: 4/4
+[ ] G3 Campaign Compliance: 4/4
+[ ] G4 Originality: 4/4
+
+**GATE TOTAL: ___/16**
+
+--------------------------------------------------------------------------------
+15.2 QUALITY (All must be 8/8)
+--------------------------------------------------------------------------------
+
+[ ] EP Engagement Potential: 8/8
+[ ] TQ Technical Quality: 8/8
+
+**QUALITY TOTAL: ___/16**
+
+--------------------------------------------------------------------------------
+15.3 SCORES
+--------------------------------------------------------------------------------
+
+[ ] Master Score: 32/32 (Current: ___/32)
+[ ] HES Score: ≥ 90 (Current: ___/100)
+[ ] Viral Score: ≥ 8 (Current: ___/10)
+
+--------------------------------------------------------------------------------
+15.4 LINK STRATEGY
+--------------------------------------------------------------------------------
+
+[ ] Link NOT in Tweet 1
+[ ] Link in last tweet OR reply
+[ ] No shortened URLs
+
+--------------------------------------------------------------------------------
+15.5 HASHTAG STRATEGY
+--------------------------------------------------------------------------------
+
+[ ] Max 1-2 per tweet
+[ ] No hashtag in Tweet 1
+
+--------------------------------------------------------------------------------
+15.6 FORMATTING
+--------------------------------------------------------------------------------
+
+[ ] No "#[number]" patterns
+[ ] No Kill List phrases
+[ ] All tweets under 280 characters
+
+--------------------------------------------------------------------------------
+15.7 REQUIREMENTS
+--------------------------------------------------------------------------------
+
+[ ] Required mentions included
+[ ] Required links included (with correct strategy)
+[ ] Tone matches guidelines
+
+--------------------------------------------------------------------------------
+15.8 FINAL CHECK
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    V7.0 FINAL SUBMISSION CHECK                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  GATE SCORE:      ___/16     (REQUIREMENT: 16/16)                           │
+│  QUALITY SCORE:   ___/16     (REQUIREMENT: 16/16)                           │
+│  MASTER SCORE:    ___/32     (REQUIREMENT: 32/32)                           │
+│                                                                              │
+│  ═══════════════════════════════════════════════════════════════════════    │
+│                                                                              │
+│  [ ] ALL 16 Gate aspects = ✅ PASS                                          │
+│  [ ] ALL 16 Quality aspects = ✅ PASS                                       │
+│  [ ] Master Score = 32/32                                                   │
+│                                                                              │
+│  ═══════════════════════════════════════════════════════════════════════    │
+│                                                                              │
+│  IF ALL ABOVE = ✅ → ★ SUBMIT ★                                             │
+│  IF ANY = ❌ → RETURN TO PHASE 13                                           │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 16: POST-SUBMIT ENGAGEMENT WARFARE
+================================================================================
+
+OBJECTIVE: Maximize engagement after submission (TIDAK MEMPENGARUHI GATES)
+
+--------------------------------------------------------------------------------
+16.1 FIRST 30 MINUTES (CRITICAL - 80% OF VIRAL POTENTIAL)
+--------------------------------------------------------------------------------
+
+| Action | Timing | Purpose | Impact |
+|--------|--------|---------|--------|
+| Reply to first comment | < 5 min | Shows engagement | +50% |
+| Like all replies | Ongoing | Encourages more | +30% |
+| Quote tweet yourself | < 15 min | Extends reach | +40% |
+| Thread extension | < 20 min | More engagement | +20% |
+| Reply to influencer threads | < 20 min | Visibility | +200% |
+
+--------------------------------------------------------------------------------
+16.2 REPLY TEMPLATES
+--------------------------------------------------------------------------------
+
+**Agreement:**
+"Exactly. [Their point] is the real issue. You get it. 👇"
+
+**Question:**
+"Good Q. Short answer: [1 sentence]. Want the long version?"
+
+**Skeptic:**
+"Valid skepticism. Here's what changed my mind: [proof] 💡"
+
+**High-Follower Accounts:**
+"[Their point] is exactly right. What would you add? 👇"
+
+**Challenge:**
+"Bet you can't name one [X] that beats this"
+
+--------------------------------------------------------------------------------
+16.3 24-HOUR ENGAGEMENT CHECKLIST
+--------------------------------------------------------------------------------
+
+Hour 0-1:
+[ ] Reply to first 5 comments
+[ ] Quote tweet with additional insight
+[ ] Like all engagements
+[ ] Post link in reply (if using reply strategy)
+
+Hour 1-6:
+[ ] Check for new replies (reply to all)
+[ ] Engage with quote tweets
+[ ] Thank retweeters (optional)
+
+Hour 6-24:
+[ ] Final reply sweep
+[ ] Note any viral traction
+[ ] Screenshot metrics for tracking
+
+================================================================================
+                    PHASE 17: PERFORMANCE TRACKING
+================================================================================
+
+OBJECTIVE: Track performance for continuous improvement
+
+--------------------------------------------------------------------------------
+17.1 PERFORMANCE LOG
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PERFORMANCE TRACKING LOG (V7.0)                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│ Campaign: ____________________  Date: ____________                          │
+│ Master Score: ___/32 | HES: ___/100 | Viral: ___/10                         │
+│                                                                              │
+│ METRICS:                                                                    │
+│ | Metric | Target | Actual | Assessment |                                    │
+│ |--------|--------|--------|------------|                                    │
+│ | Engagement Rate | >0.5% | ___% | ___ |                                      │
+│ | Reply Rate | >2% | ___ | ___ |                                             │
+│ | Share Count | High | ___ | ___ |                                            │
+│ | FR Score | High | ___ | ___ |                                               │
+│                                                                              │
+│ FINAL RANK: ___ | Target: Top 5%                                            │
+│                                                                              │
+│ KEY LEARNING:                                                               │
+│ ________________________________________________________________________   │
+│                                                                              │
+│ ACTION FOR NEXT CAMPAIGN:                                                   │
+│ ________________________________________________________________________   │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 18: A/B TESTING FRAMEWORK
+================================================================================
+
+OBJECTIVE: Test variations systematically for continuous improvement
+
+--------------------------------------------------------------------------------
+18.1 WHAT TO A/B TEST
+--------------------------------------------------------------------------------
+
+| Priority | Element | Test Variations |
+|----------|---------|-----------------|
+| 1 | Hook Emotion | Pain vs Desire vs Fear |
+| 2 | Hook Opening | Statement vs Question vs Story |
+| 3 | CTA Format | A/B/C Options vs Open Question |
+| 4 | Thread Length | 5 tweets vs 7 tweets |
+| 5 | Link Placement | Reply vs Last Tweet |
+| 6 | Hashtag Count | 0 vs 1 vs 2 |
+
+--------------------------------------------------------------------------------
+18.2 A/B TEST LOG
+--------------------------------------------------------------------------------
+
+| Test ID | Element | Version A | Version B | Winner | Learning |
+|---------|---------|-----------|-----------|--------|----------|
+| 001 | Hook | Pain | Desire | ___ | ___ |
+
+★ RULE: Test ONE element at a time for valid results
+
+================================================================================
+                    PHASE 19: REFRESH ENGAGEMENT STRATEGY
+================================================================================
+
+OBJECTIVE: Update metrics in later periods when Rally allows
+
+--------------------------------------------------------------------------------
+19.1 WHEN TO REFRESH
+--------------------------------------------------------------------------------
+
+[ ] After significant engagement increase
+[ ] After getting reply from high-follower account
+[ ] After viral moment
+[ ] After 24-48 hours for optimal data
+
+--------------------------------------------------------------------------------
+19.2 REFRESH MATH
+--------------------------------------------------------------------------------
+
+user_Q[period] += max(0, Q_current - Q_baseline)
+
+★ Quality component remains FIXED from first submission
+★ Only engagement metrics update
+★ Credits only positive difference
+
+================================================================================
+                    QUICK REFERENCE CARD (V7.0)
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    60-SECOND V7.0 PRE-SUBMIT CHECK                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  LEVEL 5 TARGET: MAXIMUM STANDARD                                           │
+│                                                                              │
+│  GATE CHECK (15 sec):                                                       │
+│  [ ] G1: 4/4? (All 4 aspects)                                               │
+│  [ ] G2: 4/4? (All 4 aspects)                                               │
+│  [ ] G3: 4/4? (All 4 aspects)                                               │
+│  [ ] G4: 4/4? (All 4 aspects)                                               │
+│                                                                              │
+│  QUALITY CHECK (20 sec):                                                    │
+│  [ ] EP: 8/8? (All 8 aspects)                                               │
+│  [ ] TQ: 8/8? (All 8 aspects)                                               │
+│                                                                              │
+│  HOOK CHECK (15 sec):                                                       │
+│  [ ] EMOTIONAL? (Feel it?)                                                  │
+│  [ ] CURIOSITY? (Want more?)                                                │
+│  [ ] NO "DELVES"?                                                           │
+│  [ ] CONTROVERSIAL? (Viral trigger)                                         │
+│  [ ] FR POTENTIAL? (Influencer appeal)                                      │
+│                                                                              │
+│  REPLY CHECK (5 sec):                                                       │
+│  [ ] Contest/Challenge format?                                              │
+│  [ ] Easy to answer?                                                        │
+│                                                                              │
+│  LINK CHECK (3 sec):                                                        │
+│  [ ] Link NOT in Tweet 1?                                                   │
+│  [ ] Link in last tweet or reply?                                           │
+│                                                                              │
+│  SCORE CHECK (2 sec):                                                       │
+│  [ ] Master Score = 32/32?                                                  │
+│                                                                              │
+│  ═══════════════════════════════════════════════════════════════════════    │
+│  IF MASTER SCORE = 32/32 → SUBMIT                                           │
+│  IF MASTER SCORE < 32/32 → RETURN TO PHASE 13                               │
+│  IF ANY ASPECT = 0 → FIX BEFORE SUBMIT                                      │
+│  ═══════════════════════════════════════════════════════════════════════    │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    WHAT NOT TO DO (V7.0)
+================================================================================
+
+❌ DO NOT: Accept Gate Score < 16/16
+❌ DO NOT: Accept Quality Score < 16/16
+❌ DO NOT: Accept Master Score < 32/32
+❌ DO NOT: Submit with ANY aspect at 0
+❌ DO NOT: Skip ANY of the 32 checks
+❌ DO NOT: Consider "good enough" acceptable
+❌ DO NOT: Tolerate partial scores
+❌ DO NOT: Compromise on standards
+❌ DO NOT: Put link in Tweet 1
+❌ DO NOT: Use 3+ hashtags
+❌ DO NOT: Forget Reply CTA
+❌ DO NOT: Use Kill List phrases
+❌ DO NOT: Mention influencers directly (gate risk)
+❌ DO NOT: Skip Invisible Influence Strategy
+❌ DO NOT: Score before all enhancements done
+❌ DO NOT: Skip re-scoring after iteration
+❌ DO NOT: Miss first 30 minutes post-submit
+
+================================================================================
+                    WHAT TO DO (V7.0)
+================================================================================
+
+✅ DO: Target 32/32 Master Score (NON-NEGOTIABLE)
+✅ DO: Achieve 4/4 on EVERY Gate aspect
+✅ DO: Achieve 8/8 on EVERY Quality aspect
+✅ DO: Iterate until ALL aspects pass
+✅ DO: Check all 32 aspects before submission
+✅ DO: Demand perfection in every detail
+✅ DO: Over-engineer for excellence
+✅ DO: Submit ONLY when Master Score = 32/32
+✅ DO: Use Contest/Challenge CTAs
+✅ DO: Include emotional arc
+✅ DO: Use Invisible Influence Strategy (no direct mentions)
+✅ DO: Complete ALL enhancement phases BEFORE scoring
+✅ DO: Re-score after EVERY iteration
+✅ DO: Create 5 versions minimum
+✅ DO: Engage heavily first 30 min post-submit
+
+================================================================================
+                    VERSION COMPARISON TABLE
+================================================================================
+
+| Aspect | V5.0 | V6.0 | V7.0 FINAL |
+|--------|------|------|------------|
+| **GATES** | | | |
+| Scale | 0-2 | 0-2 | **0-4** |
+| Pass Requirement | 2/2 | 2/2 | **4/4** |
+| Total Gate Score | 8/8 | 8/8 | **16/16** |
+| **QUALITY** | | | |
+| EP Scale | 0-5 | 0-5 | **0-8** |
+| TQ Scale | 0-5 | 0-5 | **0-8** |
+| EP Requirement | 4+ | 5/5 | **8/8** |
+| TQ Requirement | 4+ | 5/5 | **8/8** |
+| Total Quality Score | 10/10 | 10/10 | **16/16** |
+| **MASTER SCORE** | | | |
+| Total Points | 18 | 18 | **32** |
+| Pass Requirement | 14+ | 16+ | **32/32** |
+| Level Target | Level 2-3 | Level 4 | **Level 5** |
+| **FLOW** | | | |
+| Enhancement Before Scoring | ❌ | ❌ | **✅** |
+| Explicit Re-score Loop | ❌ | ❌ | **✅** |
+| Invisible Influence Phase | ❌ | ❌ | **✅** |
+| **PHASES** | | | |
+| Total Phases | 12 | 18 | **19** |
+| Post-Submit Phases | 1 | 4 | **4** |
+
+================================================================================
+                    END OF V7.0 FINAL EDITION
+================================================================================
