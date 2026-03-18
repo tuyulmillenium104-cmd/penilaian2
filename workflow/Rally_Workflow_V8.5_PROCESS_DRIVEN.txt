@@ -1,0 +1,2205 @@
+# ╔═══════════════════════════════════════════════════════════════╗
+# ║        RALLY WORKFLOW V8.5 - PROCESS DRIVEN EDITION          ║
+# ║        Every Phase: INPUT → PROCESS → OUTPUT → VALIDATE      ║
+# ║        Created: 2025-01-18                                    ║
+# ╚═══════════════════════════════════════════════════════════════╝
+
+================================================================================
+                    CORE PRINCIPLE V8.5
+================================================================================
+
+**SETIAP PHASE HARUS MEMILIKI:**
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  INPUT: Apa yang dibutuhkan sebelum phase dimulai?                          │
+│  PROCESS: Langkah-langkah KONKRET yang dilakukan                            │
+│  OUTPUT: Apa yang dihasilkan setelah phase selesai?                         │
+│  VALIDATE: Apakah output memenuhi kriteria?                                 │
+│           YES → Lanjut ke phase berikutnya                                  │
+│           NO → Kembali ke phase ini (dengan feedback SPESIFIK)              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    COMPLETE PHASE DIAGRAM
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 0: PREPARATION                                                        │
+│ INPUT: Campaign request                                                     │
+│ OUTPUT: CAMPAIGN_DATA (requirements, constraints, gate weights)             │
+│ VALIDATE: All required fields filled                                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 1: RESEARCH (4 Web Searches)                                          │
+│ INPUT: CAMPAIGN_DATA                                                        │
+│ OUTPUT: KNOWLEDGE_BASE (facts, stats, project info)                         │
+│ VALIDATE: Minimum 20 verified facts extracted                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 2: LEADERBOARD ANALYSIS                                               │
+│ INPUT: CAMPAIGN_DATA + KNOWLEDGE_BASE                                       │
+│ OUTPUT: COMPETITOR_PATTERNS (hooks, angles, CTAs used by top 10)            │
+│ VALIDATE: Minimum 10 competitors analyzed, patterns extracted               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 3: GAP IDENTIFICATION                                                 │
+│ INPUT: COMPETITOR_PATTERNS                                                  │
+│ OUTPUT: UNUSED_PATTERNS (opportunities not exploited by competitors)        │
+│ VALIDATE: Minimum 3 significant gaps identified                             │
+│         [FAIL → Back to Phase 2: Analyze more competitors]                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 4: STRATEGY DEFINITION                                                │
+│ INPUT: UNUSED_PATTERNS + KNOWLEDGE_BASE                                     │
+│ OUTPUT: CONTENT_STRATEGY (chosen angle, emotion, structure, CTAs)           │
+│ VALIDATE: Strategy different from all competitor patterns                   │
+│         [FAIL → Back to Phase 3: Find different gaps]                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 5: CONTENT GENERATION (5 Versions)                                    │
+│ INPUT: CONTENT_STRATEGY + KNOWLEDGE_BASE                                    │
+│ OUTPUT: 5_RAW_VERSIONS (V1-V5 with different approaches)                    │
+│ VALIDATE: Each version has different hook, angle, CTA                       │
+│         [FAIL → Back to Phase 5: Regenerate with more variation]            │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 6: BANNED ITEMS SCANNER                                               │
+│ INPUT: 5_RAW_VERSIONS                                                       │
+│ OUTPUT: 5_CLEAN_VERSIONS (no banned words/phrases/chars)                    │
+│ VALIDATE: Scanner returns 0 violations for all versions                     │
+│         [FAIL → Phase 6.5: REWRITE → Back to Phase 6]                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 7: UNIQUENESS VALIDATION                                              │
+│ INPUT: 5_CLEAN_VERSIONS + COMPETITOR_PATTERNS                               │
+│ OUTPUT: 5_UNIQUE_VERSIONS (no overlap with competitors)                     │
+│ VALIDATE: Uniqueness score >= 70% for all versions                          │
+│         [FAIL → Back to Phase 5: Regenerate with more differentiation]      │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 8: EMOTION INJECTION                                                  │
+│ INPUT: 5_UNIQUE_VERSIONS + TARGET_EMOTION                                   │
+│ OUTPUT: 5_EMOTIONAL_VERSIONS (emotion_score >= 7/10)                        │
+│ VALIDATE: Each version triggers intended emotion                            │
+│         [FAIL → Back to Phase 5: Add emotional triggers]                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 9: HES + VIRAL SCORE CHECK                                            │
+│ INPUT: 5_EMOTIONAL_VERSIONS                                                 │
+│ OUTPUT: 5_SCORED_VERSIONS (HES score + Viral score attached)                │
+│ VALIDATE: HES >= 3/4 AND Viral >= 6/10 for all versions                     │
+│         [FAIL → Back to Phase 8: Enhance hooks]                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 10: QUALITY SCORING & SELECTION                                       │
+│ INPUT: 5_SCORED_VERSIONS                                                    │
+│ OUTPUT: SELECTED_VERSION (highest combined score)                           │
+│ VALIDATE: Clear winner with score gap >= 5 points                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 11: MICRO-OPTIMIZATION                                                │
+│ INPUT: SELECTED_VERSION                                                     │
+│ OUTPUT: OPTIMIZED_VERSION (improved at 5 layers)                            │
+│ VALIDATE: Quality score improved by >= 3 points                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 12: GATE SIMULATION                                                   │
+│ INPUT: OPTIMIZED_VERSION                                                    │
+│ OUTPUT: GATE_PASSED_VERSION (16/16 gate score)                              │
+│ VALIDATE: Gate score = 16/16 AND Quality score = 16/16                      │
+│         [FAIL → Back to Phase 11: Fix specific failed gates]                │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 13: BENCHMARK COMPARISON                                              │
+│ INPUT: GATE_PASSED_VERSION + COMPETITOR_PATTERNS                            │
+│ OUTPUT: VERIFIED_ADVANTAGE (proven better than competitors)                 │
+│ VALIDATE: Competitive advantage confirmed                                   │
+│         [FAIL → Back to Phase 4: Redefine strategy]                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+═══════════════════════════════════════════════════════════════════════════════
+                    ████████ ALL VALIDATIONS PASSED ████████
+═══════════════════════════════════════════════════════════════════════════════
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 14: OUTPUT GENERATION (Q&A + Images)                                  │
+│ INPUT: GATE_PASSED_VERSION + KNOWLEDGE_BASE                                 │
+│ OUTPUT: COMPLETE_ASSETS (content + 15 Q&A + 3 images)                       │
+│ VALIDATE: All assets generated and verified                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 15: FINAL VERIFICATION                                                │
+│ INPUT: COMPLETE_ASSETS                                                      │
+│ OUTPUT: SUBMISSION_READY (all checks passed)                                │
+│ VALIDATE: All 15 previous phases verified complete                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    ╔═══════════════════════════════════════════════════════════╗
+                    ║                    PHASE DETAILS                          ║
+                    ╚═══════════════════════════════════════════════════════════╝
+================================================================================
+
+================================================================================
+                    PHASE 0: PREPARATION
+================================================================================
+
+INPUT: Campaign request from user
+
+PROCESS:
+
+STEP 1: FETCH CAMPAIGN DATA
+```
+API_CALL: GET https://app.rally.fun/api/campaigns/{campaignAddress}
+EXTRACT:
+  - campaign_name
+  - mission_number
+  - mission_title
+  - required_mentions (list)
+  - required_topics (list)
+  - required_links (list)
+  - tone_guidelines
+  - gate_weights (G1, G2, G3, G4 weights)
+```
+
+STEP 2: IDENTIFY CONSTRAINTS
+```
+CHECK:
+  - Is X Premium user? (affects link strategy)
+  - Is link required in main tweet?
+  - Minimum/maximum tweet count?
+  - Character limits?
+```
+
+STEP 3: BUILD CAMPAIGN_DATA OBJECT
+```
+CAMPAIGN_DATA = {
+  campaign_address: "___",
+  campaign_name: "___",
+  mission_number: ___,
+  mission_title: "___",
+  required_mentions: ["@___", "@___"],
+  required_topics: ["#___", "#___"],
+  required_links: ["https://___"],
+  tone_guidelines: "___",
+  gate_weights: {
+    G1: ___,  // Content Alignment weight
+    G2: ___,  // Information Accuracy weight
+    G3: ___,  // Campaign Compliance weight
+    G4: ___   // Originality weight
+  },
+  constraints: {
+    is_premium: true/false,
+    link_in_main_tweet: true/false,
+    min_tweets: ___,
+    max_tweets: ___
+  }
+}
+```
+
+OUTPUT: CAMPAIGN_DATA object (complete)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] campaign_address is not empty
+[ ] campaign_name is not empty
+[ ] required_mentions populated
+[ ] required_topics populated
+[ ] gate_weights all > 0
+
+IF any checkbox FAILS:
+  -> ERROR: Return to user, request missing data
+IF all checkboxes PASS:
+  -> PROCEED to Phase 1
+```
+
+================================================================================
+                    PHASE 1: RESEARCH (4 WEB SEARCHES)
+================================================================================
+
+INPUT: CAMPAIGN_DATA
+
+PROCESS:
+
+STEP 1: EXECUTE 4 WEB SEARCHES
+```
+SEARCH_1: "{campaign_name} overview 2024 2025"
+  -> Purpose: Basic project understanding
+  -> Extract: What is it? What does it do? Who is it for?
+
+SEARCH_2: "{campaign_name} tokenomics token utility"
+  -> Purpose: Token details
+  -> Extract: Token name, supply, utility, distribution
+
+SEARCH_3: "{campaign_industry} trends comparison"
+  -> Purpose: Industry context
+  -> Extract: Competitors, market size, trends
+
+SEARCH_4: "{campaign_name} statistics metrics success"
+  -> Purpose: Hard numbers
+  -> Extract: TVL, users, transactions, growth rates
+```
+
+STEP 2: EXTRACT FACTS
+```
+FOR each search result:
+  EXTRACT verifiable facts:
+  - Numbers (prices, amounts, percentages)
+  - Dates (launch, updates, milestones)
+  - Names (team, partners, investors)
+  - Features (capabilities, integrations)
+```
+
+STEP 3: BUILD KNOWLEDGE_BASE
+```
+KNOWLEDGE_BASE = {
+  project_overview: {
+    name: "___",
+    description: "___",
+    industry: "___",
+    launched: "___"
+  },
+  token_info: {
+    token_name: "___",
+    token_symbol: "___",
+    total_supply: ___,
+    utility: ["___", "___"]
+  },
+  statistics: {
+    tvl: ___,
+    users: ___,
+    transactions: ___,
+    growth_rate: ___
+  },
+  verified_facts: [
+    { fact: "___", source: "___", verified: true/false },
+    ...
+  ],
+  industry_context: {
+    competitors: ["___", "___"],
+    market_size: ___,
+    trends: ["___", "___"]
+  }
+}
+```
+
+OUTPUT: KNOWLEDGE_BASE object (minimum 20 verified facts)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] project_overview is complete
+[ ] token_info is complete
+[ ] At least 20 facts in verified_facts
+[ ] All facts have source
+[ ] industry_context populated
+
+IF verified_facts < 20:
+  -> Execute additional searches
+IF any critical field is empty:
+  -> Execute targeted search for missing info
+IF all PASS:
+  -> PROCEED to Phase 2
+```
+
+================================================================================
+                    PHASE 2: LEADERBOARD ANALYSIS
+================================================================================
+
+INPUT: CAMPAIGN_DATA + KNOWLEDGE_BASE
+
+PROCESS:
+
+STEP 1: FETCH LEADERBOARD
+```
+API_CALL: GET https://app.rally.fun/api/leaderboard?campaignAddress={address}&limit=10
+
+EXTRACT for each competitor:
+  - rank
+  - score
+  - engagement_metrics (likes, replies, reposts)
+  - content_text (full content) - USE web-reader IF NEEDED
+```
+
+STEP 2: ANALYZE EACH COMPETITOR
+```
+FOR each top 10 competitor:
+
+  ANALYZE HOOK:
+    - First 20 words: "___"
+    - Hook type: [controversial | story | data | question | challenge]
+    - Emotion triggered: [pain | fear | desire | belonging | curiosity]
+
+  ANALYZE STRUCTURE:
+    - Tweet count: ___
+    - Technical depth: [low | medium | high]
+    - CTA placement: [tweet 1 | tweet 7 | both | none]
+
+  ANALYZE CTA:
+    - CTA type: [reply | like | retweet | follow | click]
+    - CTA format: [question | challenge | contest | statement]
+    - Reply bait: [yes | no]
+
+  ANALYZE PATTERNS:
+    - Repeated phrases: ["___", "___"]
+    - Template markers: ["___", "___"]
+    - AI markers: ["___", "___"]
+```
+
+STEP 3: BUILD COMPETITOR_PATTERNS
+```
+COMPETITOR_PATTERNS = {
+  hooks_used: [
+    { pattern: "___", count: ___, examples: ["___"] },
+    ...
+  ],
+  emotions_used: [
+    { emotion: "___", count: ___ },
+    ...
+  ],
+  cta_types_used: [
+    { type: "___", count: ___ },
+    ...
+  ],
+  structures_used: [
+    { tweet_count: ___, count: ___ },
+    ...
+  ],
+  phrases_repeated: [
+    { phrase: "___", count: ___ },
+    ...
+  ],
+  competitors_analyzed: [
+    {
+      rank: ___,
+      hook: "___",
+      hook_type: "___",
+      emotion: "___",
+      cta_type: "___",
+      tweet_count: ___,
+      engagement_rate: ___
+    },
+    ...
+  ]
+}
+```
+
+OUTPUT: COMPETITOR_PATTERNS object (all patterns extracted)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] At least 10 competitors analyzed
+[ ] hooks_used has at least 10 patterns
+[ ] emotions_used populated
+[ ] cta_types_used populated
+[ ] Each competitor has all fields filled
+
+IF competitors_analyzed < 10:
+  -> Extend leaderboard fetch (limit=20)
+IF hooks_used is empty:
+  -> Re-analyze with different extraction method
+IF all PASS:
+  -> PROCEED to Phase 3
+```
+
+================================================================================
+                    PHASE 3: GAP IDENTIFICATION
+================================================================================
+
+INPUT: COMPETITOR_PATTERNS
+
+PROCESS:
+
+STEP 1: IDENTIFY UNUSED HOOK TYPES
+```
+ALL_HOOK_TYPES = [controversial, story, data, question, challenge, meme, fear]
+
+USED_HOOK_TYPES = extract from COMPETITOR_PATTERNS.hooks_used
+
+UNUSED_HOOK_TYPES = ALL_HOOK_TYPES - USED_HOOK_TYPES
+
+RESULT: Available hook types that competitors didn't use
+```
+
+STEP 2: IDENTIFY UNUSED EMOTIONS
+```
+ALL_EMOTIONS = [pain, fear, desire, belonging, curiosity, outrage, hope, surprise]
+
+USED_EMOTIONS = extract from COMPETITOR_PATTERNS.emotions_used
+
+UNUSED_EMOTIONS = ALL_EMOTIONS - USED_EMOTIONS
+
+RESULT: Available emotions that competitors didn't trigger
+```
+
+STEP 3: IDENTIFY UNUSED CTA TYPES
+```
+ALL_CTA_TYPES = [reply_question, reply_challenge, reply_contest, share_trigger, click_link]
+
+USED_CTA_TYPES = extract from COMPETITOR_PATTERNS.cta_types_used
+
+UNUSED_CTA_TYPES = ALL_CTA_TYPES - USED_CTA_TYPES
+
+RESULT: Available CTA types that competitors didn't use
+```
+
+STEP 4: IDENTIFY CONTENT GAPS
+```
+GAPS = {
+  hook_gaps: UNUSED_HOOK_TYPES,
+  emotion_gaps: UNUSED_EMOTIONS,
+  cta_gaps: UNUSED_CTA_TYPES,
+  structure_gaps: [], // e.g., no one used 10-tweet threads
+  angle_gaps: [] // e.g., no one used contrarian angle
+}
+
+FOR each gap:
+  CALCULATE opportunity_score = (1 - usage_frequency) * impact_weight
+
+SORT gaps by opportunity_score DESC
+```
+
+STEP 5: BUILD UNUSED_PATTERNS
+```
+UNUSED_PATTERNS = {
+  hook_opportunities: [
+    { type: "___", opportunity_score: ___, why_untapped: "___" },
+    ...
+  ],
+  emotion_opportunities: [
+    { emotion: "___", opportunity_score: ___, why_untapped: "___" },
+    ...
+  ],
+  cta_opportunities: [
+    { type: "___", opportunity_score: ___, why_untapped: "___" },
+    ...
+  ],
+  unique_angles: [
+    { angle: "___", opportunity_score: ___, description: "___" },
+    ...
+  ],
+  top_3_opportunities: [
+    // Highest opportunity_score combinations
+    { combination: "___", score: ___, expected_impact: "___" },
+    ...
+  ]
+}
+```
+
+OUTPUT: UNUSED_PATTERNS object (minimum 3 significant gaps)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] At least 3 hook_opportunities identified
+[ ] At least 2 emotion_opportunities identified
+[ ] At least 2 cta_opportunities identified
+[ ] top_3_opportunities populated
+[ ] Each opportunity has opportunity_score calculated
+
+IF opportunities < minimum:
+  -> FAIL: Return to Phase 2
+  -> Action: Analyze more competitors or different aspects
+IF top_3_opportunities is empty:
+  -> Recalculate with different weights
+IF all PASS:
+  -> PROCEED to Phase 4
+```
+
+================================================================================
+                    PHASE 4: STRATEGY DEFINITION
+================================================================================
+
+INPUT: UNUSED_PATTERNS + KNOWLEDGE_BASE
+
+PROCESS:
+
+STEP 1: SELECT PRIMARY APPROACH
+```
+FROM top_3_opportunities:
+  SELECT opportunity with highest score that:
+    - Fits the campaign tone
+    - Has supporting facts in KNOWLEDGE_BASE
+    - Can be executed within constraints
+
+PRIMARY_APPROACH = selected opportunity
+```
+
+STEP 2: DEFINE CONTENT STRATEGY
+```
+CONTENT_STRATEGY = {
+  primary_angle: {
+    type: "___",          // e.g., "controversial", "story"
+    description: "___",   // Specific angle description
+    emotion_target: "___", // Primary emotion to trigger
+    differentiation: "___" // How it differs from competitors
+  },
+
+  hook_strategy: {
+    type: "___",          // From unused hook types
+    approach: "___",      // How to create unique hook
+    first_20_words_goal: "___" // What first 20 words should achieve
+  },
+
+  structure_strategy: {
+    tweet_count: ___,     // Optimal for this content
+    technical_depth: "___", // low/medium/high
+    flow: ["___", "___", "___"] // What each tweet should accomplish
+  },
+
+  cta_strategy: {
+    primary_cta: {
+      type: "___",        // From unused CTA types
+      placement: "___",   // Which tweet(s)
+      format: "___"       // question/challenge/contest
+    },
+    secondary_cta: {
+      type: "___",
+      placement: "___",
+      format: "___"
+    }
+  },
+
+  key_facts_to_use: [
+    { fact: "___", how_to_present: "___" },
+    ...
+  ],
+
+  constraints_checklist: {
+    mentions_included: false,  // To be verified in content
+    topics_included: false,    // To be verified in content
+    links_included: false,     // To be verified in content
+    tone_matched: false        // To be verified in content
+  }
+}
+```
+
+STEP 3: VERIFY DIFFERENTIATION
+```
+FOR each competitor in COMPETITOR_PATTERNS.competitors_analyzed:
+
+  COMPARE CONTENT_STRATEGY.primary_angle WITH competitor.hook_type:
+    IF same:
+      MARK as overlap
+
+  COMPARE CONTENT_STRATEGY.emotion_target WITH competitor.emotion:
+    IF same:
+      MARK as overlap
+
+  COMPARE CONTENT_STRATEGY.cta_strategy WITH competitor.cta_type:
+    IF same:
+      MARK as overlap
+
+CALCULATE differentiation_score = 1 - (overlaps / total_comparisons)
+
+IF differentiation_score < 0.7:
+  -> Need to adjust strategy
+```
+
+OUTPUT: CONTENT_STRATEGY object (differentiation_score >= 0.7)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] primary_angle is defined and specific
+[ ] hook_strategy is defined
+[ ] structure_strategy is defined
+[ ] cta_strategy has both primary and secondary
+[ ] At least 5 key_facts_to_use
+[ ] differentiation_score >= 0.7 (70% different from competitors)
+
+IF differentiation_score < 0.7:
+  -> FAIL: Return to Phase 3
+  -> Action: Find different gaps, select different opportunity
+IF any required field is empty:
+  -> Fill missing fields before proceeding
+IF all PASS:
+  -> PROCEED to Phase 5
+```
+
+================================================================================
+                    PHASE 5: CONTENT GENERATION (5 VERSIONS)
+================================================================================
+
+INPUT: CONTENT_STRATEGY + KNOWLEDGE_BASE
+
+PROCESS:
+
+STEP 1: GENERATE VERSION 1 - PRIMARY APPROACH
+```
+USING CONTENT_STRATEGY.primary_angle:
+
+GENERATE V1:
+  - Hook: Following hook_strategy, UNIQUE phrase (not from templates)
+  - Body: Following structure_strategy flow
+  - CTA: Following cta_strategy.primary_cta
+  - Facts: Using key_facts_to_use
+
+ENSURE:
+  - All required mentions included
+  - All required topics included (NOT in tweet 1)
+  - Required links included (NOT in tweet 1)
+  - Tone matches guidelines
+
+OUTPUT: V1_RAW
+```
+
+STEP 2: GENERATE VERSION 2 - VARIATION 1
+```
+SAME primary_angle BUT:
+  - Different hook phrase (different first 20 words)
+  - Different fact ordering
+  - Different CTA wording
+  - Same structure
+
+VALIDATE V2_HOOK != V1_HOOK (first 20 words)
+IF same: REGENERATE
+
+OUTPUT: V2_RAW
+```
+
+STEP 3: GENERATE VERSION 3 - VARIATION 2
+```
+SAME primary_angle BUT:
+  - Different hook phrase
+  - Different emotion intensity
+  - Different CTA placement
+  - Same structure
+
+VALIDATE V3_HOOK != V1_HOOK AND V3_HOOK != V2_HOOK
+IF same: REGENERATE
+
+OUTPUT: V3_RAW
+```
+
+STEP 4: GENERATE VERSION 4 - VARIATION 3
+```
+USING secondary angle from UNUSED_PATTERNS:
+  - Completely different hook
+  - Different emotion target
+  - Different CTA format
+  - Same facts, different presentation
+
+VALIDATE V4 different from V1, V2, V3 in:
+  - Hook phrase (first 20 words)
+  - Primary emotion
+  - CTA format
+
+OUTPUT: V4_RAW
+```
+
+STEP 5: GENERATE VERSION 5 - VARIATION 4
+```
+USING another secondary angle:
+  - Completely different hook
+  - Different emotion target
+  - Different CTA format
+  - Same facts, different presentation
+
+VALIDATE V5 different from V1, V2, V3, V4 in:
+  - Hook phrase (first 20 words)
+  - Primary emotion
+  - CTA format
+
+OUTPUT: V5_RAW
+```
+
+STEP 6: BUILD VERSIONS OBJECT
+```
+5_RAW_VERSIONS = {
+  V1: {
+    content: "___",
+    hook_first_20: "___",
+    primary_emotion: "___",
+    cta_type: "___",
+    tweet_count: ___
+  },
+  V2: {
+    content: "___",
+    hook_first_20: "___",
+    primary_emotion: "___",
+    cta_type: "___",
+    tweet_count: ___
+  },
+  V3: { ... },
+  V4: { ... },
+  V5: { ... },
+
+  version_differentiation: {
+    hooks_all_different: true/false,
+    emotions_varied: true/false,
+    ctas_varied: true/false
+  }
+}
+```
+
+OUTPUT: 5_RAW_VERSIONS object (all versions different)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] V1 through V5 all exist
+[ ] All 5 hooks are different (first 20 words comparison)
+[ ] At least 3 different emotions across versions
+[ ] At least 3 different CTA types across versions
+[ ] All required mentions included in each version
+[ ] All required topics included (not in tweet 1)
+[ ] All required links included (not in tweet 1)
+
+IF hooks are not all different:
+  -> REGENERATE overlapping versions
+IF emotions not varied enough:
+  -> Adjust emotion targets
+IF all PASS:
+  -> PROCEED to Phase 6
+```
+
+================================================================================
+                    PHASE 6: BANNED ITEMS SCANNER
+================================================================================
+
+INPUT: 5_RAW_VERSIONS
+
+PROCESS:
+
+STEP 1: DEFINE BANNED ITEMS
+```
+BANNED_WORDS = [
+  "delve", "leverage", "realm", "tapestry", "paradigm",
+  "catalyst", "cornerstone", "pivotal", "myriad", "moreover",
+  "furthermore", "groundbreaking", "game-changer", "cutting-edge",
+  "unprecedented", "ecosystem", "landscape", "foster", "harness",
+  "robust", "seamless", "innovative", "transformative",
+  "imperative", "crucial"
+]
+
+BANNED_PHRASES = [
+  "in the world of", "picture this", "imagine a world",
+  "lets dive in", "at its core", "in conclusion",
+  "it is important to note", "moving forward",
+  "not only", "but also", "a testament to",
+  "it's worth noting", "needless to say",
+  "at the heart of", "the fact of the matter",
+  "in the digital age", "with the rise of",
+  "in recent years", "double-edged sword",
+  "tip of the iceberg", "game changer"
+]
+
+BANNED_CHARS = {
+  '\u2014': 'em dash',
+  '\u2013': 'en dash',
+  '\u201C': 'left double quote',
+  '\u201D': 'right double quote',
+  '\u2018': 'left single quote',
+  '\u2019': 'right single quote',
+  '\u2026': 'ellipsis',
+  '\u2192': 'right arrow',
+  '\u21D2': 'double arrow',
+  '\u2022': 'bullet',
+  '\u2713': 'check mark',
+  '\u2705': 'heavy check',
+  '\u274C': 'cross mark',
+  '\u00D7': 'multiplication'
+}
+```
+
+STEP 2: SCAN EACH VERSION
+```
+FOR each version V1 to V5:
+
+  violations = []
+
+  // Check banned words
+  FOR each word in content:
+    IF word.lower() in BANNED_WORDS:
+      violations.append({
+        type: "WORD",
+        item: word,
+        position: character_index
+      })
+
+  // Check banned phrases
+  FOR each phrase in BANNED_PHRASES:
+    IF phrase in content.lower():
+      violations.append({
+        type: "PHRASE",
+        item: phrase,
+        position: character_index
+      })
+
+  // Check banned characters
+  FOR each char in BANNED_CHARS:
+    IF char in content:
+      violations.append({
+        type: "CHAR",
+        item: BANNED_CHARS[char],
+        count: content.count(char)
+      })
+
+  version.violations = violations
+  version.clean = (len(violations) == 0)
+```
+
+STEP 3: BUILD SCAN RESULTS
+```
+SCAN_RESULTS = {
+  V1: { violations: [...], clean: true/false, violation_count: ___ },
+  V2: { violations: [...], clean: true/false, violation_count: ___ },
+  V3: { violations: [...], clean: true/false, violation_count: ___ },
+  V4: { violations: [...], clean: true/false, violation_count: ___ },
+  V5: { violations: [...], clean: true/false, violation_count: ___ },
+
+  total_violations: ___,
+  clean_versions: [V1, V3, ...],  // Versions with 0 violations
+  dirty_versions: [V2, V4, ...]   // Versions with violations
+}
+```
+
+OUTPUT: SCAN_RESULTS + 5_CLEAN_VERSIONS (if all clean)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] V1 clean = true
+[ ] V2 clean = true
+[ ] V3 clean = true
+[ ] V4 clean = true
+[ ] V5 clean = true
+[ ] total_violations = 0
+
+IF any version is dirty:
+  -> PROCEED to Phase 6.5 (REWRITE)
+  -> DO NOT proceed to Phase 7 until all clean
+
+IF all versions clean:
+  -> BUILD 5_CLEAN_VERSIONS (copy of 5_RAW_VERSIONS)
+  -> PROCEED to Phase 7
+```
+
+================================================================================
+                    PHASE 6.5: REWRITE (IF NEEDED)
+================================================================================
+
+INPUT: SCAN_RESULTS (with violations)
+
+PROCESS:
+
+STEP 1: FOR EACH DIRTY VERSION
+```
+FOR each version in dirty_versions:
+
+  iteration = 0
+  max_iterations = 3
+
+  WHILE version has violations AND iteration < max_iterations:
+
+    FOR each violation in version.violations:
+
+      IF violation.type == "WORD":
+        REPLACE word with natural alternative
+        EXAMPLE: "delve" -> "dig into" or "explore"
+
+      IF violation.type == "PHRASE":
+        REPHRASE entire sentence
+        EXAMPLE: "In the world of crypto" -> "Crypto's..."
+
+      IF violation.type == "CHAR":
+        REPLACE with ASCII equivalent
+        EXAMPLE: "---" -> "-", """" -> '"'
+
+    iteration += 1
+
+    // Re-scan
+    new_violations = scan_content(modified_content)
+
+    IF new_violations == 0:
+      MARK version as clean
+      BREAK
+
+  IF iteration >= max_iterations AND still has violations:
+    DISCARD version
+    GENERATE new version from Phase 5
+```
+
+STEP 2: UPDATE SCAN_RESULTS
+```
+AFTER rewrite complete:
+  Re-run scanner on all versions
+  Update SCAN_RESULTS
+```
+
+OUTPUT: Updated SCAN_RESULTS (all versions clean)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] All 5 versions clean
+[ ] No violations remaining
+[ ] Content still makes sense after rewrites
+[ ] Rewrites didn't introduce new violations
+
+IF still has violations after 3 iterations:
+  -> Generate replacement version from Phase 5
+IF all clean:
+  -> PROCEED to Phase 7
+```
+
+================================================================================
+                    PHASE 7: UNIQUENESS VALIDATION
+================================================================================
+
+INPUT: 5_CLEAN_VERSIONS + COMPETITOR_PATTERNS
+
+PROCESS:
+
+STEP 1: CALCULATE UNIQUENESS SCORE FOR EACH VERSION
+```
+FOR each version V1 to V5:
+
+  uniqueness_score = 100
+
+  // Check hook overlap with competitors
+  FOR each competitor in COMPETITOR_PATTERNS.competitors_analyzed:
+
+    // Compare first 20 words
+    similarity = calculate_similarity(
+      version.hook_first_20,
+      competitor.hook
+    )
+
+    IF similarity > 0.5:  // 50% similar
+      uniqueness_score -= 20
+
+    // Compare emotion
+    IF version.primary_emotion == competitor.emotion:
+      uniqueness_score -= 10
+
+    // Compare CTA type
+    IF version.cta_type == competitor.cta_type:
+      uniqueness_score -= 5
+
+  // Ensure score doesn't go below 0
+  version.uniqueness_score = max(0, uniqueness_score)
+```
+
+STEP 2: CHECK INTERNAL UNIQUENESS (BETWEEN VERSIONS)
+```
+FOR each pair of versions (V1-V5):
+
+  // Compare hooks
+  hook_similarity = calculate_similarity(V1.hook, V2.hook)
+
+  IF hook_similarity > 0.3:  // 30% similar
+    MARK as internal_overlap
+
+  // Compare full content
+  content_similarity = calculate_similarity(V1.content, V2.content)
+
+  IF content_similarity > 0.5:  // 50% similar
+    MARK as high_internal_overlap
+```
+
+STEP 3: BUILD UNIQUENESS RESULTS
+```
+UNIQUENESS_RESULTS = {
+  V1: {
+    uniqueness_score: ___,
+    competitor_overlaps: [...],
+    internal_overlaps: [...]
+  },
+  V2: { ... },
+  V3: { ... },
+  V4: { ... },
+  V5: { ... },
+
+  overall_differentiation: {
+    all_above_70: true/false,
+    internal_overlaps_exist: true/false,
+    lowest_score: ___
+  }
+}
+```
+
+OUTPUT: 5_UNIQUE_VERSIONS (all with uniqueness_score >= 70)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] V1 uniqueness_score >= 70
+[ ] V2 uniqueness_score >= 70
+[ ] V3 uniqueness_score >= 70
+[ ] V4 uniqueness_score >= 70
+[ ] V5 uniqueness_score >= 70
+[ ] No high_internal_overlap between versions
+
+IF any version has uniqueness_score < 70:
+  -> Identify which competitor(s) causing overlap
+  -> Return to Phase 5 with specific differentiation instructions
+
+IF internal overlaps exist:
+  -> Regenerate overlapping versions with more variation
+
+IF all PASS:
+  -> BUILD 5_UNIQUE_VERSIONS
+  -> PROCEED to Phase 8
+```
+
+================================================================================
+                    PHASE 8: EMOTION INJECTION
+================================================================================
+
+INPUT: 5_UNIQUE_VERSIONS + TARGET_EMOTION (from CONTENT_STRATEGY)
+
+PROCESS:
+
+STEP 1: DEFINE EMOTION LIBRARY
+```
+EMOTION_LIBRARY = {
+  PAIN: {
+    trigger_words: ["lost", "failed", "broke", "destroyed", "killed", "wasted"],
+    intensifiers: ["completely", "totally", "utterly", "absolutely"],
+    body_feelings: ["stomach", "chest", "throat", "heart"]
+  },
+  FEAR: {
+    trigger_words: ["risk", "danger", "threat", "warning", "scary", "terrifying"],
+    intensifiers: ["seriously", "genuinely", "legitimately"],
+    body_feelings: ["cold sweat", "panic", "anxiety"]
+  },
+  DESIRE: {
+    trigger_words: ["want", "need", "crave", "wish", "dream", "imagine"],
+    intensifiers: ["desperately", "badly", "so much"],
+    body_feelings: ["can't wait", "dying for"]
+  },
+  BELONGING: {
+    trigger_words: ["community", "together", "we", "us", "tribe", "family"],
+    intensifiers: ["truly", "really", "genuinely"],
+    body_feelings: ["home", "accepted", "understood"]
+  },
+  OUTRAGE: {
+    trigger_words: ["unfair", "wrong", "injustice", "corrupt", "manipulated"],
+    intensifiers: ["completely", "totally", "absolutely"],
+    body_feelings: ["blood boil", "furious"]
+  },
+  CURIOSITY: {
+    trigger_words: ["wonder", "curious", "secret", "hidden", "mystery", "discover"],
+    intensifiers: ["really", "genuinely"],
+    body_feelings: ["itching to know"]
+  }
+}
+```
+
+STEP 2: ANALYZE CURRENT EMOTION LEVEL
+```
+FOR each version V1 to V5:
+
+  target_emotion = CONTENT_STRATEGY.primary_angle.emotion_target
+
+  // Count emotion words present
+  emotion_words_found = count words from EMOTION_LIBRARY[target_emotion].trigger_words
+
+  // Check intensifiers
+  intensifiers_found = count words from EMOTION_LIBRARY[target_emotion].intensifiers
+
+  // Check body feelings
+  body_feelings_found = count words from EMOTION_LIBRARY[target_emotion].body_feelings
+
+  emotion_score = min(10, (emotion_words_found * 2) + (intensifiers_found * 1) + (body_feelings_found * 2))
+
+  version.current_emotion_score = emotion_score
+  version.needs_emotion_injection = (emotion_score < 7)
+```
+
+STEP 3: INJECT EMOTION FOR WEAK VERSIONS
+```
+FOR each version WHERE needs_emotion_injection == true:
+
+  target_emotion = CONTENT_STRATEGY.primary_angle.emotion_target
+  emotion_lib = EMOTION_LIBRARY[target_emotion]
+
+  INJECTION SITES:
+    - First tweet (hook): Add 1-2 trigger words
+    - Middle tweets: Add intensifiers
+    - Final tweet: Add body feeling if appropriate
+
+  INJECTION RULES:
+    - Don't overdo it (max 3 emotion words per tweet)
+    - Must sound natural, not forced
+    - Match the target emotion only
+
+  EXAMPLE INJECTIONS:
+    IF target_emotion == "OUTRAGE" AND version lacks outrage:
+      ADD words like: "unfair", "manipulated", "wrong"
+      ADD phrases like: "this has to stop", "enough is enough"
+
+    IF target_emotion == "FEAR" AND version lacks fear:
+      ADD words like: "risk", "danger", "warning"
+      ADD phrases like: "what if this happens to you?"
+
+  RE-CALCULATE emotion_score after injection
+```
+
+STEP 4: BUILD EMOTIONAL VERSIONS
+```
+5_EMOTIONAL_VERSIONS = {
+  V1: {
+    content: "___",
+    emotion_score: ___/10,
+    primary_emotion: "___",
+    injection_points: [...]
+  },
+  V2: { ... },
+  V3: { ... },
+  V4: { ... },
+  V5: { ... },
+
+  all_emotion_scores_above_7: true/false
+}
+```
+
+OUTPUT: 5_EMOTIONAL_VERSIONS (emotion_score >= 7/10 each)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] V1 emotion_score >= 7
+[ ] V2 emotion_score >= 7
+[ ] V3 emotion_score >= 7
+[ ] V4 emotion_score >= 7
+[ ] V5 emotion_score >= 7
+[ ] Content still sounds natural
+[ ] Emotion matches target
+
+IF any version has emotion_score < 7:
+  -> Identify which emotion words missing
+  -> Return to injection step with specific additions
+IF content sounds forced:
+  -> Reduce emotion intensity
+IF all PASS:
+  -> PROCEED to Phase 9
+```
+
+================================================================================
+                    PHASE 9: HES + VIRAL SCORE CHECK
+================================================================================
+
+INPUT: 5_EMOTIONAL_VERSIONS
+
+PROCESS:
+
+STEP 1: CALCULATE HES (HOOK EFFECTIVENESS SCORE)
+```
+FOR each version V1 to V5:
+
+  hes_score = 0
+
+  // Check 1: Emotional Hook (0-1)
+  first_tweet = version.tweets[0]
+  emotion_words = identify_emotion_words(first_tweet)
+  IF emotion_words present:
+    hes_score += 1
+
+  // Check 2: Reply CTA (0-1)
+  reply_cta_present = check_reply_cta(first_tweet)
+  IF reply_cta_present:
+    hes_score += 1
+
+  // Check 3: Curiosity Gap (0-1)
+  curiosity_words = check_curiosity_gap(first_tweet)
+  IF curiosity_words present:
+    hes_score += 1
+
+  // Check 4: No AI Patterns (0-1)
+  ai_patterns = scan_content(first_tweet)  // Re-scan for safety
+  IF ai_patterns == 0:
+    hes_score += 1
+
+  version.hes_score = hes_score  // Out of 4
+```
+
+STEP 2: CALCULATE VIRAL SCORE
+```
+FOR each version V1 to V5:
+
+  viral_score = 0
+
+  // Element 1: Controversial angle (0-1)
+  IF has_controversial_element(version):
+    viral_score += 1
+
+  // Element 2: Share-worthy format (0-1)
+  IF has_share_trigger(version):
+    viral_score += 1
+
+  // Element 3: Reply bait (0-1)
+  IF has_reply_bait(version):
+    viral_score += 1
+
+  // Element 4: Emotional trigger (0-1)
+  IF has_emotional_trigger(version):
+    viral_score += 1
+
+  // Element 5: Cultural relevance (0-1)
+  IF has_cultural_reference(version):
+    viral_score += 1
+
+  // Element 6: Memorable hook (0-1)
+  IF is_memorable(version.hook):
+    viral_score += 1
+
+  // Element 7: FOMO/urgency (0-1)
+  IF has_fomo_element(version):
+    viral_score += 1
+
+  // Element 8: Personal story (0-1)
+  IF has_personal_element(version):
+    viral_score += 1
+
+  // Element 9: Contrast/comparison (0-1)
+  IF has_contrast_element(version):
+    viral_score += 1
+
+  // Element 10: Identity trigger (0-1)
+  IF has_identity_trigger(version):
+    viral_score += 1
+
+  version.viral_score = viral_score  // Out of 10
+```
+
+STEP 3: BUILD SCORED VERSIONS
+```
+5_SCORED_VERSIONS = {
+  V1: {
+    content: "___",
+    hes_score: ___/4,
+    viral_score: ___/10,
+    emotion_score: ___/10,
+    hes_passed: (hes_score >= 3),
+    viral_passed: (viral_score >= 6)
+  },
+  V2: { ... },
+  V3: { ... },
+  V4: { ... },
+  V5: { ... },
+
+  all_hes_passed: true/false,
+  all_viral_passed: true/false,
+  failed_versions: [...]
+}
+```
+
+OUTPUT: 5_SCORED_VERSIONS (all with HES >= 3/4 AND Viral >= 6/10)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] V1 hes_passed = true
+[ ] V2 hes_passed = true
+[ ] V3 hes_passed = true
+[ ] V4 hes_passed = true
+[ ] V5 hes_passed = true
+[ ] V1 viral_passed = true
+[ ] V2 viral_passed = true
+[ ] V3 viral_passed = true
+[ ] V4 viral_passed = true
+[ ] V5 viral_passed = true
+
+IF any version fails HES:
+  -> Identify which check failed
+  -> Return to Phase 8 with specific HES improvement instructions
+
+IF any version fails Viral:
+  -> Identify which elements missing
+  -> Return to Phase 8 with specific viral element instructions
+
+IF all PASS:
+  -> PROCEED to Phase 10
+```
+
+================================================================================
+                    PHASE 10: QUALITY SCORING & SELECTION
+================================================================================
+
+INPUT: 5_SCORED_VERSIONS
+
+PROCESS:
+
+STEP 1: CALCULATE QUALITY SCORE (100-POINT)
+```
+FOR each version V1 to V5:
+
+  quality_score = 0
+
+  // HOOK POWER (35 points)
+  emotional_impact = score_emotional_impact(version)  // 0-15
+  curiosity_gap = score_curiosity_gap(version)        // 0-10
+  first_line_grab = score_first_line(version)         // 0-10
+  quality_score += emotional_impact + curiosity_gap + first_line_grab
+
+  // ENGAGEMENT BAIT (35 points)
+  reply_cta_quality = score_reply_cta(version)        // 0-15
+  share_trigger = score_share_trigger(version)        // 0-10
+  contest_element = score_contest_element(version)    // 0-10
+  quality_score += reply_cta_quality + share_trigger + contest_element
+
+  // CONTENT QUALITY (20 points)
+  technical_accuracy = score_technical_accuracy(version, KNOWLEDGE_BASE)  // 0-10
+  value_per_char = score_value_per_char(version)      // 0-10
+  quality_score += technical_accuracy + value_per_char
+
+  // AUTHENTICITY (10 points)
+  natural_voice = score_natural_voice(version)        // 0-5
+  no_kill_list = score_no_kill_list(version)          // 0-5
+  quality_score += natural_voice + no_kill_list
+
+  version.quality_score = quality_score  // Out of 100
+```
+
+STEP 2: CALCULATE COMBINED SCORE
+```
+FOR each version V1 to V5:
+
+  // Normalize all scores to 0-100 scale
+  normalized_hes = (version.hes_score / 4) * 100
+  normalized_viral = (version.viral_score / 10) * 100
+  normalized_emotion = (version.emotion_score / 10) * 100
+  normalized_uniqueness = version.uniqueness_score
+  normalized_quality = version.quality_score
+
+  // Weighted combined score
+  version.combined_score =
+    (normalized_quality * 0.30) +       // 30% weight
+    (normalized_hes * 0.15) +           // 15% weight
+    (normalized_viral * 0.25) +         // 25% weight
+    (normalized_emotion * 0.15) +       // 15% weight
+    (normalized_uniqueness * 0.15)      // 15% weight
+```
+
+STEP 3: SELECT BEST VERSION
+```
+SORT versions by combined_score DESC
+
+SELECTED_VERSION = versions[0]  // Highest score
+
+// Check for clear winner
+score_gap = versions[0].combined_score - versions[1].combined_score
+
+IF score_gap < 5:
+  // No clear winner, compare individual scores
+  SELECT version with highest quality_score
+```
+
+STEP 4: BUILD SELECTION RESULTS
+```
+SELECTION_RESULTS = {
+  selected_version: "V___",
+  selected_content: "...",
+  scores: {
+    combined: ___,
+    quality: ___,
+    hes: ___,
+    viral: ___,
+    emotion: ___,
+    uniqueness: ___
+  },
+  all_versions_ranked: [
+    { version: "V___", combined_score: ___, rank: 1 },
+    { version: "V___", combined_score: ___, rank: 2 },
+    ...
+  ],
+  selection_confidence: "high/medium/low"
+}
+```
+
+OUTPUT: SELECTED_VERSION (highest combined score)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] Selected version identified
+[ ] Combined score calculated
+[ ] Selection rationale documented
+[ ] All 5 versions ranked
+
+IF selection_confidence == "low":
+  -> Review scores manually
+  -> May need to regenerate
+
+IF all PASS:
+  -> PROCEED to Phase 11
+```
+
+================================================================================
+                    PHASE 11: MICRO-OPTIMIZATION
+================================================================================
+
+INPUT: SELECTED_VERSION
+
+PROCESS:
+
+STEP 1: LAYER 1 - WORD LEVEL OPTIMIZATION
+```
+FOR each tweet in SELECTED_VERSION:
+
+  // Identify weak words
+  weak_words = identify_weak_words(tweet)
+  // Examples: "very", "really", "just", "that"
+
+  // Replace with stronger alternatives
+  FOR each weak_word:
+    stronger_alternative = find_stronger_word(weak_word, context)
+    REPLACE weak_word with stronger_alternative
+
+  // Remove filler words
+  filler_words = ["that", "just", "really", "very", "actually"]
+  REMOVE unnecessary filler_words
+
+  // Add power words if appropriate
+  power_opportunities = find_power_word_opportunities(tweet)
+  FOR each opportunity:
+    ADD power word that enhances emotion
+
+LOG all word-level changes made
+```
+
+STEP 2: LAYER 2 - SENTENCE LEVEL OPTIMIZATION
+```
+FOR each tweet in SELECTED_VERSION:
+
+  // Check first sentence
+  first_sentence = extract_first_sentence(tweet)
+  IF first_sentence.length > 20 words:
+    SHORTEN to punchier version
+
+  // Vary sentence length
+  sentences = extract_sentences(tweet)
+  IF all sentences similar length:
+    VARY lengths (mix short and long)
+
+  // Check value per sentence
+  FOR each sentence:
+    value_score = calculate_value_per_sentence(sentence)
+    IF value_score < threshold:
+      REMOVE or REWRITE sentence
+
+LOG all sentence-level changes made
+```
+
+STEP 3: LAYER 3 - CHARACTER LEVEL OPTIMIZATION
+```
+FOR each tweet in SELECTED_VERSION:
+
+  // Check character count
+  IF tweet.length > 280:
+    TRIM to fit
+
+  // Check hook length (first tweet)
+  IF first_tweet.hook.length > 200:
+    TRIM hook
+
+  // Optimize line breaks
+  ADD line breaks for readability where appropriate
+
+  // Check for wasted characters
+  REMOVE unnecessary punctuation
+  REMOVE redundant words
+
+LOG all character-level changes made
+```
+
+STEP 4: LAYER 4 - EMOTION LEVEL OPTIMIZATION
+```
+// Identify target emotion
+target_emotion = CONTENT_STRATEGY.primary_angle.emotion_target
+
+FOR each tweet in SELECTED_VERSION:
+
+  // Check emotion presence
+  current_emotion = identify_dominant_emotion(tweet)
+
+  // Enhance if needed
+  IF current_emotion != target_emotion:
+    ADD emotion-enhancing words
+    ADJUST tone to match target
+
+  // Build emotion arc through thread
+  emotion_arc = calculate_emotion_progression(SELECTED_VERSION)
+  IF arc is flat:
+    INJECT variety in emotion intensity
+
+LOG all emotion-level changes made
+```
+
+STEP 5: LAYER 5 - PSYCHOLOGY LEVEL OPTIMIZATION
+```
+FOR each tweet in SELECTED_VERSION:
+
+  // Check curiosity gap
+  IF tweet has cliffhanger potential:
+    ENHANCE curiosity gap
+
+  // Check urgency
+  IF CTA tweet:
+    ADD urgency element if missing
+
+  // Check social proof
+  IF appropriate location:
+    ADD social proof element
+
+  // Check loss aversion
+  IF appropriate:
+    ADD loss aversion element ("don't miss out")
+
+LOG all psychology-level changes made
+```
+
+STEP 6: BUILD OPTIMIZED VERSION
+```
+OPTIMIZED_VERSION = {
+  content: "___",
+
+  changes_log: {
+    word_level: [
+      { before: "___", after: "___", reason: "___" },
+      ...
+    ],
+    sentence_level: [...],
+    character_level: [...],
+    emotion_level: [...],
+    psychology_level: [...]
+  },
+
+  total_changes: ___,
+
+  before_score: SELECTED_VERSION.quality_score,
+  after_score: ___  // Re-calculate after optimization
+}
+```
+
+OUTPUT: OPTIMIZED_VERSION (quality_score improved by >= 3 points)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] At least 5 changes made
+[ ] Quality score improved
+[ ] No new violations introduced
+[ ] Content still makes sense
+[ ] All required elements still present
+
+IF quality_score not improved:
+  -> Review changes, may have over-optimized
+  -> Revert some changes
+
+IF new violations introduced:
+  -> Run Phase 6 scanner again
+
+IF all PASS:
+  -> PROCEED to Phase 12
+```
+
+================================================================================
+                    PHASE 12: GATE SIMULATION
+================================================================================
+
+INPUT: OPTIMIZED_VERSION
+
+PROCESS:
+
+STEP 1: G1 - CONTENT ALIGNMENT (0-4)
+```
+G1_SCORE = 0
+
+// Aspect 1: Core Message Accuracy (0-1)
+message_accurate = check_message_accuracy(OPTIMIZED_VERSION, CAMPAIGN_DATA)
+IF message_accurate:
+  G1_SCORE += 1
+ELSE:
+  LOG "G1.1 FAILED: Message not aligned with campaign goals"
+
+// Aspect 2: Terminology Precision (0-1)
+terminology_correct = check_terminology(OPTIMIZED_VERSION, KNOWLEDGE_BASE)
+IF terminology_correct:
+  G1_SCORE += 1
+ELSE:
+  LOG "G1.2 FAILED: Terminology errors"
+
+// Aspect 3: Brand Voice Consistency (0-1)
+voice_consistent = check_brand_voice(OPTIMIZED_VERSION, CAMPAIGN_DATA.tone_guidelines)
+IF voice_consistent:
+  G1_SCORE += 1
+ELSE:
+  LOG "G1.3 FAILED: Voice inconsistent with guidelines"
+
+// Aspect 4: Value Proposition Clarity (0-1)
+value_clear = check_value_proposition(OPTIMIZED_VERSION)
+IF value_clear:
+  G1_SCORE += 1
+ELSE:
+  LOG "G1.4 FAILED: Value proposition unclear"
+```
+
+STEP 2: G2 - INFORMATION ACCURACY (0-4)
+```
+G2_SCORE = 0
+
+// Aspect 1: Technical Facts Verification (0-1)
+facts_verified = verify_facts(OPTIMIZED_VERSION, KNOWLEDGE_BASE)
+IF facts_verified:
+  G2_SCORE += 1
+ELSE:
+  LOG "G2.1 FAILED: Facts not verified"
+
+// Aspect 2: Source Verification (0-1)
+sources_valid = verify_sources(OPTIMIZED_VERSION, KNOWLEDGE_BASE)
+IF sources_valid:
+  G2_SCORE += 1
+ELSE:
+  LOG "G2.2 FAILED: Sources not traceable"
+
+// Aspect 3: No Misleading Information (0-1)
+no_misleading = check_no_misleading(OPTIMIZED_VERSION, KNOWLEDGE_BASE)
+IF no_misleading:
+  G2_SCORE += 1
+ELSE:
+  LOG "G2.3 FAILED: Potentially misleading content"
+
+// Aspect 4: Completeness (0-1)
+complete = check_completeness(OPTIMIZED_VERSION, CAMPAIGN_DATA)
+IF complete:
+  G2_SCORE += 1
+ELSE:
+  LOG "G2.4 FAILED: Missing key information"
+```
+
+STEP 3: G3 - CAMPAIGN COMPLIANCE (0-4)
+```
+G3_SCORE = 0
+
+// Aspect 1: Required Mentions (0-1)
+mentions_present = check_mentions(OPTIMIZED_VERSION, CAMPAIGN_DATA.required_mentions)
+IF mentions_present:
+  G3_SCORE += 1
+ELSE:
+  LOG "G3.1 FAILED: Missing required mentions"
+
+// Aspect 2: Required Hashtags (0-1)
+hashtags_present = check_hashtags(OPTIMIZED_VERSION, CAMPAIGN_DATA.required_topics)
+IF hashtags_present:
+  G3_SCORE += 1
+ELSE:
+  LOG "G3.2 FAILED: Missing required hashtags"
+
+// Aspect 3: Required Links (0-1)
+links_present = check_links(OPTIMIZED_VERSION, CAMPAIGN_DATA.required_links)
+IF links_present:
+  G3_SCORE += 1
+ELSE:
+  LOG "G3.3 FAILED: Missing required links"
+
+// Aspect 4: Format & Style (0-1)
+format_correct = check_format(OPTIMIZED_VERSION, CAMPAIGN_DATA.constraints)
+IF format_correct:
+  G3_SCORE += 1
+ELSE:
+  LOG "G3.4 FAILED: Format doesn't match requirements"
+```
+
+STEP 4: G4 - ORIGINALITY & AUTHENTICITY (0-4)
+```
+G4_SCORE = 0
+
+// Aspect 1: Fresh Perspective (0-1)
+fresh = check_fresh_perspective(OPTIMIZED_VERSION, COMPETITOR_PATTERNS)
+IF fresh:
+  G4_SCORE += 1
+ELSE:
+  LOG "G4.1 FAILED: No fresh perspective"
+
+// Aspect 2: Personal Insight (0-1)
+personal = check_personal_insight(OPTIMIZED_VERSION)
+IF personal:
+  G4_SCORE += 1
+ELSE:
+  LOG "G4.2 FAILED: Missing personal insight"
+
+// Aspect 3: Natural Language (0-1)
+natural = check_natural_language(OPTIMIZED_VERSION)
+IF natural:
+  G4_SCORE += 1
+ELSE:
+  LOG "G4.3 FAILED: Language sounds AI-generated"
+
+// Aspect 4: Authentic Voice (0-1)
+authentic = check_authentic_voice(OPTIMIZED_VERSION)
+IF authentic:
+  G4_SCORE += 1
+ELSE:
+  LOG "G4.4 FAILED: Voice not authentic"
+```
+
+STEP 5: QUALITY SCORING (0-8 each)
+```
+// EP: Engagement Potential (0-8)
+EP_SCORE = 0
+IF has_hook: EP_SCORE += 1
+IF has_emotional_trigger: EP_SCORE += 1
+IF has_curiosity_gap: EP_SCORE += 1
+IF has_reply_cta: EP_SCORE += 1
+IF is_share_worthy: EP_SCORE += 1
+IF has_viral_element: EP_SCORE += 1
+IF fits_audience: EP_SCORE += 1
+IF optimized_for_platform: EP_SCORE += 1
+
+// TQ: Technical Quality (0-8)
+TQ_SCORE = 0
+IF no_grammar_errors: TQ_SCORE += 1
+IF no_banned_chars: TQ_SCORE += 1
+IF formatting_strategic: TQ_SCORE += 1
+IF flow_logical: TQ_SCORE += 1
+IF chars_optimized: TQ_SCORE += 1
+IF readable: TQ_SCORE += 1
+IF tone_consistent: TQ_SCORE += 1
+IF platform_compliant: TQ_SCORE += 1
+```
+
+STEP 6: BUILD GATE RESULTS
+```
+GATE_RESULTS = {
+  G1: { score: ___/4, aspects: [...] },
+  G2: { score: ___/4, aspects: [...] },
+  G3: { score: ___/4, aspects: [...] },
+  G4: { score: ___/4, aspects: [...] },
+  EP: { score: ___/8, aspects: [...] },
+  TQ: { score: ___/8, aspects: [...] },
+
+  gate_total: ___/16,
+  quality_total: ___/16,
+
+  passed: (gate_total == 16 AND quality_total == 16),
+
+  failures: [
+    // List of failed aspects
+    { gate: "G1", aspect: 1, reason: "___" },
+    ...
+  ]
+}
+```
+
+OUTPUT: GATE_PASSED_VERSION (gate_total = 16/16, quality_total = 16/16)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] G1_SCORE = 4/4
+[ ] G2_SCORE = 4/4
+[ ] G3_SCORE = 4/4
+[ ] G4_SCORE = 4/4
+[ ] EP_SCORE = 8/8
+[ ] TQ_SCORE = 8/8
+
+IF any gate < 4/4 OR any quality < 8/8:
+  -> Identify failed aspects
+  -> Return to Phase 11 with specific fix requirements
+
+IF all PASS:
+  -> BUILD GATE_PASSED_VERSION
+  -> PROCEED to Phase 13
+```
+
+================================================================================
+                    PHASE 13: BENCHMARK COMPARISON
+================================================================================
+
+INPUT: GATE_PASSED_VERSION + COMPETITOR_PATTERNS
+
+PROCESS:
+
+STEP 1: COMPARE WITH TOP COMPETITORS
+```
+FOR each competitor in COMPETITOR_PATTERNS.competitors_analyzed[:5]:
+
+  comparison = {
+    competitor_rank: competitor.rank,
+
+    hook_comparison: {
+      our_hook: GATE_PASSED_VERSION.hook_first_20,
+      their_hook: competitor.hook,
+      ours_stronger: compare_hooks(our_hook, their_hook)
+    },
+
+    emotion_comparison: {
+      our_emotion: GATE_PASSED_VERSION.primary_emotion,
+      their_emotion: competitor.emotion,
+      ours_different: (our_emotion != their_emotion)
+    },
+
+    cta_comparison: {
+      our_cta: GATE_PASSED_VERSION.cta_type,
+      their_cta: competitor.cta_type,
+      ours_different: (our_cta != their_cta)
+    },
+
+    engagement_prediction: {
+      our_predicted: calculate_predicted_engagement(GATE_PASSED_VERSION),
+      their_actual: competitor.engagement_rate,
+      ours_higher: (our_predicted > their_actual)
+    }
+  }
+```
+
+STEP 2: IDENTIFY COMPETITIVE ADVANTAGES
+```
+advantages = []
+
+// Check hook advantage
+IF our_hook is more unique:
+  advantages.append({
+    type: "hook",
+    description: "___",
+    evidence: "___"
+  })
+
+// Check emotion advantage
+IF our_emotion not in their top emotions:
+  advantages.append({
+    type: "emotion",
+    description: "___",
+    evidence: "___"
+  })
+
+// Check CTA advantage
+IF our_cta_type has higher engagement_potential:
+  advantages.append({
+    type: "cta",
+    description: "___",
+    evidence: "___"
+  })
+
+// Check uniqueness advantage
+IF uniqueness_score > competitor average:
+  advantages.append({
+    type: "uniqueness",
+    description: "___",
+    evidence: "___"
+  })
+```
+
+STEP 3: BUILD BENCHMARK RESULTS
+```
+BENCHMARK_RESULTS = {
+  comparisons: [...],  // All comparisons
+
+  advantages: [
+    { type: "___", description: "___", evidence: "___" },
+    ...
+  ],
+
+  predicted_performance: {
+    vs_average: "___% higher expected",
+    vs_top_performer: "___% higher expected"
+  },
+
+  competitive_advantage_verified: (len(advantages) >= 2),
+
+  confidence: "high/medium/low"
+}
+```
+
+OUTPUT: VERIFIED_ADVANTAGE (competitive_advantage_verified = true)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] At least 2 competitive advantages identified
+[ ] Predicted performance higher than average
+[ ] competitive_advantage_verified = true
+
+IF advantages < 2:
+  -> FAIL: Return to Phase 4
+  -> Action: Redefine strategy with more differentiation
+
+IF predicted performance lower:
+  -> Review what's causing lower prediction
+  -> May need Phase 11 optimization
+
+IF all PASS:
+  -> BUILD VERIFIED_ADVANTAGE
+  -> PROCEED to Phase 14
+```
+
+═══════════════════════════════════════════════════════════════════════════════
+                    ████████ ALL GATES PASSED - OUTPUT PHASES ████████
+═══════════════════════════════════════════════════════════════════════════════
+
+================================================================================
+                    PHASE 14: OUTPUT GENERATION
+================================================================================
+
+INPUT: GATE_PASSED_VERSION + KNOWLEDGE_BASE
+
+PROCESS:
+
+STEP 1: GENERATE Q&A PAIRS (15 PAIRS)
+```
+Q_A_PAIRS = []
+
+// Q1: Basic introduction
+Q_A_PAIRS.append({
+  q: "What is {project_name}?",
+  a: generate_concise_answer(KNOWLEDGE_BASE.project_overview)
+})
+
+// Q2: How it works
+Q_A_PAIRS.append({
+  q: "How does {project_name} work?",
+  a: generate_technical_answer(KNOWLEDGE_BASE)
+})
+
+// Q3: Getting started
+Q_A_PAIRS.append({
+  q: "How do I get started with {project_name}?",
+  a: generate_step_by_step(KNOWLEDGE_BASE)
+})
+
+// Q4-Q15: Generate based on knowledge base topics
+topics = [
+  "earnings potential",
+  "time investment",
+  "risks involved",
+  "real use cases",
+  "roadmap",
+  "team background",
+  "token utility",
+  "comparison with alternatives",
+  "advantages",
+  "potential drawbacks",
+  "entry timing",
+  "final verdict"
+]
+
+FOR each topic:
+  Q_A_PAIRS.append({
+    q: generate_question(topic, KNOWLEDGE_BASE),
+    a: generate_answer(topic, KNOWLEDGE_BASE)
+  })
+```
+
+STEP 2: GENERATE IMAGES (3 IMAGES)
+```
+IMAGES = []
+
+// Image 1: Hero Image
+IMAGES.append({
+  type: "hero",
+  prompt: generate_hero_image_prompt(
+    GATE_PASSED_VERSION,
+    KNOWLEDGE_BASE,
+    CONTENT_STRATEGY
+  ),
+  purpose: "Main visual for thread"
+})
+
+// Image 2: Stats/Infographic
+IMAGES.append({
+  type: "infographic",
+  prompt: generate_infographic_prompt(
+    KNOWLEDGE_BASE.statistics,
+    KNOWLEDGE_BASE.verified_facts
+  ),
+  purpose: "Visualize key statistics"
+})
+
+// Image 3: CTA Image
+IMAGES.append({
+  type: "cta",
+  prompt: generate_cta_image_prompt(
+    CONTENT_STRATEGY.cta_strategy,
+    KNOWLEDGE_BASE
+  ),
+  purpose: "Support call-to-action"
+})
+```
+
+STEP 3: BUILD COMPLETE ASSETS
+```
+COMPLETE_ASSETS = {
+  content: GATE_PASSED_VERSION.content,
+
+  qa_pairs: Q_A_PAIRS,  // 15 pairs
+
+  images: IMAGES,  // 3 images
+
+  metadata: {
+    campaign_name: CAMPAIGN_DATA.campaign_name,
+    mission_number: CAMPAIGN_DATA.mission_number,
+    selected_version: SELECTION_RESULTS.selected_version,
+
+    scores: {
+      gate: GATE_RESULTS.gate_total,
+      quality: GATE_RESULTS.quality_total,
+      hes: GATE_PASSED_VERSION.hes_score,
+      viral: GATE_PASSED_VERSION.viral_score,
+      emotion: GATE_PASSED_VERSION.emotion_score,
+      uniqueness: GATE_PASSED_VERSION.uniqueness_score
+    },
+
+    created_at: current_timestamp
+  }
+}
+```
+
+OUTPUT: COMPLETE_ASSETS (content + 15 Q&A + 3 images)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] Content present
+[ ] 15 Q&A pairs generated
+[ ] 3 images generated/prompts created
+[ ] All metadata complete
+[ ] All required elements from campaign present
+
+IF qa_pairs < 15:
+  -> Generate missing pairs
+IF images < 3:
+  -> Generate missing images
+IF all PASS:
+  -> PROCEED to Phase 15
+```
+
+================================================================================
+                    PHASE 15: FINAL VERIFICATION
+================================================================================
+
+INPUT: COMPLETE_ASSETS
+
+PROCESS:
+
+STEP 1: VERIFY ALL PHASES COMPLETED
+```
+PHASES_CHECKLIST = {
+  Phase_0: CAMPAIGN_DATA exists,
+  Phase_1: KNOWLEDGE_BASE exists AND verified_facts >= 20,
+  Phase_2: COMPETITOR_PATTERNS exists AND competitors_analyzed >= 10,
+  Phase_3: UNUSED_PATTERNS exists AND opportunities >= 3,
+  Phase_4: CONTENT_STRATEGY exists AND differentiation_score >= 0.7,
+  Phase_5: 5_RAW_VERSIONS exists AND all hooks different,
+  Phase_6: SCAN_RESULTS exists AND all clean,
+  Phase_7: UNIQUENESS_RESULTS exists AND all >= 70,
+  Phase_8: EMOTION_RESULTS exists AND all >= 7,
+  Phase_9: 5_SCORED_VERSIONS exists AND all passed,
+  Phase_10: SELECTED_VERSION exists,
+  Phase_11: OPTIMIZED_VERSION exists AND improved,
+  Phase_12: GATE_RESULTS exists AND gate_total == 16,
+  Phase_13: BENCHMARK_RESULTS exists AND verified,
+  Phase_14: COMPLETE_ASSETS exists AND complete
+}
+```
+
+STEP 2: VERIFY ALL REQUIREMENTS MET
+```
+REQUIREMENTS_CHECK = {
+  required_mentions: all present in content,
+  required_topics: all present in content,
+  required_links: all present in content,
+  tone_matched: matches guidelines,
+
+  no_violations: scanner clean,
+  gate_passed: gate_total == 16,
+  quality_passed: quality_total == 16,
+  competitive_advantage: verified
+}
+```
+
+STEP 3: BUILD FINAL CHECK REPORT
+```
+FINAL_CHECK_REPORT = {
+  all_phases_complete: all values in PHASES_CHECKLIST are true,
+  all_requirements_met: all values in REQUIREMENTS_CHECK are true,
+
+  phases_status: PHASES_CHECKLIST,
+  requirements_status: REQUIREMENTS_CHECK,
+
+  final_scores: {
+    gate: ___/16,
+    quality: ___/16,
+    hes: ___/4,
+    viral: ___/10,
+    emotion: ___/10,
+    uniqueness: ___%
+  },
+
+  ready_for_submission: all_phases_complete AND all_requirements_met,
+
+  any_issues: [list of any remaining issues]
+}
+```
+
+OUTPUT: SUBMISSION_READY (ready_for_submission = true)
+
+VALIDATION:
+```
+CHECKLIST:
+[ ] all_phases_complete = true
+[ ] all_requirements_met = true
+[ ] gate_total = 16/16
+[ ] quality_total = 16/16
+[ ] ready_for_submission = true
+[ ] any_issues is empty
+
+IF any phase incomplete:
+  -> Return to incomplete phase
+
+IF any requirement not met:
+  -> Identify what's missing
+  -> Fix in appropriate phase
+
+IF all PASS:
+  -> CONTENT IS READY FOR SUBMISSION
+```
+
+================================================================================
+                    ╔═══════════════════════════════════════════════════════════╗
+                    ║           V8.5 PHASE SUMMARY TABLE                        ║
+                    ╚═══════════════════════════════════════════════════════════╝
+================================================================================
+
+| Phase | Name | Input | Output | Validation |
+|-------|------|-------|--------|------------|
+| 0 | Preparation | Campaign request | CAMPAIGN_DATA | All fields filled |
+| 1 | Research | CAMPAIGN_DATA | KNOWLEDGE_BASE | >=20 verified facts |
+| 2 | Leaderboard Analysis | CAMPAIGN_DATA + KB | COMPETITOR_PATTERNS | >=10 competitors |
+| 3 | Gap Identification | COMPETITOR_PATTERNS | UNUSED_PATTERNS | >=3 gaps |
+| 4 | Strategy Definition | UNUSED_PATTERNS + KB | CONTENT_STRATEGY | differentiation >=70% |
+| 5 | Content Generation | STRATEGY + KB | 5_RAW_VERSIONS | All hooks different |
+| 6 | Scanner | 5_RAW_VERSIONS | 5_CLEAN_VERSIONS | 0 violations |
+| 6.5 | Rewrite (if needed) | Violations | Fixed versions | All clean |
+| 7 | Uniqueness Validation | 5_CLEAN + PATTERNS | 5_UNIQUE_VERSIONS | uniqueness >=70 |
+| 8 | Emotion Injection | 5_UNIQUE + TARGET | 5_EMOTIONAL_VERSIONS | emotion >=7/10 |
+| 9 | HES + Viral Check | 5_EMOTIONAL_VERSIONS | 5_SCORED_VERSIONS | HES>=3, Viral>=6 |
+| 10 | Quality Scoring | 5_SCORED_VERSIONS | SELECTED_VERSION | Clear winner |
+| 11 | Micro-Optimization | SELECTED_VERSION | OPTIMIZED_VERSION | Score improved |
+| 12 | Gate Simulation | OPTIMIZED_VERSION | GATE_PASSED_VERSION | 16/16 gates |
+| 13 | Benchmark Comparison | GATE_PASSED + PATTERNS | VERIFIED_ADVANTAGE | >=2 advantages |
+| 14 | Output Generation | GATE_PASSED + KB | COMPLETE_ASSETS | All assets ready |
+| 15 | Final Verification | COMPLETE_ASSETS | SUBMISSION_READY | All checks pass |
+
+================================================================================
+                    END OF V8.5 PROCESS-DRIVEN WORKFLOW
+================================================================================
