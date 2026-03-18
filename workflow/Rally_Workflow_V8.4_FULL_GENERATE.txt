@@ -1,0 +1,1466 @@
+# ╔═══════════════════════════════════════════════════════════════╗
+# ║        RALLY WORKFLOW V8.4 - FULL GENERATE EDITION            ║
+# ║        No Template Phrases + Full AI Creativity + Strict Bans ║
+# ║        Based on V8.3 + Removed All Phrase Templates           ║
+# ║        Created: 2025-01-18                                    ║
+# ╚═══════════════════════════════════════════════════════════════╝
+
+================================================================================
+                    PHILOSOPHY: FULL GENERATE + STRICT BANS
+================================================================================
+
+**PRINSIP UTAMA V8.4:**
+"AI Generate Semua Phrase + Scanner Tetap Ketat = Originalitas Maksimal"
+
+PERBEDAAN DENGAN V8.3:
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                              │
+│  V8.3 (Template):                                                           │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ ❌ Hook Examples: "3am liquidation check..."                        │   │
+│  │ ❌ Viral Amplifiers: "unpopular opinion:", "let that sink in"       │   │
+│  │ ❌ Emotion Closers: "we've all been there", "if you know you know"  │   │
+│  │ ❌ Phrase Templates: AI pilih dari daftar                           │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  V8.4 (Full Generate):                                                      │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ ✅ NO Hook Examples - AI generate original                           │   │
+│  │ ✅ NO Viral Amplifiers list - AI create unique phrases              │   │
+│  │ ✅ NO Emotion Closers list - AI craft natural endings               │   │
+│  │ ✅ FULL AI CREATIVITY - Setiap konten 100% unique                   │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  YANG TETAP ADA (LARANGAN):                                                 │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ ✅ Banned Words (25) - DILARANG                                     │   │
+│  │ ✅ Banned Phrases (20) - DILARANG                                   │   │
+│  │ ✅ Banned Characters (14) - DILARANG                                │   │
+│  │ ✅ Scanner Implementation - WAJIB                                   │   │
+│  │ ✅ Gate System - WAJIB                                              │   │
+│  │ ✅ Quality Checks - WAJIB                                           │   │
+│  │ ✅ Feedback Loops - WAJIB                                           │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    ╔═══════════════════════════════════════════════════════════╗
+                    ║           V8.4 CORE PRINCIPLES                            ║
+                    ╚═══════════════════════════════════════════════════════════╝
+================================================================================
+
+--------------------------------------------------------------------------------
+PRINCIPLE 1: AI GENERATES, NOT SELECTS
+--------------------------------------------------------------------------------
+
+V8.3: AI memilih dari daftar phrase yang sudah ada
+V8.4: AI MENCIPTAKAN phrase yang original
+
+CONTOH PERBEDAAN:
+
+| Situasi | V8.3 (Template) | V8.4 (Full Generate) |
+|---------|-----------------|----------------------|
+| Butuh hook controversial | Pilih: "unpopular opinion:" | AI buat phrase baru yang unique |
+| Butuh emotion trigger | Pilih: "let that sink in" | AI buat phrase yang natural |
+| Butuh challenge CTA | Pilih: "change my mind" | AI design CTA original |
+
+--------------------------------------------------------------------------------
+PRINCIPLE 2: GUIDELINES, NOT EXAMPLES
+--------------------------------------------------------------------------------
+
+V8.4 memberikan ARAH, bukan CONTOH:
+
+| Aspek | V8.3 | V8.4 |
+|-------|------|------|
+| Hook | "Gunakan: unpopular opinion:" | "Buat hook yang memancing reaksi" |
+| CTA | "Gunakan: change my mind" | "Buat CTA yang mengundang debat" |
+| Closer | "Gunakan: if you know you know" | "Buat penutup yang memorable" |
+
+--------------------------------------------------------------------------------
+PRINCIPLE 3: LARANGAN TETAP KETAT
+--------------------------------------------------------------------------------
+
+Meskipun AI bebas generate, LARANGAN tetap berlaku:
+
+✅ AI boleh generate phrase apapun
+❌ TIDAK BOLEH mengandung banned words
+❌ TIDAK BOLEH mengandung banned phrases
+❌ TIDAK BOLEH mengandung banned characters
+
+================================================================================
+                    ╔═══════════════════════════════════════════════════════════╗
+                    ║           COMPLETE V8.4 WORKFLOW DIAGRAM                  ║
+                    ╚═══════════════════════════════════════════════════════════╝
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 0: PREPARATION                                      │
+│                    Campaign info + API data + Gate weights                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 1: RESEARCH                                         │
+│                    4 web searches + Knowledge gathering                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 1.5: LEADERBOARD ANALYSIS                           │
+│                    Top performers + Viral Gap Identification                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 1.6: TIMING + TREND JACKING                         │
+│                    Optimal posting time + Trend opportunities                │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 2: KNOWLEDGE BASE                                   │
+│                    Fact verification + Technical accuracy                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 2.5: COMPETITIVE ANALYSIS                           │
+│                    Search competitor content + Find unique angles            │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 3: ORIGINALITY STRATEGY                             │
+│                    Human voice + Viral triggers (NO TEMPLATES)               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 4: CONTENT CREATION (5 VERSIONS)                    │
+│                    AI Generate 5 versions - FULL ORIGINAL                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 5: SCANNER (ALL 5 VERSIONS)                         │
+│                    Python scan: 25 words + 20 phrases + 14 chars             │
+│                                                                              │
+│                    ┌─────────────────────────────────────────────────────┐   │
+│                    │  VIOLATIONS FOUND?                                  │   │
+│                    │  YES → PHASE 6: REWRITE → Back to PHASE 5           │   │
+│                    │  NO  → Continue to PHASE 7                          │   │
+│                    └─────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 6: HES + VIRAL SCORE CHECK                          │
+│                    Hook Effectiveness Score + Viral Score (0-10)             │
+│                                                                              │
+│                    ┌─────────────────────────────────────────────────────┐   │
+│                    │  HES < 3/4 OR Viral Score < 6?                      │   │
+│                    │  YES → REVISE content → Back to PHASE 5             │   │
+│                    │  NO  → Continue to PHASE 7                          │   │
+│                    └─────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 7: QUALITY SCORING (ALL 5 VERSIONS)                 │
+│                    100-point system → SELECT BEST VERSION                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 8: MICRO-OPTIMIZATION                               │
+│                    5-layer: Word → Sentence → Char → Emotion → Psychology    │
+│                    ACTUALLY CHANGE THE CONTENT!                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 9: GATE SIMULATION                                  │
+│                    Enhanced Gate Scoring (0-4 scale, 4 aspects each)         │
+│                                                                              │
+│                    ┌─────────────────────────────────────────────────────┐   │
+│                    │  GATE SCORE < 16/16?                                │   │
+│                    │  YES → Identify failed gate → Back to PHASE 8       │   │
+│                    │  NO  → Continue to PHASE 10                         │   │
+│                    └─────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 10: BENCHMARK COMPARISON                            │
+│                    Compare to top performers + Verify advantage              │
+│                                                                              │
+│                    ┌─────────────────────────────────────────────────────┐   │
+│                    │  COMPETITIVE ADVANTAGE VERIFIED?                    │   │
+│                    │  NO  → Back to PHASE 3 (new strategy)               │   │
+│                    │  YES → Continue to PHASE 11                         │   │
+│                    └─────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+═══════════════════════════════════════════════════════════════════════════════
+                    ████████ ALL GATES PASS - PROCEED TO OUTPUT ████████
+═══════════════════════════════════════════════════════════════════════════════
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 11: Q&A GENERATION                                  │
+│                    15 Q&A pairs for engagement                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 12: IMAGE GENERATION                                │
+│                    3 images for visual assets                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 13: FINAL CHECK                                     │
+│                    60-second checklist + All scores verified                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 14: OUTPUT                                          │
+│                    Final content + All assets + Complete report              │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PHASE 15: POST-SUBMIT ENGAGEMENT                          │
+│                    First 30 min warfare + Reply strategy + Boost tactics     │
+│                    (EXECUTED AFTER CONTENT IS POSTED!)                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    ╔═══════════════════════════════════════════════════════════╗
+                    ║                    PHASE DETAILS                          ║
+                    ╚═══════════════════════════════════════════════════════════╝
+================================================================================
+
+================================================================================
+                    PHASE 0: PREPARATION
+================================================================================
+
+OBJECTIVE: Gather all campaign information + Determine approach
+
+CHECKLIST:
+[ ] Campaign Address: _________________________________
+[ ] Mission Number: _____
+[ ] Mission Title: _________________________________
+[ ] Required Mentions: _________________________________
+[ ] Required Topics: _________________________________
+[ ] Required Links: _________________________________
+[ ] Tone Guidelines: _________________________________
+
+GATE WEIGHTS (Check campaign API):
+[ ] G1 Content Alignment weight: _____
+[ ] G2 Information Accuracy weight: _____
+[ ] G3 Campaign Compliance weight: _____
+[ ] G4 Originality weight: _____
+
+AUDIENCE ANALYSIS:
+[ ] Primary audience: [ ] Crypto-Native [ ] Institutional [ ] General [ ] Mixed
+[ ] Technical depth level needed: [ ] Low [ ] Medium [ ] High
+[ ] Emotional appeal needed: [ ] Yes [ ] No
+
+CRITICAL:
+[ ] Is user X Premium? [ ] Yes [ ] No (affects link strategy!)
+[ ] Is link REQUIRED in main tweet? [ ] Yes [ ] No
+
+API ENDPOINTS:
+1. GET ALL CAMPAIGNS: https://app.rally.fun/api/campaigns
+2. GET CAMPAIGN DETAIL: https://app.rally.fun/api/campaigns/{campaignAddress}
+3. GET LEADERBOARD: https://app.rally.fun/api/leaderboard?campaignAddress={address}&limit=10
+
+================================================================================
+                    PHASE 1: RESEARCH
+================================================================================
+
+OBJECTIVE: Gather comprehensive knowledge about the project
+
+FOUR WEB SEARCHES:
+
+| Search # | Query | Purpose |
+|----------|-------|---------|
+| 1 | "[Project Name] overview 2024 2025" | Basic understanding |
+| 2 | "[Project Name] tokenomics token utility" | Token details |
+| 3 | "[Project Industry] trends comparison" | Industry context |
+| 4 | "[Project Name] statistics metrics success" | Hard numbers |
+
+RESEARCH CHECKLIST:
+[ ] Search 1 completed - Overview gathered
+[ ] Search 2 completed - Tokenomics understood
+[ ] Search 3 completed - Industry context clear
+[ ] Search 4 completed - Statistics verified
+
+================================================================================
+                    PHASE 1.5: LEADERBOARD ANALYSIS
+================================================================================
+
+OBJECTIVE: Analyze top performers AND identify viral content gaps
+
+--------------------------------------------------------------------------------
+ENGAGEMENT RATE BENCHMARKS
+--------------------------------------------------------------------------------
+
+| Engagement Rate | Rating | V8.4 Target |
+|-----------------|--------|-------------|
+| < 0.05% | POOR | Avoid |
+| 0.05% - 0.15% | AVERAGE | Baseline |
+| 0.15% - 0.5% | GOOD | Minimum |
+| 0.5% - 1.0% | GREAT | Target |
+| > 1.0% | EXCELLENT | **BREAK LIMIT GOAL** |
+
+V8.4 TARGET: > 1.0% engagement rate (VIRAL territory)
+
+--------------------------------------------------------------------------------
+TOP PERFORMER ANALYSIS
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    TOP PERFORMER ANALYSIS FRAMEWORK                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Rank #: _____ | Score: _____ | Engagement Rate: _____                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ REPLY ANALYSIS (MOST IMPORTANT - 150x weight):                              │
+│ [ ] Has reply CTA? [ ] Reply count? [ ] Reply ratio?                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ VIRAL ANALYSIS:                                                              │
+│ [ ] Controversial angle? [ ] Share-worthy? [ ] Memorable hook?             │
+│ [ ] Emotional trigger? [ ] Challenge reader?                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ GAP IDENTIFICATION:                                                          │
+│ What viral element is MISSING from top performers?                         │
+│ ________________________________________________________________________   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPPORTUNITY:                                                                 │
+│ How can I be FIRST to add this viral element?                              │
+│ ________________________________________________________________________   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+ANALYZE TOP 5 PERFORMERS:
+
+| Rank | Emotional Angle | CTA Type | Viral Mechanics | Gap |
+|------|-----------------|----------|-----------------|-----|
+| #1 | ___________ | ___________ | ___________ | ___ |
+| #2 | ___________ | ___________ | ___________ | ___ |
+| #3 | ___________ | ___________ | ___________ | ___ |
+| #4 | ___________ | ___________ | ___________ | ___ |
+| #5 | ___________ | ___________ | ___________ | ___ |
+
+================================================================================
+                    PHASE 1.6: TIMING + TREND JACKING
+================================================================================
+
+OBJECTIVE: Post at optimal time + identify trend jacking opportunities
+
+--------------------------------------------------------------------------------
+TWITTER/X OPTIMAL POSTING TIMES (VERIFIED)
+--------------------------------------------------------------------------------
+
+| Day | Best Time (EST) | UTC Equivalent | Engagement Level |
+|-----|-----------------|----------------|------------------|
+| Monday | 9 AM | 14:00 | HIGH |
+| Tuesday | 9-11 AM | 14:00-16:00 | HIGH |
+| **Wednesday** | **9 AM** | **14:00** | **PEAK** |
+| Thursday | 10 AM - 5 PM | 15:00-22:00 | HIGH |
+| Friday | 9 AM | 14:00 | MEDIUM |
+| Saturday | 9-11 AM | 14:00-16:00 | LOW-MEDIUM |
+| Sunday | 9 AM - 12 PM | 14:00-17:00 | LOW |
+
+--------------------------------------------------------------------------------
+TREND JACKING WINDOWS
+--------------------------------------------------------------------------------
+
+| Situation | Action |
+|-----------|--------|
+| BTC +5% in 24h | Post immediately (FOMO high) |
+| BTC -5% in 24h | Post with fear angle |
+| Major crypto news | Jack the trend within 30 min |
+| Competitor liquidations | Post contrarian angle |
+| Low volatility | Schedule for optimal window |
+
+SELECTED POSTING TIME: _________________________________
+
+================================================================================
+                    PHASE 2: KNOWLEDGE BASE
+================================================================================
+
+OBJECTIVE: Extract all technical facts from research and verify each claim
+
+FACTS VERIFICATION TEMPLATE:
+
+| # | Claim | Source | Verified | Notes |
+|---|-------|--------|----------|-------|
+| 1 | _____________ | Knowledge Base | [ ] Yes [ ] No | _____________ |
+
+KEY STATISTICS TO VERIFY:
+[ ] All percentages verified
+[ ] All dates correct
+[ ] All monetary values accurate
+[ ] All technical specs correct
+[ ] Token metrics verified
+[ ] User metrics verified
+
+================================================================================
+                    PHASE 2.5: COMPETITIVE ANALYSIS
+================================================================================
+
+OBJECTIVE: Understand competitor content and find unique angles
+
+UNIVERSAL GAPS CHECKLIST:
+
+What did NONE of the top performers do?
+
+| Gap Type | Description | Exploit? |
+|----------|-------------|----------|
+| Missing Emotion | _____________ | [ ] |
+| Missing Format | _____________ | [ ] |
+| Missing Strategy | _____________ | [ ] |
+| Missing Angle | _____________ | [ ] |
+
+YOUR UNIQUE ADVANTAGE: _________________________________
+
+HOW TO BE FIRST: _________________________________
+
+================================================================================
+                    PHASE 3: ORIGINALITY STRATEGY (V8.4 NO TEMPLATES)
+================================================================================
+
+OBJECTIVE: Define approach that will stand out - AI GENERATES EVERYTHING
+
+--------------------------------------------------------------------------------
+★ V8.4 ORIGINALITY PRINCIPLES
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    NO TEMPLATE PHRASES - AI GENERATES ALL                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  V8.4 TIDAK MENYEDIAKAN:                                                    │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ ❌ Daftar hook phrases                                               │   │
+│  │ ❌ Daftar viral amplifiers                                           │   │
+│  │ ❌ Daftar emotion closers                                            │   │
+│  │ ❌ Daftar CTA templates                                              │   │
+│  │ ❌ Contoh phrase apapun                                              │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  V8.4 MENYEDIAKAN GUIDELINES:                                               │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ ✅ Prinsip membuat hook yang efektif                                 │   │
+│  │ ✅ Prinsip memancing engagement                                      │   │
+│  │ ✅ Prinsip membangun emosi                                           │   │
+│  │ ✅ Prinsip menciptakan urgency                                       │   │
+│  │ ✅ Prinsip menulis natural voice                                     │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+HOOK CREATION GUIDELINES (NO EXAMPLES)
+--------------------------------------------------------------------------------
+
+HOW TO CREATE AN EFFECTIVE HOOK:
+
+| Principle | Description | Check |
+|-----------|-------------|-------|
+| Grab Attention | First 5 words must stop the scroll | [ ] |
+| Create Emotion | Reader should FEEL something immediately | [ ] |
+| Spark Curiosity | Reader wants to know what comes next | [ ] |
+| Sound Human | Must sound like real person speaking | [ ] |
+| Be Unexpected | Avoid predictable openings | [ ] |
+
+HOOK EFFECTIVENESS TEST:
+- Read first sentence aloud
+- Does it sound like AI or human?
+- Does it make you curious?
+- Does it trigger emotion?
+- Would you keep reading?
+
+--------------------------------------------------------------------------------
+ENGAGEMENT BAIT GUIDELINES (NO EXAMPLES)
+--------------------------------------------------------------------------------
+
+HOW TO CREATE ENGAGEMENT-DRIVING CONTENT:
+
+| Principle | Description | Check |
+|-----------|-------------|-------|
+| Invite Response | Make it easy for people to reply | [ ] |
+| Create Debate | Present something discussable | [ ] |
+| Use Challenge | Give reader a task or question | [ ] |
+| Be Provocative | Say something that demands reaction | [ ] |
+| Create Contest | Gamify the engagement | [ ] |
+
+ENGAGEMENT TEST:
+- Is there a clear way to respond?
+- Would YOU reply to this?
+- Does it invite opinion?
+- Is there a challenge element?
+
+--------------------------------------------------------------------------------
+EMOTION BUILDING GUIDELINES (NO EXAMPLES)
+--------------------------------------------------------------------------------
+
+HOW TO BUILD EMOTION IN CONTENT:
+
+| Emotion Type | How to Build | Check |
+|--------------|--------------|-------|
+| PAIN | Describe relatable struggle | [ ] |
+| FEAR | Highlight risk or consequence | [ ] |
+| DESIRE | Paint desirable outcome | [ ] |
+| BELONGING | Create community feel | [ ] |
+| CURIOSITY | Leave gaps for reader to fill | [ ] |
+| OUTRAGE | Present injustice or absurdity | [ ] |
+| HOPE | Show path forward | [ ] |
+
+EMOTION TEST:
+- What emotion does this trigger?
+- Is the emotion intentional?
+- Is it appropriate for the message?
+- Does it build through the thread?
+
+--------------------------------------------------------------------------------
+NATURAL VOICE GUIDELINES (NO EXAMPLES)
+--------------------------------------------------------------------------------
+
+HOW TO WRITE LIKE A HUMAN:
+
+| Do This | Avoid This |
+|---------|------------|
+| Use contractions (don't, can't, won't) | Perfect grammar |
+| Include personal perspective | Generic statements |
+| Vary sentence length | Uniform structure |
+| Add natural pauses | Mechanical flow |
+| Use colloquialisms appropriately | Overly formal language |
+| Include sentence fragments | Complete sentences only |
+
+NATURAL VOICE TEST:
+- Read aloud - does it sound like speech?
+- Would a real person say this?
+- Is there personality in the writing?
+- Does it feel authentic?
+
+--------------------------------------------------------------------------------
+ANTI-TEMPLATE RULES (STILL ENFORCED)
+--------------------------------------------------------------------------------
+
+❌ DO NOT:
+- Start with "In the world of..."
+- Use "Picture this" or "Imagine a world"
+- Say "Let's dive in" or "At its core"
+- Write perfect grammar (too AI-sounding)
+- Use em dashes (—) or smart quotes ("")
+
+✅ DO:
+- Start directly with hook
+- Use contractions (isn't, don't, can't)
+- Include sentence fragments occasionally
+- Read aloud = sounds like speech
+- Add personal perspective ("I think", "I believe")
+
+================================================================================
+                    PHASE 4: CONTENT CREATION (5 VERSIONS - FULL GENERATE)
+================================================================================
+
+OBJECTIVE: AI Generate 5 completely original versions with unique angles
+
+--------------------------------------------------------------------------------
+V8.4 MULTI-VERSION APPROACH
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    AI GENERATES EACH VERSION UNIQUELY                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  V8.4 TIDAK MENYEDIAKAN:                                                    │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ ❌ Template angles (V1=Controversy, V2=Pain, etc)                    │   │
+│  │ ❌ Template structures                                               │   │
+│  │ ❌ Template phrases                                                  │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  AI HARUS:                                                                   │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ ✅ Create unique angle for each version                              │   │
+│  │ ✅ Design appropriate structure for each                             │   │
+│  │ ✅ Generate original phrases for each                                │   │
+│  │ ✅ Ensure no repeated phrases across versions                        │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+VERSION GENERATION GUIDELINES
+--------------------------------------------------------------------------------
+
+Each of 5 versions should have:
+
+| Element | AI Must Create |
+|---------|----------------|
+| Unique Angle | Different perspective on the topic |
+| Unique Hook | Original opening that grabs attention |
+| Unique CTA | Original call-to-action |
+| Unique Voice | Different tone/personality |
+| Unique Structure | Appropriate flow for the angle |
+
+VERSION DIFFERENTIATION CHECK:
+
+| Version | Unique Angle | Unique Hook | Unique CTA | Status |
+|---------|--------------|-------------|------------|--------|
+| V1 | _____________ | _____________ | _____________ | [ ] |
+| V2 | _____________ | _____________ | _____________ | [ ] |
+| V3 | _____________ | _____________ | _____________ | [ ] |
+| V4 | _____________ | _____________ | _____________ | [ ] |
+| V5 | _____________ | _____________ | _____________ | [ ] |
+
+★ RULE: No two versions should share the same opening phrase
+★ RULE: No two versions should share the same CTA phrase
+★ RULE: Each version must feel like completely different content
+
+--------------------------------------------------------------------------------
+THREAD STRUCTURE GUIDELINES (NOT TEMPLATE)
+--------------------------------------------------------------------------------
+
+V8.4 does NOT provide fixed structure. AI must decide:
+
+| Decision | AI Must Determine |
+|----------|-------------------|
+| Number of tweets | What's optimal for this content? |
+| Technical depth | What level fits the angle? |
+| Tweet order | What flow tells the story best? |
+| CTA placement | Where will CTAs be most effective? |
+
+STRUCTURE PRINCIPLES:
+- First tweet must hook (grab attention immediately)
+- Middle tweets must deliver value
+- Final tweet must have CTA
+- Flow must feel natural, not forced
+
+--------------------------------------------------------------------------------
+FIRST TWEET PRIORITY
+--------------------------------------------------------------------------------
+
+TWEET 1 CHECKLIST (10-POINT):
+
+| Check | Question | Required |
+|-------|----------|----------|
+| [ ] EMOTIONAL? | Does it trigger feeling? | Must be YES |
+| [ ] CURIOSITY? | Does it make reader want more? | Must be YES |
+| [ ] REPLY CTA? | Is there a way to respond? | Must be YES |
+| [ ] NO LINK? | Is Tweet 1 link-free? | Must be YES |
+| [ ] NO HASHTAG? | Is Tweet 1 hashtag-free? | Must be YES |
+| [ ] SHORT (<200 chars)? | Is it concise? | Must be YES |
+| [ ] NATURAL speech? | Does it sound human? | Must be YES |
+| [ ] UNIQUE? | Is this phrase original? | Must be YES |
+| [ ] ENGAGING? | Would you engage? | Must be YES |
+| [ ] NO KILL LIST? | Is it scanner-clean? | Must be YES |
+
+★ RULE: If Tweet 1 scores < 8/10, REWRITE
+
+================================================================================
+                    PHASE 5: SCANNER (ALL 5 VERSIONS)
+================================================================================
+
+OBJECTIVE: Scan ALL 5 versions for banned items before proceeding
+
+--------------------------------------------------------------------------------
+BANNED WORDS (25 ESSENTIAL) - STRICTLY ENFORCED
+--------------------------------------------------------------------------------
+
+| Word | Status | Why Banned |
+|------|--------|------------|
+| delve | ❌ BANNED | AI overuse marker |
+| leverage | ❌ BANNED | Corporate speak |
+| realm | ❌ BANNED | Fantasy/AI marker |
+| tapestry | ❌ BANNED | AI cliché |
+| paradigm | ❌ BANNED | Buzzword |
+| catalyst | ❌ BANNED | Overused |
+| cornerstone | ❌ BANNED | Business cliché |
+| pivotal | ❌ BANNED | Overused |
+| myriad | ❌ BANNED | Archaic AI word |
+| moreover | ❌ BANNED | Formal AI marker |
+| furthermore | ❌ BANNED | Formal AI marker |
+| groundbreaking | ❌ BANNED | Hype word |
+| game-changer | ❌ BANNED | Overused hype |
+| cutting-edge | ❌ BANNED | Marketing speak |
+| unprecedented | ❌ BANNED | Overused |
+| ecosystem | ❌ BANNED | Tech cliché |
+| landscape | ❌ BANNED | Overused metaphor |
+| foster | ❌ BANNED | Corporate speak |
+| harness | ❌ BANNED | Business cliché |
+| robust | ❌ BANNED | Tech speak |
+| seamless | ❌ BANNED | Marketing word |
+| innovative | ❌ BANNED | Overused |
+| transformative | ❌ BANNED | Hype word |
+| imperative | ❌ BANNED | Formal marker |
+| crucial | ❌ BANNED | Overused |
+
+--------------------------------------------------------------------------------
+BANNED PHRASES (20 ESSENTIAL) - STRICTLY ENFORCED
+--------------------------------------------------------------------------------
+
+| Phrase | Status | Why Banned |
+|--------|--------|------------|
+| "In the world of" | ❌ BANNED | AI cliché opener |
+| "Picture this" | ❌ BANNED | AI storytelling marker |
+| "Imagine a world" | ❌ BANNED | AI cliché |
+| "Lets dive in" | ❌ BANNED | AI transition |
+| "At its core" | ❌ BANNED | AI phrase |
+| "In conclusion" | ❌ BANNED | Formal AI marker |
+| "It is important to note" | ❌ BANNED | Formal AI |
+| "Moving forward" | ❌ BANNED | Corporate speak |
+| "Not only... but also" | ❌ BANNED | AI structure |
+| "A testament to" | ❌ BANNED | AI phrase |
+| "It's worth noting" | ❌ BANNED | AI filler |
+| "Needless to say" | ❌ BANNED | Useless phrase |
+| "At the heart of" | ❌ BANNED | AI cliché |
+| "The fact of the matter" | ❌ BANNED | Wordy AI |
+| "In the digital age" | ❌ BANNED | Overused |
+| "With the rise of" | ❌ BANNED | AI intro |
+| "In recent years" | ❌ BANNED | Generic AI |
+| "Double-edged sword" | ❌ BANNED | Cliché |
+| "Tip of the iceberg" | ❌ BANNED | Overused metaphor |
+| "Game changer" | ❌ BANNED | Hype phrase |
+
+--------------------------------------------------------------------------------
+BANNED CHARACTERS (14 TYPES) - STRICTLY ENFORCED
+--------------------------------------------------------------------------------
+
+### HIGH PRIORITY (Must Fix)
+
+| Symbol | Name | Unicode | Why Banned |
+|--------|------|---------|------------|
+| — | Em dash | U+2014 | AI writing marker |
+| – | En dash | U+2013 | AI writing marker |
+| " | Left double quote | U+201C | Smart quote AI |
+| " | Right double quote | U+201D | Smart quote AI |
+| ' | Left single quote | U+2018 | Smart quote AI |
+| ' | Right single quote | U+2019 | Smart quote AI |
+| … | Ellipsis | U+2026 | AI ellipsis |
+| → | Right arrow | U+2192 | Formatting AI |
+| ⇒ | Double arrow | U+21D2 | Formatting AI |
+
+### MEDIUM PRIORITY (Should Fix)
+
+| Symbol | Name | Unicode | Why Banned |
+|--------|------|---------|------------|
+| • | Bullet | U+2022 | Formatting marker |
+| ✓ | Check mark | U+2713 | Symbol AI use |
+| ✅ | Heavy check | U+2705 | Emoji in content |
+| × | Multiplication | U+00D7 | Symbol use |
+
+--------------------------------------------------------------------------------
+SCANNER IMPLEMENTATION (PYTHON)
+--------------------------------------------------------------------------------
+
+```python
+BANNED_WORDS = {
+    'delve', 'leverage', 'realm', 'tapestry', 'paradigm', 'catalyst',
+    'cornerstone', 'pivotal', 'myriad', 'moreover', 'furthermore',
+    'groundbreaking', 'game-changer', 'cutting-edge', 'unprecedented',
+    'ecosystem', 'landscape', 'foster', 'harness', 'robust', 'seamless',
+    'innovative', 'transformative', 'imperative', 'crucial'
+}
+
+BANNED_PHRASES = {
+    'in the world of', 'picture this', 'imagine a world', 'lets dive in',
+    'at its core', 'in conclusion', 'it is important to note', 'moving forward',
+    'not only', 'but also', 'a testament to', "it's worth noting",
+    'needless to say', 'at the heart of', 'the fact of the matter',
+    'in the digital age', 'with the rise of', 'in recent years',
+    'double-edged sword', 'tip of the iceberg', 'game changer'
+}
+
+BANNED_CHARS = {
+    '\u2014': 'em dash',
+    '\u2013': 'en dash',
+    '\u201C': 'left double quote',
+    '\u201D': 'right double quote',
+    '\u2018': 'left single quote',
+    '\u2019': 'right single quote',
+    '\u2026': 'ellipsis',
+    '\u2192': 'right arrow',
+    '\u21D2': 'double arrow',
+    '\u2022': 'bullet',
+    '\u2713': 'check mark',
+    '\u2705': 'heavy check',
+    '\u274C': 'cross mark',
+    '\u00D7': 'multiplication',
+}
+
+def scan_content(text):
+    violations = []
+    
+    # Check words
+    words = text.lower().split()
+    for word in words:
+        clean = word.strip('.,!?;:')
+        if clean in BANNED_WORDS:
+            violations.append(f"WORD: {word}")
+    
+    # Check phrases
+    text_lower = text.lower()
+    for phrase in BANNED_PHRASES:
+        if phrase in text_lower:
+            violations.append(f"PHRASE: {phrase}")
+    
+    # Check characters
+    for char, name in BANNED_CHARS.items():
+        if char in text:
+            count = text.count(char)
+            violations.append(f"CHAR: {name} ({count}x)")
+    
+    return violations
+```
+
+--------------------------------------------------------------------------------
+★ SCANNER FEEDBACK LOOP
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    SCANNER DECISION TREE                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  FOR EACH VERSION:                                                           │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │ violations = scan_content(version)                                  │    │
+│  │                                                                      │    │
+│  │ if len(violations) > 0:                                             │    │
+│  │     print(f"VERSION {v}: {len(violations)} violations found")       │    │
+│  │     for violation in violations:                                    │    │
+│  │         print(f"  - {violation}")                                   │    │
+│  │     GO TO PHASE 6: REWRITE                                          │    │
+│  │ else:                                                               │    │
+│  │     print(f"VERSION {v}: CLEAN")                                    │    │
+│  │     MARK AS READY FOR PHASE 7                                       │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│  ONLY PROCEED TO PHASE 7 WHEN ALL 5 VERSIONS ARE CLEAN                      │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 6: REWRITE LOOP
+================================================================================
+
+OBJECTIVE: Fix violations and re-scan until all versions are clean
+
+REWRITE PROCESS:
+
+For each violation found:
+1. WORD violations: Replace with simpler, more natural alternative
+2. PHRASE violations: Rephrase the sentence entirely
+3. CHAR violations: Replace with ASCII equivalent
+
+REWRITE TRACKING:
+
+| Version | Iteration | Violations | Fixes Applied | Status |
+|---------|-----------|------------|---------------|--------|
+| V1 | 1 | ___ | ___________ | [ ] Clean |
+| V2 | 1 | ___ | ___________ | [ ] Clean |
+| V3 | 1 | ___ | ___________ | [ ] Clean |
+| V4 | 1 | ___ | ___________ | [ ] Clean |
+| V5 | 1 | ___ | ___________ | [ ] Clean |
+
+★ MAXIMUM 3 ITERATIONS per version
+★ If still not clean after 3 iterations, DISCARD version and create new one
+
+================================================================================
+                    PHASE 7: HES + VIRAL SCORE CHECK
+================================================================================
+
+OBJECTIVE: Evaluate hook effectiveness and viral potential BEFORE quality scoring
+
+--------------------------------------------------------------------------------
+HOOK EFFECTIVENESS CHECK (HES)
+--------------------------------------------------------------------------------
+
+| Check | Question | Required |
+|-------|----------|----------|
+| [ ] | EMOTIONAL HOOK? Does it trigger feeling? | Must PASS |
+| [ ] | REPLY CTA? Is there easy way to respond? | Must PASS |
+| [ ] | CURIOSITY GAP? Does reader want more? | Must PASS |
+| [ ] | NO AI PATTERNS? Scanner clean? | Must PASS |
+
+HES SCORING:
+- 4/4 = ✅ PROCEED TO PHASE 8
+- 3/4 = ⚠️ Consider revision
+- < 3/4 = ❌ REVISE → Back to PHASE 5
+
+--------------------------------------------------------------------------------
+VIRAL SCORE CHECK (0-10)
+--------------------------------------------------------------------------------
+
+| Viral Element | Present? | Score (0-1) |
+|---------------|----------|-------------|
+| Controversial/challenge angle | [ ] | ___ |
+| Share-worthy format | [ ] | ___ |
+| Reply bait (engagement driver) | [ ] | ___ |
+| Emotional trigger | [ ] | ___ |
+| Cultural relevance | [ ] | ___ |
+| Memorable hook | [ ] | ___ |
+| FOMO/urgency | [ ] | ___ |
+| Personal story element | [ ] | ___ |
+| Contrast/comparison | [ ] | ___ |
+| Identity trigger | [ ] | ___ |
+
+**VIRAL SCORE: ___/10**
+
+| Score | Rating | Expected Outcome |
+|-------|--------|------------------|
+| 8-10 | 🔥 VIRAL READY | High share/reply potential |
+| 6-7 | ✅ GOOD | Above average engagement |
+| 4-5 | ⚠️ AVERAGE | Standard performance |
+| < 4 | ❌ WEAK | Low engagement risk |
+
+★ RULE: Viral Score must be ≥ 6 to proceed
+★ RULE: Viral Score ≥ 8 for BREAK THE LIMIT mode
+
+--------------------------------------------------------------------------------
+★ HES + VIRAL SCORE FEEDBACK LOOP
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    HES + VIRAL DECISION TREE                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  FOR EACH VERSION:                                                           │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │ hes_score = calculate_hes(version)                                  │    │
+│  │ viral_score = calculate_viral(version)                              │    │
+│  │                                                                      │    │
+│  │ if hes_score < 3 OR viral_score < 6:                                │    │
+│  │     print(f"VERSION {v}: FAILED - HES={hes_score}/4, Viral={viral_score}/10") │    │
+│  │     ACTION: REVISE content                                          │    │
+│  │     GO TO PHASE 5 (Re-scan after revision)                          │    │
+│  │ else:                                                               │    │
+│  │     print(f"VERSION {v}: PASSED - HES={hes_score}/4, Viral={viral_score}/10")  │    │
+│  │     MARK AS READY FOR PHASE 8                                       │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│  ONLY PROCEED TO PHASE 8 WHEN ALL 5 VERSIONS PASS HES + VIRAL               │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 8: QUALITY SCORING (100-POINT)
+================================================================================
+
+OBJECTIVE: Score all 5 versions and SELECT THE BEST ONE
+
+--------------------------------------------------------------------------------
+100-POINT QUALITY SCORING SYSTEM
+--------------------------------------------------------------------------------
+
+| Category | Criteria | Score | Max |
+|----------|----------|-------|-----|
+| HOOK POWER | Emotional Impact | ___ | 15 |
+| | Curiosity Gap | ___ | 10 |
+| | First Line Grab | ___ | 10 |
+| ENGAGEMENT BAIT | Reply CTA Quality | ___ | 15 |
+| | Share Trigger | ___ | 10 |
+| | Contest Element | ___ | 10 |
+| CONTENT QUALITY | Technical Accuracy | ___ | 10 |
+| | Value per Character | ___ | 10 |
+| AUTHENTICITY | Natural Voice | ___ | 5 |
+| | No Kill List | ___ | 5 |
+| **TOTAL** | | **___** | **100** |
+
+--------------------------------------------------------------------------------
+VERSION COMPARISON MATRIX
+--------------------------------------------------------------------------------
+
+| Metric | V1 | V2 | V3 | V4 | V5 |
+|--------|----|----|----|----|----| 
+| Quality Score | ___ | ___ | ___ | ___ | ___ |
+| HES Score | ___ | ___ | ___ | ___ | ___ |
+| Viral Score | ___ | ___ | ___ | ___ | ___ |
+| Gate Score (predict) | ___ | ___ | ___ | ___ | ___ |
+| **TOTAL** | ___ | ___ | ___ | ___ | ___ |
+
+★ SELECT: Version with HIGHEST total score
+
+SELECTED VERSION: _____
+
+================================================================================
+                    PHASE 9: MICRO-OPTIMIZATION (5-LAYER)
+================================================================================
+
+OBJECTIVE: Optimize the selected version at 5 different layers
+
+★ CRITICAL: THIS PHASE MUST ACTUALLY CHANGE THE CONTENT!
+
+--------------------------------------------------------------------------------
+LAYER 1: WORD LEVEL
+--------------------------------------------------------------------------------
+
+| Check | Action | Before | After |
+|-------|--------|--------|-------|
+| [ ] Replace weak words | Use stronger verbs | _____ | _____ |
+| [ ] Remove filler words | Cut "that", "just", "really" | _____ | _____ |
+| [ ] Add power words | Use emotional triggers | _____ | _____ |
+
+--------------------------------------------------------------------------------
+LAYER 2: SENTENCE LEVEL
+--------------------------------------------------------------------------------
+
+| Check | Action | Before | After |
+|-------|--------|--------|-------|
+| [ ] First sentence grabs | Hook in first 5 words | _____ | _____ |
+| [ ] Sentence variety | Mix short and long | _____ | _____ |
+| [ ] Value per sentence | Cut low-value sentences | _____ | _____ |
+
+--------------------------------------------------------------------------------
+LAYER 3: CHARACTER LEVEL
+--------------------------------------------------------------------------------
+
+| Check | Action | Status |
+|-------|--------|--------|
+| [ ] Hook < 200 chars | Trim if needed | [ ] |
+| [ ] All tweets < 280 chars | Verify each | [ ] |
+| [ ] No wasted chars | Every char earns its place | [ ] |
+| [ ] Strategic line breaks | Improve readability | [ ] |
+
+--------------------------------------------------------------------------------
+LAYER 4: EMOTION LEVEL
+--------------------------------------------------------------------------------
+
+| Check | Action | Status |
+|-------|--------|--------|
+| [ ] Emotion present | Identify the emotion | [ ] |
+| [ ] Emotion intentional | Match to target emotion | [ ] |
+| [ ] Emotion arc | Build through thread | [ ] |
+
+--------------------------------------------------------------------------------
+LAYER 5: PSYCHOLOGY LEVEL
+--------------------------------------------------------------------------------
+
+| Check | Action | Status |
+|-------|--------|--------|
+| [ ] Curiosity gap maximized | Reader wants to know more | [ ] |
+| [ ] Urgency present | Time-sensitive element | [ ] |
+| [ ] Social proof included | Others are doing this | [ ] |
+| [ ] Loss aversion triggered | Don't miss out | [ ] |
+
+--------------------------------------------------------------------------------
+MICRO-OPTIMIZATION LOG
+--------------------------------------------------------------------------------
+
+| Layer | Changes Made | Before/After |
+|-------|--------------|--------------|
+| Word | _____________ | _____________ |
+| Sentence | _____________ | _____________ |
+| Character | _____________ | _____________ |
+| Emotion | _____________ | _____________ |
+| Psychology | _____________ | _____________ |
+
+================================================================================
+                    PHASE 10: GATE SIMULATION
+================================================================================
+
+OBJECTIVE: Simulate Rally gate scoring and verify PASS before submission
+
+--------------------------------------------------------------------------------
+G1: CONTENT ALIGNMENT (0-4)
+--------------------------------------------------------------------------------
+
+ASPECT 1: CORE MESSAGE ACCURACY (0-1)
+[ ] Main message is 100% accurate to campaign goals
+[ ] No misalignment or wrong emphasis
+[ ] Project team would approve this message
+Score: ___/1
+
+ASPECT 2: TERMINOLOGY PRECISION (0-1)
+[ ] Project name spelled correctly
+[ ] Technical terms match official docs
+[ ] No made-up terms or misused jargon
+Score: ___/1
+
+ASPECT 3: BRAND VOICE CONSISTENCY (0-1)
+[ ] Tone matches campaign requirements
+[ ] Formal/informal level appropriate
+[ ] Values aligned with project mission
+Score: ___/1
+
+ASPECT 4: VALUE PROPOSITION CLARITY (0-1)
+[ ] Reader understands benefit in 5 seconds
+[ ] Clear "what's in it for me"
+[ ] No confusing or contradictory benefits
+Score: ___/1
+
+G1 TOTAL: ___/4 (V8.4 REQUIRES 4/4)
+
+--------------------------------------------------------------------------------
+G2: INFORMATION ACCURACY (0-4)
+--------------------------------------------------------------------------------
+
+ASPECT 1: TECHNICAL FACTS VERIFICATION (0-1)
+[ ] All percentages verified
+[ ] All dates correct
+[ ] All monetary values accurate
+[ ] All technical specs correct
+Score: ___/1
+
+ASPECT 2: SOURCE VERIFICATION (0-1)
+[ ] Every claim traceable to KB/API
+[ ] No assumptions presented as facts
+[ ] Sources cited if needed
+Score: ___/1
+
+ASPECT 3: NO MISLEADING INFORMATION (0-1)
+[ ] No quotes taken out of context
+[ ] No data presented misleadingly
+[ ] No exaggeration of capabilities
+Score: ___/1
+
+ASPECT 4: COMPLETENESS (0-1)
+[ ] All key features mentioned
+[ ] Important caveats included
+[ ] Full picture presented
+Score: ___/1
+
+G2 TOTAL: ___/4 (V8.4 REQUIRES 4/4)
+
+--------------------------------------------------------------------------------
+G3: CAMPAIGN COMPLIANCE (0-4)
+--------------------------------------------------------------------------------
+
+ASPECT 1: REQUIRED MENTIONS (0-1)
+[ ] All required @mentions present
+[ ] Handles spelled correctly
+[ ] Mentions placed appropriately
+Score: ___/1
+
+ASPECT 2: REQUIRED HASHTAGS (0-1)
+[ ] All required #hashtags present
+[ ] Hashtags spelled correctly
+[ ] Hashtags NOT in Tweet 1
+Score: ___/1
+
+ASPECT 3: REQUIRED LINKS (0-1)
+[ ] Required link present
+[ ] URL correct and working
+[ ] Link NOT in Tweet 1
+[ ] Not using shortened URL
+Score: ___/1
+
+ASPECT 4: FORMAT & STYLE (0-1)
+[ ] Thread vs single tweet correct
+[ ] Character limits respected
+[ ] Tone matches guidelines
+Score: ___/1
+
+G3 TOTAL: ___/4 (V8.4 REQUIRES 4/4)
+
+--------------------------------------------------------------------------------
+G4: ORIGINALITY & AUTHENTICITY (0-4)
+--------------------------------------------------------------------------------
+
+ASPECT 1: FRESH PERSPECTIVE (0-1)
+[ ] Unique angle not in top performers
+[ ] No obvious template feel
+[ ] Different from competitors
+Score: ___/1
+
+ASPECT 2: PERSONAL INSIGHT (0-1)
+[ ] Has "I think" or "I believe"
+[ ] Has personal experience
+[ ] Has original analysis
+Score: ___/1
+
+ASPECT 3: NATURAL LANGUAGE (0-1)
+[ ] No Kill List phrases
+[ ] Has contractions (isn't, don't)
+[ ] Read aloud = sounds like speech
+Score: ___/1
+
+ASPECT 4: AUTHENTIC VOICE (0-1)
+[ ] Has personality
+[ ] Has emotional authenticity
+[ ] Feels like a real person wrote it
+Score: ___/1
+
+G4 TOTAL: ___/4 (V8.4 REQUIRES 4/4)
+
+--------------------------------------------------------------------------------
+GATE SCORE SUMMARY
+--------------------------------------------------------------------------------
+
+| Gate | Aspect 1 | Aspect 2 | Aspect 3 | Aspect 4 | TOTAL |
+|------|----------|----------|----------|----------|-------|
+| G1   | ___/1    | ___/1    | ___/1    | ___/1    | ___/4 |
+| G2   | ___/1    | ___/1    | ___/1    | ___/1    | ___/4 |
+| G3   | ___/1    | ___/1    | ___/1    | ___/1    | ___/4 |
+| G4   | ___/1    | ___/1    | ___/1    | ___/1    | ___/4 |
+|      |          |          |          | TOTAL:   | ___/16|
+
+★ V8.4 REQUIREMENT: 16/16 MANDATORY
+
+--------------------------------------------------------------------------------
+QUALITY SYSTEM (0-8 scale)
+--------------------------------------------------------------------------------
+
+## EP: ENGAGEMENT POTENTIAL (0-8)
+
+| Aspect | Score | Notes |
+|--------|-------|-------|
+| Hook Presence | ___ | First line creates emotion |
+| Emotional Trigger | ___ | Content triggers response |
+| Curiosity Gap | ___ | Reader wants more |
+| Reply CTA | ___ | Easy to respond |
+| Share Worthiness | ___ | Makes sharer look informed |
+| Viral Mechanics | ___ | Engaging element present |
+| Audience Fit | ___ | Crypto-native appropriate |
+| Platform Optimization | ___ | Character limits respected |
+| **TOTAL** | **___/8** | |
+
+## TQ: TECHNICAL QUALITY (0-8)
+
+| Aspect | Score | Notes |
+|--------|-------|-------|
+| Grammar & Spelling | ___ | No typos |
+| Punctuation | ___ | No banned characters |
+| Formatting | ___ | Line breaks strategic |
+| Thread Flow | ___ | Logical progression |
+| Character Optimization | ___ | No wasted characters |
+| Readability | ___ | One read understanding |
+| Consistency | ___ | Tone consistent |
+| Platform Compliance | ___ | All Twitter requirements met |
+| **TOTAL** | **___/8** | |
+
+--------------------------------------------------------------------------------
+★ GATE SIMULATION FEEDBACK LOOP
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    GATE DECISION TREE                                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  gate_total = G1 + G2 + G3 + G4                                             │
+│  quality_total = EP + TQ                                                    │
+│                                                                              │
+│  if gate_total < 16 OR quality_total < 16:                                  │
+│      print("GATE FAILED")                                                   │
+│      print(f"Gates: {gate_total}/16, Quality: {quality_total}/16")          │
+│      ACTION: Identify failed gate/quality aspect                            │
+│      GO TO PHASE 9 (Micro-Optimization) to fix                              │
+│  else:                                                                      │
+│      print("GATE PASSED - ALL CHECKS CLEAR")                                │
+│      print(f"Gates: {gate_total}/16, Quality: {quality_total}/16")          │
+│      PROCEED TO PHASE 11 (Benchmark)                                        │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 11: BENCHMARK COMPARISON
+================================================================================
+
+OBJECTIVE: Verify content beats or matches top performers
+
+--------------------------------------------------------------------------------
+COMPETITIVE COMPARISON
+--------------------------------------------------------------------------------
+
+| Element | Competitor Avg | V8.4 Content | Advantage |
+|---------|----------------|--------------|-----------|
+| Hook Strength | 5/10 | ___/10 | ___ |
+| Reply CTA | 20% have | ___ | ___ |
+| Banned Items | 3-5 avg | ___ | ___ |
+| Natural Voice | 40% pass | ___ | ___ |
+
+--------------------------------------------------------------------------------
+UNIQUE ADVANTAGES VERIFICATION
+--------------------------------------------------------------------------------
+
+| Advantage | Verified? | Evidence |
+|-----------|-----------|----------|
+| Original angle | [ ] | _____________ |
+| Unique CTA | [ ] | _____________ |
+| Natural voice | [ ] | _____________ |
+| Zero banned items | [ ] | _____________ |
+
+--------------------------------------------------------------------------------
+★ BENCHMARK FEEDBACK LOOP
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    BENCHMARK DECISION TREE                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  if content_advantage_verified:                                             │
+│      print("COMPETITIVE ADVANTAGE CONFIRMED")                               │
+│      PROCEED TO PHASE 12 (Q&A Generation)                                   │
+│  else:                                                                      │
+│      print("COMPETITIVE ADVANTAGE NOT CONFIRMED")                           │
+│      ACTION: Revise strategy                                                │
+│      GO TO PHASE 3 (Originality Strategy) for new angle                     │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+                    ████████ ALL GATES PASS - OUTPUT PHASES ████████
+═══════════════════════════════════════════════════════════════════════════════
+
+================================================================================
+                    PHASE 12: Q&A GENERATION
+================================================================================
+
+OBJECTIVE: Create 15 engaging Q&A pairs for community engagement
+
+Q&A TEMPLATE (15 pairs):
+
+| # | Question | Answer |
+|---|----------|--------|
+| 1 | What is [Project]? | _____ |
+| 2 | How does [Feature] work? | _____ |
+| 3 | How to get started? | _____ |
+| 4 | What are the earnings? | _____ |
+| 5 | How much time needed? | _____ |
+| 6 | What are the risks? | _____ |
+| 7 | Real use cases? | _____ |
+| 8 | What's the roadmap? | _____ |
+| 9 | Who is the team? | _____ |
+| 10 | Token utility? | _____ |
+| 11 | How does it compare? | _____ |
+| 12 | Why this over competitors? | _____ |
+| 13 | What's the catch? | _____ |
+| 14 | When to enter? | _____ |
+| 15 | Final verdict? | _____ |
+
+================================================================================
+                    PHASE 13: IMAGE GENERATION
+================================================================================
+
+OBJECTIVE: Create 3 images for visual assets
+
+IMAGE GENERATION PROMPTS:
+
+| # | Image Type | Prompt Template |
+|---|------------|-----------------|
+| 1 | Hero Image | Main visual representing the project |
+| 2 | Stats/Infographic | Key statistics visualization |
+| 3 | CTA Image | Call-to-action visual |
+
+================================================================================
+                    PHASE 14: FINAL CHECK
+================================================================================
+
+OBJECTIVE: Final verification before output
+
+--------------------------------------------------------------------------------
+60-SECOND CHECKLIST
+--------------------------------------------------------------------------------
+
+| Check | Status |
+|-------|--------|
+| [ ] All banned items scanned and clean | |
+| [ ] All gates passed (16/16) | |
+| [ ] Quality scores verified | |
+| [ ] HES and Viral scores adequate | |
+| [ ] Benchmark advantage confirmed | |
+| [ ] All campaign requirements met | |
+| [ ] Q&A generated (15 pairs) | |
+| [ ] Images generated (3 images) | |
+| [ ] Content reads naturally | |
+| [ ] No repeated phrases across versions | |
+
+--------------------------------------------------------------------------------
+FINAL SCORES SUMMARY
+--------------------------------------------------------------------------------
+
+| Metric | Score | Target | Status |
+|--------|-------|--------|--------|
+| Gate Score | ___/16 | 16/16 | [ ] PASS |
+| Quality Score | ___/16 | 16/16 | [ ] PASS |
+| HES Score | ___/4 | 3+/4 | [ ] PASS |
+| Viral Score | ___/10 | 6+/10 | [ ] PASS |
+| Scanner | 0 violations | 0 | [ ] PASS |
+
+================================================================================
+                    PHASE 15: OUTPUT
+================================================================================
+
+OBJECTIVE: Deliver final content and all assets
+
+OUTPUT DELIVERABLES:
+
+1. FINAL CONTENT (Selected Version)
+   - Full thread content
+   - All tweets ready for posting
+
+2. ENGAGEMENT ASSETS
+   - 15 Q&A pairs
+   - 3 images
+
+3. SCORES REPORT
+   - Gate scores breakdown
+   - Quality scores breakdown
+   - HES and Viral scores
+   - Scanner results
+
+4. METADATA
+   - Selected version number
+   - All 5 versions for reference
+   - Optimization changes made
+
+================================================================================
+                    PHASE 16: POST-SUBMIT ENGAGEMENT
+================================================================================
+
+OBJECTIVE: Engagement warfare after content is posted
+
+--------------------------------------------------------------------------------
+FIRST 30 MINUTES STRATEGY
+--------------------------------------------------------------------------------
+
+| Time | Action |
+|------|--------|
+| 0-5 min | Monitor for first replies |
+| 5-10 min | Respond to early comments |
+| 10-20 min | Engage with related content |
+| 20-30 min | Boost if engagement is low |
+
+--------------------------------------------------------------------------------
+ENGAGEMENT TACTICS
+--------------------------------------------------------------------------------
+
+| Tactic | Description |
+|--------|-------------|
+| Reply to comments | Keep conversation going |
+| Quote tweet | Add follow-up thought |
+| Engage influencers | Get their attention |
+| Cross-promote | Share on other platforms |
+
+================================================================================
+                    ╔═══════════════════════════════════════════════════════════╗
+                    ║           V8.4 SUMMARY                                    ║
+                    ╚═══════════════════════════════════════════════════════════╝
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    V8.4 FULL GENERATE vs V8.3 TEMPLATE                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  YANG DIHAPUS DARI V8.3:                                                    │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ ❌ Hook Examples (contoh hook konkret)                               │   │
+│  │ ❌ Viral Emotion Amplifiers list                                     │   │
+│  │ ❌ Emotion Closers list                                              │   │
+│  │ ❌ Template phrases apapun                                           │   │
+│  │ ❌ Version angle templates                                           │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  YANG DITAMBAHKAN DI V8.4:                                                  │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ ✅ Hook Creation Guidelines (prinsip, bukan contoh)                  │   │
+│  │ ✅ Engagement Bait Guidelines                                         │   │
+│  │ ✅ Emotion Building Guidelines                                        │   │
+│  │ ✅ Natural Voice Guidelines                                           │   │
+│  │ ✅ Version Differentiation rules                                      │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  YANG TETAP ADA (LARANGAN):                                                 │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ ✅ Banned Words (25) - WAJIB DIIKUTI                                 │   │
+│  │ ✅ Banned Phrases (20) - WAJIB DIIKUTI                               │   │
+│  │ ✅ Banned Characters (14) - WAJIB DIIKUTI                            │   │
+│  │ ✅ Scanner Implementation - WAJIB                                    │   │
+│  │ ✅ Gate System - WAJIB                                               │   │
+│  │ ✅ Quality Checks - WAJIB                                            │   │
+│  │ ✅ Feedback Loops - WAJIB                                            │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    END OF V8.4 FULL GENERATE WORKFLOW
+================================================================================
