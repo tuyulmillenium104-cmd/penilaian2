@@ -659,37 +659,34 @@ function applyMicroOptimization(content, targetEmotion = 'curiosity') {
   }
   changes.push(`Layer 1: ${layer1Changes} filler words removed/replaced`);
   
-  // Layer 2: SENTENCE LEVEL
-  const sentences = optimized.split(/(?<=[.!?])\s+/);
-  const optimizedSentences = sentences.map(s => {
-    if (s.length > 150) {
-      // Split long sentences
-      const parts = s.split(/,\s+/);
-      if (parts.length > 1) {
-        return parts.join('. ');
-      }
-    }
-    return s;
+  // Layer 2: SENTENCE LEVEL - PRESERVE PARAGRAPH STRUCTURE
+  // Don't join all sentences - keep paragraph breaks for thread format
+  const paragraphs = optimized.split('\n\n');
+  let totalSentences = 0;
+  const optimizedParagraphs = paragraphs.map(para => {
+    const sentences = para.split(/(?<=[.!?])\s+/);
+    totalSentences += sentences.length;
+    // Keep paragraph intact, just clean up extra spaces
+    return sentences.join(' ').replace(/\s+/g, ' ').trim();
   });
-  optimized = optimizedSentences.join(' ');
-  changes.push(`Layer 2: ${sentences.length} sentences optimized`);
+  optimized = optimizedParagraphs.join('\n\n');
+  changes.push(`Layer 2: ${totalSentences} sentences in ${paragraphs.length} paragraphs optimized`);
   
-  // Layer 3: CHARACTER LEVEL
-  const tweets = optimized.split('\n\n');
-  const optimizedTweets = tweets.map(t => {
-    if (t.length > 280) {
-      // Trim to 280, find last complete sentence
-      let trimmed = t.substring(0, 280);
-      const lastPeriod = trimmed.lastIndexOf('.');
-      if (lastPeriod > 200) {
-        trimmed = trimmed.substring(0, lastPeriod + 1);
-      }
-      return trimmed;
+  // Layer 3: CHARACTER LEVEL - PRESERVE CONTENT INTEGRITY
+  // Only optimize if content is meant to be split into tweets
+  // For threads, we keep content intact and just ensure readability
+  const contentParagraphs = optimized.split('\n\n');
+  let longParagraphs = 0;
+  const checkedParagraphs = contentParagraphs.map(p => {
+    // Only note extremely long paragraphs (>500 chars)
+    // Keep most content intact for readability
+    if (p.length > 500) {
+      longParagraphs++;
     }
-    return t;
+    return p;
   });
-  optimized = optimizedTweets.join('\n\n');
-  changes.push(`Layer 3: ${tweets.length} tweets character-optimized`);
+  optimized = checkedParagraphs.join('\n\n');
+  changes.push(`Layer 3: ${contentParagraphs.length} paragraphs checked, ${longParagraphs} long paragraphs noted`);
   
   // Layer 4: EMOTION LEVEL (preserve target emotion)
   const emotionScore = calculateEmotionScore(optimized, targetEmotion);
