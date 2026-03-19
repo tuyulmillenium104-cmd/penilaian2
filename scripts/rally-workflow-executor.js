@@ -46,6 +46,7 @@ const http = require('http');
 const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
+const ZAI = require('z-ai-web-dev-sdk').default;
 
 // ============================================================================
 // CONFIGURATION
@@ -763,15 +764,68 @@ function polishContentFlow(content) {
 // Q&A GENERATION (Phase 15)
 // ============================================================================
 
-function generateQA(content, knowledgeBase) {
-  const qa = [];
-  const lowerContent = content.toLowerCase();
-  
-  // Extract key topics
-  const topics = ['internet court', 'dispute', 'smart contract', 'ai jury', 'agent economy', 'blockchain'];
-  
-  // Generate Q&A pairs
-  const qaTemplates = [
+async function generateQA_LLM(content, knowledgeBase) {
+  // Use LLM to generate Q&A pairs from the actual content
+  try {
+    const ZAI = require('z-ai-web-dev-sdk').default;
+    const zai = await ZAI.create();
+    
+    const systemPrompt = `You are an expert at creating engaging Q&A content for crypto/web3 projects.
+
+Generate exactly 15 Q&A pairs based on the provided content.
+
+Rules:
+- Each Q&A should be relevant to the content
+- Questions should be what curious readers might ask
+- Answers should be informative and concise (1-3 sentences)
+- Include practical "how to" questions
+- Include some technical questions
+- Include some forward-looking questions
+
+Format as JSON array:
+[{"q": "Question?", "a": "Answer."}]`;
+
+    const userPrompt = `Generate 15 Q&A pairs based on this content:
+
+${content}
+
+KNOWLEDGE BASE FACTS:
+${knowledgeBase.slice(0, 10).map(f => f.fact || f).join('\n')}
+
+Return ONLY the JSON array, no other text.`;
+
+    const completion = await zai.chat.completions.create({
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
+      ],
+      temperature: 0.7,
+      max_tokens: 2000
+    });
+    
+    const responseText = completion.choices[0]?.message?.content || '[]';
+    
+    // Parse JSON from response
+    try {
+      // Try to extract JSON array from response
+      const jsonMatch = responseText.match(/\[[\s\S]*\]/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]);
+      }
+      return JSON.parse(responseText);
+    } catch (parseError) {
+      console.log('Warning: Could not parse LLM Q&A response, using fallback');
+      return getFallbackQA();
+    }
+    
+  } catch (error) {
+    console.log('Warning: LLM Q&A generation failed:', error.message);
+    return getFallbackQA();
+  }
+}
+
+function getFallbackQA() {
+  return [
     { q: 'What is Internet Court?', a: 'Internet Court is a decentralized dispute resolution system that uses AI validators to evaluate evidence and deliver verdicts in minutes.' },
     { q: 'How does the AI jury work?', a: 'AI validators independently evaluate submitted evidence and reach consensus on whether statements are TRUE, FALSE, or UNDETERMINED.' },
     { q: 'Why do we need Internet Court?', a: 'Traditional courts are geographically bound, slow, and expensive. Internet Court provides dispute resolution at machine speed for the internet economy.' },
@@ -788,9 +842,12 @@ function generateQA(content, knowledgeBase) {
     { q: 'Can I appeal a decision?', a: 'The system is designed for initial resolution. Additional evidence can sometimes trigger re-evaluation.' },
     { q: 'How do I get started?', a: 'Visit internetcourt.org to learn more about submitting your first case for AI-powered dispute resolution.' }
   ];
-  
-  // Return 15 Q&A pairs
-  return qaTemplates.slice(0, 15);
+}
+
+function generateQA(content, knowledgeBase) {
+  // This function is now async, but for backward compatibility
+  // we return fallback. The actual LLM call is in generateQA_LLM
+  return getFallbackQA();
 }
 
 // ============================================================================
@@ -1074,59 +1131,133 @@ class RallyWorkflowExecutor {
   
   // ===== PHASE 5: CONTENT GENERATION =====
   async phase5_ContentGeneration(llmClient) {
-    this.log('Phase 5', 'Generating content versions...');
+    this.log('Phase 5', 'Generating content versions with LLM...');
     this.phaseStatus['Phase 5'] = { status: 'running', started: new Date().toISOString() };
     
-    // Version templates based on strategy
-    const versionTemplates = [
+    // Prepare context from knowledge base
+    const knowledgeFacts = this.knowledgeBase.slice(0, 15).map(f => f.fact).join('\n- ');
+    const campaignTitle = this.campaignData?.title || 'Internet Court';
+    const strategyInfo = `Primary Angle: ${this.strategy.primaryAngle}\nTarget Emotion: ${this.strategy.targetEmotion}\nHook Type: ${this.strategy.hookType}\nCTA Type: ${this.strategy.ctaType}`;
+    
+    // Version templates with different angles
+    const versionPrompts = [
       {
         id: 'V1',
-        hook: 'Your smart contract just executed. The funds moved. The transaction is final.',
         angle: 'problem_first',
-        emotion: 'curiosity'
+        emotion: 'curiosity',
+        instruction: 'Start with the PROBLEM - show the pain point first, then introduce Internet Court as the solution'
       },
       {
         id: 'V2', 
-        hook: 'Code executes in milliseconds. Court cases take years.',
         angle: 'contrast',
-        emotion: 'curiosity'
+        emotion: 'curiosity',
+        instruction: 'Use strong CONTRAST - compare code execution speed vs court speed, then introduce Internet Court'
       },
       {
         id: 'V3',
-        hook: '$50 million drained from The DAO in 2016. A bug in the code.',
         angle: 'fear_example',
-        emotion: 'fear'
+        emotion: 'fear',
+        instruction: 'Use FEAR with real example - mention The DAO hack 2016, show the risk, then introduce Internet Court as protection'
       },
       {
         id: 'V4',
-        hook: "Smart contracts automate trust. But they don't automate justice.",
         angle: 'analytical',
-        emotion: 'curiosity'
+        emotion: 'curiosity',
+        instruction: 'Be ANALYTICAL - explain the structural problem between traditional courts and internet economy, then propose Internet Court as the framework'
       },
       {
         id: 'V5',
-        hook: 'In 5 years, most financial agreements will be between AI agents.',
         angle: 'future_focused',
-        emotion: 'hope'
+        emotion: 'hope',
+        instruction: 'Focus on the FUTURE - paint a picture of AI agent economy, then show how Internet Court is the infrastructure we need'
       }
     ];
     
-    // Generate full content for each version
-    this.versions = versionTemplates.map(template => this.generateVersionContent(template));
+    this.versions = [];
+    
+    // Generate each version using LLM
+    try {
+      const zai = await ZAI.create();
+      
+      for (const vp of versionPrompts) {
+        this.log('Phase 5', `Generating ${vp.id} with angle: ${vp.angle}...`);
+        
+        const systemPrompt = `You are an expert Twitter/X content writer for crypto/web3 projects. Write viral thread content.
+
+RULES:
+- Write in short, punchy paragraphs (each paragraph = 1 tweet)
+- Separate paragraphs with double line breaks
+- NO AI-sounding words: delve, leverage, realm, tapestry, paradigm, catalyst, cornerstone, pivotal, myriad, ecosystem, landscape, foster, harness, robust, seamless, innovative, transformative
+- NO template phrases: "picture this", "imagine a world", "lets dive in", "at its core", "in conclusion", "here's what you need to know"
+- NO emojis, NO hashtags in content
+- Include "internetcourt.org" in the content
+- End with an engaging question
+- Target emotion: ${vp.emotion}
+- Total length: 400-600 characters`;
+
+        const userPrompt = `Write a Twitter thread for: ${campaignTitle}
+
+STRATEGY:
+${strategyInfo}
+
+KNOWLEDGE BASE FACTS:
+- ${knowledgeFacts}
+
+ANGLE: ${vp.angle}
+${vp.instruction}
+
+Write compelling thread content now. Make it feel human, urgent, and thought-provoking.`;
+
+        try {
+          const completion = await zai.chat.completions.create({
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userPrompt }
+            ],
+            temperature: 0.8,
+            max_tokens: 800
+          });
+          
+          const generatedContent = completion.choices[0]?.message?.content || '';
+          
+          this.versions.push({
+            id: vp.id,
+            content: generatedContent,
+            hookType: vp.angle,
+            angle: vp.angle,
+            emotion: vp.emotion,
+            generatedBy: 'LLM'
+          });
+          
+          this.log('Phase 5', `${vp.id} generated (${generatedContent.length} chars)`);
+          
+        } catch (genError) {
+          this.log('Phase 5', `Warning: LLM generation failed for ${vp.id}: ${genError.message}`);
+          // Fallback to template
+          this.versions.push(this.getFallbackContent(vp));
+        }
+      }
+      
+    } catch (error) {
+      this.log('Phase 5', `LLM initialization error: ${error.message}`);
+      // Use all fallback content
+      this.versions = versionPrompts.map(vp => this.getFallbackContent(vp));
+    }
     
     this.phaseStatus['Phase 5'] = { 
       status: 'completed', 
       output: '5_RAW_VERSIONS',
-      versionCount: this.versions.length 
+      versionCount: this.versions.length,
+      generatedBy: 'LLM'
     };
     
-    this.log('Phase 5', `Generated ${this.versions.length} versions`);
+    this.log('Phase 5', `Generated ${this.versions.length} versions with LLM`);
     
     return { success: true, versions: this.versions };
   }
   
-  generateVersionContent(template) {
-    const contents = {
+  getFallbackContent(template) {
+    const fallbacks = {
       V1: {
         id: 'V1',
         content: `Your smart contract just executed. The funds moved. The transaction is final.
@@ -1147,11 +1278,9 @@ AI jury evaluates evidence. Minutes, not months. True, False, or Undetermined.
 
 No judges. No jurisdiction wars. Just programmable dispute resolution.
 
-We're entering the agent economy. AI agents making agreements with other AI agents.
-
 When they disagree, who decides?
 
-The internet finally has its own court. The question is whether we're ready to use it.`,
+The internet finally has its own court. Are you ready to use it?`,
         hookType: template.angle,
         angle: template.angle
       },
@@ -1174,8 +1303,6 @@ Internet Court (internetcourt.org) changes this.
 AI validators independently evaluate evidence. Reach consensus. Deliver verdicts.
 
 Not in months. In minutes.
-
-This isn't about replacing legal systems. It's about creating infrastructure for the internet economy.
 
 As DAOs, DeFi, and AI agents multiply, disputes will too.
 
@@ -1269,7 +1396,7 @@ What's your plan when your AI agent needs to sue another AI agent?`,
       }
     };
     
-    return contents[template.id];
+    return fallbacks[template.id];
   }
   
   // ===== PHASE 6: BANNED ITEMS SCANNER (DETECT ONLY) =====
@@ -1662,12 +1789,19 @@ What's your plan when your AI agent needs to sue another AI agent?`,
   // =========================================================================
   
   // ===== PHASE 15: OUTPUT GENERATION =====
-  phase15_OutputGeneration() {
-    this.log('Phase 15', 'Generating output (NO content modifications)...');
+  async phase15_OutputGeneration() {
+    this.log('Phase 15', 'Generating output with LLM Q&A...');
     this.phaseStatus['Phase 15'] = { status: 'running', started: new Date().toISOString() };
     
-    // Generate Q&A pairs
-    const qa = generateQA(this.selectedVersion.content, this.knowledgeBase);
+    // Generate Q&A pairs using LLM
+    let qa;
+    try {
+      qa = await generateQA_LLM(this.selectedVersion.content, this.knowledgeBase);
+      this.log('Phase 15', `Generated ${qa.length} Q&A pairs with LLM`);
+    } catch (error) {
+      this.log('Phase 15', `Warning: Using fallback Q&A - ${error.message}`);
+      qa = getFallbackQA();
+    }
     
     const timestamp = new Date().toISOString();
     
@@ -1893,7 +2027,7 @@ ${(this.finalOutput?.allVersions || []).map((v, i) =>
     this.phase14B_FinalContentPolish();
     
     // OUTPUT SECTION
-    this.phase15_OutputGeneration();
+    await this.phase15_OutputGeneration();
     const result = this.phase16_ExportDelivery();
     
     console.log('\n' + '='.repeat(80));
