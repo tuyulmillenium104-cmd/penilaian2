@@ -2427,12 +2427,31 @@ Add emotional hooks and intensifiers while keeping the message intact.`;
     const avgHESScore = this.versions.reduce((sum, v) => sum + v.hesScore.score, 0) / this.versions.length;
     const avgViralScore = this.versions.reduce((sum, v) => sum + v.viralScore.score, 0) / this.versions.length;
     
-    // VALIDATION CHECK: If too many versions fail HES, may need to go back to Phase 8
+    // VALIDATION CHECK: If too many versions fail HES, go back to Phase 8 for re-enhancement
     const hesFailRatio = versionsFailingHES / this.versions.length;
     
     if (hesFailRatio > 0.8) {
-      this.log('Phase 9', `🚨 ${versionsFailingHES}/${this.versions.length} versions failing HES - may need Phase 8 retry`);
-      // Note: We don't trigger full regeneration here, but log it for monitoring
+      this.log('Phase 9', `🚨 ${versionsFailingHES}/${this.versions.length} versions failing HES - triggering Phase 8 retry`);
+      
+      // Set failback to Phase 8 for emotion re-enhancement
+      this.failbackPhase = 8;
+      this.needsRegeneration = true;
+      
+      this.regenerationHistory.push({
+        trigger: `Phase 9: High HES failure rate (${versionsFailingHES}/${this.versions.length} versions below threshold)`,
+        failbackPhase: 8,
+        timestamp: new Date().toISOString()
+      });
+      
+      this.phaseStatus['Phase 9'] = { 
+        status: 'failed_hes_validation', 
+        output: 'NEEDS_EMOTION_REENHANCEMENT',
+        avgHESScore,
+        versionsFailingHES,
+        failbackPhase: 8
+      };
+      
+      return { success: false, needsRegeneration: true, avgHESScore, versionsFailingHES };
     }
     
     this.phaseStatus['Phase 9'] = { 
@@ -2795,6 +2814,32 @@ Return ONLY JSON.`;
     
     this.selectedVersion.emotionReCheckPassed = passed;
     
+    // VALIDATION CHECK: If emotion still below threshold after re-injection, trigger regeneration
+    if (!passed) {
+      this.log('Phase 14', `🚨 Emotion score still below threshold (${this.selectedVersion.finalEmotionScore}/7) - triggering regeneration`);
+      
+      // Set failback to Phase 5 for full regeneration
+      this.failbackPhase = 5;
+      this.needsRegeneration = true;
+      
+      this.regenerationHistory.push({
+        trigger: `Phase 14: Emotion score still low after re-injection (${this.selectedVersion.finalEmotionScore}/7)`,
+        failbackPhase: 5,
+        timestamp: new Date().toISOString()
+      });
+      
+      this.phaseStatus['Phase 14'] = { 
+        status: 'failed_emotion_validation', 
+        output: 'NEEDS_REGENERATION',
+        emotionScore: this.selectedVersion.finalEmotionScore,
+        passed,
+        usedLLM: true,
+        failbackPhase: 5
+      };
+      
+      return { success: false, needsRegeneration: true, emotionScore: this.selectedVersion.finalEmotionScore };
+    }
+    
     this.phaseStatus['Phase 14'] = { 
       status: 'completed', 
       output: 'EMOTION_VERIFIED_VERSION',
@@ -3083,35 +3128,55 @@ Return ONLY JSON.`;
         if (startPhase <= 4) this.phase4_StrategyDefinition();
         if (startPhase <= 5) await this.phase5_ContentGeneration();
         
-        // Phase 6 + 6B with validation check
-        this.phase6_BannedScanner();
-        const rewriteResult = await this.phase6B_Rewrite();
-        if (this.needsRegeneration) {
-          this.regenerationCount++;
-          if (this.regenerationCount > this.maxRegenerations) {
-            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 6B');
-            this.needsRegeneration = false;
-          } else {
-            console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 6B (${this.regenerationCount}/${this.maxRegenerations})`);
-            continue;
+        // Phase 6 + 6B with validation check (skip if failback to Phase 8+)
+        if (startPhase <= 6) {
+          this.phase6_BannedScanner();
+          const rewriteResult = await this.phase6B_Rewrite();
+          if (this.needsRegeneration) {
+            this.regenerationCount++;
+            if (this.regenerationCount > this.maxRegenerations) {
+              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 6B');
+              this.needsRegeneration = false;
+            } else {
+              console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 6B (${this.regenerationCount}/${this.maxRegenerations})`);
+              continue;
+            }
           }
         }
         
-        // Phase 7 with validation check
-        const uniquenessResult = await this.phase7_UniquenessValidation();
-        if (this.needsRegeneration) {
-          this.regenerationCount++;
-          if (this.regenerationCount > this.maxRegenerations) {
-            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 7');
-            this.needsRegeneration = false;
-          } else {
-            console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 7 (${this.regenerationCount}/${this.maxRegenerations})`);
-            continue;
+        // Phase 7 with validation check (skip if failback to Phase 8+)
+        if (startPhase <= 7) {
+          const uniquenessResult = await this.phase7_UniquenessValidation();
+          if (this.needsRegeneration) {
+            this.regenerationCount++;
+            if (this.regenerationCount > this.maxRegenerations) {
+              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 7');
+              this.needsRegeneration = false;
+            } else {
+              console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 7 (${this.regenerationCount}/${this.maxRegenerations})`);
+              continue;
+            }
           }
         }
         
-        await this.phase8_EmotionInjection();
-        this.phase9_HESSandViral();
+        // Phase 8 Emotion Injection (skip if failback to Phase 9+)
+        if (startPhase <= 8) {
+          await this.phase8_EmotionInjection();
+        }
+        
+        // Phase 9 with validation check (HES fail → Phase 8)
+        const hesResult = this.phase9_HESSandViral();
+        if (this.needsRegeneration) {
+          this.regenerationCount++;
+          if (this.regenerationCount > this.maxRegenerations) {
+            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 9');
+            this.needsRegeneration = false;
+          } else {
+            console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 9 HES FAILURE (${this.regenerationCount}/${this.maxRegenerations})`);
+            console.log(`↩️ Failback to Phase ${this.failbackPhase} for emotion re-enhancement`);
+            continue;
+          }
+        }
         
         // LOCK POINT with validation check
         const selectionResult = this.phase10_QualityScoringAndSelection();
@@ -3157,7 +3222,22 @@ Return ONLY JSON.`;
         
         // Continue with remaining phases
         await this.phase13_BenchmarkComparison();
-        await this.phase14_FinalEmotionReCheck();
+        
+        // Phase 14 with validation check (Emotion fail → Phase 5)
+        const emotionResult = await this.phase14_FinalEmotionReCheck();
+        if (this.needsRegeneration) {
+          this.regenerationCount++;
+          if (this.regenerationCount > this.maxRegenerations) {
+            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 14');
+            this.needsRegeneration = false;
+            // Force accept anyway
+            this.selectedVersion.emotionReCheckPassed = true;
+          } else {
+            console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 14 EMOTION FAILURE (${this.regenerationCount}/${this.maxRegenerations})`);
+            console.log(`↩️ Failback to Phase ${this.failbackPhase} for full regeneration`);
+            continue;
+          }
+        }
         
         // FINAL CONTENT POLISH - May also trigger regeneration
         const polishResult = this.phase14B_FinalContentPolish();
