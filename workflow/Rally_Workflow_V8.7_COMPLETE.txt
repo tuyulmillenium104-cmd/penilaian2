@@ -1,0 +1,578 @@
+# ╔═══════════════════════════════════════════════════════════════╗
+# ║        RALLY WORKFLOW V8.7 - COMPLETE EDITION                  ║
+# ║        INPUT → PROCESS → OUTPUT → VALIDATE → REFINED          ║
+# ║        Created: 2025-01-18                                     ║
+# ║        Version: 8.7 (Hybrid: API + Pure Generation)            ║
+# ╚═══════════════════════════════════════════════════════════════╝
+
+================================================================================
+                    V8.7 IMPROVEMENTS OVER V8.6.1
+================================================================================
+
+**MASALAH YANG DITEMUKAN DI V8.6.1:**
+
+1. ❌ API functions membutuhkan X-Token yang sering tidak tersedia
+2. ❌ Workflow gagal total jika API tidak bisa diakses
+3. ❌ Template Markers detection terlalu complex - AI bisa avoid naturally
+4. ❌ Tidak ada fallback mechanism untuk API failure
+
+**PERBAIKAN DI V8.7:**
+
+1. ✅ HYBRID MODE: API jika tersedia, Pure Generation jika tidak
+2. ✅ Internal Knowledge Fallback untuk Phase 1 & 2
+3. ✅ Hapus Template Markers dari mandatory check (AI naturally avoids)
+4. ✅ API Status Disclosure di awal workflow
+5. ✅ Simplified flow untuk Pure Generation mode
+6. ✅ X-Token/ZAI-Token requirement documented
+
+================================================================================
+                    API STATUS REQUIREMENT
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  Z-AI-WEB-DEV-SDK FUNCTIONS REQUIRE AUTHENTICATION                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Required: X-Token or ZAI_TOKEN environment variable                        │
+│                                                                             │
+│  Functions requiring API:                                                   │
+│  - web_search (Phase 1 Research)                                            │
+│  - page_reader (Phase 2B Competitor Analysis)                               │
+│  - chat.completions (External LLM calls)                                    │
+│  - images.generations (Image generation)                                    │
+│                                                                             │
+│  Setup:                                                                     │
+│  export X_TOKEN="your-token-here"                                           │
+│  OR                                                                         │
+│  export ZAI_TOKEN="your-token-here"                                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  IF API UNAVAILABLE → USE PURE GENERATION MODE                              │
+│  - AI generates content directly in chat                                    │
+│  - Uses internal knowledge for research                                     │
+│  - Skips web-reader for competitor analysis                                 │
+│  - Quality maintained through AI capabilities                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    EXECUTION MODE SELECTION
+================================================================================
+
+**START WORKFLOW:**
+
+```
+STEP 0: CHECK API STATUS
+------------------------
+TRY: z-ai function -n web_search -a '{"query": "test"}'
+
+IF SUCCESS:
+  → MODE = "API_ENABLED"
+  → Use web_search for research
+  → Use page_reader for competitor analysis
+  → Use images.generations for images
+
+IF FAIL (401 Unauthorized):
+  → MODE = "PURE_GENERATION"
+  → Use internal knowledge for research
+  → Use AI knowledge for competitor patterns
+  → Skip image generation or use alternative
+  → Content quality maintained through AI generation
+```
+
+================================================================================
+                    CORE PRINCIPLE V8.7
+================================================================================
+
+**SETIAP PHASE HARUS MEMILIKI:**
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  INPUT: Apa yang dibutuhkan sebelum phase dimulai?                          │
+│  PROCESS: Langkah-langkah KONKRET yang dilakukan                            │
+│  OUTPUT: Apa yang dihasilkan setelah phase selesai?                         │
+│  VALIDATE: Apakah output memenuhi kriteria?                                 │
+│           YES → Lanjut ke phase berikutnya                                  │
+│           NO → Kembali ke phase SPESIFIK dengan feedback SPESIFIK           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  MODE AWARE: Setiap phase harus support BOTH modes                          │
+│  - API Mode: Use external APIs when available                               │
+│  - Pure Generation Mode: Use AI capabilities directly                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE STRUCTURE V8.7
+================================================================================
+
+**INPUT SECTION (Phase 0-2B):**
+- Phase 0: Preparation + API Status Check
+- Phase 1: Research (4 Web Searches OR Internal Knowledge)
+- Phase 2: Leaderboard Analysis (API OR General Knowledge)
+- Phase 2B: Competitor Deep Analysis (web-reader OR Skip)
+
+**PROCESS SECTION (Phase 3-9):**
+- Phase 3: Gap Identification
+- Phase 4: Strategy Definition
+- Phase 5: Content Generation (5 Versions) - PURE AI GENERATION
+- Phase 6: Banned Items Scanner (Simplified)
+- Phase 6B: Rewrite (if needed)
+- Phase 7: Uniqueness Validation
+- Phase 8: Emotion Injection (ENHANCED)
+- Phase 9: HES + Viral Score Check
+
+**REFINE SECTION (Phase 10-14B):**
+- Phase 10: Quality Scoring & Selection
+- Phase 11: Micro-Optimization (5 Layers)
+- Phase 12: Content Flow Polish
+- Phase 12B: Gate Simulation
+- Phase 13: Benchmark Comparison
+- Phase 14: Final Emotion Re-Check
+- Phase 14B: Final Content Polish
+
+**OUTPUT SECTION (Phase 15-16):**
+- Phase 15: Output Generation (Q&A + Images if API available)
+- Phase 16: Final Verification
+
+================================================================================
+                    COMPLETE PHASE DIAGRAM V8.7
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ═══════════════════ INPUT SECTION ═════════════════════════════════════════│
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 0: PREPARATION + API STATUS CHECK                                     │
+│ INPUT: Campaign request                                                     │
+│ PROCESS:                                                                    │
+│   1. Parse campaign requirements                                            │
+│   2. Test API availability (web_search)                                     │
+│   3. Set EXECUTION_MODE (API/PURE_GENERATION)                               │
+│ OUTPUT: CAMPAIGN_DATA + EXECUTION_MODE                                      │
+│ VALIDATE: Campaign data complete, mode determined                           │
+│ FAIL → ERROR: Return to user for missing data                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 1: RESEARCH                                                           │
+│ INPUT: CAMPAIGN_DATA + EXECUTION_MODE                                       │
+│                                                                             │
+│ IF API_ENABLED:                                                             │
+│   PROCESS: Execute 4 web_searches                                           │
+│   OUTPUT: KNOWLEDGE_BASE from real-time data                                │
+│                                                                             │
+│ IF PURE_GENERATION:                                                         │
+│   PROCESS: Use internal AI knowledge about project                          │
+│   OUTPUT: KNOWLEDGE_BASE from AI training data                              │
+│                                                                             │
+│ VALIDATE: Minimum 20 facts extracted                                        │
+│ FAIL → Execute additional searches OR extend internal knowledge             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 2: LEADERBOARD ANALYSIS                                               │
+│ INPUT: CAMPAIGN_DATA + KNOWLEDGE_BASE                                       │
+│                                                                             │
+│ IF API_ENABLED:                                                             │
+│   PROCESS: Fetch leaderboard from Rally API                                 │
+│   OUTPUT: COMPETITOR_PATTERNS with real data                                │
+│                                                                             │
+│ IF PURE_GENERATION:                                                         │
+│   PROCESS: Use AI knowledge of typical competitor patterns                  │
+│   OUTPUT: COMPETITOR_PATTERNS (estimated from knowledge)                    │
+│                                                                             │
+│ VALIDATE: Competitor patterns identified                                    │
+│ FAIL → Use broader industry patterns                                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 2B: COMPETITOR DEEP ANALYSIS                                          │
+│ INPUT: COMPETITOR_PATTERNS + tweet URLs                                     │
+│                                                                             │
+│ IF API_ENABLED:                                                             │
+│   PROCESS: Use page_reader to fetch actual competitor content               │
+│   OUTPUT: COMPETITOR_CONTENT with detailed analysis                         │
+│                                                                             │
+│ IF PURE_GENERATION:                                                         │
+│   STATUS: SKIP - Proceed to Phase 3                                         │
+│   NOTE: Competitor patterns already estimated in Phase 2                    │
+│                                                                             │
+│ VALIDATE: Either completed or skipped with reason                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ═══════════════════ PROCESS SECTION ═══════════════════════════════════════│
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 3: GAP IDENTIFICATION                                                 │
+│ INPUT: COMPETITOR_PATTERNS [+ COMPETITOR_CONTENT if available]              │
+│ PROCESS: Identify unused hooks, emotions, CTAs                              │
+│ OUTPUT: UNUSED_PATTERNS (opportunities not exploited)                       │
+│ VALIDATE: Minimum 3 significant gaps identified                             │
+│ FAIL → Use broader gap analysis with general patterns                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 4: STRATEGY DEFINITION                                                │
+│ INPUT: UNUSED_PATTERNS + KNOWLEDGE_BASE                                     │
+│ PROCESS: Define content angle, emotion, structure, CTA                      │
+│ OUTPUT: CONTENT_STRATEGY                                                    │
+│ VALIDATE: Strategy different from competitor patterns (>=70%)               │
+│ FAIL → Back to Phase 3: Find different gaps                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 5: CONTENT GENERATION (5 Versions) ⭐ PURE AI GENERATION              │
+│ INPUT: CONTENT_STRATEGY + KNOWLEDGE_BASE                                    │
+│                                                                             │
+│ PROCESS: AI generates 5 unique versions directly                            │
+│   - NO API calls needed                                                     │
+│   - NO templates used                                                       │
+│   - Each version has different hook/angle/CTA                               │
+│                                                                             │
+│ OUTPUT: 5_RAW_VERSIONS (V1-V5)                                              │
+│ VALIDATE: Each version has different approach                               │
+│ FAIL → Regenerate overlapping versions                                      │
+│                                                                             │
+│ ⚠️ IMPORTANT: AI naturally avoids template patterns.                        │
+│    No separate template detection needed for pure generation.               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 6: BANNED ITEMS SCANNER (SIMPLIFIED)                                  │
+│ INPUT: 5_RAW_VERSIONS                                                       │
+│                                                                             │
+│ PROCESS: Check for banned words ONLY                                        │
+│   BANNED_WORDS = [                                                          │
+│     "leverage", "leverages", "leveraging",                                  │
+│     "delve", "delves", "delving",                                           │
+│     "spatula", "spatulas",                                                  │
+│     "realm", "realms",                                                      │
+│     "tapestry", "tapestries",                                               │
+│     "embark", "embarks", "embarking",                                       │
+│     "landscape", "landscapes", "landscaping"                                │
+│   ]                                                                         │
+│                                                                             │
+│ NOTE: Template markers check REMOVED.                                       │
+│   AI naturally avoids templates in pure generation mode.                    │
+│   If using external API/skill, template check may be added separately.      │
+│                                                                             │
+│ OUTPUT: SCAN_RESULTS (violations detected)                                  │
+│ VALIDATE: Scanner returns 0 violations for all versions                     │
+│ FAIL → Proceed to Phase 6B: REWRITE                                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 6B: REWRITE (if needed)                                               │
+│ INPUT: SCAN_RESULTS (with violations)                                       │
+│ PROCESS: AI rewrites problematic versions                                    │
+│ OUTPUT: 5_CLEAN_VERSIONS                                                    │
+│ VALIDATE: All versions clean                                                │
+│ FAIL → Regenerate from Phase 5                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 7: UNIQUENESS VALIDATION                                              │
+│ INPUT: 5_CLEAN_VERSIONS + COMPETITOR_PATTERNS                               │
+│ PROCESS: Compare with competitor patterns                                    │
+│ OUTPUT: 5_UNIQUE_VERSIONS                                                   │
+│ VALIDATE: Uniqueness score >= 70%                                           │
+│ FAIL → Back to Phase 5: Regenerate with more differentiation                │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 8: EMOTION INJECTION (ENHANCED)                                       │
+│ INPUT: 5_UNIQUE_VERSIONS + TARGET_EMOTION                                   │
+│                                                                             │
+│ CONCRETE EMOTION PROCESS:                                                    │
+│                                                                             │
+│ STEP 1: Identify target emotion arc                                         │
+│   - START emotion (hook)                                                    │
+│   - MIDDLE emotion (body)                                                   │
+│   - END emotion (resolution/CTA)                                            │
+│                                                                             │
+│ STEP 2: Apply emotion techniques:                                           │
+│   - OUTRAGE: Highlight injustice, unfairness, broken systems                │
+│   - FEAR: Show risks, dangers, what could go wrong                          │
+│   - DESIRE: Paint picture of better outcome                                 │
+│   - BELONGING: Community, shared experience                                 │
+│   - CURIOSITY: Knowledge gap, unexpected fact                               │
+│   - HOPE: Solution exists, positive future                                  │
+│                                                                             │
+│ STEP 3: Verify emotion presence per tweet:                                  │
+│   - Tweet 1: Hook emotion present?                                          │
+│   - Tweet 2-N: Consistent emotion arc?                                      │
+│   - Last tweet: CTA with emotional trigger?                                 │
+│                                                                             │
+│ OUTPUT: 5_EMOTIONAL_VERSIONS (emotion_score >= 7/10)                        │
+│ VALIDATE: Each version triggers intended emotion                            │
+│ FAIL → Apply specific emotion technique                                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 9: HES + VIRAL SCORE CHECK                                            │
+│ INPUT: 5_EMOTIONAL_VERSIONS                                                 │
+│                                                                             │
+│ HES (Hook Engagement Score) Criteria:                                       │
+│   - 1 point: Hook under 280 characters                                      │
+│   - 1 point: Hook poses question OR presents paradox                        │
+│   - 1 point: Hook triggers strong emotion                                   │
+│   - 1 point: Hook creates curiosity gap                                     │
+│                                                                             │
+│ VIRAL SCORE Criteria (1-10):                                                │
+│   - Viral element present (story/controversy/data)                          │
+│   - Shareable format                                                        │
+│   - Engagement driver (CTA)                                                 │
+│   - Emotional resonance                                                     │
+│                                                                             │
+│ OUTPUT: 5_SCORED_VERSIONS                                                   │
+│ VALIDATE: HES >= 3/4 AND Viral >= 6/10                                      │
+│ FAIL HES → Back to Phase 8: Enhance hooks                                   │
+│ FAIL VIRAL → Back to Phase 5: Add viral elements                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ═══════════════════ REFINE SECTION ═══════════════════════════════════════│
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 10: QUALITY SCORING & SELECTION                                       │
+│ INPUT: 5_SCORED_VERSIONS                                                    │
+│                                                                             │
+│ SCORING CRITERIA:                                                           │
+│   - Uniqueness: 0-100                                                       │
+│   - Emotion: 0-10                                                           │
+│   - HES: 0-4                                                                │
+│   - Viral: 0-10                                                             │
+│   TOTAL = Uniqueness + (Emotion*10) + (HES*10) + (Viral*10)                 │
+│                                                                             │
+│ OUTPUT: SELECTED_VERSION (highest combined score)                           │
+│ VALIDATE: Clear winner with score gap >= 5 points                           │
+│ FAIL → Manual review or regenerate                                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 11: MICRO-OPTIMIZATION (5 Layers)                                     │
+│ INPUT: SELECTED_VERSION                                                     │
+│                                                                             │
+│ LAYER 1: Hook Optimization                                                  │
+│   - Strengthen first sentence                                               │
+│   - Add urgency/curiosity if missing                                        │
+│                                                                             │
+│ LAYER 2: Flow Optimization                                                  │
+│   - Improve transitions between tweets                                      │
+│   - Ensure logical progression                                              │
+│                                                                             │
+│ LAYER 3: CTA Optimization                                                   │
+│   - Make CTA more engaging                                                  │
+│   - Add reply trigger                                                       │
+│                                                                             │
+│ LAYER 4: Character Optimization                                             │
+│   - Ensure all tweets under 280 characters                                  │
+│                                                                             │
+│ LAYER 5: Readability Optimization                                           │
+│   - Improve spacing and formatting                                          │
+│   - Simplify complex sentences                                              │
+│                                                                             │
+│ OUTPUT: OPTIMIZED_VERSION                                                   │
+│ VALIDATE: Quality score improved by >= 3 points                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 12: CONTENT FLOW POLISH                                               │
+│ INPUT: OPTIMIZED_VERSION                                                    │
+│ PROCESS:                                                                    │
+│   - Check smooth transitions                                                │
+│   - Verify coherent narrative arc                                           │
+│   - Ensure consistent tone                                                  │
+│ OUTPUT: POLISHED_VERSION                                                    │
+│ VALIDATE: Flow score >= 8/10                                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 12B: GATE SIMULATION                                                  │
+│ INPUT: POLISHED_VERSION                                                     │
+│                                                                             │
+│ 16 GATES:                                                                   │
+│   G1: Content Alignment - Matches campaign requirements                     │
+│   G2: Information Accuracy - Facts are verifiable                           │
+│   G3: Campaign Compliance - Mentions, topics, links present                 │
+│   G4: Originality - Not copied from competitors                             │
+│   G5: Hook Quality - Engaging first impression                              │
+│   G6: Banned Words - No prohibited words                                    │
+│   G7: Template Free - No template patterns (natural for AI)                 │
+│   G8: Emotion Score - Triggers intended emotion                             │
+│   G9: HES Score - Hook engagement quality                                   │
+│   G10: Viral Score - Shareable potential                                    │
+│   G11: Uniqueness - Different from competitors                              │
+│   G12: CTA Quality - Drives engagement                                      │
+│   G13: Flow Score - Smooth reading experience                               │
+│   G14: Character Limits - All tweets under 280 chars                        │
+│   G15: Thread Structure - Appropriate length and pacing                     │
+│   G16: Final Polish - Professional presentation                             │
+│                                                                             │
+│ OUTPUT: GATE_PASSED_VERSION (16/16 gate score)                              │
+│ VALIDATE: Gate score = 16/16                                                │
+│ FAIL G1 → Back to Phase 11                                                  │
+│ FAIL G2 → Back to Phase 1                                                   │
+│ FAIL G3 → Back to Phase 5                                                   │
+│ FAIL G4 → Back to Phase 3                                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 13: BENCHMARK COMPARISON                                              │
+│ INPUT: GATE_PASSED_VERSION + COMPETITOR_PATTERNS                            │
+│ PROCESS: Verify competitive advantage                                       │
+│ OUTPUT: VERIFIED_ADVANTAGE                                                  │
+│ VALIDATE: >= 2 advantages over competitor patterns                          │
+│ FAIL → Back to Phase 4: Redefine strategy                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 14: FINAL EMOTION RE-CHECK                                            │
+│ INPUT: GATE_PASSED_VERSION                                                  │
+│ PROCESS: Verify emotion still present after all modifications               │
+│ OUTPUT: EMOTION_VERIFIED_VERSION                                            │
+│ VALIDATE: Emotion score still >= 7/10                                       │
+│ FAIL → Apply Phase 8 emotion techniques again                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 14B: FINAL CONTENT POLISH                                             │
+│ INPUT: EMOTION_VERIFIED_VERSION                                             │
+│ PROCESS: Final review and cleanup                                           │
+│ OUTPUT: FINAL_VERSION                                                       │
+│ VALIDATE: All elements present and coherent                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+═══════════════════════════════════════════════════════════════════════════════
+                    ████████ ALL VALIDATIONS PASSED ████████
+═══════════════════════════════════════════════════════════════════════════════
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ═══════════════════ OUTPUT SECTION ═══════════════════════════════════════│
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 15: OUTPUT GENERATION                                                 │
+│ INPUT: FINAL_VERSION + KNOWLEDGE_BASE + EXECUTION_MODE                      │
+│                                                                             │
+│ IF API_ENABLED:                                                             │
+│   OUTPUT: COMPLETE_ASSETS (content + 15 Q&A + 3 images)                     │
+│                                                                             │
+│ IF PURE_GENERATION:                                                         │
+│   OUTPUT: COMPLETE_ASSETS (content + Q&A from AI)                           │
+│   NOTE: Images skipped or generated via alternative methods                 │
+│                                                                             │
+│ VALIDATE: All available assets generated                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 16: FINAL VERIFICATION                                                │
+│ INPUT: COMPLETE_ASSETS                                                      │
+│ PROCESS: Verify all phases completed                                        │
+│ OUTPUT: SUBMISSION_READY                                                    │
+│ VALIDATE: All phases verified complete                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+                            ████████ READY FOR SUBMISSION ████████
+
+================================================================================
+                    ╔═══════════════════════════════════════════════════════════╗
+                    ║              KEY CHANGES IN V8.7                          ║
+                    ╚═══════════════════════════════════════════════════════════╝
+================================================================================
+
+1. HYBRID EXECUTION MODE
+   ---------------------
+   - API_ENABLED: Use all z-ai-web-dev-sdk functions
+   - PURE_GENERATION: Use AI capabilities directly
+   - Automatic mode detection at Phase 0
+
+2. INTERNAL KNOWLEDGE FALLBACK
+   ----------------------------
+   - Phase 1 Research: Works without web_search
+   - Phase 2 Leaderboard: Works without Rally API
+   - Phase 2B: Optional, can skip entirely
+
+3. SIMPLIFIED SCANNER
+   ------------------
+   - Only checks BANNED_WORDS
+   - Template markers check REMOVED (AI naturally avoids)
+   - Reduces false positives
+
+4. PURE GENERATION APPROACH
+   ------------------------
+   - AI generates content directly in chat
+   - No external API dependencies for content
+   - Quality maintained through AI training
+
+5. X-TOKEN REQUIREMENT DOCUMENTED
+   ------------------------------
+   - Clear disclosure of API requirements
+   - Setup instructions included
+   - Fallback path defined
+
+================================================================================
+                    ╔═══════════════════════════════════════════════════════════╗
+                    ║              EXECUTION SUMMARY TEMPLATE                   ║
+                    ╚═══════════════════════════════════════════════════════════╝
+================================================================================
+
+```
+RALLY WORKFLOW V8.7 EXECUTION SUMMARY
+=====================================
+
+Campaign: [Campaign Name]
+Mode: [API_ENABLED | PURE_GENERATION]
+
+PHASE STATUS:
+-------------
+Phase 0: ✅ Preparation + Mode Detection
+Phase 1: ✅ Research ([API] | [Internal Knowledge])
+Phase 2: ✅ Leaderboard Analysis
+Phase 2B: [✅ Completed | ⏭️ Skipped - API unavailable]
+Phase 3: ✅ Gap Identification
+Phase 4: ✅ Strategy Definition
+Phase 5: ✅ Content Generation (5 Versions)
+Phase 6: ✅ Scanner ([0] violations)
+Phase 6B: [✅ Completed | ⏭️ Skipped - no violations]
+Phase 7: ✅ Uniqueness Validation
+Phase 8: ✅ Emotion Injection
+Phase 9: ✅ HES + Viral Score
+Phase 10: ✅ Quality Scoring
+Phase 11: ✅ Micro-Optimization
+Phase 12: ✅ Flow Polish
+Phase 12B: ✅ Gate Simulation (16/16)
+Phase 13: ✅ Benchmark Comparison
+Phase 14: ✅ Final Emotion Re-Check
+Phase 14B: ✅ Final Content Polish
+Phase 15: ✅ Output Generation
+Phase 16: ✅ Final Verification
+
+QUALITY METRICS:
+----------------
+Gate Score: 16/16 ✅
+Emotion Score: X/10 ✅
+HES Score: X/4 ✅
+Viral Score: X/10 ✅
+Uniqueness: XX% ✅
+Banned Words: 0 ✅
+
+FINAL OUTPUT: [Link to file]
+```
+
+================================================================================
+                    ╔═══════════════════════════════════════════════════════════╗
+                    ║              VERSION HISTORY                              ║
+                    ╚═══════════════════════════════════════════════════════════╝
+================================================================================
+
+| Version | Date       | Changes                                                  |
+|---------|------------|----------------------------------------------------------|
+| V8.0    | 2025-01-17 | Initial 15-phase workflow                                |
+| V8.5    | 2025-01-18 | Added 16-gate validation                                 |
+| V8.6    | 2025-01-18 | Added Phase 2B, 8, 12, 14 enhancements                   |
+| V8.6.1  | 2025-01-18 | Added Template Markers detection (80+ patterns)          |
+| V8.7    | 2025-01-18 | Hybrid mode, API fallback, simplified scanner            |
+
+================================================================================
+                    END OF RALLY WORKFLOW V8.7
+================================================================================
