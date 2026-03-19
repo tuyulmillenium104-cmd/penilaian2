@@ -1362,43 +1362,140 @@ Based on typical crypto twitter content patterns and these competitor rankings, 
   // PROCESS SECTION (Content Creation - Multi-Version)
   // =========================================================================
   
-  // ===== PHASE 3: GAP IDENTIFICATION =====
+  // ===== PHASE 3: GAP IDENTIFICATION - FULLY DYNAMIC =====
   phase3_GapIdentification() {
-    this.log('Phase 3', 'Starting gap identification...');
+    this.log('Phase 3', 'Starting DYNAMIC gap identification...');
     this.phaseStatus['Phase 3'] = { status: 'running', started: new Date().toISOString() };
     
     // Use competitor analysis to identify gaps
-    const competitorHooks = this.competitorContent?.hooks || ['problem_first'];
+    const competitorHooks = this.competitorContent?.hooks || [];
+    const competitorCTAs = this.competitorContent?.ctas || [];
     const marketGaps = this.competitorContent?.marketGaps || [];
+    const uniqueAngles = this.competitorContent?.uniqueAngles || [];
+    const avoidPatterns = this.competitorContent?.avoidPatterns || [];
     
+    // Calculate opportunity scores DYNAMICALLY based on competitor analysis
+    // Higher score = better opportunity (less competition)
+    const calculateHookOpportunity = (hookType) => {
+      let baseScore = 7.0; // Base opportunity
+      
+      // If hook is used by competitors, reduce score
+      if (competitorHooks.includes(hookType)) {
+        baseScore -= 2.0;
+      }
+      
+      // If hook is in unique angles, increase score
+      if (uniqueAngles.includes(hookType)) {
+        baseScore += 2.0;
+      }
+      
+      // If hook matches market gap themes, increase score
+      const gapThemes = marketGaps.join(' ').toLowerCase();
+      if (hookType === 'problem_first' && gapThemes.includes('problem')) baseScore += 1.0;
+      if (hookType === 'future_focused' && gapThemes.includes('future')) baseScore += 1.0;
+      if (hookType === 'fear' && gapThemes.includes('fear')) baseScore += 1.0;
+      if (hookType === 'contrast' && gapThemes.includes('contrast')) baseScore += 1.0;
+      
+      // Clamp between 5.0 and 10.0
+      return Math.min(10.0, Math.max(5.0, baseScore));
+    };
+    
+    const calculateEmotionOpportunity = (emotion) => {
+      let baseScore = 7.0;
+      
+      // Check if emotion aligns with market gaps
+      const gapThemes = marketGaps.join(' ').toLowerCase();
+      if (emotion === 'fear' && gapThemes.includes('risk')) baseScore += 1.5;
+      if (emotion === 'curiosity' && gapThemes.includes('unique')) baseScore += 1.5;
+      if (emotion === 'hope' && gapThemes.includes('future')) baseScore += 1.5;
+      if (emotion === 'surprise' && gapThemes.includes('unexpected')) baseScore += 1.5;
+      
+      // Check if emotion is in avoid patterns (reduce score)
+      const avoidStr = avoidPatterns.join(' ').toLowerCase();
+      if (avoidStr.includes(emotion)) baseScore -= 1.0;
+      
+      return Math.min(10.0, Math.max(5.0, baseScore));
+    };
+    
+    const calculateCTAOpportunity = (ctaType) => {
+      let baseScore = 7.0;
+      
+      // If CTA is used by competitors, reduce score
+      if (competitorCTAs.includes(ctaType)) {
+        baseScore -= 1.5;
+      }
+      
+      // If CTA matches unique angles, increase score
+      const anglesStr = uniqueAngles.join(' ').toLowerCase();
+      if (anglesStr.includes(ctaType) || anglesStr.includes('question')) baseScore += 1.0;
+      
+      return Math.min(10.0, Math.max(5.0, baseScore));
+    };
+    
+    // Build gaps dynamically
     this.gaps = {
       hooks: [
-        { type: 'problem_first', opportunity: 9.2, reason: 'Most start with solution, not pain point', used: competitorHooks.includes('problem_first') },
-        { type: 'contrast', opportunity: 8.8, reason: 'Code vs dispute resolution contrast', used: competitorHooks.includes('contrast') },
-        { type: 'fear', opportunity: 8.5, reason: 'Risk of unchecked smart contract execution', used: competitorHooks.includes('fear') },
-        { type: 'future_focused', opportunity: 9.0, reason: 'AI agent economy future', used: competitorHooks.includes('future_focused') }
+        { 
+          type: 'problem_first', 
+          opportunity: calculateHookOpportunity('problem_first'), 
+          reason: 'Start with pain point, not solution', 
+          used: competitorHooks.includes('problem_first') 
+        },
+        { 
+          type: 'contrast', 
+          opportunity: calculateHookOpportunity('contrast'), 
+          reason: 'Highlight gap between code speed and court speed', 
+          used: competitorHooks.includes('contrast') 
+        },
+        { 
+          type: 'fear_example', 
+          opportunity: calculateHookOpportunity('fear'), 
+          reason: 'Real consequences of unchecked execution', 
+          used: competitorHooks.includes('fear') 
+        },
+        { 
+          type: 'analytical', 
+          opportunity: calculateHookOpportunity('analytical'), 
+          reason: 'Data-driven structural problem analysis', 
+          used: competitorHooks.includes('analytical') 
+        },
+        { 
+          type: 'future_focused', 
+          opportunity: calculateHookOpportunity('future_focused'), 
+          reason: 'AI agent economy implications', 
+          used: competitorHooks.includes('future_focused') 
+        }
       ],
       emotions: [
-        { emotion: 'fear', opportunity: 9.0, reason: 'What happens when smart contract fails' },
-        { emotion: 'curiosity', opportunity: 7.5, reason: 'Missing layer concept' },
-        { emotion: 'hope', opportunity: 8.5, reason: 'Future of autonomous commerce' },
-        { emotion: 'surprise', opportunity: 8.0, reason: 'Speed comparison' }
+        { emotion: 'fear', opportunity: calculateEmotionOpportunity('fear'), reason: 'Risk of smart contract failure' },
+        { emotion: 'curiosity', opportunity: calculateEmotionOpportunity('curiosity'), reason: 'Missing infrastructure layer' },
+        { emotion: 'hope', opportunity: calculateEmotionOpportunity('hope'), reason: 'Future of autonomous commerce' },
+        { emotion: 'surprise', opportunity: calculateEmotionOpportunity('surprise'), reason: 'Speed and efficiency contrast' }
       ],
       ctas: [
-        { type: 'question', opportunity: 8.5, reason: 'Engagement through inquiry' },
-        { type: 'challenge', opportunity: 8.0, reason: 'Intellectual challenge' },
-        { type: 'future_question', opportunity: 9.0, reason: 'Forward-looking engagement' }
+        { type: 'question', opportunity: calculateCTAOpportunity('question'), reason: 'Engagement through inquiry' },
+        { type: 'challenge', opportunity: calculateCTAOpportunity('challenge'), reason: 'Intellectual provocation' },
+        { type: 'future_question', opportunity: calculateCTAOpportunity('future_question'), reason: 'Forward-looking engagement' }
       ],
-      marketGaps: marketGaps
+      marketGaps: marketGaps,
+      uniqueAngles: uniqueAngles,
+      avoidPatterns: avoidPatterns
     };
     
     this.phaseStatus['Phase 3'] = { 
       status: 'completed', 
-      output: 'UNUSED_PATTERNS',
-      gapCount: this.gaps.hooks.length + this.gaps.emotions.length + this.gaps.ctas.length 
+      output: 'DYNAMIC_GAPS',
+      gapCount: this.gaps.hooks.length + this.gaps.emotions.length + this.gaps.ctas.length,
+      topHook: this.gaps.hooks.sort((a, b) => b.opportunity - a.opportunity)[0]?.type,
+      topEmotion: this.gaps.emotions.sort((a, b) => b.opportunity - a.opportunity)[0]?.emotion,
+      analysisSource: 'competitor_analysis'
     };
     
-    this.log('Phase 3', 'Gaps identified', this.gaps);
+    this.log('Phase 3', 'DYNAMIC gaps identified', {
+      hooks: this.gaps.hooks.map(h => `${h.type}:${h.opportunity.toFixed(1)}`),
+      emotions: this.gaps.emotions.map(e => `${e.emotion}:${e.opportunity.toFixed(1)}`),
+      marketGaps: this.gaps.marketGaps
+    });
     
     return { success: true, gaps: this.gaps };
   }
@@ -1587,13 +1684,16 @@ Write compelling thread content now. Make it feel human, urgent, and thought-pro
           
         } catch (genError) {
           this.log('Phase 5', `Warning: LLM generation failed for ${vp.id}: ${genError.message}`);
-          this.versions.push(this.getFallbackContent(vp));
+          // Use Smart Content Generator for dynamic fallback (NO hardcoded templates)
+          const fallbackContent = await this.getFallbackContent(vp);
+          this.versions.push(fallbackContent);
         }
       }
       
     } catch (error) {
       this.log('Phase 5', `LLM initialization error: ${error.message}`);
-      this.versions = versionPrompts.map(vp => this.getFallbackContent(vp));
+      // Use Smart Content Generator for all versions (NO hardcoded templates)
+      this.versions = await Promise.all(versionPrompts.map(vp => this.getFallbackContent(vp)));
     }
     
     // STRICT VALIDATION: Ensure all versions have content
@@ -1622,147 +1722,151 @@ Write compelling thread content now. Make it feel human, urgent, and thought-pro
     return { success: true, versions: this.versions };
   }
   
-  getFallbackContent(template) {
-    const fallbacks = {
-      V1: {
-        id: 'V1',
-        content: `Your smart contract just executed. The funds moved. The transaction is final.
-
-But what if it was wrong?
-
-Code runs perfectly. Disputes don't run at all. That's the gap no one talks about.
-
-Traditional courts? Geographically bound. Slow. Expensive.
-
-A cross-border smart contract dispute could take 18 months and cost more than the dispute itself.
-
-Meanwhile, your code already executed.
-
-Internet Court (internetcourt.org) is the missing layer.
-
-AI jury evaluates evidence. Minutes, not months. True, False, or Undetermined.
-
-No judges. No jurisdiction wars. Just programmable dispute resolution.
-
-When they disagree, who decides?
-
-The internet finally has its own court. Are you ready to use it?`,
-        hookType: template.angle,
-        angle: template.angle
-      },
-      V2: {
-        id: 'V2',
-        content: `Code executes in milliseconds. Court cases take years.
-
-See the problem?
-
-Smart contracts removed intermediaries from execution. They didn't remove disputes.
-
-Bugs happen. Misaligned incentives happen. Oracle failures happen. Fraud happens.
-
-When they do, there's often no clear way to resolve them without centralized actors.
-
-The automation stopped at the dispute line.
-
-Internet Court (internetcourt.org) changes this.
-
-AI validators independently evaluate evidence. Reach consensus. Deliver verdicts.
-
-Not in months. In minutes.
-
-As DAOs, DeFi, and AI agents multiply, disputes will too.
-
-The infrastructure is finally here. Are we building it before we need it?`,
-        hookType: template.angle,
-        angle: template.angle
-      },
-      V3: {
-        id: 'V3',
-        content: `$50 million drained from The DAO in 2016. A bug in the code.
-
-The blockchain didn't care. It just executed.
-
-What happens when your transaction is next?
-
-Smart contracts are immutable. That's the feature.
-
-But immutability without recourse is also the risk.
-
-Traditional courts can't help. They're too slow, too local, too analog.
-
-Internet Court (internetcourt.org) introduces accountability at machine speed.
-
-Clear statements. Evidence submission. AI jury consensus.
-
-True, False, or Undetermined in minutes.
-
-The agent economy is coming. AI-to-AI transactions at scale.
-
-When agents disagree, they need their own court.
-
-Not built for humans. Built for the internet.
-
-What disputes will your agents face in 5 years?`,
-        hookType: template.angle,
-        angle: template.angle
-      },
-      V4: {
-        id: 'V4',
-        content: `Smart contracts automate trust. But they don't automate justice.
-
-When execution and dispute resolution are separated by months and thousands of dollars, the system breaks for anyone not wealthy enough to fight.
-
-The structural problem: traditional courts assume geography, identity, and human-readable contracts.
-
-The internet economy operates across jurisdictions, pseudonymous identities, and autonomous code.
-
-These systems were never designed to interface.
-
-Internet Court (internetcourt.org) proposes a new framework.
-
-Statements must be clear and evaluable. Evidence has defined constraints. AI validators reach consensus independently.
-
-Verdict: TRUE. FALSE. UNDETERMINED.
-
-This matters because the agent economy is scaling.
-
-More AI agents = more autonomous agreements = more inevitable disputes.
-
-The question isn't whether we need this. It's whether we build it before we need it.`,
-        hookType: template.angle,
-        angle: template.angle
-      },
-      V5: {
-        id: 'V5',
-        content: `In 5 years, most financial agreements will be between AI agents.
-
-When two agents disagree about a transaction, who resolves it?
-
-A court in Delaware? A judge in Singapore?
-
-The internet economy doesn't respect borders. But our dispute resolution systems still do.
-
-This mismatch is becoming a crisis.
-
-More DAOs. More DeFi. More cross-border digital agreements. More disputes with no clear resolution path.
-
-Internet Court (internetcourt.org) is the infrastructure we'll wish we had earlier.
-
-AI jury evaluates evidence. Delivers verdicts in minutes.
-
-Not geographically bound. Not analog. Not slow.
-
-The future of commerce is autonomous. The future of dispute resolution has to match.
-
-Code runs. Now disputes can too.
-
-What's your plan when your AI agent needs to sue another AI agent?`,
-        hookType: template.angle,
-        angle: template.angle
+  /**
+   * NEW: Use Smart Content Generator for fallback content
+   * NO MORE HARDCODED TEMPLATES - All content is dynamically generated
+   */
+  async getFallbackContent(template) {
+    this.log('Phase 5', `Using Smart Content Generator for ${template.id}...`);
+    
+    // Initialize Smart Generator if not already done
+    if (!globalSmartGenerator && SmartContentGenerator) {
+      const { rateLimiter } = initRateLimiter();
+      globalSmartGenerator = new SmartContentGenerator(
+        rateLimiter, 
+        this.campaignData, 
+        this.knowledgeBase
+      );
+    }
+    
+    // Try Smart Content Generator with 4-level progressive fallback
+    if (globalSmartGenerator) {
+      try {
+        const result = await globalSmartGenerator.generateWithProgressiveFallback(
+          template.angle,
+          template.emotion
+        );
+        
+        if (result.success && result.content && result.content.length > 50) {
+          this.log('Phase 5', `${template.id} generated via SmartGen (${result.method})`);
+          return {
+            id: template.id,
+            content: result.content,
+            hookType: template.angle,
+            angle: template.angle,
+            emotion: template.emotion,
+            generatedBy: result.method, // full_llm, simplified_llm, chunk_assembly, knowledge_extraction
+            usedSmartGenerator: true
+          };
+        }
+      } catch (smartGenError) {
+        this.log('Phase 5', `Smart Generator failed for ${template.id}: ${smartGenError.message}`);
       }
+    }
+    
+    // LAST RESORT: Build from knowledge base (still dynamic, no hardcoded templates)
+    this.log('Phase 5', `${template.id} using knowledge base extraction as final fallback`);
+    return this.buildFromKnowledgeBase(template);
+  }
+  
+  /**
+   * Build content dynamically from knowledge base - NO hardcoded templates
+   */
+  buildFromKnowledgeBase(template) {
+    const facts = this.knowledgeBase.slice(0, 5).map(f => f.fact || f);
+    const campaignTitle = this.campaignData?.title || 'Internet Court';
+    const campaignGoal = this.campaignData?.goal || '';
+    
+    // Dynamic hook based on angle
+    const hooks = {
+      problem_first: this.buildProblemHook(facts, campaignGoal),
+      contrast: this.buildContrastHook(facts, campaignGoal),
+      fear_example: this.buildFearHook(facts, campaignGoal),
+      analytical: this.buildAnalyticalHook(facts, campaignGoal),
+      future_focused: this.buildFutureHook(facts, campaignGoal)
     };
     
-    return fallbacks[template.id];
+    const hook = hooks[template.angle] || hooks.problem_first;
+    const body = this.buildBodyFromFacts(facts, campaignGoal);
+    const cta = this.buildDynamicCTA(template.emotion, campaignGoal);
+    
+    const content = [hook, body, cta].filter(p => p && p.length > 10).join('\n\n');
+    
+    return {
+      id: template.id,
+      content,
+      hookType: template.angle,
+      angle: template.angle,
+      emotion: template.emotion,
+      generatedBy: 'knowledge_extraction',
+      usedKnowledgeBase: true,
+      factsUsed: facts.length
+    };
+  }
+  
+  buildProblemHook(facts, goal) {
+    const problemFact = facts.find(f => 
+      f.toLowerCase().includes('problem') || 
+      f.toLowerCase().includes('slow') ||
+      f.toLowerCase().includes('expensive')
+    );
+    
+    let hook = '';
+    if (problemFact) {
+      hook = problemFact + '\n\n';
+    }
+    hook += `This is the problem no one talks about.\n\nCode runs. Disputes don't.`;
+    return hook;
+  }
+  
+  buildContrastHook(facts, goal) {
+    return `Smart contracts execute in milliseconds.\n\nCourt cases take years.\n\nSee the gap?`;
+  }
+  
+  buildFearHook(facts, goal) {
+    const riskFact = facts.find(f => 
+      f.toLowerCase().includes('risk') || 
+      f.toLowerCase().includes('fail') ||
+      f.toLowerCase().includes('hack')
+    );
+    
+    let hook = riskFact ? (riskFact + '\n\n') : '';
+    hook += `The code executed. It didn't care about intent.\n\nWhat happens when it's your transaction next?`;
+    return hook;
+  }
+  
+  buildAnalyticalHook(facts, goal) {
+    return `Smart contracts automate trust. But they don't automate justice.\n\nHere's the structural problem:`;
+  }
+  
+  buildFutureHook(facts, goal) {
+    return `In 5 years, most financial agreements will be between AI agents.\n\nWhen they disagree, who resolves it?`;
+  }
+  
+  buildBodyFromFacts(facts, goal) {
+    const uniqueFacts = [...new Set(facts)].slice(0, 3);
+    
+    let body = 'Traditional courts are geographically bound. Slow. Expensive.\n\n';
+    body += 'Cross-border disputes can take 18 months and cost more than the dispute itself.\n\n';
+    body += 'Internet Court (internetcourt.org) is the missing layer.\n\n';
+    body += 'AI jury evaluates evidence. Minutes, not months.';
+    
+    if (uniqueFacts.length > 0) {
+      body += '\n\n' + uniqueFacts[0];
+    }
+    
+    return body;
+  }
+  
+  buildDynamicCTA(emotion, goal) {
+    const ctas = {
+      curiosity: `The internet finally has its own court.\n\nWhat disputes will you face in the Web3 economy?`,
+      fear: `The agent economy is coming.\n\nAre you prepared for when it disagrees?`,
+      hope: `The future of commerce is autonomous.\n\nCode runs. Now disputes can too.\n\nWhat's your plan?`,
+      surprise: `Not in months. In minutes.\n\nThe infrastructure is here.\n\nReady to use it?`
+    };
+    
+    return ctas[emotion] || ctas.curiosity;
   }
   
   // ===== PHASE 6: BANNED ITEMS SCANNER (DETECT ONLY) =====
