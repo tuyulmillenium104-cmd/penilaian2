@@ -392,6 +392,455 @@ const POWER_WORDS = {
 };
 
 // ============================================================================
+// HOOK STANDARDS - CRITICAL FOR CONTENT QUALITY
+// ============================================================================
+
+const HOOK_STANDARDS = {
+  // Weak openings that MUST be avoided
+  weakOpenings: [
+    'the ', 'a ', 'an ', 'this is', 'there are', 'there is', 'i think',
+    'it is', 'in the', 'today ', 'so ', 'well ', 'basically',
+    'honestly ', 'actually ', 'first ', 'let me', 'here is', 'here are'
+  ],
+  
+  // Power hook patterns - first 3-5 words that grab attention
+  powerPatterns: [
+    // Numbers/Data hooks
+    /^\$\d+/i,           // "$50M vanished..."
+    /^\d+/i,             // "400 million users..."
+    /\d+%/i,             // "99% of..."
+    
+    // Question hooks
+    /^(what|who|why|how|when|where|which)/i,  // "What happens when..."
+    
+    // Action verbs
+    /^(imagine|picture|consider|think)/i,     // "Imagine this..."
+    
+    // Bold statements
+    /^(code|justice|courts|your|ai|smart)/i,  // "Code executes perfectly..."
+    
+    // Contrarian/bold
+    /^(no|wrong|false|never|stop|don't|never)/i,  // "No one talks about..."
+    
+    // Personal pain
+    /^i (lost|failed|got|spent|wasted|built)/i,   // "I lost everything..."
+    
+    // Urgency
+    /^(warning|alert|urgent|breaking|stop|wait)/i // "Warning: Your funds..."
+  ],
+  
+  // Required hook elements - content MUST have at least 2
+  requiredElements: {
+    curiosity: ['what if', 'why', 'how', 'secret', 'hidden', 'mystery', 'nobody knows', 'few people'],
+    tension: ['but', 'however', 'wrong', 'problem', 'crisis', 'fail', 'risk', 'danger'],
+    surprise: ['unexpected', 'finally', 'breakthrough', 'shocking', 'plot twist'],
+    relevance: ['you', 'your', 'today', 'now', 'immediately', 'this is why']
+  },
+  
+  // Strong hook examples for reference
+  strongExamples: [
+    "Code executes perfectly. Justice doesn't.",
+    "$50 million left The DAO in 2016. No court could help.",
+    "Your AI agent just got scammed. Who do you call?",
+    "What happens when your DAO gets rugged?",
+    "I lost everything to a bug no court could fix.",
+    "Traditional courts will be obsolete by 2030.",
+    "400 million people use smart contracts. 0 courts can help."
+  ],
+  
+  // Weak hook examples to avoid
+  weakExamples: [
+    "Smart contracts are becoming important...",
+    "The blockchain industry needs...",
+    "This is about Internet Court...",
+    "There are many problems with...",
+    "In today's digital world..."
+  ]
+};
+
+// ============================================================================
+// EMOTION STANDARDS - STRICT REQUIREMENTS FOR EMOTIONAL CONTENT
+// ============================================================================
+
+const EMOTION_STANDARDS = {
+  // Minimum emotion score required (out of 10)
+  minEmotionScore: 8,
+  
+  // Minimum number of different emotion types that must be present
+  minEmotionTypes: 3,
+  
+  // Required emotion distribution - content should have these emotions
+  requiredEmotions: {
+    primary: ['curiosity', 'fear', 'surprise', 'hope', 'pain'],
+    secondary: ['urgency', 'anticipation', 'relief', 'frustration', 'excitement']
+  },
+  
+  // Emotion intensity levels required
+  intensityLevels: {
+    high: ['devastatingly', 'completely', 'totally', 'absolutely', 'brutally', 'seriously', 'genuinely'],
+    medium: ['really', 'actually', 'truly', 'honestly', 'legitimately'],
+    low: ['somewhat', 'slightly', 'a bit', 'kind of']  // These should be AVOIDED
+  },
+  
+  // Body feelings that create visceral reactions - MUST have at least 1
+  bodyFeelings: [
+    'cold sweat', 'panic', 'anxiety', "couldn't breathe", 'heart racing',
+    'stomach dropped', 'heart sank', 'chest tightened', 'sick feeling',
+    "couldn't sleep", 'jaw dropped', "couldn't believe my eyes", 'did a double take',
+    'itching to know', 'dying to find out', "can't stop wondering",
+    'felt hopeful', 'could finally see', 'weight lifted'
+  ],
+  
+  // Emotion triggers by type - content MUST have triggers from at least 3 categories
+  emotionTriggers: {
+    fear: ['risk', 'danger', 'threat', 'warning', 'scary', 'terrifying', 'afraid', 'worried', 
+           'nightmare', 'what if', 'could lose', 'at stake', 'crisis', 'wrong', 'fail', 'lost', 
+           'drained', 'bug', 'execute', 'final', 'lose everything', 'at risk'],
+    curiosity: ['wonder', 'curious', 'secret', 'hidden', 'mystery', 'discover', 'surprising', 
+                'unexpected', 'few people know', "what most don't realize", 'who', 'what', 'why', 
+                'how', 'question', 'mismatch', 'gap', 'missing', 'problem', 'plan', 'disagree', 
+                'resolve', 'when', 'agent', 'years', 'future', 'economy', 'ever wondered'],
+    surprise: ['unexpected', 'shocking', 'surprised', "didn't expect", 'blew my mind', 'plot twist', 
+               'wait, what', 'finally', 'breakthrough', 'minutes', 'not', 'suddenly', 'turns out'],
+    hope: ['finally', 'breakthrough', 'opportunity', 'potential', 'future', 'imagine', 'possible', 
+           'could change everything', 'light at the end', 'match', 'runs', 'infrastructure', 
+           'autonomous', 'commerce', 'solution', 'answer'],
+    pain: ['lost', 'failed', 'broke', 'destroyed', 'killed', 'wasted', 'missed', 'regret', 'hurt', 
+           'pain', 'lost everything', 'too late', 'gone', 'crisis', 'slow', 'borders', 
+           'destroyed', 'devastating', 'brutal']
+  },
+  
+  // Strong emotional openers - first few words MUST create emotional impact
+  emotionalOpeners: [
+    "I lost everything",
+    "What happens when",
+    "Imagine watching",
+    "Nobody talks about",
+    "The scary truth",
+    "I couldn't believe",
+    "What most people miss",
+    "Here's what went wrong",
+    "The problem nobody sees",
+    "What if I told you",
+    "You won't believe",
+    "The brutal reality"
+  ],
+  
+  // Forbidden weak emotional phrases
+  forbiddenWeakPhrases: [
+    'it is important to note',
+    'one might consider',
+    'it could be argued',
+    'some people think',
+    'it seems that',
+    'perhaps',
+    'maybe',
+    'possibly'
+  ],
+  
+  // Strong emotional examples for reference
+  strongExamples: [
+    "I lost everything to a bug no court could fix. The pain was visceral - stomach dropped, couldn't sleep for weeks.",
+    "What happens when your life savings vanish in seconds? That's the terrifying reality 400 million people face.",
+    "The scary truth? Most people don't realize they're one transaction away from losing everything.",
+    "Nobody talks about the gut-wrenching moment you realize there's no recourse. No court. No justice."
+  ]
+};
+
+// ============================================================================
+// CT STANDARDS - CALL-TO-ACTION ELEMENTS
+// ============================================================================
+
+const CT_STANDARDS = {
+  // Required CT elements for minimum score 8/10 (STRICT - no low scores allowed)
+  requiredElements: [
+    { type: 'question', patterns: ['?'], minCount: 1, points: 2, description: 'At least 1 question' },
+    { type: 'replyBait', patterns: ['what do you think', 'thoughts?', 'who else', 'agree?', 'thoughts on', 'drop your', 'what would you'], minCount: 1, points: 2, description: 'Reply-triggering phrase' },
+    { type: 'engagementHook', patterns: ['have you ever', 'what if', 'imagine if', 'would you', 'could you', 'who decides', 'ever wondered'], minCount: 1, points: 2, description: 'Engagement hook phrase' },
+    { type: 'personal', patterns: ['i ', 'my ', 'me ', 'we ', 'our '], minCount: 1, points: 1, description: 'Personal element' },
+    { type: 'fomo', patterns: ['now', 'today', 'finally', 'before', 'last chance', 'soon'], minCount: 1, points: 1, description: 'Urgency element' },
+    { type: 'controversy', patterns: ['wrong', 'problem', 'fail', 'nobody', 'most people', 'contrary', 'actually', 'truth is'], minCount: 1, points: 1, description: 'Controversial element' },
+    { type: 'shareWorthy', patterns: ['this is why', 'here\'s what', 'the truth', 'what most', 'what happens'], minCount: 1, points: 1, description: 'Share-worthy element' }
+  ],
+  
+  // CT score thresholds - STRICT: minimum 8/10 required
+  minPassingScore: 8,
+  excellentScore: 9,
+  perfectScore: 10,
+  
+  // Power CT endings
+  powerEndings: [
+    "What do you think happens next?",
+    "Who decides when code is wrong?",
+    "What would you do?",
+    "Thoughts on this?",
+    "Who else has seen this happen?",
+    "Is your protocol next?",
+    "What's your backup plan?"
+  ]
+};
+
+/**
+ * Calculate Hook Score based on HOOK_STANDARDS
+ * Returns score 0-10 and breakdown
+ */
+function calculateHookScore(content) {
+  const firstTweet = content.split('\n\n')[0] || content;
+  const firstSentence = firstTweet.split(/[.!?]+/)[0] || firstTweet;
+  const lowerFirst = firstTweet.toLowerCase();
+  const lowerSentence = firstSentence.toLowerCase();
+  
+  // Get first 3 words
+  const words = firstSentence.trim().split(/\s+/).slice(0, 3);
+  const first3Words = words.join(' ').toLowerCase();
+  
+  let score = 0;
+  const breakdown = {
+    first3Words: first3Words,
+    hasStrongOpening: false,
+    avoidsWeakOpening: false,
+    hasHookElements: [],
+    hookElementCount: 0,
+    issues: []
+  };
+  
+  // CHECK 1: Avoids weak opening (3 points)
+  const hasWeakOpening = HOOK_STANDARDS.weakOpenings.some(weak => 
+    lowerSentence.startsWith(weak) || first3Words.startsWith(weak)
+  );
+  
+  if (!hasWeakOpening) {
+    score += 3;
+    breakdown.avoidsWeakOpening = true;
+  } else {
+    breakdown.issues.push(`Weak opening detected: "${first3Words}..."`);
+  }
+  
+  // CHECK 2: Has power pattern (3 points)
+  const hasPowerPattern = HOOK_STANDARDS.powerPatterns.some(pattern => 
+    pattern.test(firstSentence)
+  );
+  
+  if (hasPowerPattern) {
+    score += 3;
+    breakdown.hasStrongOpening = true;
+  } else {
+    breakdown.issues.push('First sentence doesn\'t use a power hook pattern');
+  }
+  
+  // CHECK 3: Has hook elements (4 points total, 1 each)
+  for (const [element, triggers] of Object.entries(HOOK_STANDARDS.requiredElements)) {
+    const hasElement = triggers.some(t => lowerFirst.includes(t));
+    if (hasElement) {
+      score += 1;
+      breakdown.hasHookElements.push(element);
+    }
+  }
+  breakdown.hookElementCount = breakdown.hasHookElements.length;
+  
+  // Ensure minimum element count
+  if (breakdown.hookElementCount < 2) {
+    breakdown.issues.push(`Only ${breakdown.hookElementCount} hook elements, need at least 2`);
+  }
+  
+  return {
+    score: Math.min(10, score),
+    breakdown,
+    passed: score >= 7,
+    firstSentence: firstSentence.trim()
+  };
+}
+
+/**
+ * Validate hook and provide feedback
+ */
+function validateHook(content) {
+  const hookResult = calculateHookScore(content);
+  const feedback = [];
+  
+  if (!hookResult.breakdown.avoidsWeakOpening) {
+    feedback.push(`❌ WEAK OPENING: "${hookResult.breakdown.first3Words}" - Start with action, number, question, or bold statement`);
+  }
+  
+  if (!hookResult.breakdown.hasStrongOpening) {
+    feedback.push('❌ NO POWER PATTERN: Use one of: number hook, question hook, action verb, bold statement, or personal pain');
+  }
+  
+  if (hookResult.breakdown.hookElementCount < 2) {
+    feedback.push(`❌ MISSING HOOK ELEMENTS: Only ${hookResult.breakdown.hookElementCount}/4 elements found`);
+    feedback.push('   Add: curiosity (what if/why/how), tension (but/wrong/problem), surprise (finally/unexpected), or relevance (you/your)');
+  }
+  
+  if (hookResult.score >= 7) {
+    feedback.push(`✅ STRONG HOOK: Score ${hookResult.score}/10`);
+  } else {
+    feedback.push(`⚠️ WEAK HOOK: Score ${hookResult.score}/10 - Needs improvement`);
+  }
+  
+  return {
+    ...hookResult,
+    feedback,
+    isWeak: hookResult.score < 7
+  };
+}
+
+/**
+ * Calculate comprehensive CT Score with detailed breakdown
+ */
+function calculateCTScoreDetailed(content) {
+  const lowerContent = content.toLowerCase();
+  let score = 0;
+  const breakdown = {};
+  const missingElements = [];
+  
+  for (const element of CT_STANDARDS.requiredElements) {
+    const found = element.patterns.some(p => lowerContent.includes(p));
+    breakdown[element.type] = {
+      found,
+      points: found ? element.points : 0,
+      description: element.description
+    };
+    
+    if (found) {
+      score += element.points;
+    } else {
+      missingElements.push(element.description);
+    }
+  }
+  
+  return {
+    score: Math.min(10, score),
+    breakdown,
+    missingElements,
+    passed: score >= CT_STANDARDS.minPassingScore,
+    targetScore: CT_STANDARDS.minPassingScore
+  };
+}
+
+// ============================================================================
+// WEB SEARCH HELPER - EXTERNAL RESEARCH
+// ============================================================================
+
+/**
+ * Perform web search using z-ai-web-dev-sdk
+ * @param {string} query - Search query
+ * @param {number} numResults - Number of results to return
+ * @returns {Promise<Array>} Search results
+ */
+async function performWebSearch(query, numResults = 5) {
+  try {
+    const zai = await ZAI.create();
+    const searchResult = await zai.functions.invoke("web_search", {
+      query: query,
+      num: numResults
+    });
+    
+    if (searchResult && Array.isArray(searchResult)) {
+      return searchResult.map(result => ({
+        title: result.name || result.title || '',
+        url: result.url || '',
+        snippet: result.snippet || '',
+        source: result.host_name || new URL(result.url || '').hostname || 'web'
+      }));
+    }
+    
+    return [];
+  } catch (error) {
+    console.log(`[Web Search] Error: ${error.message}`);
+    return [];
+  }
+}
+
+/**
+ * Extract facts from search results
+ * @param {Array} searchResults - Results from web search
+ * @param {string} topic - Topic for categorization
+ * @returns {Array} Extracted facts
+ */
+function extractFactsFromSearchResults(searchResults, topic) {
+  const facts = [];
+  
+  for (const result of searchResults) {
+    if (result.snippet && result.snippet.length > 30) {
+      // Clean and extract factual information
+      const sentences = result.snippet.split(/[.!?]+/).filter(s => s.trim().length > 20);
+      
+      for (const sentence of sentences.slice(0, 2)) { // Max 2 per result
+        const cleaned = sentence.trim();
+        if (cleaned && !cleaned.toLowerCase().includes('click here') && 
+            !cleaned.toLowerCase().includes('subscribe') &&
+            !cleaned.toLowerCase().includes('sign up')) {
+          facts.push({
+            fact: cleaned,
+            source: result.url || result.source,
+            topic: topic,
+            timestamp: new Date().toISOString()
+          });
+        }
+      }
+    }
+  }
+  
+  return facts;
+}
+
+/**
+ * Generate relevant search queries based on campaign data
+ * @param {Object} campaignData - Campaign information
+ * @returns {Array} List of search queries
+ */
+function generateSearchQueries(campaignData) {
+  const queries = [];
+  
+  // Extract keywords from campaign title and goal
+  const title = campaignData?.title || 'Internet Court';
+  const goal = campaignData?.goal || '';
+  
+  // Base queries for Internet Court / GenLayer related content
+  queries.push({
+    query: `${title} blockchain dispute resolution latest news`,
+    topic: 'latest_news',
+    priority: 1
+  });
+  
+  queries.push({
+    query: 'smart contract disputes legal challenges crypto 2024',
+    topic: 'industry_trends',
+    priority: 2
+  });
+  
+  queries.push({
+    query: 'DAO governance disputes examples blockchain',
+    topic: 'real_examples',
+    priority: 2
+  });
+  
+  queries.push({
+    query: 'decentralized justice Web3 arbitration trends',
+    topic: 'technology_trends',
+    priority: 3
+  });
+  
+  queries.push({
+    query: 'AI agents blockchain autonomous commerce future',
+    topic: 'future_outlook',
+    priority: 3
+  });
+  
+  // Add goal-specific query if available
+  if (goal && goal.length > 20) {
+    const goalKeywords = goal.split(' ').slice(0, 5).join(' ');
+    queries.push({
+      query: `${goalKeywords} crypto blockchain`,
+      topic: 'campaign_specific',
+      priority: 1
+    });
+  }
+  
+  return queries.sort((a, b) => a.priority - b.priority);
+}
+
+// ============================================================================
 // UTILITY FUNCTIONS
 // ============================================================================
 
@@ -1105,6 +1554,21 @@ class RallyWorkflowExecutor {
       threadLength: { min: 400, max: 800 }, // For thread
       forbiddenPhrases: []              // From mission rules
     };
+    
+    // CT FOCUS MODE - Flag to indicate content needs stronger CT elements
+    this.ctFocusMode = false;
+    this.ctRegenerationCount = 0;       // Track CT-specific regenerations
+    
+    // EXTERNAL RESEARCH - Web search results and external facts
+    this.externalResearch = {
+      webSearchResults: [],
+      topics: {},
+      totalExternalFacts: 0
+    };
+    
+    // COMPLIANCE ISSUES - Track issues from previous attempts
+    this.complianceIssues = [];
+    this.complianceFixMode = false;
   }
   
   log(phase, message, data = null) {
@@ -1175,19 +1639,31 @@ class RallyWorkflowExecutor {
     }
   }
   
-  // ===== PHASE 1: RESEARCH =====
+  // ===== PHASE 1: RESEARCH (WITH WEB SEARCH) =====
   async phase1_Research() {
-    this.log('Phase 1', 'Starting research...');
+    this.log('Phase 1', 'Starting research with web search...');
     this.phaseStatus['Phase 1'] = { status: 'running', started: new Date().toISOString() };
     
+    // Track external research results
+    this.externalResearch = {
+      webSearchResults: [],
+      topics: {},
+      totalExternalFacts: 0
+    };
+    
     try {
-      // Extract from knowledge base
+      // ========================================
+      // STEP 1: Extract from campaign knowledge base
+      // ========================================
       if (this.campaignData.knowledgeBase) {
         const facts = extractFacts(this.campaignData.knowledgeBase, 'campaign_kb', 10);
         this.knowledgeBase.push(...facts);
+        this.log('Phase 1', `Extracted ${facts.length} facts from campaign knowledge base`);
       }
       
-      // Fetch from required URLs
+      // ========================================
+      // STEP 2: Fetch from required URLs
+      // ========================================
       const urls = [
         'https://internetcourt.org',
         'https://www.genlayer.com'
@@ -1205,17 +1681,86 @@ class RallyWorkflowExecutor {
         }
       }
       
+      // ========================================
+      // STEP 3: WEB SEARCH - External Research (NEW!)
+      // ========================================
+      this.log('Phase 1', '🔍 Starting web search for external research...');
+      
+      const searchQueries = generateSearchQueries(this.campaignData);
+      const maxSearchQueries = 3; // Limit to avoid rate limiting
+      const prioritizedQueries = searchQueries.slice(0, maxSearchQueries);
+      
+      for (const sq of prioritizedQueries) {
+        try {
+          this.log('Phase 1', `Searching: "${sq.query}"`);
+          
+          const searchResults = await performWebSearch(sq.query, 5);
+          
+          if (searchResults.length > 0) {
+            // Store raw results for reference
+            this.externalResearch.webSearchResults.push({
+              query: sq.query,
+              topic: sq.topic,
+              results: searchResults
+            });
+            
+            // Extract facts from search results
+            const extractedFacts = extractFactsFromSearchResults(searchResults, sq.topic);
+            
+            if (extractedFacts.length > 0) {
+              this.knowledgeBase.push(...extractedFacts);
+              this.externalResearch.topics[sq.topic] = extractedFacts.length;
+              this.externalResearch.totalExternalFacts += extractedFacts.length;
+              
+              this.log('Phase 1', `✅ Found ${searchResults.length} results, extracted ${extractedFacts.length} facts for "${sq.topic}"`);
+            }
+          }
+          
+          // Small delay between searches to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+        } catch (searchError) {
+          this.log('Phase 1', `Warning: Web search failed for "${sq.query}": ${searchError.message}`);
+        }
+      }
+      
+      // ========================================
+      // STEP 4: Deduplicate knowledge base
+      // ========================================
+      const uniqueFacts = [];
+      const seenFacts = new Set();
+      
+      for (const fact of this.knowledgeBase) {
+        const key = (fact.fact || fact).toLowerCase().substring(0, 50);
+        if (!seenFacts.has(key)) {
+          seenFacts.add(key);
+          uniqueFacts.push(fact);
+        }
+      }
+      
+      this.knowledgeBase = uniqueFacts;
+      
+      // ========================================
+      // STEP 5: Validate and complete
+      // ========================================
       strictValidator.validatePhase('Phase 1', ['knowledgeBase'], { knowledgeBase: this.knowledgeBase });
       
       this.phaseStatus['Phase 1'] = { 
         status: 'completed', 
         output: 'KNOWLEDGE_BASE',
-        factCount: this.knowledgeBase.length 
+        factCount: this.knowledgeBase.length,
+        externalFacts: this.externalResearch.totalExternalFacts,
+        topics: Object.keys(this.externalResearch.topics)
       };
       
-      this.log('Phase 1', 'Research complete', { totalFacts: this.knowledgeBase.length });
+      this.log('Phase 1', '✅ Research complete', { 
+        totalFacts: this.knowledgeBase.length,
+        internalFacts: this.knowledgeBase.length - this.externalResearch.totalExternalFacts,
+        externalFacts: this.externalResearch.totalExternalFacts,
+        topics: this.externalResearch.topics
+      });
       
-      return { success: true, knowledgeBase: this.knowledgeBase };
+      return { success: true, knowledgeBase: this.knowledgeBase, externalResearch: this.externalResearch };
     } catch (error) {
       this.phaseStatus['Phase 1'] = { status: 'failed', error: error.message };
       strictValidator.addError('Phase 1', error.message);
@@ -1679,7 +2224,26 @@ Based on typical crypto twitter content patterns and these competitor rankings, 
     this.phaseStatus['Phase 5'] = { status: 'running', started: new Date().toISOString() };
     
     // PREPARE ALL CAMPAIGN DATA FOR LLM
-    const knowledgeFacts = this.knowledgeBase.slice(0, 15).map(f => f.fact).join('\n- ');
+    // Include BOTH internal knowledge base AND external research facts
+    const internalFacts = this.knowledgeBase.filter(f => !f.topic || f.topic === 'campaign_kb').slice(0, 10).map(f => f.fact || f);
+    const externalFacts = this.knowledgeBase.filter(f => f.topic && f.topic !== 'campaign_kb').slice(0, 10).map(f => f.fact || f);
+    
+    // Combine facts with priority to external research for relevance
+    const knowledgeFacts = [...new Set([...externalFacts.slice(0, 8), ...internalFacts.slice(0, 7)])].join('\n- ');
+    
+    // Build external research context if available
+    const externalResearchContext = this.externalResearch?.totalExternalFacts > 0 ? `
+========== EXTERNAL RESEARCH (from Web Search) ==========
+The following facts were gathered from real-time web search:
+
+Topics researched: ${Object.keys(this.externalResearch.topics || {}).join(', ') || 'N/A'}
+External facts: ${this.externalResearch.totalExternalFacts}
+
+Key external findings:
+- ${externalFacts.slice(0, 5).join('\n- ')}
+
+You may use these facts to add credibility and relevance to your content.
+` : '';
     
     // ========== CRITICAL: USE ALL CAMPAIGN DATA ==========
     const campaignTitle = this.campaignData?.title || 'Internet Court';
@@ -1756,13 +2320,101 @@ Content Type: ${contentTypeLabel}`;
       }
     ];
     
-    this.versions = [];
+        this.versions = [];
+    
+    // ========== CT ELEMENTS - ALWAYS REQUIRED (not just after failure) ==========
+    // CT elements are MANDATORY from the start to ensure minimum score of 8/10
+    const ctRequiredInstructions = `
+========== CT ELEMENTS (MANDATORY - Your content WILL BE REJECTED without these) ==========
+Your content MUST include these Call-to-Action elements (minimum 8/10 CT score required):
+
+REQUIRED (at least 3 of these):
+1. ✅ COMPELLING QUESTION at the end that DEMANDS response
+   Examples: "What do you think happens next?" "Who decides when code is wrong?" "What would you do?"
+2. ✅ REPLY BAIT phrases: "What do you think?" "Thoughts?" "Who else has experienced this?" "Drop your thoughts"
+3. ✅ ENGAGEMENT HOOKS: "Have you ever..." "What if..." "Imagine if..." "Would you..." "Who decides..."
+
+ALSO INCLUDE (at least 2 of these):
+4. ✅ PERSONAL element: Use "I" or "we" statements
+5. ✅ FOMO: Create urgency without being spammy ("now", "today", "finally")
+6. ✅ CONTROVERSY (mild): Take a stance that invites debate
+7. ✅ SHARE-WORTHY: "This is why..." "Here's what..." "The truth is..."
+
+POWER ENDINGS (use one of these or similar):
+- "What do you think happens next?"
+- "Who decides when code is wrong?"
+- "What would you do?"
+- "Is your protocol next?"
+- "What's your backup plan?"
+
+Your content WILL BE REJECTED if CT score < 8/10.
+`;
+    
+    // Additional emphasis if regenerating due to low CT score
+    const ctFocusModeExtra = this.ctFocusMode ? `
+⚠️ PREVIOUS ATTEMPT HAD LOW CT SCORE - This is your chance to fix it!
+Make sure EVERY required CT element is present. Check your content before submitting.
+` : '';
+    
+    // Additional emphasis if regenerating due to compliance issues
+    const complianceFixExtra = this.complianceIssues && this.complianceIssues.length > 0 ? `
+⚠️⚠️⚠️ PREVIOUS ATTEMPT HAD COMPLIANCE ISSUES - YOU MUST FIX THESE:
+${this.complianceIssues.map(i => `- ${i}`).join('\n')}
+
+DO NOT repeat these mistakes. Your content will be VALIDATED again.
+` : '';
+    
+    // ========== HOOK & EMOTION QUALITY STANDARDS ==========
+    const hookEmotionStandards = `
+========== HOOK QUALITY STANDARDS (CRITICAL) ==========
+Your FIRST sentence MUST be a POWERFUL HOOK that:
+1. GRABS attention in the first 3 words - Start with action, number, question, or bold statement
+2. Creates IMMEDIATE curiosity or tension - Reader must want to know more
+3. AVOIDS WEAK OPENINGS: ${HOOK_STANDARDS.weakOpenings.slice(0, 8).join(', ')}
+4. Uses POWER HOOK patterns:
+   - SHOCKING FACT: "$50M vanished. The code was correct."
+   - FEAR/URGENCY: "Your smart contract has a fatal flaw."
+   - CONTRADICTION: "Code is law. Except when it isn't."
+   - QUESTION HOOK: "What happens when your DAO gets rugged?"
+   - PERSONAL PAIN: "I lost everything to a bug no court could fix."
+   - BOLD CLAIM: "Traditional courts will be obsolete by 2030."
+
+STRONG HOOK EXAMPLES (USE THESE AS INSPIRATION):
+${HOOK_STANDARDS.strongExamples.slice(0, 4).map(e => `- "${e}"`).join('\n')}
+
+WEAK HOOK EXAMPLES (NEVER USE):
+${HOOK_STANDARDS.weakExamples.map(e => `- "${e}" ❌`).join('\n')}
+
+========== EMOTION QUALITY STANDARDS (CRITICAL) ==========
+Your content MUST evoke STRONG EMOTION. Target emotion: ${this.strategy?.targetEmotion || 'curiosity'}
+
+MINIMUM REQUIREMENTS:
+- Emotion Score: ${EMOTION_STANDARDS.minEmotionScore}/10 (MUST achieve this)
+- Emotion Types: ${EMOTION_STANDARDS.minEmotionTypes} different emotions (MUST have at least this many)
+
+EMOTION TRIGGERS to use (include 5-7 per content):
+- FEAR: ${EMOTION_STANDARDS.emotionTriggers.fear.slice(0, 8).join(', ')}
+- CURIOSITY: ${EMOTION_STANDARDS.emotionTriggers.curiosity.slice(0, 8).join(', ')}
+- PAIN: ${EMOTION_STANDARDS.emotionTriggers.pain.slice(0, 8).join(', ')}
+- SURPRISE: ${EMOTION_STANDARDS.emotionTriggers.surprise.slice(0, 6).join(', ')}
+
+INTENSIFIERS (use 2-3 of these high-intensity words):
+${EMOTION_STANDARDS.intensityLevels.high.join(', ')}
+
+BODY FEELINGS (use 1 for visceral impact):
+${EMOTION_STANDARDS.bodyFeelings.slice(0, 6).join(', ')}
+
+EMOTIONAL OPENERS (start with one of these patterns):
+${EMOTION_STANDARDS.emotionalOpeners.slice(0, 5).map(o => `- "${o}"`).join('\n')}
+
+Your content WILL BE SCORED on emotional impact. Aim for ${EMOTION_STANDARDS.minEmotionScore}+/10 emotion score.
+`;
     
     try {
       const zai = await ZAI.create();
       
       for (const vp of versionPrompts) {
-        this.log('Phase 5', `Generating ${vp.id} with angle: ${vp.angle}...`);
+        this.log('Phase 5', `Generating ${vp.id} with angle: ${vp.angle}${this.ctFocusMode ? ' (CT FOCUS MODE)' : ''}...`);
         
         // ========== CRITICAL: INCLUDE ALL CAMPAIGN DATA IN PROMPT ==========
         const systemPrompt = `You are an expert Twitter/X content writer for crypto/web3 projects. Write viral ${contentTypeLabel}.
@@ -1775,7 +2427,10 @@ ${contentFormatInstructions}
 ${hasEmDashRule ? '- NO EM DASHES (—) - This is a strict requirement!' : ''}
 - Target emotion: ${vp.emotion}
 ${isSinglePost ? `- Maximum ${maxLength} characters - STRICT LIMIT!` : `- Total length: 400-800 characters`}
-
+${ctRequiredInstructions}
+${ctFocusModeExtra}
+${complianceFixExtra}
+${hookEmotionStandards}
 CAMPAIGN STYLE GUIDELINES:
 ${campaignStyle}
 
@@ -1795,7 +2450,7 @@ ${campaignRules}
 
 ========== MISSION Rules (MUST FOLLOW) ==========
 ${missionRules.join('\n')}
-
+${externalResearchContext}
 ========== URL REQUIREMENT (CRITICAL - Include this in content!) ==========
 Include the website URL: internetcourt.org
 
@@ -2334,8 +2989,10 @@ Return ONLY the JSON.`;
     this.log('Phase 8', 'Injecting emotion with LLM...');
     this.phaseStatus['Phase 8'] = { status: 'running', started: new Date().toISOString() };
     
-    const minEmotionScore = 7;
-    const maxEnhanceAttempts = 2;
+    // STRICT: Use EMOTION_STANDARDS threshold - minimum 8/10
+    const minEmotionScore = EMOTION_STANDARDS.minEmotionScore;
+    const minEmotionTypes = EMOTION_STANDARDS.minEmotionTypes;
+    const maxEnhanceAttempts = 3;
     let versionsNeedingEnhancement = 0;
     
     // POST-LOCK MODE: If selectedVersion exists (failback from Phase 14), enhance it directly
@@ -2347,10 +3004,10 @@ Return ONLY the JSON.`;
       
       while (this.selectedVersion.emotionScore < minEmotionScore && enhanceAttempt < maxEnhanceAttempts) {
         enhanceAttempt++;
-        this.log('Phase 8', `selectedVersion has low emotion score (${this.selectedVersion.emotionScore}), injecting with LLM (attempt ${enhanceAttempt}/${maxEnhanceAttempts})...`);
+        this.log('Phase 8', `selectedVersion has low emotion score (${this.selectedVersion.emotionScore}/${minEmotionScore}), injecting with LLM (attempt ${enhanceAttempt}/${maxEnhanceAttempts})...`);
         
         const emotionPrompt = this.getEmotionInjectionPrompt(this.selectedVersion.content, this.strategy.targetEmotion);
-        const llmResult = await callLLM(emotionPrompt.system, emotionPrompt.user, { temperature: 0.8, maxTokens: 800 });
+        const llmResult = await callLLM(emotionPrompt.system, emotionPrompt.user, { temperature: 0.9, maxTokens: 800 });
         
         if (llmResult.success && llmResult.content) {
           this.selectedVersion.content = llmResult.content;
@@ -2369,7 +3026,8 @@ Return ONLY the JSON.`;
         output: 'ENHANCED_SELECTED_VERSION',
         usedLLM: true,
         emotionScore: this.selectedVersion.emotionScore,
-        postLockMode: true
+        postLockMode: true,
+        threshold: minEmotionScore
       };
       
       this.log('Phase 8', 'Post-lock emotion injection complete', { emotionScore: this.selectedVersion.emotionScore });
@@ -2385,10 +3043,10 @@ Return ONLY the JSON.`;
       // If emotion score is low, use LLM to inject emotion (with retry)
       while (version.emotionScore < minEmotionScore && enhanceAttempt < maxEnhanceAttempts) {
         enhanceAttempt++;
-        this.log('Phase 8', `${version.id} has low emotion score (${version.emotionScore}), injecting with LLM (attempt ${enhanceAttempt}/${maxEnhanceAttempts})...`);
+        this.log('Phase 8', `${version.id} has low emotion score (${version.emotionScore}/${minEmotionScore}), injecting with LLM (attempt ${enhanceAttempt}/${maxEnhanceAttempts})...`);
         
         const emotionPrompt = this.getEmotionInjectionPrompt(version.content, this.strategy.targetEmotion);
-        const llmResult = await callLLM(emotionPrompt.system, emotionPrompt.user, { temperature: 0.8, maxTokens: 800 });
+        const llmResult = await callLLM(emotionPrompt.system, emotionPrompt.user, { temperature: 0.9, maxTokens: 800 });
         
         if (llmResult.success && llmResult.content) {
           version.content = llmResult.content;
@@ -2428,28 +3086,115 @@ Return ONLY the JSON.`;
   
   getEmotionInjectionPrompt(content, targetEmotion) {
     const emotionData = EMOTION_LIBRARY[targetEmotion] || EMOTION_LIBRARY.curiosity;
+    const emotionTriggers = EMOTION_STANDARDS.emotionTriggers[targetEmotion] || EMOTION_STANDARDS.emotionTriggers.curiosity;
     
-    const systemPrompt = `You are an emotion enhancement specialist for social media content.
+    // CRITICAL: Include campaign data to prevent content drift
+    const campaignGoal = this.campaignData?.goal || '';
+    const campaignRules = this.campaignData?.rules || '';
+    const campaignStyle = this.campaignData?.style || '';
+    const missionRules = this.campaignData?.missions?.[0]?.rules || [];
+    const knowledgeFacts = this.knowledgeBase.slice(0, 10).map(f => f.fact || f).join('\n- ');
+    
+    const systemPrompt = `You are an EMOTION MASTER for viral social media content.
 
-Your task: Enhance the emotional impact of content WITHOUT changing its core message.
+Your task: INJECT MAXIMUM EMOTIONAL IMPACT into content while PRESERVING the original message.
 
 Target emotion: ${targetEmotion}
-Emotion triggers to use: ${emotionData.triggers.slice(0, 8).join(', ')}
-Intensifiers to use: ${emotionData.intensifiers.join(', ')}
 
-Rules:
-- Keep the same structure and length
-- Add emotional triggers naturally
-- Don't use AI-sounding language
-- Keep it authentic and human
+========== CRITICAL: DO NOT DEVIATE FROM ORIGINAL CONTENT ==========
 
-Return ONLY the enhanced content.`;
+YOU MUST PRESERVE:
+1. The EXACT facts and claims from the original content
+2. The core message and argument structure  
+3. Any URLs mentioned (internetcourt.org)
+4. The campaign goal and purpose
 
-    const userPrompt = `Enhance this content with more ${targetEmotion}:
+DO NOT ADD:
+- New facts not in the original content
+- New claims or statistics
+- Information outside the knowledge base
+- Anything that violates the rules below
 
+========== CAMPAIGN REQUIREMENTS (MUST FOLLOW) ==========
+
+CAMPAIGN GOAL:
+${campaignGoal || 'N/A'}
+
+CAMPAIGN RULES:
+${campaignRules || 'N/A'}
+
+CAMPAIGN STYLE:
+${campaignStyle || 'N/A'}
+
+MISSION RULES:
+${Array.isArray(missionRules) ? missionRules.join('\n') : missionRules || 'N/A'}
+
+ALLOWED FACTS (Only use these, do not add new ones):
+- ${knowledgeFacts || 'Use only facts from original content'}
+
+========== EMOTION STANDARDS (STRICT - MUST FOLLOW) ==========
+
+MINIMUM REQUIREMENTS:
+- Emotion Score: ${EMOTION_STANDARDS.minEmotionScore}/10 (MUST achieve this)
+- Emotion Types: ${EMOTION_STANDARDS.minEmotionTypes} different emotions (MUST have at least this many)
+- Body Feelings: Include at least 1 from: ${EMOTION_STANDARDS.bodyFeelings.slice(0, 5).join(', ')}
+
+STEP 1 - HOOK EMOTION (CRITICAL - First 3-5 words):
+First sentence MUST trigger IMMEDIATE emotion. Use these patterns:
+${EMOTION_STANDARDS.emotionalOpeners.slice(0, 6).map(o => `- "${o}"`).join('\n')}
+
+STEP 2 - EMOTION TRIGGERS (Use extensively):
+For ${targetEmotion.toUpperCase()} emotion, use these trigger words:
+${emotionTriggers.slice(0, 15).join(', ')}
+
+STEP 3 - BODY FEELINGS (Add visceral impact):
+Include at least ONE body feeling that creates physical response:
+${EMOTION_STANDARDS.bodyFeelings.slice(0, 8).join(', ')}
+
+STEP 4 - INTENSIFIERS (Use high-intensity):
+Use these intensifiers for maximum impact:
+${EMOTION_STANDARDS.intensityLevels.high.join(', ')}
+
+STEP 5 - CLOSING EMOTION:
+End with an EMOTIONAL PUNCH:
+- Question that DEMANDS response
+- Bold statement that creates TENSION
+- Personal call that CONNECTS
+
+========== FORBIDDEN PHRASES (NEVER USE) ==========
+${EMOTION_STANDARDS.forbiddenWeakPhrases.map(p => `- "${p}"`).join('\n')}
+
+========== DO NOT ==========
+- Do NOT use AI words: "delve", "leverage", "realm", "paradigm", "ecosystem"
+- Do NOT use weak phrases: "it is important", "we need to", "this shows"
+- Do NOT explain too much - let emotion breathe
+- Do NOT change the core message
+- Do NOT add new facts or claims not in original content
+- Do NOT violate any campaign rules
+
+Return ONLY the enhanced content with MAXIMUM emotional impact while preserving the original message.`;
+
+    const userPrompt = `INJECT POWERFUL ${targetEmotion.toUpperCase()} EMOTION into this content while PRESERVING the original message:
+
+ORIGINAL CONTENT:
 ${content}
 
-Add emotional hooks and intensifiers while keeping the message intact.`;
+TARGET EMOTION: ${targetEmotion}
+TRIGGERS TO USE: ${emotionTriggers.slice(0, 10).join(', ')}
+INTENSIFIERS: ${EMOTION_STANDARDS.intensityLevels.high.join(', ')}
+BODY FEELINGS: ${EMOTION_STANDARDS.bodyFeelings.slice(0, 5).join(', ')}
+
+REQUIREMENTS (STRICT - ALL MUST BE MET):
+1. Hook must grab attention in FIRST 3 WORDS using emotional opener
+2. Add 5-7 emotion triggers throughout the content
+3. Include at least 1 BODY FEELING for visceral impact
+4. End with emotional punch (question/statement)
+5. PRESERVE the original facts, claims, and core message
+6. DO NOT add new information not in original content
+7. Follow ALL campaign rules above
+8. Score MUST be ${EMOTION_STANDARDS.minEmotionScore}+/10
+
+Your content will be SCORED 1-10 on emotional impact. Aim for ${EMOTION_STANDARDS.minEmotionScore}+.`;
 
     return { system: systemPrompt, user: userPrompt };
   }
@@ -3114,23 +3859,25 @@ Return ONLY the enhanced content.`;
     this.log('Phase 14', 'Running final emotion re-check with LLM...');
     this.phaseStatus['Phase 14'] = { status: 'running', started: new Date().toISOString() };
     
+    // INCREASED: Minimum emotion score from 7 to 9 for maximum impact
+    const minEmotionScore = 9;
     const emotionScore = calculateEmotionScore(this.selectedVersion.content, this.strategy.targetEmotion);
-    let passed = emotionScore >= 7;
+    let passed = emotionScore >= minEmotionScore;
     
     this.selectedVersion.finalEmotionScore = emotionScore;
     
     // If emotion dropped, RE-INJECT with LLM
     if (!passed) {
-      this.log('Phase 14', `Emotion score ${emotionScore} below threshold, re-injecting with LLM...`);
+      this.log('Phase 14', `Emotion score ${emotionScore}/${minEmotionScore} below threshold, re-injecting with LLM...`);
       
       const emotionPrompt = this.getEmotionInjectionPrompt(this.selectedVersion.content, this.strategy.targetEmotion);
-      const llmResult = await callLLM(emotionPrompt.system, emotionPrompt.user, { temperature: 0.8, maxTokens: 800 });
+      const llmResult = await callLLM(emotionPrompt.system, emotionPrompt.user, { temperature: 0.9, maxTokens: 800 });
       
       if (llmResult.success && llmResult.content) {
         this.selectedVersion.content = llmResult.content;
         this.selectedVersion.finalEmotionScore = calculateEmotionScore(this.selectedVersion.content, this.strategy.targetEmotion);
         this.selectedVersion.emotionReInjected = true;
-        passed = this.selectedVersion.finalEmotionScore >= 7;
+        passed = this.selectedVersion.finalEmotionScore >= minEmotionScore;
         this.log('Phase 14', `Emotion re-injected, new score: ${this.selectedVersion.finalEmotionScore}`);
       } else {
         this.log('Phase 14', 'LLM re-injection failed');
@@ -3142,14 +3889,14 @@ Return ONLY the enhanced content.`;
     
     // VALIDATION CHECK: If emotion still below threshold after re-injection, trigger regeneration
     if (!passed) {
-      this.log('Phase 14', `🚨 Emotion score still below threshold (${this.selectedVersion.finalEmotionScore}/7) - triggering Phase 8 re-enhancement`);
+      this.log('Phase 14', `🚨 Emotion score still below threshold (${this.selectedVersion.finalEmotionScore}/${minEmotionScore}) - triggering Phase 8 re-enhancement`);
       
       // Set failback to Phase 8 for emotion re-enhancement (not Phase 5 - keep existing content structure)
       this.failbackPhase = 8;
       this.needsRegeneration = true;
       
       this.regenerationHistory.push({
-        trigger: `Phase 14: Emotion score still low after re-injection (${this.selectedVersion.finalEmotionScore}/7)`,
+        trigger: `Phase 14: Emotion score still low after re-injection (${this.selectedVersion.finalEmotionScore}/${minEmotionScore})`,
         failbackPhase: 8,
         timestamp: new Date().toISOString()
       });
@@ -3158,6 +3905,7 @@ Return ONLY the enhanced content.`;
         status: 'failed_emotion_validation', 
         output: 'NEEDS_EMOTION_REENHANCEMENT',
         emotionScore: this.selectedVersion.finalEmotionScore,
+        threshold: minEmotionScore,
         passed,
         usedLLM: true,
         failbackPhase: 8
@@ -3170,6 +3918,7 @@ Return ONLY the enhanced content.`;
       status: 'completed', 
       output: 'EMOTION_VERIFIED_VERSION',
       emotionScore: this.selectedVersion.finalEmotionScore,
+      threshold: minEmotionScore,
       passed,
       usedLLM: true
     };
@@ -3349,8 +4098,9 @@ Return ONLY the enhanced content.`;
     this.log('Phase 15B', 'Maximizing Call-to-Action potential...');
     this.phaseStatus['Phase 15B'] = { status: 'running', started: new Date().toISOString() };
     
-    const minCTScore = 8;
-    const maxEnhanceAttempts = 2;
+    // STRICT: Use CT_STANDARDS threshold (now 8) - NO LOW SCORES ALLOWED
+    const minCTScore = CT_STANDARDS.minPassingScore;
+    const maxEnhanceAttempts = 3;  // Increased from 2 to give more chances
     let enhanceAttempt = 0;
     let ctScore = this.calculateCTScore(this.selectedVersion.content);
     
@@ -3395,26 +4145,31 @@ Return ONLY the enhanced content.`;
     
     // VALIDATION CHECK: If CT score still low, trigger regeneration
     if (ctScore < minCTScore) {
-      this.log('Phase 15B', `🚨 CT score still low (${ctScore}/${minCTScore}) - triggering Phase 14 retry`);
+      this.log('Phase 15B', `🚨 CT score still low (${ctScore}/${minCTScore}) - triggering FULL REGENERATION from Phase 5`);
       
-      this.failbackPhase = 14;
+      // Failback to Phase 5 to generate new content with stronger CT elements
+      // Phase 14 won't help - we need fresh content with built-in CT
+      this.failbackPhase = 5;
       this.needsRegeneration = true;
+      this.ctRegenerationCount = (this.ctRegenerationCount || 0) + 1;
       
       this.regenerationHistory.push({
-        trigger: `Phase 15B: CT score too low (${ctScore}/${minCTScore})`,
-        failbackPhase: 14,
+        trigger: `Phase 15B: CT score too low (${ctScore}/${minCTScore}) - need content with stronger CT elements`,
+        failbackPhase: 5,
+        ctRegeneration: this.ctRegenerationCount,
         timestamp: new Date().toISOString()
       });
       
       this.phaseStatus['Phase 15B'] = { 
         status: 'failed_ct_validation', 
-        output: 'NEEDS_CT_REENHANCEMENT',
+        output: 'NEEDS_NEW_CONTENT_WITH_CT',
         ctScore,
         targetScore: minCTScore,
-        failbackPhase: 14
+        failbackPhase: 5,
+        ctRegenerationCount: this.ctRegenerationCount
       };
       
-      return { success: false, needsRegeneration: true, ctScore, targetScore: minCTScore };
+      return { success: false, needsRegeneration: true, ctScore, targetScore: minCTScore, failbackPhase: 5 };
     }
     
     this.phaseStatus['Phase 15B'] = { 
@@ -3431,67 +4186,62 @@ Return ONLY the enhanced content.`;
   }
   
   calculateCTScore(content) {
-    let score = 0;
-    const lowerContent = content.toLowerCase();
-    
-    // 1. HAS QUESTION (0-2 points)
-    const questionCount = (content.match(/\?/g) || []).length;
-    if (questionCount >= 1) score += 2;
-    else if (questionCount > 0) score += 1;
-    
-    // 2. REPLY BAIT (0-2 points)
-    const replyTriggers = [
-      'what do you think', 'thoughts', 'agree or disagree', 
-      'who else', 'how many of you', 'raise your hand',
-      'reply with', 'tell me', 'what would you do',
-      'what\'s your', 'share your', 'drop your'
-    ];
-    if (replyTriggers.some(t => lowerContent.includes(t))) score += 2;
-    
-    // 3. ENGAGEMENT QUESTION (0-2 points)
-    const engagementPatterns = [
-      'have you ever', 'did you know', 'what if',
-      'imagine if', 'would you', 'could you',
-      'why do', 'when was the last', 'who decides'
-    ];
-    if (engagementPatterns.some(p => lowerContent.includes(p))) score += 2;
-    
-    // 4. FOMO/URGENCY (0-1 point)
-    const fomoPatterns = ['now', 'today', 'finally', 'last chance', 'before', 'ending soon'];
-    if (fomoPatterns.some(f => lowerContent.includes(f))) score += 1;
-    
-    // 5. SHARE WORTHY (0-1 point)
-    const sharePatterns = ['save this', 'bookmark', 'share', 'retweet', 'forward'];
-    if (sharePatterns.some(s => lowerContent.includes(s))) score += 1;
-    
-    // 6. CONTROVERSY/POLARIZING (0-1 point)
-    const controversyPatterns = ['unpopular opinion', 'hot take', 'controversial', 'fight me', 'change my mind'];
-    if (controversyPatterns.some(c => lowerContent.includes(c))) score += 1;
-    
-    // 7. PERSONAL/RELATABLE (0-1 point)
-    if (/i |my |me |we |our /i.test(content)) score += 1;
-    
-    return Math.min(10, score);
+    // Use the detailed CT score function
+    const result = calculateCTScoreDetailed(content);
+    return result.score;
   }
   
   getCTBreakdown(content) {
-    const lowerContent = content.toLowerCase();
-    
+    const result = calculateCTScoreDetailed(content);
     return {
-      hasQuestion: content.includes('?'),
-      hasReplyBait: ['what do you think', 'thoughts', 'reply with', 'tell me'].some(t => lowerContent.includes(t)),
-      hasEngagementHook: ['have you ever', 'what if', 'imagine'].some(p => lowerContent.includes(p)),
-      hasFOMO: ['now', 'today', 'finally'].some(f => lowerContent.includes(f)),
-      hasShareTrigger: ['save this', 'share', 'retweet'].some(s => lowerContent.includes(s)),
-      hasControversy: ['unpopular', 'hot take', 'change my mind'].some(c => lowerContent.includes(c)),
-      hasPersonalElement: /i |my |me /i.test(content)
+      ...result.breakdown,
+      missingElements: result.missingElements,
+      passed: result.passed
     };
   }
   
   getCTMaximizerPrompt(content, currentScore) {
+    // CRITICAL: Include campaign data to prevent content drift
+    const campaignGoal = this.campaignData?.goal || '';
+    const campaignRules = this.campaignData?.rules || '';
+    const campaignStyle = this.campaignData?.style || '';
+    const missionRules = this.campaignData?.missions?.[0]?.rules || [];
+    const knowledgeFacts = this.knowledgeBase.slice(0, 8).map(f => f.fact || f).join('\n- ');
+    
     const systemPrompt = `You are a CT (Call-to-Action) optimization expert for social media.
 
-Your task: Enhance content to MAXIMIZE engagement potential while keeping it authentic.
+Your task: Enhance content to MAXIMIZE engagement potential while PRESERVING the original message.
+
+========== CRITICAL: DO NOT DEVIATE FROM ORIGINAL CONTENT ==========
+
+YOU MUST PRESERVE:
+1. The EXACT facts and claims from the original content
+2. The core message and argument structure  
+3. Any URLs mentioned (internetcourt.org)
+4. The campaign goal and purpose
+
+DO NOT ADD:
+- New facts not in the original content
+- New claims or statistics
+- Information outside the knowledge base
+- Anything that violates the rules below
+
+========== CAMPAIGN REQUIREMENTS (MUST FOLLOW) ==========
+
+CAMPAIGN GOAL:
+${campaignGoal || 'N/A'}
+
+CAMPAIGN RULES:
+${campaignRules || 'N/A'}
+
+CAMPAIGN STYLE:
+${campaignStyle || 'N/A'}
+
+MISSION RULES:
+${Array.isArray(missionRules) ? missionRules.join('\n') : missionRules || 'N/A'}
+
+ALLOWED FACTS (Only use these, do not add new ones):
+- ${knowledgeFacts || 'Use only facts from original content'}
 
 CT ELEMENTS TO ADD (choose 2-3 that fit naturally):
 1. COMPELLING QUESTION: End with a question that DEMANDS response
@@ -3511,24 +4261,148 @@ CT ELEMENTS TO AVOID:
 RULES:
 - Add CT naturally, don't force it
 - Keep same length roughly
-- Don't change the core message
+- DO NOT change the core message or facts
 - Make it feel human, not marketing
+- Follow ALL campaign rules above
+- DO NOT add new information not in original content
 
 Return ONLY the enhanced content.`;
 
-    const userPrompt = `Enhance this content for MAXIMUM CT (engagement potential):
+    const userPrompt = `Enhance this content for MAXIMUM CT (engagement potential) while PRESERVING the original message:
 
-CURRENT CONTENT:
+ORIGINAL CONTENT:
 ${content}
 
-CURRENT CT SCORE: ${currentScore}/10 (need 8+)
+CURRENT CT SCORE: ${currentScore}/10 (need ${CT_STANDARDS.minPassingScore}+)
 
 Add 2-3 CT elements naturally. The best CT feels organic, not forced.
 Focus on questions that demand response and hooks that invite engagement.
 
+CRITICAL REQUIREMENTS:
+1. PRESERVE all original facts, claims, and URLs
+2. DO NOT add new information not in original content
+3. Follow ALL campaign rules above
+4. Keep the same core message
+
 Return ONLY the enhanced content.`;
 
     return { system: systemPrompt, user: userPrompt };
+  }
+  
+  // ===== PHASE 15C: FINAL CAMPAIGN COMPLIANCE VALIDATION =====
+  validateCampaignCompliance() {
+    this.log('Phase 15C', 'Validating campaign compliance...');
+    this.phaseStatus['Phase 15C'] = { status: 'running', started: new Date().toISOString() };
+    
+    const content = this.selectedVersion.content;
+    const issues = [];
+    const warnings = [];
+    
+    // 1. CHECK URL REQUIREMENT
+    const urlRequired = this.campaignData?.missions?.[0]?.description?.toLowerCase().includes('url') ||
+                        this.campaignData?.missions?.[0]?.description?.toLowerCase().includes('internetcourt') ||
+                        this.campaignData?.goal?.toLowerCase().includes('internetcourt');
+    
+    if (urlRequired && !content.toLowerCase().includes('internetcourt.org')) {
+      issues.push('Missing required URL: internetcourt.org');
+    }
+    
+    // 2. CHECK MISSION RULES
+    let missionRules = this.campaignData?.missions?.[0]?.rules || [];
+    if (typeof missionRules === 'string') missionRules = [missionRules];
+    
+    for (const rule of missionRules) {
+      const lowerRule = rule.toLowerCase();
+      
+      // Check for em dash rule
+      if (lowerRule.includes('em dash') || lowerRule.includes('emdash')) {
+        if (content.includes('—') || content.includes('–')) {
+          issues.push(`Rule violation: Contains em dash (—) - Rule: "${rule}"`);
+        }
+      }
+      
+      // Check for character limit
+      if (lowerRule.includes('character') || lowerRule.includes('char')) {
+        const match = rule.match(/(\d+)\s*char/i);
+        if (match) {
+          const maxChars = parseInt(match[1]);
+          if (content.length > maxChars) {
+            issues.push(`Rule violation: Content exceeds ${maxChars} characters (${content.length} chars)`);
+          }
+        }
+      }
+      
+      // Check for no emoji rule
+      if (lowerRule.includes('no emoji') || lowerRule.includes('no emojis')) {
+        const emojiRegex = /[\u{1F300}-\u{1F9FF}]/u;
+        if (emojiRegex.test(content)) {
+          issues.push(`Rule violation: Contains emojis - Rule: "${rule}"`);
+        }
+      }
+      
+      // Check for no hashtag rule
+      if (lowerRule.includes('no hashtag') || lowerRule.includes('no hashtags')) {
+        if (content.includes('#')) {
+          issues.push(`Rule violation: Contains hashtags - Rule: "${rule}"`);
+        }
+      }
+    }
+    
+    // 3. CHECK BANNED ITEMS (already have scanner, but double-check)
+    const violations = scanBannedItems(content);
+    if (violations.length > 0) {
+      issues.push(`Banned items detected: ${violations.map(v => v.type).join(', ')}`);
+    }
+    
+    // 4. CHECK STYLE COMPLIANCE (warn if style might be violated)
+    const campaignStyle = this.campaignData?.style || '';
+    if (campaignStyle) {
+      // Simple checks for common style violations
+      if (campaignStyle.toLowerCase().includes('professional') && 
+          (content.includes('!!!') || content.includes('???') || content.includes('...'))) {
+        warnings.push('Style warning: Professional style requested but content has multiple punctuation');
+      }
+    }
+    
+    // 5. CHECK KNOWLEDGE BASE COMPLIANCE
+    // Ensure content doesn't have obviously fake statistics
+    const fakeStatPatterns = [
+      /99\.9%/gi, /100%/gi, /millions and millions/gi,
+      /everyone knows/gi, /nobody knows/gi
+    ];
+    
+    for (const pattern of fakeStatPatterns) {
+      if (pattern.test(content)) {
+        // Check if this statistic is in knowledge base
+        const statInKB = this.knowledgeBase.some(f => 
+          pattern.test(f.fact || f)
+        );
+        if (!statInKB) {
+          warnings.push(`Potential unverified claim: Pattern "${pattern.source}" found but not in knowledge base`);
+        }
+      }
+    }
+    
+    // DETERMINE RESULT
+    const passed = issues.length === 0;
+    
+    this.phaseStatus['Phase 15C'] = {
+      status: passed ? 'completed' : 'failed',
+      output: passed ? 'CAMPAIGN_COMPLIANT' : 'COMPLIANCE_ISSUES',
+      issues,
+      warnings,
+      urlPresent: content.toLowerCase().includes('internetcourt.org'),
+      rulesChecked: missionRules.length,
+      passed
+    };
+    
+    if (passed) {
+      this.log('Phase 15C', '✅ Campaign compliance validated', { warnings: warnings.length });
+    } else {
+      this.log('Phase 15C', `🚨 Campaign compliance issues found`, { issues, warnings });
+    }
+    
+    return { passed, issues, warnings };
   }
   
   // ===== PHASE 16: EXPORT AND DELIVERY =====
@@ -3648,12 +4522,14 @@ Return ONLY the enhanced content.`;
           if (this.needsRegeneration) {
             this.regenerationCount++;
             if (this.regenerationCount > this.maxRegenerations) {
-              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 6B');
-              this.needsRegeneration = false;
+              // Don't give up - reset counter and keep trying
+              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 6B - CONTINUING ANYWAY');
+              this.regenerationCount = 1;
+              this.bannedItemFocus = true;
             } else {
               console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 6B (${this.regenerationCount}/${this.maxRegenerations})`);
-              continue;
             }
+            continue;
           }
         }
         
@@ -3663,12 +4539,14 @@ Return ONLY the enhanced content.`;
           if (this.needsRegeneration) {
             this.regenerationCount++;
             if (this.regenerationCount > this.maxRegenerations) {
-              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 7');
-              this.needsRegeneration = false;
+              // Don't give up - reset counter and keep trying
+              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 7 - CONTINUING ANYWAY');
+              this.regenerationCount = 1;
+              this.uniquenessFocus = true;
             } else {
               console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 7 (${this.regenerationCount}/${this.maxRegenerations})`);
-              continue;
             }
+            continue;
           }
         }
         
@@ -3683,13 +4561,15 @@ Return ONLY the enhanced content.`;
           if (this.needsRegeneration) {
             this.regenerationCount++;
             if (this.regenerationCount > this.maxRegenerations) {
-              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 9');
-              this.needsRegeneration = false;
+              // Don't give up - reset counter and keep trying
+              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 9 - CONTINUING ANYWAY');
+              this.regenerationCount = 1;
+              this.hesFocus = true;
             } else {
               console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 9 HES FAILURE (${this.regenerationCount}/${this.maxRegenerations})`);
               console.log(`↩️ Failback to Phase ${this.failbackPhase} for emotion re-enhancement`);
-              continue;
             }
+            continue;
           }
         }
         
@@ -3699,13 +4579,15 @@ Return ONLY the enhanced content.`;
           if (this.needsRegeneration) {
             this.regenerationCount++;
             if (this.regenerationCount > this.maxRegenerations) {
-              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 9B');
-              this.needsRegeneration = false;
+              // Don't give up - reset counter and keep trying
+              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 9B - CONTINUING ANYWAY');
+              this.regenerationCount = 1;
+              this.viralFocus = true;
             } else {
               console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 9B VIRAL FAILURE (${this.regenerationCount}/${this.maxRegenerations})`);
               console.log(`↩️ Failback to Phase ${this.failbackPhase} for emotion re-enhancement`);
-              continue;
             }
+            continue;
           }
         }
         
@@ -3715,14 +4597,14 @@ Return ONLY the enhanced content.`;
           if (this.needsRegeneration) {
             this.regenerationCount++;
             if (this.regenerationCount > this.maxRegenerations) {
-              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 10');
-              this.needsRegeneration = false;
-              // Force accept best version anyway
-              this.selectedVersion = { ...this.versions[0] };
+              // Don't give up - reset counter and keep trying
+              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 10 - CONTINUING ANYWAY');
+              this.regenerationCount = 1;
+              this.qualityFocus = true;
             } else {
               console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 10 (${this.regenerationCount}/${this.maxRegenerations})`);
-              continue;
             }
+            continue;
           }
         }
         
@@ -3744,19 +4626,16 @@ Return ONLY the enhanced content.`;
             this.regenerationCount++;
             
             if (this.regenerationCount > this.maxRegenerations) {
-              console.log('\n🚨 MAX REGENERATIONS REACHED');
-              console.log(`Total attempts: ${this.regenerationCount}`);
-              console.log('Proceeding with current content despite gate failures.\n');
-              this.needsRegeneration = false;
-              // Force gates to pass for final output
-              this.selectedVersion.allGatesPassed = true;
-              this.selectedVersion.gateScore = `${this.selectedVersion.gateScore} (FORCED)`;
+              // Don't give up - reset counter and keep trying
+              console.log('\n🚨 MAX REGENERATIONS REACHED AT GATES - CONTINUING ANYWAY');
+              this.regenerationCount = 1;
+              this.gateFocus = true;
             } else {
               console.log(`\n⚠️ REGENERATION TRIGGERED (${this.regenerationCount}/${this.maxRegenerations})`);
               console.log(`Failback to Phase ${this.failbackPhase}`);
               console.log(`Reason: ${this.regenerationHistory[this.regenerationHistory.length - 1]?.failbackReason || 'Gate failure'}`);
-              continue; // Restart loop from failback phase
             }
+            continue; // Restart loop from failback phase
           }
         }
         
@@ -3771,15 +4650,15 @@ Return ONLY the enhanced content.`;
           if (this.needsRegeneration) {
             this.regenerationCount++;
             if (this.regenerationCount > this.maxRegenerations) {
-              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 13B');
-              this.needsRegeneration = false;
-              // Force accept current content
-              this.selectedVersion.beatTop20 = { score: 0, passed: false, forced: true };
+              // Don't give up - reset counter and keep trying
+              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 13B - CONTINUING ANYWAY');
+              this.regenerationCount = 1;
+              this.beatTop20Focus = true;
             } else {
               console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 13B BEAT TOP 20 FAILURE (${this.regenerationCount}/${this.maxRegenerations})`);
               console.log(`↩️ Failback to Phase ${this.failbackPhase} for new strategy`);
-              continue;
             }
+            continue;
           }
         }
         
@@ -3788,15 +4667,15 @@ Return ONLY the enhanced content.`;
         if (this.needsRegeneration) {
           this.regenerationCount++;
           if (this.regenerationCount > this.maxRegenerations) {
-            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 14');
-            this.needsRegeneration = false;
-            // Force accept anyway
-            this.selectedVersion.emotionReCheckPassed = true;
+            // Don't give up - reset counter and keep trying
+            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 14 - CONTINUING ANYWAY');
+            this.regenerationCount = 1;
+            this.emotionFocus = true;
           } else {
             console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 14 EMOTION FAILURE (${this.regenerationCount}/${this.maxRegenerations})`);
             console.log(`↩️ Failback to Phase ${this.failbackPhase} for emotion re-enhancement`);
-            continue;
           }
+          continue;
         }
         
         // FINAL CONTENT POLISH - May also trigger regeneration
@@ -3807,27 +4686,114 @@ Return ONLY the enhanced content.`;
           this.regenerationCount++;
           
           if (this.regenerationCount > this.maxRegenerations) {
-            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER FINAL POLISH');
-            this.needsRegeneration = false;
+            // Don't give up - reset counter and keep trying
+            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER FINAL POLISH - CONTINUING ANYWAY');
+            this.regenerationCount = 1;
+            this.polishFocus = true;
           } else {
             console.log(`\n⚠️ REGENERATION TRIGGERED BY FINAL POLISH (${this.regenerationCount}/${this.maxRegenerations})`);
-            continue; // Restart loop
+          }
+          continue; // Restart loop
+        }
+        
+        // OUTPUT SECTION - Runs inside the loop for CT validation support
+        await this.phase15_OutputGeneration();
+        
+        // Phase 15B: CT Maximizer with loop - WITH VALIDATION
+        const ctResult = await this.phase15B_CTMaximizer();
+        if (ctResult.success) {
+          // Update final output with CT-enhanced content
+          this.finalOutput.selectedContent.content = this.selectedVersion.content;
+          this.finalOutput.selectedContent.ctScore = this.selectedVersion.ctScore;
+        }
+        
+        // CRITICAL: Check if CT score triggered regeneration
+        if (this.needsRegeneration) {
+          this.regenerationCount++;
+          
+          if (this.regenerationCount > this.maxRegenerations) {
+            // NO MORE GIVING UP! Continue regenerating until CT score passes
+            console.log('\n🚨 MAX REGENERATIONS REACHED - BUT CT SCORE STILL LOW');
+            console.log(`⚠️ CT Score: ${this.selectedVersion?.ctScore?.score || 'N/A'}/10 (NEED ${CT_STANDARDS.minPassingScore})`);
+            console.log('🔄 CONTINUING REGENERATION - Content with low CT score is NOT ACCEPTABLE');
+            
+            // Reset regeneration count to allow more attempts
+            // We NEVER accept content with low CT score
+            this.regenerationCount = 1;
+            this.ctFocusMode = true;
+            this.ctRegenerationCount = (this.ctRegenerationCount || 0) + 1;
+            
+            console.log(`↩️ FORCED REGENERATION with CT FOCUS (attempt ${this.ctRegenerationCount})`);
+            
+            // Reset for full regeneration from Phase 5
+            this.versions = [];
+            this.selectedVersion = null;
+            this.finalOutput = null;
+            
+            // Reset phase status from Phase 5 onwards
+            for (let p = 5; p <= 16; p++) {
+              delete this.phaseStatus[`Phase ${p}`];
+              delete this.phaseStatus[`Phase ${p}B`];
+            }
+            
+            continue; // Go back to start - KEEP TRYING!
+          } else {
+            console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 15B CT FAILURE (${this.regenerationCount}/${this.maxRegenerations})`);
+            console.log(`↩️ Restarting from Phase 5 with CT FOCUS MODE`);
+            
+            // Reset for full regeneration from Phase 5
+            this.versions = [];
+            this.selectedVersion = null;
+            this.finalOutput = null;
+            
+            // Reset phase status from Phase 5 onwards
+            for (let p = 5; p <= 16; p++) {
+              delete this.phaseStatus[`Phase ${p}`];
+              delete this.phaseStatus[`Phase ${p}B`];
+            }
+            
+            // Add CT focus to strategy for regeneration
+            this.ctFocusMode = true;
+            
+            continue; // Go back to start - KEEP TRYING!
           }
         }
         
-        // If we get here, content is locked - proceed to output
+        // PHASE 15C: Final Campaign Compliance Validation (INSIDE LOOP)
+        const complianceResult = this.validateCampaignCompliance();
+        
+        if (!complianceResult.passed) {
+          console.log('\n🚨 CAMPAIGN COMPLIANCE VALIDATION FAILED');
+          console.log(`Issues: ${complianceResult.issues.join(', ')}`);
+          
+          this.regenerationCount++;
+          
+          if (this.regenerationCount > this.maxRegenerations) {
+            console.log('🚨 MAX REGENERATIONS REACHED - Resetting counter and continuing');
+            this.regenerationCount = 1;
+            this.complianceFixMode = true;
+          } else {
+            console.log(`⚠️ REGENERATION TRIGGERED BY COMPLIANCE FAILURE (${this.regenerationCount}/${this.maxRegenerations})`);
+          }
+          
+          // Reset for regeneration
+          this.versions = [];
+          this.selectedVersion = null;
+          this.finalOutput = null;
+          this.complianceIssues = complianceResult.issues;
+          this.failbackPhase = 5;
+          
+          for (let p = 5; p <= 16; p++) {
+            delete this.phaseStatus[`Phase ${p}`];
+            delete this.phaseStatus[`Phase ${p}B`];
+            delete this.phaseStatus[`Phase ${p}C`];
+          }
+          
+          continue; // Restart from Phase 5
+        }
+        
+        // If we get here, content is fully locked including CT and compliance - proceed to export
         break;
-      }
-      
-      // OUTPUT SECTION - Only runs once content is locked
-      await this.phase15_OutputGeneration();
-      
-      // Phase 15B: CT Maximizer with loop
-      const ctResult = await this.phase15B_CTMaximizer();
-      if (ctResult.success) {
-        // Update final output with CT-enhanced content
-        this.finalOutput.selectedContent.content = this.selectedVersion.content;
-        this.finalOutput.selectedContent.ctScore = this.selectedVersion.ctScore;
       }
       
       const exportResult = await this.phase16_ExportAndDelivery();
