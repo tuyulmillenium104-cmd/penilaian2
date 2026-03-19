@@ -2329,6 +2329,46 @@ Return ONLY the JSON.`;
     const maxEnhanceAttempts = 2;
     let versionsNeedingEnhancement = 0;
     
+    // POST-LOCK MODE: If selectedVersion exists (failback from Phase 14), enhance it directly
+    if (this.selectedVersion) {
+      this.log('Phase 8', 'POST-LOCK MODE: Enhancing selectedVersion only');
+      
+      let enhanceAttempt = 0;
+      this.selectedVersion.emotionScore = calculateEmotionScore(this.selectedVersion.content, this.strategy.targetEmotion);
+      
+      while (this.selectedVersion.emotionScore < minEmotionScore && enhanceAttempt < maxEnhanceAttempts) {
+        enhanceAttempt++;
+        this.log('Phase 8', `selectedVersion has low emotion score (${this.selectedVersion.emotionScore}), injecting with LLM (attempt ${enhanceAttempt}/${maxEnhanceAttempts})...`);
+        
+        const emotionPrompt = this.getEmotionInjectionPrompt(this.selectedVersion.content, this.strategy.targetEmotion);
+        const llmResult = await callLLM(emotionPrompt.system, emotionPrompt.user, { temperature: 0.8, maxTokens: 800 });
+        
+        if (llmResult.success && llmResult.content) {
+          this.selectedVersion.content = llmResult.content;
+          this.selectedVersion.emotionEnhanced = true;
+          this.selectedVersion.emotionScore = calculateEmotionScore(this.selectedVersion.content, this.strategy.targetEmotion);
+          this.log('Phase 8', `selectedVersion emotion enhanced to ${this.selectedVersion.emotionScore}`);
+        } else {
+          this.selectedVersion.emotionEnhanced = false;
+          this.log('Phase 8', 'selectedVersion LLM enhancement failed');
+          break;
+        }
+      }
+      
+      this.phaseStatus['Phase 8'] = { 
+        status: 'completed', 
+        output: 'ENHANCED_SELECTED_VERSION',
+        usedLLM: true,
+        emotionScore: this.selectedVersion.emotionScore,
+        postLockMode: true
+      };
+      
+      this.log('Phase 8', 'Post-lock emotion injection complete', { emotionScore: this.selectedVersion.emotionScore });
+      
+      return { success: true, emotionScore: this.selectedVersion.emotionScore, postLockMode: true };
+    }
+    
+    // PRE-LOCK MODE: Enhance all versions
     for (const version of this.versions) {
       let enhanceAttempt = 0;
       version.emotionScore = calculateEmotionScore(version.content, this.strategy.targetEmotion);
@@ -2816,25 +2856,25 @@ Return ONLY JSON.`;
     
     // VALIDATION CHECK: If emotion still below threshold after re-injection, trigger regeneration
     if (!passed) {
-      this.log('Phase 14', `🚨 Emotion score still below threshold (${this.selectedVersion.finalEmotionScore}/7) - triggering regeneration`);
+      this.log('Phase 14', `🚨 Emotion score still below threshold (${this.selectedVersion.finalEmotionScore}/7) - triggering Phase 8 re-enhancement`);
       
-      // Set failback to Phase 5 for full regeneration
-      this.failbackPhase = 5;
+      // Set failback to Phase 8 for emotion re-enhancement (not Phase 5 - keep existing content structure)
+      this.failbackPhase = 8;
       this.needsRegeneration = true;
       
       this.regenerationHistory.push({
         trigger: `Phase 14: Emotion score still low after re-injection (${this.selectedVersion.finalEmotionScore}/7)`,
-        failbackPhase: 5,
+        failbackPhase: 8,
         timestamp: new Date().toISOString()
       });
       
       this.phaseStatus['Phase 14'] = { 
         status: 'failed_emotion_validation', 
-        output: 'NEEDS_REGENERATION',
+        output: 'NEEDS_EMOTION_REENHANCEMENT',
         emotionScore: this.selectedVersion.finalEmotionScore,
         passed,
         usedLLM: true,
-        failbackPhase: 5
+        failbackPhase: 8
       };
       
       return { success: false, needsRegeneration: true, emotionScore: this.selectedVersion.finalEmotionScore };
@@ -3164,66 +3204,79 @@ Return ONLY JSON.`;
           await this.phase8_EmotionInjection();
         }
         
-        // Phase 9 with validation check (HES fail → Phase 8)
-        const hesResult = this.phase9_HESSandViral();
-        if (this.needsRegeneration) {
-          this.regenerationCount++;
-          if (this.regenerationCount > this.maxRegenerations) {
-            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 9');
-            this.needsRegeneration = false;
-          } else {
-            console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 9 HES FAILURE (${this.regenerationCount}/${this.maxRegenerations})`);
-            console.log(`↩️ Failback to Phase ${this.failbackPhase} for emotion re-enhancement`);
-            continue;
+        // Phase 9 with validation check (HES fail → Phase 8) - Skip if post-LOCK (Phase 8+)
+        if (startPhase <= 9) {
+          const hesResult = this.phase9_HESSandViral();
+          if (this.needsRegeneration) {
+            this.regenerationCount++;
+            if (this.regenerationCount > this.maxRegenerations) {
+              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 9');
+              this.needsRegeneration = false;
+            } else {
+              console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 9 HES FAILURE (${this.regenerationCount}/${this.maxRegenerations})`);
+              console.log(`↩️ Failback to Phase ${this.failbackPhase} for emotion re-enhancement`);
+              continue;
+            }
           }
         }
         
-        // LOCK POINT with validation check
-        const selectionResult = this.phase10_QualityScoringAndSelection();
-        if (this.needsRegeneration) {
-          this.regenerationCount++;
-          if (this.regenerationCount > this.maxRegenerations) {
-            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 10');
-            this.needsRegeneration = false;
-            // Force accept best version anyway
-            this.selectedVersion = { ...this.versions[0] };
-          } else {
-            console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 10 (${this.regenerationCount}/${this.maxRegenerations})`);
-            continue;
+        // LOCK POINT with validation check - Skip if post-LOCK (Phase 8+ already has selectedVersion)
+        if (startPhase <= 10) {
+          const selectionResult = this.phase10_QualityScoringAndSelection();
+          if (this.needsRegeneration) {
+            this.regenerationCount++;
+            if (this.regenerationCount > this.maxRegenerations) {
+              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 10');
+              this.needsRegeneration = false;
+              // Force accept best version anyway
+              this.selectedVersion = { ...this.versions[0] };
+            } else {
+              console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 10 (${this.regenerationCount}/${this.maxRegenerations})`);
+              continue;
+            }
           }
         }
         
-        // REFINE SECTION
-        this.phase11_MicroOptimization();
-        this.phase12_ContentFlowPolish();
+        // REFINE SECTION - Skip if post-LOCK failback (Phase 8 from Phase 14)
+        // Only run if we're in normal flow (startPhase <= 5 means full regeneration)
+        const isPostLockFailback = this.selectedVersion !== null && startPhase >= 8;
         
-        // GATE SIMULATION - May trigger regeneration
-        const gateResult = this.phase12B_GateSimulation();
+        if (!isPostLockFailback) {
+          this.phase11_MicroOptimization();
+          this.phase12_ContentFlowPolish();
+        }
         
-        // Check if gates failed and we need to regenerate
-        if (this.needsRegeneration) {
-          this.regenerationCount++;
+        // GATE SIMULATION - Skip if post-LOCK failback (gates already passed)
+        if (!isPostLockFailback) {
+          const gateResult = this.phase12B_GateSimulation();
           
-          if (this.regenerationCount > this.maxRegenerations) {
-            console.log('\n🚨 MAX REGENERATIONS REACHED');
-            console.log(`Total attempts: ${this.regenerationCount}`);
-            console.log('Proceeding with current content despite gate failures.\n');
-            this.needsRegeneration = false;
-            // Force gates to pass for final output
-            this.selectedVersion.allGatesPassed = true;
-            this.selectedVersion.gateScore = `${this.selectedVersion.gateScore} (FORCED)`;
-          } else {
-            console.log(`\n⚠️ REGENERATION TRIGGERED (${this.regenerationCount}/${this.maxRegenerations})`);
-            console.log(`Failback to Phase ${this.failbackPhase}`);
-            console.log(`Reason: ${this.regenerationHistory[this.regenerationHistory.length - 1]?.failbackReason || 'Gate failure'}`);
-            continue; // Restart loop from failback phase
+          // Check if gates failed and we need to regenerate
+          if (this.needsRegeneration) {
+            this.regenerationCount++;
+            
+            if (this.regenerationCount > this.maxRegenerations) {
+              console.log('\n🚨 MAX REGENERATIONS REACHED');
+              console.log(`Total attempts: ${this.regenerationCount}`);
+              console.log('Proceeding with current content despite gate failures.\n');
+              this.needsRegeneration = false;
+              // Force gates to pass for final output
+              this.selectedVersion.allGatesPassed = true;
+              this.selectedVersion.gateScore = `${this.selectedVersion.gateScore} (FORCED)`;
+            } else {
+              console.log(`\n⚠️ REGENERATION TRIGGERED (${this.regenerationCount}/${this.maxRegenerations})`);
+              console.log(`Failback to Phase ${this.failbackPhase}`);
+              console.log(`Reason: ${this.regenerationHistory[this.regenerationHistory.length - 1]?.failbackReason || 'Gate failure'}`);
+              continue; // Restart loop from failback phase
+            }
           }
         }
         
-        // Continue with remaining phases
-        await this.phase13_BenchmarkComparison();
+        // Continue with remaining phases (skip if post-LOCK failback)
+        if (!isPostLockFailback) {
+          await this.phase13_BenchmarkComparison();
+        }
         
-        // Phase 14 with validation check (Emotion fail → Phase 5)
+        // Phase 14 with validation check (Emotion fail → Phase 8)
         const emotionResult = await this.phase14_FinalEmotionReCheck();
         if (this.needsRegeneration) {
           this.regenerationCount++;
@@ -3234,7 +3287,7 @@ Return ONLY JSON.`;
             this.selectedVersion.emotionReCheckPassed = true;
           } else {
             console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 14 EMOTION FAILURE (${this.regenerationCount}/${this.maxRegenerations})`);
-            console.log(`↩️ Failback to Phase ${this.failbackPhase} for full regeneration`);
+            console.log(`↩️ Failback to Phase ${this.failbackPhase} for emotion re-enhancement`);
             continue;
           }
         }
