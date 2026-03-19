@@ -1,0 +1,9 @@
+Smart contracts execute without hesitation but break when human intent conflicts with code. The DAO hack proved this gap creates existential risk for onchain assets.
+
+Traditional legal systems cannot handle borderless code. They are too slow and too costly for the speed of crypto.
+
+Now autonomous agents are making decisions for us. Who is liable when an AI agent executes a painful trade?
+
+We need a native judicial layer before this crisis deepens. Internet Court provides the missing framework for digital justice.
+
+Visit internetcourt.org to see how we protect the future.
