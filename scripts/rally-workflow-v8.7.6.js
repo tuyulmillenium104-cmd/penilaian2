@@ -1,5 +1,5 @@
 /**
- * RALLY WORKFLOW V8.7.6 - COMPLETE 21 PHASES - FULLY INTEGRATED
+ * RALLY WORKFLOW V8.7.6 - COMPLETE 24 PHASES - FULLY INTEGRATED
  * 
  * V8.7.6 = V8.7.5 + Smart Content Generator + Generation Method Tracking
  * 
@@ -25,7 +25,12 @@
  * - NO template fallbacks - all content is dynamic
  * - Enhanced reporting with generation metrics
  * 
- * This script executes the complete workflow with 21 phases:
+ * NEW PHASES FOR VIRAL & COMPETITIVE ADVANTAGE:
+ * - Phase 9B: Viral Enhancement (loop max 2x, failback to Phase 8)
+ * - Phase 13B: Beat Top 20 Strategy (loop max 2x, failback to Phase 4)
+ * - Phase 15B: CT Maximizer (loop max 2x, failback to Phase 14)
+ * 
+ * This script executes the complete workflow with 24 phases:
  * 
  * INPUT SECTION (Data Gathering):
  * - Phase 0: Campaign data fetch (ALL campaign data captured)
@@ -42,6 +47,7 @@
  * - Phase 7: Uniqueness validation (vs competitors)
  * - Phase 8: Emotion injection (via LLM)
  * - Phase 9: HES + Viral score
+ * - Phase 9B: Viral Enhancement (NEW - max 2x loop)
  * 
  * LOCK POINT:
  * - Phase 10: Quality scoring & selection (LOCKS to 1 version)
@@ -51,11 +57,13 @@
  * - Phase 12: Content Flow Polish
  * - Phase 12B: Gate Simulation (16 Gates)
  * - Phase 13: Benchmark Comparison (real competitor data)
+ * - Phase 13B: Beat Top 20 Strategy (NEW - max 2x loop)
  * - Phase 14: Final Emotion Re-Check (LLM re-injection)
  * - Phase 14B: Final Content Polish
  * 
  * OUTPUT SECTION (Delivery - No Content Changes):
  * - Phase 15: Output generation (no images)
+ * - Phase 15B: CT Maximizer (NEW - max 2x loop)
  * - Phase 16: Export and delivery
  * 
  * PRINCIPLES:
@@ -64,6 +72,7 @@
  * - After Phase 10: Work with single selected version only
  * - After Phase 14B: Content is FINAL, no more changes
  * - STRICT EXECUTION: All phases must complete properly
+ * - LOOP PROTECTION: Max 2x loop per phase, max 3 regenerations total
  */
 
 const https = require('https');
@@ -2507,6 +2516,118 @@ Add emotional hooks and intensifiers while keeping the message intact.`;
     return { success: true, avgHESScore, versionsFailingHES };
   }
   
+  // ===== PHASE 9B: VIRAL ENHANCEMENT - WITH LOOP =====
+  async phase9B_ViralEnhancement() {
+    this.log('Phase 9B', 'Enhancing viral potential with LLM...');
+    this.phaseStatus['Phase 9B'] = { status: 'running', started: new Date().toISOString() };
+    
+    const minViralScore = 8;
+    const maxEnhanceAttempts = 2;
+    let versionsNeedingViralBoost = 0;
+    
+    for (const version of this.versions) {
+      let enhanceAttempt = 0;
+      const initialViralScore = version.viralScore?.score || 0;
+      
+      // If viral score is low, enhance with LLM (with loop)
+      while (version.viralScore?.score < minViralScore && enhanceAttempt < maxEnhanceAttempts) {
+        enhanceAttempt++;
+        this.log('Phase 9B', `${version.id} has low viral score (${version.viralScore?.score || 0}), enhancing (attempt ${enhanceAttempt}/${maxEnhanceAttempts})...`);
+        
+        const viralPrompt = this.getViralEnhancementPrompt(version.content);
+        const llmResult = await callLLM(viralPrompt.system, viralPrompt.user, { temperature: 0.9, maxTokens: 1000 });
+        
+        if (llmResult.success && llmResult.content) {
+          version.content = llmResult.content;
+          version.viralEnhanced = true;
+          version.viralScore = calculateViralScore(version.content);
+          this.log('Phase 9B', `${version.id} viral enhanced to ${version.viralScore.score}`);
+        } else {
+          this.log('Phase 9B', `${version.id} LLM enhancement failed`);
+          break;
+        }
+      }
+      
+      // Track versions still below threshold
+      if ((version.viralScore?.score || 0) < minViralScore) {
+        versionsNeedingViralBoost++;
+        this.log('Phase 9B', `⚠️ ${version.id} still below viral threshold: ${version.viralScore?.score || 0}`);
+      }
+    }
+    
+    const avgViralScore = this.versions.reduce((sum, v) => sum + (v.viralScore?.score || 0), 0) / this.versions.length;
+    
+    // VALIDATION CHECK: If too many versions still have low viral, trigger regeneration
+    const viralFailRatio = versionsNeedingViralBoost / this.versions.length;
+    
+    if (viralFailRatio > 0.6) {
+      this.log('Phase 9B', `🚨 ${versionsNeedingViralBoost}/${this.versions.length} versions with low viral - triggering Phase 8 retry`);
+      
+      this.failbackPhase = 8;
+      this.needsRegeneration = true;
+      
+      this.regenerationHistory.push({
+        trigger: `Phase 9B: High viral failure rate (${versionsNeedingViralBoost}/${this.versions.length} below ${minViralScore})`,
+        failbackPhase: 8,
+        timestamp: new Date().toISOString()
+      });
+      
+      this.phaseStatus['Phase 9B'] = { 
+        status: 'failed_viral_validation', 
+        output: 'NEEDS_EMOTION_REENHANCEMENT',
+        avgViralScore,
+        versionsNeedingViralBoost,
+        failbackPhase: 8
+      };
+      
+      return { success: false, needsRegeneration: true, avgViralScore, versionsNeedingViralBoost };
+    }
+    
+    this.phaseStatus['Phase 9B'] = { 
+      status: 'completed', 
+      output: 'VIRAL_ENHANCED_VERSIONS',
+      avgViralScore,
+      versionsNeedingViralBoost 
+    };
+    
+    this.log('Phase 9B', 'Viral enhancement complete', { avgViralScore, versionsNeedingViralBoost });
+    
+    return { success: true, avgViralScore, versionsNeedingViralBoost };
+  }
+  
+  getViralEnhancementPrompt(content) {
+    const systemPrompt = `You are a viral content expert specializing in crypto/web3 social media.
+
+Your task: Enhance content to MAXIMIZE viral potential while keeping it authentic.
+
+VIRAL ELEMENTS TO ADD (choose 2-3 that fit naturally):
+1. CONTROVERSY: Challenge common assumptions or beliefs
+2. FOMO: Create urgency without being spammy
+3. CURIOSITY GAP: Make readers NEED to know more
+4. SOCIAL PROOF: Imply widespread adoption/interest
+5. EMOTIONAL TRIGGERS: Fear, hope, surprise, anger (mild)
+6. REPLY BAIT: Questions that demand response
+7. SHARE WORTHY: Insights people want to share
+
+VIRAL ELEMENTS TO AVOID:
+- Clickbait that over-promises
+- Generic "hot take" language
+- AI-sounding phrases
+- Em dashes (—)
+- Hashtag spam
+
+Return ONLY the enhanced content. Keep same length roughly.`;
+
+    const userPrompt = `Enhance this content for MAXIMUM viral potential:
+
+${content}
+
+Add 2-3 viral elements naturally. Keep it authentic and human-sounding.
+Focus on making it share-worthy and reply-worthy.`;
+
+    return { system: systemPrompt, user: userPrompt };
+  }
+  
   // =========================================================================
   // LOCK POINT
   // =========================================================================
@@ -2823,6 +2944,171 @@ Return ONLY JSON.`;
     }
   }
   
+  // ===== PHASE 13B: BEAT TOP 20 STRATEGY - WITH LOOP =====
+  async phase13B_BeatTop20Strategy() {
+    this.log('Phase 13B', 'Strategizing to BEAT all top 20 competitors...');
+    this.phaseStatus['Phase 13B'] = { status: 'running', started: new Date().toISOString() };
+    
+    const maxStrategyAttempts = 2;
+    let strategyAttempt = 0;
+    
+    // Get top 20 competitor data
+    const top20 = this.competitorPatterns?.top10 || [];
+    const top20Hooks = this.competitorContent?.hooks || [];
+    const top20CTAs = this.competitorContent?.ctas || [];
+    const avoidPatterns = this.competitorContent?.avoidPatterns || [];
+    
+    // Calculate what we need to beat
+    const avgTopScore = top20.length > 0 ? 
+      top20.reduce((sum, c) => sum + (c.points || 0), 0) / top20.length : 0;
+    const highestScore = top20.length > 0 ? Math.max(...top20.map(c => c.points || 0)) : 0;
+    
+    this.log('Phase 13B', `Target: Beat avg ${avgTopScore.toFixed(0)} pts, highest ${highestScore} pts`);
+    
+    // Check current competitive position
+    let competitiveScore = this.selectedVersion.competitive?.score || 0;
+    const targetScore = 5; // Need 5+ competitive advantages to beat top 20
+    
+    // Loop to enhance strategy until we beat top 20
+    while (competitiveScore < targetScore && strategyAttempt < maxStrategyAttempts) {
+      strategyAttempt++;
+      this.log('Phase 13B', `Strategy attempt ${strategyAttempt}/${maxStrategyAttempts} - current score: ${competitiveScore}/${targetScore}`);
+      
+      const beatPrompt = this.getBeatTop20Prompt(
+        this.selectedVersion.content,
+        top20,
+        top20Hooks,
+        top20CTAs,
+        avoidPatterns,
+        competitiveScore
+      );
+      
+      const llmResult = await callLLM(beatPrompt.system, beatPrompt.user, { temperature: 0.9, maxTokens: 1200 });
+      
+      if (llmResult.success && llmResult.content) {
+        // Check if content changed significantly
+        if (llmResult.content.length > 100 && llmResult.content !== this.selectedVersion.content) {
+          this.selectedVersion.content = llmResult.content;
+          this.selectedVersion.beatTop20Attempt = strategyAttempt;
+          
+          // Re-calculate competitive score
+          const newAnalysis = await this.getCompetitiveAnalysisLLM();
+          competitiveScore = newAnalysis.advantages?.length || competitiveScore + 1;
+          
+          this.log('Phase 13B', `Strategy enhanced, new competitive score: ${competitiveScore}`);
+        }
+      } else {
+        this.log('Phase 13B', 'Strategy enhancement failed');
+        break;
+      }
+    }
+    
+    // Final validation
+    const finalScore = competitiveScore;
+    const passed = finalScore >= targetScore;
+    
+    this.selectedVersion.beatTop20 = {
+      score: finalScore,
+      targetScore,
+      passed,
+      attemptsUsed: strategyAttempt,
+      top20AvgPoints: avgTopScore,
+      top20HighestPoints: highestScore
+    };
+    
+    // VALIDATION CHECK: If still not competitive, trigger regeneration
+    if (!passed) {
+      this.log('Phase 13B', `🚨 Still not beating top 20 (score: ${finalScore}/${targetScore}) - triggering regeneration`);
+      
+      this.failbackPhase = 4;
+      this.needsRegeneration = true;
+      
+      this.regenerationHistory.push({
+        trigger: `Phase 13B: Cannot beat top 20 (competitive score ${finalScore}/${targetScore})`,
+        failbackPhase: 4,
+        timestamp: new Date().toISOString()
+      });
+      
+      this.phaseStatus['Phase 13B'] = { 
+        status: 'failed_competitive_validation', 
+        output: 'NEEDS_NEW_STRATEGY',
+        score: finalScore,
+        targetScore,
+        failbackPhase: 4
+      };
+      
+      return { success: false, needsRegeneration: true, score: finalScore, passed };
+    }
+    
+    this.phaseStatus['Phase 13B'] = { 
+      status: 'completed', 
+      output: 'BEATS_TOP_20',
+      score: finalScore,
+      passed,
+      attemptsUsed: strategyAttempt
+    };
+    
+    this.log('Phase 13B', `✅ BEATS TOP 20 - Competitive score: ${finalScore}`, { passed, attemptsUsed: strategyAttempt });
+    
+    return { success: true, score: finalScore, passed };
+  }
+  
+  getBeatTop20Prompt(content, top20, hooks, ctas, avoidPatterns, currentScore) {
+    const topCompetitors = top20.slice(0, 5).map(c => 
+      `@${c.username || 'unknown'}: ${c.points || 0} pts`
+    ).join('\n');
+    
+    const competitorHooks = hooks.slice(0, 5).join('\n- ');
+    const competitorCTAs = ctas.slice(0, 5).join('\n- ');
+    const patterns = avoidPatterns.slice(0, 5).join('\n- ');
+    
+    const systemPrompt = `You are a competitive content strategist who helps content BEAT the top performers.
+
+Your task: Rewrite content to OUTPERFORM all competitors on the leaderboard.
+
+STRATEGIES TO BEAT TOP 20:
+1. UNIQUE ANGLE: Find an angle NO competitor has used
+2. STRONGER HOOK: More compelling than any competitor hook
+3. BETTER CTA: More engaging call-to-action
+4. MORE VALUE: Provide insights competitors missed
+5. EMOTIONAL EDGE: Deeper emotional resonance
+6. CONTROVERSY: Challenge what competitors said (subtly)
+7. DATA/PROOF: Add credibility competitors lack
+
+RULES:
+- Do NOT copy competitor patterns
+- Do NOT use banned AI phrases
+- Keep same length roughly
+- Maintain the core message
+- Add 2-3 unique angles competitors missed
+
+Return ONLY the enhanced content.`;
+
+    const userPrompt = `REWRITE this content to BEAT ALL TOP 20 COMPETITORS:
+
+CURRENT CONTENT:
+${content}
+
+TOP 5 COMPETITORS TO BEAT:
+${topCompetitors}
+
+COMPETITOR HOOKS (AVOID THESE):
+- ${competitorHooks || 'None identified'}
+
+COMPETITOR CTAs (DO DIFFERENTLY):
+- ${competitorCTAs || 'None identified'}
+
+PATTERNS TO AVOID:
+- ${patterns || 'None'}
+
+CURRENT COMPETITIVE SCORE: ${currentScore}/5 (need 5+ to beat top 20)
+
+Find unique angles they missed. Add controversy or data they lack. Make it MORE engaging.
+Return ONLY the enhanced content.`;
+
+    return { system: systemPrompt, user: userPrompt };
+  }
+  
   // ===== PHASE 14: FINAL EMOTION RE-CHECK WITH LLM =====
   async phase14_FinalEmotionReCheck() {
     this.log('Phase 14', 'Running final emotion re-check with LLM...');
@@ -3004,7 +3290,7 @@ Return ONLY JSON.`;
         campaignAddress: this.campaignAddress,
         campaignTitle: this.campaignData?.title,
         organization: this.campaignData?.displayCreator?.organization?.name,
-        totalPhases: 21,
+        totalPhases: 24,
         phasesExecuted: Object.keys(this.phaseStatus).length,
         strictValidationPassed: strictValidator.getReport().passed
       },
@@ -3056,6 +3342,193 @@ Return ONLY JSON.`;
     this.log('Phase 15', 'Output generation complete');
     
     return { success: true, output: this.finalOutput };
+  }
+  
+  // ===== PHASE 15B: CT MAXIMIZER - WITH LOOP =====
+  async phase15B_CTMaximizer() {
+    this.log('Phase 15B', 'Maximizing Call-to-Action potential...');
+    this.phaseStatus['Phase 15B'] = { status: 'running', started: new Date().toISOString() };
+    
+    const minCTScore = 8;
+    const maxEnhanceAttempts = 2;
+    let enhanceAttempt = 0;
+    let ctScore = this.calculateCTScore(this.selectedVersion.content);
+    
+    this.log('Phase 15B', `Initial CT score: ${ctScore}/10`);
+    
+    // Loop to enhance CT until score meets threshold
+    while (ctScore < minCTScore && enhanceAttempt < maxEnhanceAttempts) {
+      enhanceAttempt++;
+      this.log('Phase 15B', `CT enhancement attempt ${enhanceAttempt}/${maxEnhanceAttempts}`);
+      
+      const ctPrompt = this.getCTMaximizerPrompt(this.selectedVersion.content, ctScore);
+      const llmResult = await callLLM(ctPrompt.system, ctPrompt.user, { temperature: 0.9, maxTokens: 1000 });
+      
+      if (llmResult.success && llmResult.content) {
+        // Verify content actually changed and is valid
+        if (llmResult.content.length > 100 && llmResult.content !== this.selectedVersion.content) {
+          // Check no banned items introduced
+          const violations = scanBannedItems(llmResult.content);
+          if (violations.length === 0) {
+            this.selectedVersion.content = llmResult.content;
+            this.selectedVersion.ctEnhanced = true;
+            ctScore = this.calculateCTScore(this.selectedVersion.content);
+            this.log('Phase 15B', `CT enhanced to ${ctScore}/10`);
+          } else {
+            this.log('Phase 15B', `CT enhancement introduced violations, reverting`);
+          }
+        }
+      } else {
+        this.log('Phase 15B', 'CT enhancement failed');
+        break;
+      }
+    }
+    
+    // Calculate final CT score breakdown
+    const ctBreakdown = this.getCTBreakdown(this.selectedVersion.content);
+    
+    this.selectedVersion.ctScore = {
+      score: ctScore,
+      breakdown: ctBreakdown,
+      attemptsUsed: enhanceAttempt
+    };
+    
+    // VALIDATION CHECK: If CT score still low, trigger regeneration
+    if (ctScore < minCTScore) {
+      this.log('Phase 15B', `🚨 CT score still low (${ctScore}/${minCTScore}) - triggering Phase 14 retry`);
+      
+      this.failbackPhase = 14;
+      this.needsRegeneration = true;
+      
+      this.regenerationHistory.push({
+        trigger: `Phase 15B: CT score too low (${ctScore}/${minCTScore})`,
+        failbackPhase: 14,
+        timestamp: new Date().toISOString()
+      });
+      
+      this.phaseStatus['Phase 15B'] = { 
+        status: 'failed_ct_validation', 
+        output: 'NEEDS_CT_REENHANCEMENT',
+        ctScore,
+        targetScore: minCTScore,
+        failbackPhase: 14
+      };
+      
+      return { success: false, needsRegeneration: true, ctScore, targetScore: minCTScore };
+    }
+    
+    this.phaseStatus['Phase 15B'] = { 
+      status: 'completed', 
+      output: 'CT_MAXIMIZED',
+      ctScore,
+      breakdown: ctBreakdown,
+      attemptsUsed: enhanceAttempt
+    };
+    
+    this.log('Phase 15B', `✅ CT MAXIMIZED - Score: ${ctScore}/10`, { breakdown: ctBreakdown, attemptsUsed: enhanceAttempt });
+    
+    return { success: true, ctScore, breakdown: ctBreakdown };
+  }
+  
+  calculateCTScore(content) {
+    let score = 0;
+    const lowerContent = content.toLowerCase();
+    
+    // 1. HAS QUESTION (0-2 points)
+    const questionCount = (content.match(/\?/g) || []).length;
+    if (questionCount >= 1) score += 2;
+    else if (questionCount > 0) score += 1;
+    
+    // 2. REPLY BAIT (0-2 points)
+    const replyTriggers = [
+      'what do you think', 'thoughts', 'agree or disagree', 
+      'who else', 'how many of you', 'raise your hand',
+      'reply with', 'tell me', 'what would you do',
+      'what\'s your', 'share your', 'drop your'
+    ];
+    if (replyTriggers.some(t => lowerContent.includes(t))) score += 2;
+    
+    // 3. ENGAGEMENT QUESTION (0-2 points)
+    const engagementPatterns = [
+      'have you ever', 'did you know', 'what if',
+      'imagine if', 'would you', 'could you',
+      'why do', 'when was the last', 'who decides'
+    ];
+    if (engagementPatterns.some(p => lowerContent.includes(p))) score += 2;
+    
+    // 4. FOMO/URGENCY (0-1 point)
+    const fomoPatterns = ['now', 'today', 'finally', 'last chance', 'before', 'ending soon'];
+    if (fomoPatterns.some(f => lowerContent.includes(f))) score += 1;
+    
+    // 5. SHARE WORTHY (0-1 point)
+    const sharePatterns = ['save this', 'bookmark', 'share', 'retweet', 'forward'];
+    if (sharePatterns.some(s => lowerContent.includes(s))) score += 1;
+    
+    // 6. CONTROVERSY/POLARIZING (0-1 point)
+    const controversyPatterns = ['unpopular opinion', 'hot take', 'controversial', 'fight me', 'change my mind'];
+    if (controversyPatterns.some(c => lowerContent.includes(c))) score += 1;
+    
+    // 7. PERSONAL/RELATABLE (0-1 point)
+    if (/i |my |me |we |our /i.test(content)) score += 1;
+    
+    return Math.min(10, score);
+  }
+  
+  getCTBreakdown(content) {
+    const lowerContent = content.toLowerCase();
+    
+    return {
+      hasQuestion: content.includes('?'),
+      hasReplyBait: ['what do you think', 'thoughts', 'reply with', 'tell me'].some(t => lowerContent.includes(t)),
+      hasEngagementHook: ['have you ever', 'what if', 'imagine'].some(p => lowerContent.includes(p)),
+      hasFOMO: ['now', 'today', 'finally'].some(f => lowerContent.includes(f)),
+      hasShareTrigger: ['save this', 'share', 'retweet'].some(s => lowerContent.includes(s)),
+      hasControversy: ['unpopular', 'hot take', 'change my mind'].some(c => lowerContent.includes(c)),
+      hasPersonalElement: /i |my |me /i.test(content)
+    };
+  }
+  
+  getCTMaximizerPrompt(content, currentScore) {
+    const systemPrompt = `You are a CT (Call-to-Action) optimization expert for social media.
+
+Your task: Enhance content to MAXIMIZE engagement potential while keeping it authentic.
+
+CT ELEMENTS TO ADD (choose 2-3 that fit naturally):
+1. COMPELLING QUESTION: End with a question that DEMANDS response
+2. REPLY BAIT: "What do you think?" "Thoughts?" "Who else?"
+3. ENGAGEMENT HOOK: "Have you ever..." "What if..." "Imagine..."
+4. SUBTLE FOMO: Create urgency without being spammy
+5. SHARE TRIGGER: Make readers want to share
+6. CONTROVERSY (mild): Take a stance that invites debate
+7. PERSONAL TOUCH: Add "I" statements for authenticity
+
+CT ELEMENTS TO AVOID:
+- "Please RT" or "Please share" (begging)
+- Generic "Let me know in comments"
+- Overused "Drop a 🚀 if you agree"
+- AI-sounding engagement phrases
+
+RULES:
+- Add CT naturally, don't force it
+- Keep same length roughly
+- Don't change the core message
+- Make it feel human, not marketing
+
+Return ONLY the enhanced content.`;
+
+    const userPrompt = `Enhance this content for MAXIMUM CT (engagement potential):
+
+CURRENT CONTENT:
+${content}
+
+CURRENT CT SCORE: ${currentScore}/10 (need 8+)
+
+Add 2-3 CT elements naturally. The best CT feels organic, not forced.
+Focus on questions that demand response and hooks that invite engagement.
+
+Return ONLY the enhanced content.`;
+
+    return { system: systemPrompt, user: userPrompt };
   }
   
   // ===== PHASE 16: EXPORT AND DELIVERY =====
@@ -3220,6 +3693,22 @@ Return ONLY JSON.`;
           }
         }
         
+        // Phase 9B: Viral Enhancement with loop (skip if post-LOCK)
+        if (startPhase <= 9) {
+          const viralResult = await this.phase9B_ViralEnhancement();
+          if (this.needsRegeneration) {
+            this.regenerationCount++;
+            if (this.regenerationCount > this.maxRegenerations) {
+              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 9B');
+              this.needsRegeneration = false;
+            } else {
+              console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 9B VIRAL FAILURE (${this.regenerationCount}/${this.maxRegenerations})`);
+              console.log(`↩️ Failback to Phase ${this.failbackPhase} for emotion re-enhancement`);
+              continue;
+            }
+          }
+        }
+        
         // LOCK POINT with validation check - Skip if post-LOCK (Phase 8+ already has selectedVersion)
         if (startPhase <= 10) {
           const selectionResult = this.phase10_QualityScoringAndSelection();
@@ -3276,6 +3765,24 @@ Return ONLY JSON.`;
           await this.phase13_BenchmarkComparison();
         }
         
+        // Phase 13B: Beat Top 20 Strategy with loop
+        if (!isPostLockFailback) {
+          const beatResult = await this.phase13B_BeatTop20Strategy();
+          if (this.needsRegeneration) {
+            this.regenerationCount++;
+            if (this.regenerationCount > this.maxRegenerations) {
+              console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 13B');
+              this.needsRegeneration = false;
+              // Force accept current content
+              this.selectedVersion.beatTop20 = { score: 0, passed: false, forced: true };
+            } else {
+              console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 13B BEAT TOP 20 FAILURE (${this.regenerationCount}/${this.maxRegenerations})`);
+              console.log(`↩️ Failback to Phase ${this.failbackPhase} for new strategy`);
+              continue;
+            }
+          }
+        }
+        
         // Phase 14 with validation check (Emotion fail → Phase 8)
         const emotionResult = await this.phase14_FinalEmotionReCheck();
         if (this.needsRegeneration) {
@@ -3314,6 +3821,15 @@ Return ONLY JSON.`;
       
       // OUTPUT SECTION - Only runs once content is locked
       await this.phase15_OutputGeneration();
+      
+      // Phase 15B: CT Maximizer with loop
+      const ctResult = await this.phase15B_CTMaximizer();
+      if (ctResult.success) {
+        // Update final output with CT-enhanced content
+        this.finalOutput.selectedContent.content = this.selectedVersion.content;
+        this.finalOutput.selectedContent.ctScore = this.selectedVersion.ctScore;
+      }
+      
       const exportResult = await this.phase16_ExportAndDelivery();
       
       const executionTime = ((Date.now() - startTime) / 1000).toFixed(2);
@@ -3322,11 +3838,14 @@ Return ONLY JSON.`;
       console.log(`RALLY WORKFLOW ${this.version} - COMPLETE`);
       console.log('='.repeat(80));
       console.log(`Execution Time: ${executionTime}s`);
-      console.log(`Phases Completed: ${Object.keys(this.phaseStatus).length}/21`);
+      console.log(`Phases Completed: ${Object.keys(this.phaseStatus).length}/24`);
       console.log(`Strict Validation: ${strictValidator.getReport().passed ? 'PASSED' : 'FAILED'}`);
       console.log(`Selected Version: ${this.selectedVersion?.id}`);
       console.log(`Combined Score: ${this.selectedVersion?.combinedScore}`);
       console.log(`Gate Score: ${this.selectedVersion?.gateScore}`);
+      console.log(`Viral Score: ${this.selectedVersion?.viralScore?.score || 'N/A'}`);
+      console.log(`Beat Top 20: ${this.selectedVersion?.beatTop20?.passed ? 'YES' : 'NO'} (score: ${this.selectedVersion?.beatTop20?.score || 0}/5)`);
+      console.log(`CT Score: ${this.selectedVersion?.ctScore?.score || 'N/A'}/10`);
       console.log(`Regenerations: ${this.regenerationCount}/${this.maxRegenerations}`);
       if (this.regenerationHistory.length > 0) {
         console.log(`Regeneration History:`);
