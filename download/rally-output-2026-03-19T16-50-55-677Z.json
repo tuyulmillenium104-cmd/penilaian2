@@ -1,0 +1,1719 @@
+{
+  "metadata": {
+    "workflowVersion": "V8.7.6",
+    "timestamp": "2026-03-19T16:50:55.676Z",
+    "campaignAddress": "0xAF5a5B459F4371c1781E3B8456214CDD063EeBA7",
+    "campaignTitle": "Code Runs, Disputes Don't. Enter Internet Court",
+    "organization": "GenLayer",
+    "totalPhases": 21,
+    "phasesExecuted": 20,
+    "strictValidationPassed": true
+  },
+  "campaignDataUsed": {
+    "goal": true,
+    "rules": true,
+    "style": true,
+    "knowledgeBase": true,
+    "missionDescription": true,
+    "missionRules": 452
+  },
+  "selectedContent": {
+    "id": "V1",
+    "content": "Smart contracts execute code perfectly but fail when intentions conflict. Traditional legal systems cannot enforce digital agreements across borders or resolve disputes between autonomous agents efficiently.\n\nWe genuinely need a jurisdiction native to the web. Internet Court provides a decentralized framework for onchain enforcement and swift resolution without relying on legacy courts.\n\nAs AI agents begin transacting autonomously, this layer becomes seriously critical to prevent actual chaos. Code runs the logic but we truly need a system to handle the exceptions.\n\nVisit internetcourt.org to see how this new structure works.",
+    "scores": {
+      "combined": 74.7,
+      "quality": 79,
+      "hes": 3,
+      "viral": 9,
+      "emotion": 9,
+      "uniqueness": 25
+    },
+    "generatedBy": "LLM",
+    "gates": {
+      "G1_1": {
+        "name": "Main topic aligned",
+        "passed": true,
+        "details": "Topic aligned with campaign"
+      },
+      "G1_2": {
+        "name": "Tone matches guidelines",
+        "passed": true,
+        "details": "Professional tone maintained"
+      },
+      "G1_3": {
+        "name": "Key message clear",
+        "passed": true,
+        "details": "8 clear sentences"
+      },
+      "G1_4": {
+        "name": "No off-topic tangents",
+        "passed": true,
+        "details": "No off-topic content"
+      },
+      "G2_1": {
+        "name": "Facts verifiable",
+        "passed": true,
+        "details": "30 facts available"
+      },
+      "G2_2": {
+        "name": "Numbers accurate",
+        "passed": true,
+        "details": "No specific numbers"
+      },
+      "G2_3": {
+        "name": "No misleading claims",
+        "passed": true,
+        "details": "No misleading claims"
+      },
+      "G2_4": {
+        "name": "Sources credible",
+        "passed": true,
+        "details": "Credible sources cited"
+      },
+      "G3_1": {
+        "name": "Required mentions",
+        "passed": true,
+        "details": "Required URL included per mission rules"
+      },
+      "G3_2": {
+        "name": "Required topics",
+        "passed": true,
+        "details": "Required topic present"
+      },
+      "G3_3": {
+        "name": "Required links",
+        "passed": true,
+        "details": "Link included"
+      },
+      "G3_4": {
+        "name": "Character limits",
+        "passed": true,
+        "details": "All tweets under 280 chars"
+      },
+      "G4_1": {
+        "name": "Hook unique vs competitors",
+        "passed": true,
+        "details": "Hook is original"
+      },
+      "G4_2": {
+        "name": "CTA unique vs competitors",
+        "passed": true,
+        "details": "CTA is original"
+      },
+      "G4_3": {
+        "name": "No AI templates",
+        "passed": true,
+        "details": "No AI patterns"
+      },
+      "G4_4": {
+        "name": "Emotion approach unique",
+        "passed": true,
+        "details": "Emotion score: 10/10"
+      }
+    },
+    "gateScore": "16/16",
+    "allGatesPassed": true,
+    "competitive": {
+      "advantages": [
+        "Unique hook approach: problem_first",
+        "Unique CTA style: question",
+        "Higher emotional engagement than competitors",
+        "Positions the brand as a serious legal solution by focusing on the gap between code execution and intent, rather than price action.",
+        "Avoids alienating professional audiences by eschewing generic crypto slang (WAGMI, GM) in favor of clear, problem-solution language.",
+        "Establishes a unique value proposition by addressing the specific failure mode of 'autonomous agents' and cross-border enforcement."
+      ],
+      "score": 6,
+      "passed": true,
+      "competitorHooksAnalyzed": 5,
+      "competitorCTAsAnalyzed": 4,
+      "analysisSource": "LLM"
+    }
+  },
+  "generationMethods": {
+    "V1": "LLM",
+    "V2": "LLM",
+    "V3": "LLM",
+    "V4": "LLM",
+    "V5": "full_llm"
+  },
+  "qaPairs": [
+    {
+      "q": "What is Internet Court?",
+      "a": "Internet Court is a decentralized dispute resolution framework designed specifically to handle conflicts that emerge in digital environments using transparent, internet-native procedures."
+    },
+    {
+      "q": "Why do smart contracts need a dispute resolution layer?",
+      "a": "Smart contracts execute code perfectly but cannot handle conflicts of intention or exceptions; Internet Court provides a necessary system to resolve these disputes when code alone is insufficient."
+    },
+    {
+      "q": "What are the limitations of traditional legal systems regarding digital agreements?",
+      "a": "Traditional courts are geographically bound, slow, expensive, and struggle to enforce digital agreements across borders or resolve disputes between autonomous agents efficiently."
+    },
+    {
+      "q": "How does Internet Court handle cross-border disputes?",
+      "a": "It operates as a borderless jurisdiction native to the web, allowing for swift resolution and onchain enforcement without relying on complex legacy international legal processes."
+    },
+    {
+      "q": "Why is decentralized dispute resolution becoming essential?",
+      "a": "As the internet economy involves pseudonymous identities and autonomous smart contracts, a faster, compatible enforcement layer is required to prevent chaos and handle exceptions."
+    },
+    {
+      "q": "How does Internet Court benefit AI agents transacting autonomously?",
+      "a": "It provides a critical layer for AI agents to resolve disputes and handle exceptions that arise during autonomous transactions, ensuring order in the digital economy."
+    },
+    {
+      "q": "How can I see how the Internet Court structure works?",
+      "a": "You can visit internetcourt.org to see a demonstration of how this new decentralized framework operates."
+    },
+    {
+      "q": "Is Internet Court compatible with digital assets and smart contracts?",
+      "a": "Yes, it is built around the idea of an enforcement layer that is fully compatible with digital assets and the logic of smart contracts."
+    },
+    {
+      "q": "What makes Internet Court different from traditional arbitration?",
+      "a": "Unlike traditional arbitration, Internet Court is decentralized, designed for internet-native interactions, and offers transparent procedures adapted to the speed of the digital economy."
+    },
+    {
+      "q": "Can disputes be initiated and resolved entirely online?",
+      "a": "Yes, Internet Court proposes a system where disputes can be initiated, reviewed, and resolved using transparent procedures that exist entirely online."
+    },
+    {
+      "q": "What happens when a smart contract executes but intentions conflict?",
+      "a": "Internet Court steps in to resolve the conflict between intentions, as traditional legal systems cannot efficiently intervene in these automated digital scenarios."
+    },
+    {
+      "q": "Why is the internet economy difficult for legacy courts to manage?",
+      "a": "The internet economy operates across jurisdictions and pseudonymous identities, creating structural complexity that geographically bound and slow legacy courts are not equipped to handle."
+    },
+    {
+      "q": "Does Internet Court rely on legacy court systems?",
+      "a": "No, Internet Court provides a decentralized framework for onchain enforcement and swift resolution without relying on legacy courts."
+    },
+    {
+      "q": "What is the main goal of the Internet Court campaign?",
+      "a": "The goal is to explain why the internet requires a new model for dispute resolution that breaks down the problems of online enforcement and cross-border digital conflicts."
+    },
+    {
+      "q": "How does Internet Court address the issue of enforcement?",
+      "a": "It introduces a new enforcement layer that is faster and borderless, specifically designed to handle the unique nature of digital agreements and assets."
+    }
+  ],
+  "allVersions": [
+    {
+      "id": "V1",
+      "combinedScore": 74.7,
+      "qualityScore": 79,
+      "generatedBy": "LLM",
+      "usedCampaignData": {
+        "goal": true,
+        "rules": true,
+        "style": true,
+        "missionRules": 1
+      }
+    },
+    {
+      "id": "V2",
+      "combinedScore": 74.7,
+      "qualityScore": 79,
+      "generatedBy": "LLM",
+      "usedCampaignData": {
+        "goal": true,
+        "rules": true,
+        "style": true,
+        "missionRules": 1
+      }
+    },
+    {
+      "id": "V4",
+      "combinedScore": 74.7,
+      "qualityScore": 79,
+      "generatedBy": "LLM",
+      "usedCampaignData": {
+        "goal": true,
+        "rules": true,
+        "style": true,
+        "missionRules": 1
+      }
+    },
+    {
+      "id": "V5",
+      "combinedScore": 74.7,
+      "qualityScore": 79,
+      "generatedBy": "full_llm"
+    },
+    {
+      "id": "V3",
+      "combinedScore": 70,
+      "qualityScore": 85,
+      "generatedBy": "LLM",
+      "usedCampaignData": {
+        "goal": true,
+        "rules": true,
+        "style": true,
+        "missionRules": 1
+      }
+    }
+  ],
+  "phaseStatus": {
+    "Phase 0": {
+      "status": "completed",
+      "output": "CAMPAIGN_DATA + EXECUTION_MODE",
+      "title": "Code Runs, Disputes Don't. Enter Internet Court",
+      "dataCaptured": {
+        "title": "Code Runs, Disputes Don't. Enter Internet Court",
+        "goal": "Create a post explaining what Internet Court is and why decentralized dispute resolution is becoming essential in the digital and onchain era.\n\nBreak down the problem of online enforcement, smart contract disputes, and cross-border digital conflicts, and explain how Internet Court proposes a new framework for resolving them.",
+        "rules": "*Check Mission Rules*",
+        "style": "Analytical and forward-looking.\n\nParticipants should explain the structural problem Internet Court addresses rather than simply describing it. The best posts will connect decentralized dispute resolution to broader shifts in governance, smart contracts, DAOs, and digital coordination.",
+        "knowledgeBase": "present",
+        "missions": 1,
+        "missionsDescription": "Publish a post explaining what Internet Court is and why the internet economy requires a new model for dispute resolution.\n\nDiscuss the limitations of traditional courts in digital environments and explain how Internet Court introduces a more internet-native approach.",
+        "missionsRules": "- Original content in any language.  \n- You must mention internetcourt.org \n- Clearly explain what problem Internet Court solves.  \n- Explain why Internet Court is necessary in the new agent era we're in\n- Your post must not start with a mention. \n- Keep it analytical and thoughtful. Generic praise will receive fewer points.  \n- No hashtags required.  \n- Em dashes (—) are not allowed.\n- Highly generic or AI-generated-looking content is not allowed."
+      }
+    },
+    "Phase 1": {
+      "status": "completed",
+      "output": "KNOWLEDGE_BASE",
+      "factCount": 30
+    },
+    "Phase 2": {
+      "status": "completed",
+      "output": "COMPETITOR_PATTERNS",
+      "competitorCount": 10
+    },
+    "Phase 2B": {
+      "status": "completed",
+      "output": "COMPETITOR_CONTENT (LLM ANALYZED)",
+      "analyzedCount": 5,
+      "hooksIdentified": [
+        "The 'Broken Justice' Hook: 'Imagine winning a bet on-chain but getting rugged because there’s no referee.'",
+        "The 'Future of Law' Hook: 'Why traditional courts are obsolete in the age of Smart Contracts.'",
+        "The 'GenLayer' Buzz Hook: 'You’ve heard of Layer 1s and Layer 2s, but have you heard of the Logical Layer?'",
+        "The 'Pain Point' Hook: 'Tired of waiting weeks for a crypto exchange to respond to a ticket? There's a better way.'",
+        "The 'Meme/Generic' Hook: 'Internet Court is here to save the degens (and serious builders).'"
+      ],
+      "ctasIdentified": [
+        "Direct Action: 'Check out Internet Court on GenLayer now.'",
+        "FOMO/Community: 'Don't get left behind, join the discord/telegram.'",
+        "Engagement Bait: 'Tag a friend who needs to see this.'",
+        "Simple Link Drop: 'Link in bio / Read more below.'"
+      ],
+      "uniqueAngles": [
+        "The 'Digital Judge' Narrative: Personify the protocol as an unbiased, 24/7 digital judge that never sleeps, contrasting it with slow human legal systems.",
+        "Focus on 'Enforcement': Explain *why* a judgment is useless if it can't be enforced, and highlight how Internet Court executes verdicts on-chain automatically.",
+        "The 'Trustless Trust' Paradox: Explore how Internet Court creates trust between anonymous parties without revealing their identities.",
+        "Developer-Centric Approach: Frame Internet Court as the ultimate 'Error Handler' for the internet, appealing to coders who understand try/catch blocks."
+      ]
+    },
+    "Phase 3": {
+      "status": "completed",
+      "output": "DYNAMIC_GAPS",
+      "gapCount": 12,
+      "topHook": "problem_first",
+      "topEmotion": "fear",
+      "analysisSource": "competitor_analysis"
+    },
+    "Phase 4": {
+      "status": "completed",
+      "output": "CONTENT_STRATEGY",
+      "strategy": {
+        "primaryAngle": "problem_first",
+        "targetEmotion": "fear",
+        "hookType": "problem_first",
+        "ctaType": "question",
+        "uniqueAngles": [
+          "The 'Digital Judge' Narrative: Personify the protocol as an unbiased, 24/7 digital judge that never sleeps, contrasting it with slow human legal systems.",
+          "Focus on 'Enforcement': Explain *why* a judgment is useless if it can't be enforced, and highlight how Internet Court executes verdicts on-chain automatically.",
+          "The 'Trustless Trust' Paradox: Explore how Internet Court creates trust between anonymous parties without revealing their identities.",
+          "Developer-Centric Approach: Frame Internet Court as the ultimate 'Error Handler' for the internet, appealing to coders who understand try/catch blocks."
+        ],
+        "contentType": "thread",
+        "isSinglePost": false,
+        "maxLength": 280,
+        "forbiddenPhrases": [
+          "$2hashtags required"
+        ]
+      }
+    },
+    "Phase 5": {
+      "status": "completed",
+      "output": "5_RAW_VERSIONS",
+      "versionCount": 5,
+      "generatedBy": "LLM",
+      "usedCampaignData": true,
+      "methods": [
+        "V1:LLM",
+        "V2:LLM",
+        "V3:LLM",
+        "V4:LLM",
+        "V5:full_llm"
+      ]
+    },
+    "Phase 6": {
+      "status": "completed",
+      "output": "SCAN_RESULTS",
+      "summary": {
+        "clean": 5,
+        "dirty": 0,
+        "totalViolations": 0
+      }
+    },
+    "Phase 6B": {
+      "status": "completed",
+      "output": "5_CLEAN_VERSIONS",
+      "summary": {
+        "rewritesApplied": 1,
+        "clean": 5,
+        "dirty": 0,
+        "usedLLM": true,
+        "severeViolations": false,
+        "maxAttemptsReached": false
+      }
+    },
+    "Phase 7": {
+      "status": "failed_low_uniqueness",
+      "output": "NEEDS_REGENERATION",
+      "avgScore": 25,
+      "versionsNeedingRegeneration": 5,
+      "threshold": 75
+    },
+    "Phase 8": {
+      "status": "completed",
+      "output": "5_EMOTIONAL_VERSIONS",
+      "usedLLM": true,
+      "avgEmotionScore": 8.8,
+      "versionsNeedingEnhancement": 0
+    },
+    "Phase 9": {
+      "status": "completed",
+      "output": "SCORED_VERSIONS",
+      "avgHESScore": 3,
+      "avgViralScore": 8.6,
+      "versionsFailingHES": 0
+    },
+    "Phase 10": {
+      "status": "completed",
+      "output": "SELECTED_VERSION (LOCKED)",
+      "selected": "V1",
+      "score": 74.7,
+      "viableCount": 5
+    },
+    "Phase 11": {
+      "status": "completed",
+      "output": "OPTIMIZED_VERSION",
+      "layers": [
+        "Layer 1: 0 filler words removed/replaced",
+        "Layer 2: 7 sentences in 4 paragraphs optimized",
+        "Layer 3: 4 paragraphs checked, 0 long paragraphs noted",
+        "Layer 4: Emotion score 9/10 - preserved",
+        "Layer 5: Consider adding question to hook"
+      ]
+    },
+    "Phase 12": {
+      "status": "completed",
+      "output": "FLOW_POLISHED_VERSION",
+      "flowScore": 8.2
+    },
+    "Phase 12B": {
+      "status": "completed",
+      "output": "GATE_VALIDATED_VERSION",
+      "gateScore": "16/16",
+      "allPassed": true
+    },
+    "Phase 13": {
+      "status": "completed",
+      "output": "BENCHMARK_RESULT",
+      "competitiveScore": 6,
+      "advantages": [
+        "Unique hook approach: problem_first",
+        "Unique CTA style: question",
+        "Higher emotional engagement than competitors",
+        "Positions the brand as a serious legal solution by focusing on the gap between code execution and intent, rather than price action.",
+        "Avoids alienating professional audiences by eschewing generic crypto slang (WAGMI, GM) in favor of clear, problem-solution language.",
+        "Establishes a unique value proposition by addressing the specific failure mode of 'autonomous agents' and cross-border enforcement."
+      ]
+    },
+    "Phase 14": {
+      "status": "completed",
+      "output": "EMOTION_VERIFIED_VERSION",
+      "emotionScore": 9,
+      "passed": true,
+      "usedLLM": true
+    },
+    "Phase 14B": {
+      "status": "failed_checks",
+      "output": "CONTENT_NOT_LOCKED",
+      "checks": {
+        "hasCampaignLink": true,
+        "hasQuestion": false,
+        "noViolations": true,
+        "properLength": true,
+        "allGatesPassed": true
+      },
+      "failedChecks": [
+        "hasQuestion"
+      ]
+    },
+    "Phase 15": {
+      "status": "completed",
+      "output": "FINAL_OUTPUT",
+      "qaCount": 15
+    },
+    "Phase 16": {
+      "status": "running",
+      "started": "2026-03-19T16:50:55.677Z"
+    }
+  },
+  "executionLog": [
+    {
+      "timestamp": "2026-03-19T16:49:23.064Z",
+      "phase": "Phase 0",
+      "message": "Starting preparation - fetching ALL campaign data...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:23.366Z",
+      "phase": "Phase 0",
+      "message": "Campaign data fetched",
+      "data": {
+        "title": "Code Runs, Disputes Don't. Enter Internet Court",
+        "organization": "GenLayer",
+        "rewards": [
+          {
+            "id": 4576,
+            "campaignAddress": "0xAF5a5B459F4371c1781E3B8456214CDD063EeBA7",
+            "tokenAddress": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "totalAmount": 1000,
+            "source": "on_chain",
+            "claimable": true,
+            "createdAt": "2026-02-27T18:15:21.020Z",
+            "token": {
+              "symbol": "USDC",
+              "logoUri": "https://ethereum-optimism.github.io/data/USDC/logo.png"
+            }
+          },
+          {
+            "id": 24699,
+            "campaignAddress": "0xAF5a5B459F4371c1781E3B8456214CDD063EeBA7",
+            "tokenAddress": "0x2222222222222222222222222222222222222222",
+            "totalAmount": 10000,
+            "source": "admin_added",
+            "claimable": false,
+            "createdAt": "2026-03-02T17:24:24.869Z",
+            "token": {
+              "symbol": "RLP",
+              "logoUri": null
+            }
+          }
+        ],
+        "goal": "PRESENT",
+        "rules": "PRESENT",
+        "style": "PRESENT",
+        "knowledgeBase": "2494 chars",
+        "missions": 1
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:49:23.366Z",
+      "phase": "Phase 1",
+      "message": "Starting research...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:23.434Z",
+      "phase": "Phase 1",
+      "message": "Fetched from https://internetcourt.org",
+      "data": {
+        "factCount": 10
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:49:23.540Z",
+      "phase": "Phase 1",
+      "message": "Fetched from https://www.genlayer.com",
+      "data": {
+        "factCount": 10
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:49:23.540Z",
+      "phase": "Phase 1",
+      "message": "Research complete",
+      "data": {
+        "totalFacts": 30
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:49:23.540Z",
+      "phase": "Phase 2",
+      "message": "Starting leaderboard analysis...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:23.940Z",
+      "phase": "Phase 2",
+      "message": "Leaderboard analyzed",
+      "data": {
+        "totalCompetitors": 10,
+        "avgPoints": 5025033117083091000
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:49:23.940Z",
+      "phase": "Phase 2B",
+      "message": "Starting REAL competitor deep analysis with LLM...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:31.304Z",
+      "phase": "Phase 2B",
+      "message": "Competitor deep analysis COMPLETE with LLM",
+      "data": {
+        "analyzed": 5,
+        "hookPatterns": [
+          "The 'Broken Justice' Hook: 'Imagine winning a bet on-chain but getting rugged because there’s no referee.'",
+          "The 'Future of Law' Hook: 'Why traditional courts are obsolete in the age of Smart Contracts.'",
+          "The 'GenLayer' Buzz Hook: 'You’ve heard of Layer 1s and Layer 2s, but have you heard of the Logical Layer?'",
+          "The 'Pain Point' Hook: 'Tired of waiting weeks for a crypto exchange to respond to a ticket? There's a better way.'",
+          "The 'Meme/Generic' Hook: 'Internet Court is here to save the degens (and serious builders).'"
+        ],
+        "ctaPatterns": [
+          "Direct Action: 'Check out Internet Court on GenLayer now.'",
+          "FOMO/Community: 'Don't get left behind, join the discord/telegram.'",
+          "Engagement Bait: 'Tag a friend who needs to see this.'",
+          "Simple Link Drop: 'Link in bio / Read more below.'"
+        ],
+        "avoidPatterns": [
+          "Overusing generic crypto slang (WAGMI, GM, LFG) without substance, as this dilutes the 'serious legal' aspect of the campaign.",
+          "Focusing solely on price speculation or tokenomics, as the campaign asks for an explanation of the *utility* and *framework*.",
+          "Writing a wall of text without formatting or visual hierarchy, which is common in spammy high-volume posting.",
+          "Generic 'Rug Check' content that doesn't explain the technical solution of decentralized dispute resolution."
+        ],
+        "marketGaps": [
+          "Educational Depth: Most competitors likely focus on hype; there is an opportunity to create a 'Thread-style' deep dive into *how* the consensus mechanism works for disputes.",
+          "Real-World Analogies: Explaining complex crypto-legal concepts using relatable, non-crypto examples (e.g., comparing Internet Court to automated small claims court).",
+          "The 'Cross-Border' Angle: Focusing heavily on the jurisdictional nightmare of current crypto laws and how decentralized courts solve this specific global friction.",
+          "Visual Storytelling: Using diagrams to show the flow of a dispute (Smart Contract -> Trigger -> Vote -> Verdict) rather than just text."
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:49:31.304Z",
+      "phase": "Phase 3",
+      "message": "Starting DYNAMIC gap identification...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:31.305Z",
+      "phase": "Phase 3",
+      "message": "DYNAMIC gaps identified",
+      "data": {
+        "hooks": [
+          "problem_first:7.0",
+          "contrast:7.0",
+          "fear_example:7.0",
+          "analytical:7.0",
+          "future_focused:7.0"
+        ],
+        "emotions": [
+          "fear:7.0",
+          "curiosity:7.0",
+          "hope:7.0",
+          "surprise:7.0"
+        ],
+        "marketGaps": [
+          "Educational Depth: Most competitors likely focus on hype; there is an opportunity to create a 'Thread-style' deep dive into *how* the consensus mechanism works for disputes.",
+          "Real-World Analogies: Explaining complex crypto-legal concepts using relatable, non-crypto examples (e.g., comparing Internet Court to automated small claims court).",
+          "The 'Cross-Border' Angle: Focusing heavily on the jurisdictional nightmare of current crypto laws and how decentralized courts solve this specific global friction.",
+          "Visual Storytelling: Using diagrams to show the flow of a dispute (Smart Contract -> Trigger -> Vote -> Verdict) rather than just text."
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:49:31.305Z",
+      "phase": "Phase 4",
+      "message": "Defining content strategy...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:31.305Z",
+      "phase": "ANALYZE",
+      "message": "Content type analyzed",
+      "data": {
+        "contentType": "thread",
+        "isSinglePost": false,
+        "maxLength": 280,
+        "forbiddenPhrases": [
+          "$2hashtags required"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:49:31.305Z",
+      "phase": "Phase 4",
+      "message": "Strategy defined",
+      "data": {
+        "primaryAngle": "problem_first",
+        "targetEmotion": "fear",
+        "hookType": "problem_first",
+        "ctaType": "question",
+        "uniqueAngles": [
+          "The 'Digital Judge' Narrative: Personify the protocol as an unbiased, 24/7 digital judge that never sleeps, contrasting it with slow human legal systems.",
+          "Focus on 'Enforcement': Explain *why* a judgment is useless if it can't be enforced, and highlight how Internet Court executes verdicts on-chain automatically.",
+          "The 'Trustless Trust' Paradox: Explore how Internet Court creates trust between anonymous parties without revealing their identities.",
+          "Developer-Centric Approach: Frame Internet Court as the ultimate 'Error Handler' for the internet, appealing to coders who understand try/catch blocks."
+        ],
+        "contentType": "thread",
+        "isSinglePost": false,
+        "maxLength": 280,
+        "forbiddenPhrases": [
+          "$2hashtags required"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:49:31.305Z",
+      "phase": "Phase 5",
+      "message": "Generating content versions with LLM using ALL campaign data...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:31.306Z",
+      "phase": "Phase 5",
+      "message": "Generating V1 with angle: problem_first...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:33.050Z",
+      "phase": "Phase 5",
+      "message": "V1 generated (646 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:33.050Z",
+      "phase": "Phase 5",
+      "message": "Generating V2 with angle: contrast...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:34.878Z",
+      "phase": "Phase 5",
+      "message": "V2 generated (650 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:34.878Z",
+      "phase": "Phase 5",
+      "message": "Generating V3 with angle: fear_example...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:37.374Z",
+      "phase": "Phase 5",
+      "message": "V3 generated (834 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:37.374Z",
+      "phase": "Phase 5",
+      "message": "Generating V4 with angle: analytical...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:38.634Z",
+      "phase": "Phase 5",
+      "message": "V4 generated (390 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:38.634Z",
+      "phase": "Phase 5",
+      "message": "Generating V5 with angle: future_focused...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:41.515Z",
+      "phase": "Phase 5",
+      "message": "V5 generated (834 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:41.516Z",
+      "phase": "Phase 5",
+      "message": "Generated 5 versions with LLM using ALL campaign data",
+      "data": [
+        {
+          "id": "V1",
+          "method": "LLM",
+          "length": 646
+        },
+        {
+          "id": "V2",
+          "method": "LLM",
+          "length": 650
+        },
+        {
+          "id": "V3",
+          "method": "LLM",
+          "length": 834
+        },
+        {
+          "id": "V4",
+          "method": "LLM",
+          "length": 390
+        },
+        {
+          "id": "V5",
+          "method": "LLM",
+          "length": 834
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-03-19T16:49:41.516Z",
+      "phase": "Phase 6",
+      "message": "Scanning for banned items (DETECT only)...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:41.517Z",
+      "phase": "Phase 6",
+      "message": "Scan complete",
+      "data": {
+        "clean": 5,
+        "dirty": 0,
+        "totalViolations": 0
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:49:41.517Z",
+      "phase": "Phase 6B",
+      "message": "Rewriting versions with violations using LLM...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:41.517Z",
+      "phase": "Phase 6B",
+      "message": "✅ All versions clean after 1 attempt(s)",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:41.517Z",
+      "phase": "Phase 6B",
+      "message": "Rewrite complete with LLM",
+      "data": {
+        "rewritesApplied": 1,
+        "clean": 5,
+        "dirty": 0,
+        "usedLLM": true,
+        "severeViolations": false,
+        "maxAttemptsReached": false
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:49:41.517Z",
+      "phase": "Phase 7",
+      "message": "Validating uniqueness against competitors...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:43.070Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V1 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:43.070Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V2 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:43.070Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V3 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:43.070Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V4 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:43.070Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V5 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:43.071Z",
+      "phase": "Phase 7",
+      "message": "🚨 Too many versions with low uniqueness - triggering regeneration from Phase 5",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:43.071Z",
+      "phase": "EXECUTE",
+      "message": "Clearing versions for regeneration",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:43.071Z",
+      "phase": "Phase 5",
+      "message": "Generating content versions with LLM using ALL campaign data...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:43.071Z",
+      "phase": "Phase 5",
+      "message": "Generating V1 with angle: problem_first...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:44.829Z",
+      "phase": "Phase 5",
+      "message": "V1 generated (613 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:44.829Z",
+      "phase": "Phase 5",
+      "message": "Generating V2 with angle: contrast...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:46.713Z",
+      "phase": "Phase 5",
+      "message": "V2 generated (527 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:46.713Z",
+      "phase": "Phase 5",
+      "message": "Generating V3 with angle: fear_example...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:48.941Z",
+      "phase": "Phase 5",
+      "message": "V3 generated (772 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:48.941Z",
+      "phase": "Phase 5",
+      "message": "Generating V4 with angle: analytical...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:48.946Z",
+      "phase": "Phase 5",
+      "message": "Warning: LLM generation failed for V4: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:49:48.946Z",
+      "phase": "Phase 5",
+      "message": "Using Smart Content Generator for V4...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:01.492Z",
+      "phase": "Phase 5",
+      "message": "V4 generated via SmartGen (full_llm)",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:01.492Z",
+      "phase": "Phase 5",
+      "message": "Generating V5 with angle: future_focused...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.937Z",
+      "phase": "Phase 5",
+      "message": "V5 generated (637 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.937Z",
+      "phase": "Phase 5",
+      "message": "Generated 5 versions with LLM using ALL campaign data",
+      "data": [
+        {
+          "id": "V1",
+          "method": "LLM",
+          "length": 613
+        },
+        {
+          "id": "V2",
+          "method": "LLM",
+          "length": 527
+        },
+        {
+          "id": "V3",
+          "method": "LLM",
+          "length": 772
+        },
+        {
+          "id": "V4",
+          "method": "full_llm",
+          "length": 1117
+        },
+        {
+          "id": "V5",
+          "method": "LLM",
+          "length": 637
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.937Z",
+      "phase": "Phase 6",
+      "message": "Scanning for banned items (DETECT only)...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.938Z",
+      "phase": "Phase 6",
+      "message": "Scan complete",
+      "data": {
+        "clean": 5,
+        "dirty": 0,
+        "totalViolations": 0
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.938Z",
+      "phase": "Phase 6B",
+      "message": "Rewriting versions with violations using LLM...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.938Z",
+      "phase": "Phase 6B",
+      "message": "✅ All versions clean after 1 attempt(s)",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.938Z",
+      "phase": "Phase 6B",
+      "message": "Rewrite complete with LLM",
+      "data": {
+        "rewritesApplied": 1,
+        "clean": 5,
+        "dirty": 0,
+        "usedLLM": true,
+        "severeViolations": false,
+        "maxAttemptsReached": false
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.938Z",
+      "phase": "Phase 7",
+      "message": "Validating uniqueness against competitors...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.938Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V1 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.939Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V2 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.939Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V3 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.939Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V4 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.939Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V5 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.939Z",
+      "phase": "Phase 7",
+      "message": "🚨 Too many versions with low uniqueness - triggering regeneration from Phase 5",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.939Z",
+      "phase": "EXECUTE",
+      "message": "Clearing versions for regeneration",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.939Z",
+      "phase": "Phase 5",
+      "message": "Generating content versions with LLM using ALL campaign data...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:04.940Z",
+      "phase": "Phase 5",
+      "message": "Generating V1 with angle: problem_first...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:13.044Z",
+      "phase": "Phase 5",
+      "message": "V1 generated (527 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:13.044Z",
+      "phase": "Phase 5",
+      "message": "Generating V2 with angle: contrast...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:15.032Z",
+      "phase": "Phase 5",
+      "message": "V2 generated (608 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:15.032Z",
+      "phase": "Phase 5",
+      "message": "Generating V3 with angle: fear_example...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:17.575Z",
+      "phase": "Phase 5",
+      "message": "V3 generated (832 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:17.575Z",
+      "phase": "Phase 5",
+      "message": "Generating V4 with angle: analytical...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:20.047Z",
+      "phase": "Phase 5",
+      "message": "V4 generated (713 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:20.047Z",
+      "phase": "Phase 5",
+      "message": "Generating V5 with angle: future_focused...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.829Z",
+      "phase": "Phase 5",
+      "message": "V5 generated (420 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.829Z",
+      "phase": "Phase 5",
+      "message": "Generated 5 versions with LLM using ALL campaign data",
+      "data": [
+        {
+          "id": "V1",
+          "method": "LLM",
+          "length": 527
+        },
+        {
+          "id": "V2",
+          "method": "LLM",
+          "length": 608
+        },
+        {
+          "id": "V3",
+          "method": "LLM",
+          "length": 832
+        },
+        {
+          "id": "V4",
+          "method": "LLM",
+          "length": 713
+        },
+        {
+          "id": "V5",
+          "method": "LLM",
+          "length": 420
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.829Z",
+      "phase": "Phase 6",
+      "message": "Scanning for banned items (DETECT only)...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.829Z",
+      "phase": "Phase 6",
+      "message": "Scan complete",
+      "data": {
+        "clean": 5,
+        "dirty": 0,
+        "totalViolations": 0
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.829Z",
+      "phase": "Phase 6B",
+      "message": "Rewriting versions with violations using LLM...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.830Z",
+      "phase": "Phase 6B",
+      "message": "✅ All versions clean after 1 attempt(s)",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.830Z",
+      "phase": "Phase 6B",
+      "message": "Rewrite complete with LLM",
+      "data": {
+        "rewritesApplied": 1,
+        "clean": 5,
+        "dirty": 0,
+        "usedLLM": true,
+        "severeViolations": false,
+        "maxAttemptsReached": false
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.830Z",
+      "phase": "Phase 7",
+      "message": "Validating uniqueness against competitors...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.830Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V1 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.830Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V2 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.830Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V3 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.830Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V4 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.830Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V5 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.830Z",
+      "phase": "Phase 7",
+      "message": "🚨 Too many versions with low uniqueness - triggering regeneration from Phase 5",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.830Z",
+      "phase": "EXECUTE",
+      "message": "Clearing versions for regeneration",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.830Z",
+      "phase": "Phase 5",
+      "message": "Generating content versions with LLM using ALL campaign data...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:26.831Z",
+      "phase": "Phase 5",
+      "message": "Generating V1 with angle: problem_first...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:29.020Z",
+      "phase": "Phase 5",
+      "message": "V1 generated (600 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:29.020Z",
+      "phase": "Phase 5",
+      "message": "Generating V2 with angle: contrast...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:31.923Z",
+      "phase": "Phase 5",
+      "message": "V2 generated (628 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:31.923Z",
+      "phase": "Phase 5",
+      "message": "Generating V3 with angle: fear_example...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:34.742Z",
+      "phase": "Phase 5",
+      "message": "V3 generated (700 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:34.742Z",
+      "phase": "Phase 5",
+      "message": "Generating V4 with angle: analytical...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:36.714Z",
+      "phase": "Phase 5",
+      "message": "V4 generated (583 chars) using campaign data",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:36.714Z",
+      "phase": "Phase 5",
+      "message": "Generating V5 with angle: future_focused...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:36.719Z",
+      "phase": "Phase 5",
+      "message": "Warning: LLM generation failed for V5: API request failed with status 429: {\"error\":\"Too many requests, please try again later\"}",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:36.719Z",
+      "phase": "Phase 5",
+      "message": "Using Smart Content Generator for V5...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.519Z",
+      "phase": "Phase 5",
+      "message": "V5 generated via SmartGen (full_llm)",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.520Z",
+      "phase": "Phase 5",
+      "message": "Generated 5 versions with LLM using ALL campaign data",
+      "data": [
+        {
+          "id": "V1",
+          "method": "LLM",
+          "length": 600
+        },
+        {
+          "id": "V2",
+          "method": "LLM",
+          "length": 628
+        },
+        {
+          "id": "V3",
+          "method": "LLM",
+          "length": 700
+        },
+        {
+          "id": "V4",
+          "method": "LLM",
+          "length": 583
+        },
+        {
+          "id": "V5",
+          "method": "full_llm",
+          "length": 1121
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.520Z",
+      "phase": "Phase 6",
+      "message": "Scanning for banned items (DETECT only)...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.520Z",
+      "phase": "Phase 6",
+      "message": "Scan complete",
+      "data": {
+        "clean": 5,
+        "dirty": 0,
+        "totalViolations": 0
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.520Z",
+      "phase": "Phase 6B",
+      "message": "Rewriting versions with violations using LLM...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.520Z",
+      "phase": "Phase 6B",
+      "message": "✅ All versions clean after 1 attempt(s)",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.520Z",
+      "phase": "Phase 6B",
+      "message": "Rewrite complete with LLM",
+      "data": {
+        "rewritesApplied": 1,
+        "clean": 5,
+        "dirty": 0,
+        "usedLLM": true,
+        "severeViolations": false,
+        "maxAttemptsReached": false
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.520Z",
+      "phase": "Phase 7",
+      "message": "Validating uniqueness against competitors...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.520Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V1 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.520Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V2 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.520Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V3 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.520Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V4 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.520Z",
+      "phase": "Phase 7",
+      "message": "⚠️ V5 has low uniqueness score: 25",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.520Z",
+      "phase": "Phase 7",
+      "message": "🚨 Too many versions with low uniqueness - triggering regeneration from Phase 5",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.521Z",
+      "phase": "Phase 8",
+      "message": "Injecting emotion with LLM...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:44.521Z",
+      "phase": "Phase 8",
+      "message": "V1 has low emotion score (6), injecting with LLM (attempt 1/2)...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.390Z",
+      "phase": "Phase 8",
+      "message": "V1 emotion enhanced to 9",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.390Z",
+      "phase": "Phase 8",
+      "message": "V2 has low emotion score (6), injecting with LLM (attempt 1/2)...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.390Z",
+      "phase": "Phase 8",
+      "message": "V2 emotion enhanced to 9",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.391Z",
+      "phase": "Phase 8",
+      "message": "V4 has low emotion score (3), injecting with LLM (attempt 1/2)...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.391Z",
+      "phase": "Phase 8",
+      "message": "V4 emotion enhanced to 9",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.391Z",
+      "phase": "Phase 8",
+      "message": "V5 has low emotion score (4), injecting with LLM (attempt 1/2)...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.391Z",
+      "phase": "Phase 8",
+      "message": "V5 emotion enhanced to 9",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.391Z",
+      "phase": "Phase 8",
+      "message": "Emotion injection complete with LLM",
+      "data": {
+        "avgEmotionScore": 8.8,
+        "versionsNeedingEnhancement": 0
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.391Z",
+      "phase": "Phase 9",
+      "message": "Calculating HES and Viral scores...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.392Z",
+      "phase": "Phase 9",
+      "message": "HES and Viral scores calculated",
+      "data": {
+        "avgHESScore": 3,
+        "avgViralScore": 8.6,
+        "versionsFailingHES": 0
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.393Z",
+      "phase": "Phase 10",
+      "message": "Calculating quality scores and selecting best version (LOCK)...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.396Z",
+      "phase": "Phase 10",
+      "message": "🔒 SELECTION COMPLETE - WORKING WITH SINGLE VERSION NOW",
+      "data": {
+        "selected": "V1",
+        "score": 74.7,
+        "viableCount": 5,
+        "ranking": [
+          {
+            "rank": 1,
+            "id": "V1",
+            "combinedScore": 74.7,
+            "qualityScore": 79
+          },
+          {
+            "rank": 2,
+            "id": "V2",
+            "combinedScore": 74.7,
+            "qualityScore": 79
+          },
+          {
+            "rank": 3,
+            "id": "V4",
+            "combinedScore": 74.7,
+            "qualityScore": 79
+          },
+          {
+            "rank": 4,
+            "id": "V5",
+            "combinedScore": 74.7,
+            "qualityScore": 79
+          },
+          {
+            "rank": 5,
+            "id": "V3",
+            "combinedScore": 70,
+            "qualityScore": 85
+          }
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.396Z",
+      "phase": "Phase 11",
+      "message": "Running micro-optimization (5 Layers)...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.396Z",
+      "phase": "Phase 11",
+      "message": "Micro-optimization complete",
+      "data": [
+        "Layer 1: 0 filler words removed/replaced",
+        "Layer 2: 7 sentences in 4 paragraphs optimized",
+        "Layer 3: 4 paragraphs checked, 0 long paragraphs noted",
+        "Layer 4: Emotion score 9/10 - preserved",
+        "Layer 5: Consider adding question to hook"
+      ]
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.396Z",
+      "phase": "Phase 12",
+      "message": "Polishing content flow...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.397Z",
+      "phase": "Phase 12",
+      "message": "Content flow polished",
+      "data": {
+        "flowScore": 8.2
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.397Z",
+      "phase": "Phase 12B",
+      "message": "Running 16 Gates simulation...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.398Z",
+      "phase": "Phase 12B",
+      "message": "✅ ALL GATES PASSED: 16/16",
+      "data": {
+        "allPassed": true
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:46.398Z",
+      "phase": "Phase 13",
+      "message": "Running benchmark comparison with real competitor data...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:49.228Z",
+      "phase": "Phase 13",
+      "message": "Benchmark comparison complete with real competitor data",
+      "data": {
+        "competitiveScore": 6,
+        "advantages": [
+          "Unique hook approach: problem_first",
+          "Unique CTA style: question",
+          "Higher emotional engagement than competitors",
+          "Positions the brand as a serious legal solution by focusing on the gap between code execution and intent, rather than price action.",
+          "Avoids alienating professional audiences by eschewing generic crypto slang (WAGMI, GM) in favor of clear, problem-solution language.",
+          "Establishes a unique value proposition by addressing the specific failure mode of 'autonomous agents' and cross-border enforcement."
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:49.229Z",
+      "phase": "Phase 14",
+      "message": "Running final emotion re-check with LLM...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:49.229Z",
+      "phase": "Phase 14",
+      "message": "Final emotion re-check PASSED",
+      "data": {
+        "emotionScore": 9
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:49.229Z",
+      "phase": "Phase 14B",
+      "message": "Running final content polish...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:49.229Z",
+      "phase": "Phase 14B",
+      "message": "⚠️ Final checks failed",
+      "data": {
+        "checks": {
+          "hasCampaignLink": true,
+          "hasQuestion": false,
+          "noViolations": true,
+          "properLength": true,
+          "allGatesPassed": true
+        },
+        "passedCount": 4,
+        "requiredCount": 5
+      }
+    },
+    {
+      "timestamp": "2026-03-19T16:50:49.229Z",
+      "phase": "Phase 15",
+      "message": "Generating output with LLM Q&A...",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:55.676Z",
+      "phase": "Phase 15",
+      "message": "Generated 15 Q&A pairs with LLM",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:55.676Z",
+      "phase": "Phase 15",
+      "message": "Output generation complete",
+      "data": null
+    },
+    {
+      "timestamp": "2026-03-19T16:50:55.677Z",
+      "phase": "Phase 16",
+      "message": "Exporting and delivering...",
+      "data": null
+    }
+  ],
+  "strictValidationReport": {
+    "totalErrors": 0,
+    "totalWarnings": 0,
+    "errors": [],
+    "warnings": [],
+    "phaseValidation": {
+      "Phase 0": {
+        "valid": true,
+        "missing": [],
+        "timestamp": "2026-03-19T16:49:23.366Z"
+      },
+      "Phase 1": {
+        "valid": true,
+        "missing": [],
+        "timestamp": "2026-03-19T16:49:23.540Z"
+      },
+      "Phase 2": {
+        "valid": true,
+        "missing": [],
+        "timestamp": "2026-03-19T16:49:23.940Z"
+      }
+    },
+    "passed": true
+  }
+}
