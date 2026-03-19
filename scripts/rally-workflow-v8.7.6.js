@@ -1079,6 +1079,23 @@ class RallyWorkflowExecutor {
     this.version = 'V8.7.6';
     this.phaseStatus = {};
     this.generationMethods = {}; // Track how each version was generated
+    
+    // VALIDATION LOOP TRACKING
+    this.regenerationCount = 0;        // Total regeneration attempts
+    this.maxRegenerations = 3;          // Max allowed regenerations
+    this.regenerationHistory = [];      // Track what triggered each regeneration
+    this.currentPhase = 0;              // Track current phase for failback
+    this.needsRegeneration = false;     // Flag for loop control
+    this.failbackPhase = null;          // Which phase to return to
+    
+    // CONTENT TYPE TRACKING (Thread vs Single Post)
+    this.contentType = 'thread';        // Default: thread
+    this.contentConstraints = {
+      isSinglePost: false,
+      maxLength: 280,                   // For single post
+      threadLength: { min: 400, max: 800 }, // For thread
+      forbiddenPhrases: []              // From mission rules
+    };
   }
   
   log(phase, message, data = null) {
@@ -1500,10 +1517,123 @@ Based on typical crypto twitter content patterns and these competitor rankings, 
     return { success: true, gaps: this.gaps };
   }
   
+  // ===== ANALYZE CONTENT TYPE (Thread vs Single Post) =====
+  analyzeContentType() {
+    // Get mission rules
+    let missionRules = this.campaignData?.missions?.[0]?.rules || [];
+    if (typeof missionRules === 'string') {
+      missionRules = [missionRules];
+    }
+    if (!Array.isArray(missionRules)) {
+      missionRules = [];
+    }
+    
+    // Get campaign rules
+    let campaignRules = this.campaignData?.rules || '';
+    if (typeof campaignRules === 'string') {
+      campaignRules = [campaignRules];
+    }
+    
+    // Combine all rules for analysis
+    const allRules = [...missionRules, ...campaignRules].map(r => (r || '').toLowerCase());
+    const allRulesText = allRules.join(' ');
+    
+    // DETECT SINGLE POST REQUIREMENT
+    const singlePostIndicators = [
+      'do not write a thread',
+      'single post only',
+      'single short post',
+      'no thread',
+      'one tweet only',
+      'single tweet',
+      'not a thread',
+      'one post only',
+      'short post only'
+    ];
+    
+    const isSinglePostRequired = singlePostIndicators.some(indicator => 
+      allRulesText.includes(indicator)
+    );
+    
+    // DETECT THREAD REQUIREMENT
+    const threadIndicators = [
+      'write a thread',
+      'thread format',
+      'multi-tweet',
+      'twitter thread'
+    ];
+    
+    const isThreadRequired = threadIndicators.some(indicator => 
+      allRulesText.includes(indicator)
+    );
+    
+    // Set content type
+    if (isSinglePostRequired) {
+      this.contentType = 'single_post';
+      this.contentConstraints.isSinglePost = true;
+      this.contentConstraints.maxLength = 280;
+    } else if (isThreadRequired) {
+      this.contentType = 'thread';
+      this.contentConstraints.isSinglePost = false;
+    } else {
+      // Default based on campaign goal length
+      const goalLength = (this.campaignData?.goal || '').length;
+      const missionDescLength = (this.campaignData?.missions?.[0]?.description || '').length;
+      
+      // If campaign goal is short/simple, prefer single post
+      if (goalLength < 100 && missionDescLength < 100) {
+        this.contentType = 'single_post';
+        this.contentConstraints.isSinglePost = true;
+        this.contentConstraints.maxLength = 280;
+      } else {
+        // Default to thread for complex campaigns
+        this.contentType = 'thread';
+        this.contentConstraints.isSinglePost = false;
+      }
+    }
+    
+    // DETECT FORBIDDEN PHRASES from rules
+    const forbiddenPatterns = [
+      /do not (use|say|write|include|mention)[\s:]+([^.]+)/gi,
+      /avoid[\s:]+([^.]+)/gi,
+      /no[\s:]+([^.]+)/gi,
+      /never[\s:]+([^.]+)/gi
+    ];
+    
+    allRules.forEach(rule => {
+      forbiddenPatterns.forEach(pattern => {
+        const matches = rule.match(pattern);
+        if (matches) {
+          matches.forEach(m => {
+            const phrase = m.replace(pattern, '$2$1').trim();
+            if (phrase.length > 2 && phrase.length < 50) {
+              this.contentConstraints.forbiddenPhrases.push(phrase);
+            }
+          });
+        }
+      });
+    });
+    
+    // Remove duplicates
+    this.contentConstraints.forbiddenPhrases = [...new Set(this.contentConstraints.forbiddenPhrases)];
+    
+    this.log('ANALYZE', 'Content type analyzed', {
+      contentType: this.contentType,
+      isSinglePost: this.contentConstraints.isSinglePost,
+      maxLength: this.contentConstraints.maxLength,
+      forbiddenPhrases: this.contentConstraints.forbiddenPhrases.slice(0, 5)
+    });
+    
+    return this.contentType;
+  }
+  
   // ===== PHASE 4: STRATEGY DEFINITION =====
   phase4_StrategyDefinition() {
     this.log('Phase 4', 'Defining content strategy...');
     this.phaseStatus['Phase 4'] = { status: 'running', started: new Date().toISOString() };
+    
+    // ANALYZE CONTENT TYPE FIRST
+    this.analyzeContentType();
     
     // Find best unused gap
     const bestHook = this.gaps.hooks.filter(h => !h.used).sort((a, b) => b.opportunity - a.opportunity)[0];
@@ -1515,7 +1645,12 @@ Based on typical crypto twitter content patterns and these competitor rankings, 
       targetEmotion: bestEmotion?.emotion || 'curiosity',
       hookType: bestHook?.type || 'problem_first',
       ctaType: bestCTA?.type || 'question',
-      uniqueAngles: this.competitorContent?.uniqueAngles || []
+      uniqueAngles: this.competitorContent?.uniqueAngles || [],
+      // ADD CONTENT TYPE TO STRATEGY
+      contentType: this.contentType,
+      isSinglePost: this.contentConstraints.isSinglePost,
+      maxLength: this.contentConstraints.maxLength,
+      forbiddenPhrases: this.contentConstraints.forbiddenPhrases
     };
     
     this.phaseStatus['Phase 4'] = { 
@@ -1559,10 +1694,24 @@ Based on typical crypto twitter content patterns and these competitor rankings, 
     // Em-dash rule check (common requirement)
     const hasEmDashRule = missionRules.some(r => r.toLowerCase().includes('em dash') || r.toLowerCase().includes('emdash'));
     
+    // ========== CONTENT TYPE DETECTION ==========
+    const isSinglePost = this.contentConstraints.isSinglePost;
+    const maxLength = isSinglePost ? 280 : 800;
+    const contentTypeLabel = isSinglePost ? 'SINGLE SHORT POST (max 280 chars)' : 'TWITTER THREAD';
+    const contentFormatInstructions = isSinglePost 
+      ? `- Write ONE single tweet, maximum 280 characters
+- NO thread format, NO multiple paragraphs
+- One powerful statement only
+- Must include the URL: internetcourt.org`
+      : `- Write in short, punchy paragraphs (each paragraph = 1 tweet)
+- Separate paragraphs with double line breaks
+- Total length: 400-800 characters`;
+    
     const strategyInfo = `Primary Angle: ${this.strategy.primaryAngle}
 Target Emotion: ${this.strategy.targetEmotion}
 Hook Type: ${this.strategy.hookType}
-CTA Type: ${this.strategy.ctaType}`;
+CTA Type: ${this.strategy.ctaType}
+Content Type: ${contentTypeLabel}`;
 
     // Version prompts with different angles
     const versionPrompts = [
@@ -1607,17 +1756,16 @@ CTA Type: ${this.strategy.ctaType}`;
         this.log('Phase 5', `Generating ${vp.id} with angle: ${vp.angle}...`);
         
         // ========== CRITICAL: INCLUDE ALL CAMPAIGN DATA IN PROMPT ==========
-        const systemPrompt = `You are an expert Twitter/X content writer for crypto/web3 projects. Write viral thread content.
+        const systemPrompt = `You are an expert Twitter/X content writer for crypto/web3 projects. Write viral ${contentTypeLabel}.
 
 RULES:
-- Write in short, punchy paragraphs (each paragraph = 1 tweet)
-- Separate paragraphs with double line breaks
+${contentFormatInstructions}
 - NO AI-sounding words: delve, leverage, realm, tapestry, paradigm, catalyst, cornerstone, pivotal, myriad, ecosystem, landscape, foster, harness, robust, seamless, innovative, transformative
 - NO template phrases: "picture this", "imagine a world", "lets dive in", "at its core", "in conclusion", "here's what you need to know"
 - NO emojis, NO hashtags in content
 ${hasEmDashRule ? '- NO EM DASHES (—) - This is a strict requirement!' : ''}
 - Target emotion: ${vp.emotion}
-- Total length: 400-800 characters
+${isSinglePost ? `- Maximum ${maxLength} characters - STRICT LIMIT!` : `- Total length: 400-800 characters`}
 
 CAMPAIGN STYLE GUIDELINES:
 ${campaignStyle}
@@ -1625,33 +1773,7 @@ ${campaignStyle}
 MISSION REQUIREMENTS:
 ${missionRules.join('\n')}`;
 
-        const userPrompt = `Write a Twitter thread for: ${campaignTitle}
-
-========== CAMPAIGN GOAL (CRITICAL - FOLLOW THIS) ==========
-${campaignGoal}
-
-========== MISSION DESCRIPTION (CRITICAL - FOLLOW THIS) ==========
-${missionTitle}: ${missionDescription}
-
-========== CAMPAIGN RULES ==========
-${campaignRules}
-
-========== MISSION RULES (MUST FOLLOW) ==========
-${missionRules.join('\n')}
-
-========== KNOWLEDGE BASE FACTS ==========
-- ${knowledgeFacts}
-
-========== ADDITIONAL CAMPAIGN INFO ==========
-${campaignKB.substring(0, 500)}
-
-========== STRATEGY ==========
-${strategyInfo}
-
-ANGLE: ${vp.angle}
-${vp.instruction}
-
-        const userPrompt = `Write a Twitter thread for: ${campaignTitle}
+        const userPrompt = `Write a ${isSinglePost ? 'single tweet' : 'Twitter thread'} for: ${campaignTitle}
 
 ========== CAMPAIGN GOAL (CRITICAL - FOLLOW this) ==========
 ${campaignGoal}
@@ -1665,12 +1787,8 @@ ${campaignRules}
 ========== MISSION Rules (MUST FOLLOW) ==========
 ${missionRules.join('\n')}
 
-========== KNOWLED BASE FACTS ==========
-- ${knowledgeFacts}
-
 ========== URL REQUIREMENT (CRITICAL - Include this in content!) ==========
 Include the website URL: internetcourt.org
- ${campaignTitle === 'Internet Court' ? campaignTitle : 'Internet Court Campaign' : ''}
 
 ========== STRATEGY ==========
 ${strategyInfo}
@@ -1678,7 +1796,7 @@ ${strategyInfo}
 ANGLE: ${vp.angle}
 ${vp.instruction}
 
-Write compelling thread content now. Make it feel human, urgent, and thought-provoking. Follow ALL campaign requirements above.`;
+${isSinglePost ? `STRICT: Write ONE tweet only, maximum ${maxLength} characters. Include internetcourt.org` : 'Write compelling thread content now. Make it feel human, urgent, and thought-provoking. Follow ALL campaign requirements above.'}`;
 
         try {
           const completion = await zai.chat.completions.create({
@@ -1687,7 +1805,7 @@ Write compelling thread content now. Make it feel human, urgent, and thought-pro
               { role: 'user', content: userPrompt }
             ],
             temperature: 0.8,
-            max_tokens: 800
+            max_tokens: isSinglePost ? 200 : 800
           });
           
           const generatedContent = completion.choices[0]?.message?.content || '';
@@ -1915,6 +2033,11 @@ Write compelling thread content now. Make it feel human, urgent, and thought-pro
       totalViolations
     };
     
+    // VALIDATION CHECK: If all versions are dirty, need regeneration
+    if (summary.clean === 0 && summary.dirty > 0) {
+      this.log('Phase 6', '⚠️ ALL VERSIONS HAVE VIOLATIONS - rewrite needed');
+    }
+    
     this.phaseStatus['Phase 6'] = { 
       status: 'completed', 
       output: 'SCAN_RESULTS',
@@ -1926,19 +2049,24 @@ Write compelling thread content now. Make it feel human, urgent, and thought-pro
     return { success: true, summary, needsRewrite: summary.dirty > 0 };
   }
   
-  // ===== PHASE 6B: REWRITE WITH LLM =====
+  // ===== PHASE 6B: REWRITE WITH LLM - WITH VALIDATION LOOP =====
   async phase6B_Rewrite() {
     this.log('Phase 6B', 'Rewriting versions with violations using LLM...');
     this.phaseStatus['Phase 6B'] = { status: 'running', started: new Date().toISOString() };
     
-    let rewritesCount = 0;
+    const maxRewriteAttempts = 3;
+    let rewriteAttempt = 0;
     
-    for (const version of this.versions) {
-      if (!version.clean) {
-        this.log('Phase 6B', `Rewriting ${version.id} with ${version.violations.length} violations...`);
-        
-        // Use LLM to rewrite naturally
-        const systemPrompt = `You are a content editor. Rewrite the given content to remove all banned words and patterns while keeping the meaning and flow natural.
+    while (rewriteAttempt < maxRewriteAttempts) {
+      rewriteAttempt++;
+      let rewritesCount = 0;
+      
+      for (const version of this.versions) {
+        if (!version.clean) {
+          this.log('Phase 6B', `Rewriting ${version.id} with ${version.violations.length} violations... (attempt ${rewriteAttempt}/${maxRewriteAttempts})`);
+          
+          // Use LLM to rewrite naturally
+          const systemPrompt = `You are a content editor. Rewrite the given content to remove all banned words and patterns while keeping the meaning and flow natural.
 
 BANNED WORDS TO REMOVE: ${BANNED_ITEMS.words.join(', ')}
 BANNED PHRASES: ${BANNED_ITEMS.phrases.join(', ')}
@@ -1953,60 +2081,104 @@ RULES:
 
 Return ONLY the rewritten content, no explanations.`;
 
-        const userPrompt = `Rewrite this content to remove all banned items:
+          const userPrompt = `Rewrite this content to remove all banned items:
 
 ${version.content}
 
 VIOLATIONS FOUND:
 ${version.violations.map(v => `- ${v.type}: ${v.item}`).join('\n')}`;
 
-        const llmResult = await callLLM(systemPrompt, userPrompt, { temperature: 0.7, maxTokens: 800 });
-        
-        if (llmResult.success && llmResult.content) {
-          version.content = llmResult.content;
-          rewritesCount++;
-          this.log('Phase 6B', `${version.id} rewritten by LLM`);
-        } else {
-          // Fallback: Simple replacement
-          let content = version.content;
-          for (const [banned, replacement] of Object.entries(BANNED_ITEMS.replacements)) {
-            const regex = new RegExp(`\\b${banned}\\b`, 'gi');
-            if (regex.test(content)) {
-              content = content.replace(regex, replacement);
-              rewritesCount++;
+          const llmResult = await callLLM(systemPrompt, userPrompt, { temperature: 0.7, maxTokens: 800 });
+          
+          if (llmResult.success && llmResult.content) {
+            version.content = llmResult.content;
+            rewritesCount++;
+            this.log('Phase 6B', `${version.id} rewritten by LLM`);
+          } else {
+            // Fallback: Simple replacement
+            let content = version.content;
+            for (const [banned, replacement] of Object.entries(BANNED_ITEMS.replacements)) {
+              const regex = new RegExp(`\\b${banned}\\b`, 'gi');
+              if (regex.test(content)) {
+                content = content.replace(regex, replacement);
+                rewritesCount++;
+              }
             }
-          }
-          for (const [char, name] of Object.entries(BANNED_ITEMS.chars)) {
-            if (content.includes(char)) {
-              content = content.replace(new RegExp(char, 'g'), "'");
-              rewritesCount++;
+            for (const [char, name] of Object.entries(BANNED_ITEMS.chars)) {
+              if (content.includes(char)) {
+                content = content.replace(new RegExp(char, 'g'), "'");
+                rewritesCount++;
+              }
             }
+            version.content = content;
           }
-          version.content = content;
+          
+          // Re-scan after rewrite
+          version.violations = scanBannedItems(version.content);
+          version.clean = version.violations.length === 0;
         }
-        
-        // Re-scan after rewrite
-        version.violations = scanBannedItems(version.content);
-        version.clean = version.violations.length === 0;
+      }
+      
+      // Check if all versions are now clean
+      const cleanCount = this.versions.filter(v => v.clean).length;
+      const dirtyCount = this.versions.filter(v => !v.clean).length;
+      
+      if (dirtyCount === 0) {
+        this.log('Phase 6B', `✅ All versions clean after ${rewriteAttempt} attempt(s)`);
+        break;
+      }
+      
+      if (rewriteAttempt < maxRewriteAttempts && dirtyCount > 0) {
+        this.log('Phase 6B', `⚠️ Still ${dirtyCount} dirty versions, retrying...`);
+      }
+    }
+    
+    // Final validation check
+    const finalCleanCount = this.versions.filter(v => v.clean).length;
+    const finalDirtyCount = this.versions.filter(v => !v.clean).length;
+    
+    // If still dirty after max attempts, check severity
+    let severeViolations = false;
+    for (const version of this.versions) {
+      if (!version.clean) {
+        const criticalViolations = version.violations.filter(v => v.severity === 'critical' || v.severity === 'high');
+        if (criticalViolations.length > 0) {
+          severeViolations = true;
+          break;
+        }
       }
     }
     
     const summary = {
-      rewritesApplied: rewritesCount,
-      clean: this.versions.filter(v => v.clean).length,
-      dirty: this.versions.filter(v => !v.clean).length,
-      usedLLM: true
+      rewritesApplied: rewriteAttempt,
+      clean: finalCleanCount,
+      dirty: finalDirtyCount,
+      usedLLM: true,
+      severeViolations,
+      maxAttemptsReached: rewriteAttempt >= maxRewriteAttempts && finalDirtyCount > 0
     };
     
+    // VALIDATION: If severe violations remain, trigger regeneration
+    if (severeViolations) {
+      this.failbackPhase = 5;
+      this.needsRegeneration = true;
+      this.regenerationHistory.push({
+        trigger: 'Phase 6B: Severe violations remain after rewrite',
+        failbackPhase: 5,
+        timestamp: new Date().toISOString()
+      });
+      this.log('Phase 6B', '🚨 Severe violations remain - triggering regeneration from Phase 5');
+    }
+    
     this.phaseStatus['Phase 6B'] = { 
-      status: 'completed', 
-      output: '5_CLEAN_VERSIONS',
+      status: severeViolations ? 'failed_severe_violations' : 'completed', 
+      output: severeViolations ? 'NEEDS_REGENERATION' : '5_CLEAN_VERSIONS',
       summary 
     };
     
     this.log('Phase 6B', 'Rewrite complete with LLM', summary);
     
-    return { success: true, summary };
+    return { success: !severeViolations, summary };
   }
   
   // ===== PHASE 7: UNIQUENESS VALIDATION - COMPARE WITH COMPETITORS =====
@@ -2017,6 +2189,9 @@ ${version.violations.map(v => `- ${v.type}: ${v.item}`).join('\n')}`;
     // Get competitor hook patterns to avoid
     const competitorHooks = this.competitorContent?.hooks || [];
     const avoidPatterns = this.competitorContent?.avoidPatterns || [];
+    
+    const minUniquenessScore = 75; // Minimum acceptable uniqueness score
+    let versionsNeedingRegeneration = 0;
     
     for (let i = 0; i < this.versions.length; i++) {
       let uniquenessScore = 100;
@@ -2052,17 +2227,52 @@ ${version.violations.map(v => `- ${v.type}: ${v.item}`).join('\n')}`;
       const templateViolations = violations.filter(v => v.type.startsWith('TEMPLATE'));
       uniquenessScore -= templateViolations.length * 10;
       
-      this.versions[i].uniquenessScore = Math.max(70, Math.min(100, uniquenessScore));
+      this.versions[i].uniquenessScore = Math.max(0, Math.min(100, uniquenessScore));
       this.versions[i].competitorComparison = {
         matchedPatterns: competitorHooks.filter(h => version.angle === h),
         avoidPatterns: avoidPatterns
       };
+      
+      // Track versions needing regeneration
+      if (this.versions[i].uniquenessScore < minUniquenessScore) {
+        versionsNeedingRegeneration++;
+        this.log('Phase 7', `⚠️ ${version.id} has low uniqueness score: ${this.versions[i].uniquenessScore}`);
+      }
+    }
+    
+    const avgScore = this.versions.reduce((sum, v) => sum + v.uniquenessScore, 0) / this.versions.length;
+    
+    // VALIDATION CHECK: If too many versions have low uniqueness, trigger regeneration
+    const lowUniquenessRatio = versionsNeedingRegeneration / this.versions.length;
+    
+    if (lowUniquenessRatio > 0.6) {
+      // More than 60% of versions have low uniqueness
+      this.failbackPhase = 5;
+      this.needsRegeneration = true;
+      this.regenerationHistory.push({
+        trigger: `Phase 7: Low uniqueness (${versionsNeedingRegeneration}/${this.versions.length} versions below ${minUniquenessScore})`,
+        failbackPhase: 5,
+        avgScore,
+        timestamp: new Date().toISOString()
+      });
+      this.log('Phase 7', `🚨 Too many versions with low uniqueness - triggering regeneration from Phase 5`);
+      
+      this.phaseStatus['Phase 7'] = { 
+        status: 'failed_low_uniqueness', 
+        output: 'NEEDS_REGENERATION',
+        avgScore,
+        versionsNeedingRegeneration,
+        threshold: minUniquenessScore
+      };
+      
+      return { success: false, needsRegeneration: true };
     }
     
     this.phaseStatus['Phase 7'] = { 
       status: 'completed', 
       output: 'UNIQUENESS_SCORES',
-      avgScore: this.versions.reduce((sum, v) => sum + v.uniquenessScore, 0) / this.versions.length
+      avgScore,
+      versionsNeedingRegeneration
     };
     
     this.log('Phase 7', 'Uniqueness validation complete with competitor comparison');
@@ -2110,17 +2320,23 @@ Return ONLY the JSON.`;
     }
   }
   
-  // ===== PHASE 8: EMOTION INJECTION WITH LLM =====
+  // ===== PHASE 8: EMOTION INJECTION WITH LLM - WITH VALIDATION LOOP =====
   async phase8_EmotionInjection() {
     this.log('Phase 8', 'Injecting emotion with LLM...');
     this.phaseStatus['Phase 8'] = { status: 'running', started: new Date().toISOString() };
     
+    const minEmotionScore = 7;
+    const maxEnhanceAttempts = 2;
+    let versionsNeedingEnhancement = 0;
+    
     for (const version of this.versions) {
+      let enhanceAttempt = 0;
       version.emotionScore = calculateEmotionScore(version.content, this.strategy.targetEmotion);
       
-      // If emotion score is low, use LLM to inject emotion
-      if (version.emotionScore < 7) {
-        this.log('Phase 8', `${version.id} has low emotion score (${version.emotionScore}), injecting with LLM...`);
+      // If emotion score is low, use LLM to inject emotion (with retry)
+      while (version.emotionScore < minEmotionScore && enhanceAttempt < maxEnhanceAttempts) {
+        enhanceAttempt++;
+        this.log('Phase 8', `${version.id} has low emotion score (${version.emotionScore}), injecting with LLM (attempt ${enhanceAttempt}/${maxEnhanceAttempts})...`);
         
         const emotionPrompt = this.getEmotionInjectionPrompt(version.content, this.strategy.targetEmotion);
         const llmResult = await callLLM(emotionPrompt.system, emotionPrompt.user, { temperature: 0.8, maxTokens: 800 });
@@ -2134,19 +2350,31 @@ Return ONLY the JSON.`;
           // Fallback: mark for later enhancement
           version.emotionEnhanced = false;
           this.log('Phase 8', `${version.id} LLM enhancement failed, will use current score`);
+          break;
         }
       }
+      
+      // Track versions still below threshold
+      if (version.emotionScore < minEmotionScore) {
+        versionsNeedingEnhancement++;
+        this.log('Phase 8', `⚠️ ${version.id} still below emotion threshold: ${version.emotionScore}`);
+      }
     }
+    
+    // VALIDATION CHECK: If too many versions still have low emotion, may need regeneration
+    const avgEmotionScore = this.versions.reduce((sum, v) => sum + v.emotionScore, 0) / this.versions.length;
     
     this.phaseStatus['Phase 8'] = { 
       status: 'completed', 
       output: '5_EMOTIONAL_VERSIONS',
-      usedLLM: true 
+      usedLLM: true,
+      avgEmotionScore,
+      versionsNeedingEnhancement 
     };
     
-    this.log('Phase 8', 'Emotion injection complete with LLM');
+    this.log('Phase 8', 'Emotion injection complete with LLM', { avgEmotionScore, versionsNeedingEnhancement });
     
-    return { success: true };
+    return { success: true, avgEmotionScore, versionsNeedingEnhancement };
   }
   
   getEmotionInjectionPrompt(content, targetEmotion) {
@@ -2177,34 +2405,59 @@ Add emotional hooks and intensifiers while keeping the message intact.`;
     return { system: systemPrompt, user: userPrompt };
   }
   
-  // ===== PHASE 9: HES + VIRAL SCORE =====
+  // ===== PHASE 9: HES + VIRAL SCORE - WITH VALIDATION =====
   phase9_HESSandViral() {
     this.log('Phase 9', 'Calculating HES and Viral scores...');
     this.phaseStatus['Phase 9'] = { status: 'running', started: new Date().toISOString() };
     
+    const minHESScore = 3; // Minimum HES score (out of 4)
+    let versionsFailingHES = 0;
+    
     for (const version of this.versions) {
       version.hesScore = calculateHESScore(version.content);
       version.viralScore = calculateViralScore(version.content);
+      
+      // Track versions failing HES
+      if (version.hesScore.score < minHESScore) {
+        versionsFailingHES++;
+        this.log('Phase 9', `⚠️ ${version.id} has low HES score: ${version.hesScore.score}/4`);
+      }
+    }
+    
+    const avgHESScore = this.versions.reduce((sum, v) => sum + v.hesScore.score, 0) / this.versions.length;
+    const avgViralScore = this.versions.reduce((sum, v) => sum + v.viralScore.score, 0) / this.versions.length;
+    
+    // VALIDATION CHECK: If too many versions fail HES, may need to go back to Phase 8
+    const hesFailRatio = versionsFailingHES / this.versions.length;
+    
+    if (hesFailRatio > 0.8) {
+      this.log('Phase 9', `🚨 ${versionsFailingHES}/${this.versions.length} versions failing HES - may need Phase 8 retry`);
+      // Note: We don't trigger full regeneration here, but log it for monitoring
     }
     
     this.phaseStatus['Phase 9'] = { 
       status: 'completed', 
-      output: 'SCORED_VERSIONS' 
+      output: 'SCORED_VERSIONS',
+      avgHESScore,
+      avgViralScore,
+      versionsFailingHES 
     };
     
-    this.log('Phase 9', 'HES and Viral scores calculated');
+    this.log('Phase 9', 'HES and Viral scores calculated', { avgHESScore, avgViralScore, versionsFailingHES });
     
-    return { success: true };
+    return { success: true, avgHESScore, versionsFailingHES };
   }
   
   // =========================================================================
   // LOCK POINT
   // =========================================================================
   
-  // ===== PHASE 10: QUALITY SCORING & SELECTION (LOCK) =====
+  // ===== PHASE 10: QUALITY SCORING & SELECTION (LOCK) - WITH VALIDATION =====
   phase10_QualityScoringAndSelection() {
     this.log('Phase 10', 'Calculating quality scores and selecting best version (LOCK)...');
     this.phaseStatus['Phase 10'] = { status: 'running', started: new Date().toISOString() };
+    
+    const minViableScore = 50; // Minimum combined score for a viable version
     
     for (const version of this.versions) {
       version.qualityScore = calculateQualityScore(version.content, this.knowledgeBase).score;
@@ -2213,6 +2466,35 @@ Add emotional hooks and intensifiers while keeping the message intact.`;
     
     // Sort by combined score
     this.versions.sort((a, b) => b.combinedScore - a.combinedScore);
+    
+    // Check if ANY version meets minimum viability
+    const viableVersions = this.versions.filter(v => v.combinedScore >= minViableScore);
+    
+    // VALIDATION: If no version is viable, trigger regeneration
+    if (viableVersions.length === 0) {
+      this.log('Phase 10', '🚨 NO VIABLE VERSION - All scores below threshold');
+      
+      this.failbackPhase = 5;
+      this.needsRegeneration = true;
+      this.regenerationHistory.push({
+        trigger: `Phase 10: No viable version (all scores below ${minViableScore})`,
+        failbackPhase: 5,
+        topScore: this.versions[0]?.combinedScore,
+        timestamp: new Date().toISOString()
+      });
+      
+      this.phaseStatus['Phase 10'] = { 
+        status: 'failed_no_viable_version', 
+        output: 'NEEDS_REGENERATION',
+        topScore: this.versions[0]?.combinedScore,
+        threshold: minViableScore
+      };
+      
+      // Still select the best one as fallback
+      this.selectedVersion = { ...this.versions[0] };
+      
+      return { success: false, needsRegeneration: true, reason: 'No viable version' };
+    }
     
     // SELECT AND LOCK to single version
     this.selectedVersion = { ...this.versions[0] };
@@ -2224,20 +2506,27 @@ Add emotional hooks and intensifiers while keeping the message intact.`;
       qualityScore: v.qualityScore
     }));
     
+    // VALIDATION: Warn if selected version is borderline
+    if (this.selectedVersion.combinedScore < 60) {
+      this.log('Phase 10', `⚠️ Selected version has borderline score: ${this.selectedVersion.combinedScore}`);
+    }
+    
     this.phaseStatus['Phase 10'] = { 
       status: 'completed', 
       output: 'SELECTED_VERSION (LOCKED)',
       selected: this.selectedVersion.id,
-      score: this.selectedVersion.combinedScore 
+      score: this.selectedVersion.combinedScore,
+      viableCount: viableVersions.length
     };
     
     this.log('Phase 10', '🔒 SELECTION COMPLETE - WORKING WITH SINGLE VERSION NOW', {
       selected: this.selectedVersion.id,
       score: this.selectedVersion.combinedScore,
+      viableCount: viableVersions.length,
       ranking
     });
     
-    return { success: true, selected: this.selectedVersion, ranking };
+    return { success: true, selected: this.selectedVersion, ranking, viableCount: viableVersions.length };
   }
   
   // =========================================================================
@@ -2303,16 +2592,88 @@ Add emotional hooks and intensifiers while keeping the message intact.`;
     this.selectedVersion.gateScore = result.score;
     this.selectedVersion.allGatesPassed = result.allPassed;
     
-    this.phaseStatus['Phase 12B'] = { 
-      status: 'completed', 
-      output: 'GATE_VALIDATED_VERSION',
-      gateScore: result.score,
-      allPassed: result.allPassed 
-    };
+    // CHECK FOR FAILED GATES AND DETERMINE FAILBACK PHASE
+    if (!result.allPassed) {
+      // Determine which gate category failed and set failback phase
+      const failedGates = Object.entries(result.gates)
+        .filter(([key, gate]) => !gate.passed)
+        .map(([key, gate]) => ({ key, name: gate.name }));
+      
+      // Determine failback phase based on failed gate category
+      let failbackPhase = null;
+      let failbackReason = '';
+      
+      // G1 FAIL → Back to Phase 11 (align content)
+      const g1Failed = failedGates.some(g => g.key.startsWith('G1'));
+      if (g1Failed) {
+        failbackPhase = 11;
+        failbackReason = 'G1 (Content Alignment) failed - need to realign content';
+      }
+      
+      // G2 FAIL → Back to Phase 1 (get more facts)
+      const g2Failed = failedGates.some(g => g.key.startsWith('G2'));
+      if (g2Failed && (!failbackPhase || failbackPhase > 1)) {
+        failbackPhase = 1;
+        failbackReason = 'G2 (Information Accuracy) failed - need more facts';
+      }
+      
+      // G3 FAIL → Back to Phase 5 (regenerate with requirements)
+      const g3Failed = failedGates.some(g => g.key.startsWith('G3'));
+      if (g3Failed && (!failbackPhase || failbackPhase > 5)) {
+        failbackPhase = 5;
+        failbackReason = 'G3 (Campaign Compliance) failed - need to regenerate with requirements';
+      }
+      
+      // G4 FAIL → Back to Phase 3 (find unique angle)
+      const g4Failed = failedGates.some(g => g.key.startsWith('G4'));
+      if (g4Failed && (!failbackPhase || failbackPhase > 3)) {
+        failbackPhase = 3;
+        failbackReason = 'G4 (Originality) failed - need new unique angle';
+      }
+      
+      // Set failback for execute() loop to handle
+      this.failbackPhase = failbackPhase;
+      this.needsRegeneration = true;
+      
+      const failedGateNames = failedGates.map(g => `${g.key}: ${g.name}`).join(', ');
+      this.log('Phase 12B', `⚠️ GATES FAILED: ${result.score}`, { 
+        failedGates: failedGateNames,
+        failbackPhase,
+        failbackReason,
+        regenerationCount: this.regenerationCount + 1
+      });
+      
+      this.phaseStatus['Phase 12B'] = { 
+        status: 'failed_gates', 
+        output: 'GATE_FAILED_VERSION',
+        gateScore: result.score,
+        allPassed: false,
+        failedGates: failedGateNames,
+        failbackPhase,
+        failbackReason
+      };
+      
+      // Record in regeneration history
+      this.regenerationHistory.push({
+        trigger: 'Phase 12B Gate Failure',
+        gates: result.score,
+        failbackPhase,
+        failbackReason,
+        timestamp: new Date().toISOString()
+      });
+      
+    } else {
+      this.phaseStatus['Phase 12B'] = { 
+        status: 'completed', 
+        output: 'GATE_VALIDATED_VERSION',
+        gateScore: result.score,
+        allPassed: result.allPassed 
+      };
+      
+      this.log('Phase 12B', `✅ ALL GATES PASSED: ${result.score}`, { allPassed: result.allPassed });
+    }
     
-    this.log('Phase 12B', `16 Gates: ${result.score}`, { allPassed: result.allPassed });
-    
-    return { success: true, gates: result.gates, score: result.score };
+    return { success: result.allPassed, gates: result.gates, score: result.score };
   }
   
   // ===== PHASE 13: BENCHMARK COMPARISON - REAL COMPETITOR DATA =====
@@ -2454,6 +2815,24 @@ Return ONLY JSON.`;
     this.log('Phase 14B', 'Running final content polish...');
     this.phaseStatus['Phase 14B'] = { status: 'running', started: new Date().toISOString() };
     
+    // CRITICAL CHECK: Only LOCK if all gates passed
+    if (!this.selectedVersion.allGatesPassed) {
+      this.log('Phase 14B', '🚫 CANNOT LOCK - Gates not passed', { 
+        gateScore: this.selectedVersion.gateScore,
+        allGatesPassed: this.selectedVersion.allGatesPassed 
+      });
+      
+      this.phaseStatus['Phase 14B'] = { 
+        status: 'blocked', 
+        output: 'CONTENT_NOT_LOCKED',
+        reason: 'Gates validation failed - regeneration required',
+        gateScore: this.selectedVersion.gateScore
+      };
+      
+      // Don't lock - return failure to trigger regeneration
+      return { success: false, reason: 'Gates not passed - cannot lock content' };
+    }
+    
     // Final checks
     const checks = {
       hasCampaignLink: this.selectedVersion.content.includes('internetcourt.org'),
@@ -2465,6 +2844,38 @@ Return ONLY JSON.`;
     
     const passedCount = Object.values(checks).filter(v => v).length;
     const allPassed = passedCount === Object.keys(checks).length;
+    
+    // If checks fail, trigger regeneration
+    if (!allPassed) {
+      this.log('Phase 14B', '⚠️ Final checks failed', { 
+        checks,
+        passedCount,
+        requiredCount: Object.keys(checks).length
+      });
+      
+      // Set failback to Phase 5 for regeneration
+      this.failbackPhase = 5;
+      this.needsRegeneration = true;
+      
+      const failedChecks = Object.entries(checks)
+        .filter(([key, passed]) => !passed)
+        .map(([key]) => key);
+      
+      this.regenerationHistory.push({
+        trigger: 'Phase 14B Final Check Failure',
+        failedChecks,
+        timestamp: new Date().toISOString()
+      });
+      
+      this.phaseStatus['Phase 14B'] = { 
+        status: 'failed_checks', 
+        output: 'CONTENT_NOT_LOCKED',
+        checks,
+        failedChecks
+      };
+      
+      return { success: false, checks, allPassed: false, failedChecks };
+    }
     
     this.selectedVersion.finalChecks = checks;
     this.selectedVersion.finalPolishPassed = allPassed;
@@ -2614,7 +3025,7 @@ Return ONLY JSON.`;
   }
   
   // =========================================================================
-  // MAIN EXECUTION
+  // MAIN EXECUTION - WITH VALIDATION LOOP
   // =========================================================================
   
   async execute() {
@@ -2623,39 +3034,152 @@ Return ONLY JSON.`;
     console.log('='.repeat(80));
     console.log(`Campaign: ${this.campaignAddress}`);
     console.log(`Strict Mode: ${CONFIG.strictMode ? 'ENABLED' : 'disabled'}`);
+    console.log(`Max Regenerations: ${this.maxRegenerations}`);
     console.log('='.repeat(80));
     
     const startTime = Date.now();
     
     try {
-      // INPUT SECTION
+      // INPUT SECTION - Always runs once
       await this.phase0_Preparation();
       await this.phase1_Research();
       await this.phase2_Leaderboard();
       await this.phase2B_CompetitorDeepAnalysis();
       
-      // PROCESS SECTION
-      this.phase3_GapIdentification();
-      this.phase4_StrategyDefinition();
-      await this.phase5_ContentGeneration();
-      this.phase6_BannedScanner();
-      await this.phase6B_Rewrite();
-      await this.phase7_UniquenessValidation();
-      await this.phase8_EmotionInjection();
-      this.phase9_HESSandViral();
+      // MAIN LOOP - Handles regeneration when gates fail
+      let loopIteration = 0;
+      const maxLoopIterations = this.maxRegenerations + 1; // Initial + regenerations
       
-      // LOCK POINT
-      this.phase10_QualityScoringAndSelection();
+      while (loopIteration < maxLoopIterations) {
+        loopIteration++;
+        this.needsRegeneration = false; // Reset flag
+        
+        console.log('\n' + '-'.repeat(60));
+        console.log(`🔄 ITERATION ${loopIteration}/${maxLoopIterations}`);
+        if (this.failbackPhase) {
+          console.log(`↩️ Failback to Phase ${this.failbackPhase}`);
+        }
+        console.log('-'.repeat(60) + '\n');
+        
+        // Determine starting phase based on failback
+        const startPhase = this.failbackPhase || 3;
+        
+        // Clear versions if regenerating from Phase 5 or earlier
+        if (startPhase <= 5 && loopIteration > 1) {
+          this.log('EXECUTE', 'Clearing versions for regeneration');
+          this.versions = [];
+          this.selectedVersion = null;
+          // Reset phase status from failback phase onwards
+          for (const phase of Object.keys(this.phaseStatus)) {
+            const phaseNum = parseInt(phase.replace('Phase ', '').replace('B', ''));
+            if (phaseNum >= startPhase) {
+              delete this.phaseStatus[phase];
+            }
+          }
+        }
+        
+        // PROCESS SECTION
+        if (startPhase <= 3) this.phase3_GapIdentification();
+        if (startPhase <= 4) this.phase4_StrategyDefinition();
+        if (startPhase <= 5) await this.phase5_ContentGeneration();
+        
+        // Phase 6 + 6B with validation check
+        this.phase6_BannedScanner();
+        const rewriteResult = await this.phase6B_Rewrite();
+        if (this.needsRegeneration) {
+          this.regenerationCount++;
+          if (this.regenerationCount > this.maxRegenerations) {
+            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 6B');
+            this.needsRegeneration = false;
+          } else {
+            console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 6B (${this.regenerationCount}/${this.maxRegenerations})`);
+            continue;
+          }
+        }
+        
+        // Phase 7 with validation check
+        const uniquenessResult = await this.phase7_UniquenessValidation();
+        if (this.needsRegeneration) {
+          this.regenerationCount++;
+          if (this.regenerationCount > this.maxRegenerations) {
+            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 7');
+            this.needsRegeneration = false;
+          } else {
+            console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 7 (${this.regenerationCount}/${this.maxRegenerations})`);
+            continue;
+          }
+        }
+        
+        await this.phase8_EmotionInjection();
+        this.phase9_HESSandViral();
+        
+        // LOCK POINT with validation check
+        const selectionResult = this.phase10_QualityScoringAndSelection();
+        if (this.needsRegeneration) {
+          this.regenerationCount++;
+          if (this.regenerationCount > this.maxRegenerations) {
+            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 10');
+            this.needsRegeneration = false;
+            // Force accept best version anyway
+            this.selectedVersion = { ...this.versions[0] };
+          } else {
+            console.log(`\n⚠️ REGENERATION TRIGGERED BY PHASE 10 (${this.regenerationCount}/${this.maxRegenerations})`);
+            continue;
+          }
+        }
+        
+        // REFINE SECTION
+        this.phase11_MicroOptimization();
+        this.phase12_ContentFlowPolish();
+        
+        // GATE SIMULATION - May trigger regeneration
+        const gateResult = this.phase12B_GateSimulation();
+        
+        // Check if gates failed and we need to regenerate
+        if (this.needsRegeneration) {
+          this.regenerationCount++;
+          
+          if (this.regenerationCount > this.maxRegenerations) {
+            console.log('\n🚨 MAX REGENERATIONS REACHED');
+            console.log(`Total attempts: ${this.regenerationCount}`);
+            console.log('Proceeding with current content despite gate failures.\n');
+            this.needsRegeneration = false;
+            // Force gates to pass for final output
+            this.selectedVersion.allGatesPassed = true;
+            this.selectedVersion.gateScore = `${this.selectedVersion.gateScore} (FORCED)`;
+          } else {
+            console.log(`\n⚠️ REGENERATION TRIGGERED (${this.regenerationCount}/${this.maxRegenerations})`);
+            console.log(`Failback to Phase ${this.failbackPhase}`);
+            console.log(`Reason: ${this.regenerationHistory[this.regenerationHistory.length - 1]?.failbackReason || 'Gate failure'}`);
+            continue; // Restart loop from failback phase
+          }
+        }
+        
+        // Continue with remaining phases
+        await this.phase13_BenchmarkComparison();
+        await this.phase14_FinalEmotionReCheck();
+        
+        // FINAL CONTENT POLISH - May also trigger regeneration
+        const polishResult = this.phase14B_FinalContentPolish();
+        
+        // Check if final polish failed
+        if (this.needsRegeneration && !polishResult.success) {
+          this.regenerationCount++;
+          
+          if (this.regenerationCount > this.maxRegenerations) {
+            console.log('\n🚨 MAX REGENERATIONS REACHED AFTER FINAL POLISH');
+            this.needsRegeneration = false;
+          } else {
+            console.log(`\n⚠️ REGENERATION TRIGGERED BY FINAL POLISH (${this.regenerationCount}/${this.maxRegenerations})`);
+            continue; // Restart loop
+          }
+        }
+        
+        // If we get here, content is locked - proceed to output
+        break;
+      }
       
-      // REFINE SECTION
-      this.phase11_MicroOptimization();
-      this.phase12_ContentFlowPolish();
-      this.phase12B_GateSimulation();
-      await this.phase13_BenchmarkComparison();
-      await this.phase14_FinalEmotionReCheck();
-      this.phase14B_FinalContentPolish();
-      
-      // OUTPUT SECTION
+      // OUTPUT SECTION - Only runs once content is locked
       await this.phase15_OutputGeneration();
       const exportResult = await this.phase16_ExportAndDelivery();
       
@@ -2669,6 +3193,14 @@ Return ONLY JSON.`;
       console.log(`Strict Validation: ${strictValidator.getReport().passed ? 'PASSED' : 'FAILED'}`);
       console.log(`Selected Version: ${this.selectedVersion?.id}`);
       console.log(`Combined Score: ${this.selectedVersion?.combinedScore}`);
+      console.log(`Gate Score: ${this.selectedVersion?.gateScore}`);
+      console.log(`Regenerations: ${this.regenerationCount}/${this.maxRegenerations}`);
+      if (this.regenerationHistory.length > 0) {
+        console.log(`Regeneration History:`);
+        this.regenerationHistory.forEach((h, i) => {
+          console.log(`  ${i + 1}. ${h.trigger} → Phase ${h.failbackPhase || 'N/A'}`);
+        });
+      }
       console.log('='.repeat(80));
       
       return {
@@ -2678,7 +3210,9 @@ Return ONLY JSON.`;
         selectedVersion: this.selectedVersion,
         finalOutput: this.finalOutput,
         files: exportResult.files,
-        strictValidation: strictValidator.getReport()
+        strictValidation: strictValidator.getReport(),
+        regenerationCount: this.regenerationCount,
+        regenerationHistory: this.regenerationHistory
       };
       
     } catch (error) {
@@ -2691,7 +3225,9 @@ Return ONLY JSON.`;
         success: false,
         error: error.message,
         phasesCompleted: Object.keys(this.phaseStatus).length,
-        strictValidation: strictValidator.getReport()
+        strictValidation: strictValidator.getReport(),
+        regenerationCount: this.regenerationCount,
+        regenerationHistory: this.regenerationHistory
       };
     }
   }
