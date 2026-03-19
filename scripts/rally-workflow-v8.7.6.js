@@ -1651,6 +1651,33 @@ ${strategyInfo}
 ANGLE: ${vp.angle}
 ${vp.instruction}
 
+        const userPrompt = `Write a Twitter thread for: ${campaignTitle}
+
+========== CAMPAIGN GOAL (CRITICAL - FOLLOW this) ==========
+${campaignGoal}
+
+========== MISSION DESCRIPTION (CRITICAL - Follow this) ==========
+${missionTitle}: ${missionDescription}
+
+========== CAMPAIGN RULES ==========
+${campaignRules}
+
+========== MISSION Rules (MUST FOLLOW) ==========
+${missionRules.join('\n')}
+
+========== KNOWLED BASE FACTS ==========
+- ${knowledgeFacts}
+
+========== URL REQUIREMENT (CRITICAL - Include this in content!) ==========
+Include the website URL: internetcourt.org
+ ${campaignTitle === 'Internet Court' ? campaignTitle : 'Internet Court Campaign' : ''}
+
+========== STRATEGY ==========
+${strategyInfo}
+
+ANGLE: ${vp.angle}
+${vp.instruction}
+
 Write compelling thread content now. Make it feel human, urgent, and thought-provoking. Follow ALL campaign requirements above.`;
 
         try {
