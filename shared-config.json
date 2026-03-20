@@ -1,0 +1,104 @@
+{
+  "name": "rally-workflow-shared",
+  "version": "1.0.0",
+  "description": "Shared configuration for Judge and Creator workflows",
+  
+  "api": {
+    "rallyApiBase": "https://app.rally.fun/api",
+    "endpoints": {
+      "campaigns": "/campaigns",
+      "campaign": "/campaigns/{address}",
+      "leaderboard": "/leaderboard?campaignAddress={address}&limit=20",
+      "submissions": "/submissions?campaignAddress={address}&limit=20"
+    }
+  },
+  
+  "directories": {
+    "download": "/home/z/my-project/download",
+    "creatorOutput": "/home/z/my-project/download/creator-output",
+    "judgeOutput": "/home/z/my-project/download/judge-output"
+  },
+  
+  "scoring": {
+    "gateUtama": {
+      "G1_contentAlignment": { "max": 5, "weight": 1 },
+      "G2_informationAccuracy": { "max": 5, "weight": 1 },
+      "G3_campaignCompliance": { "max": 5, "weight": 1 },
+      "G4_originality": { "max": 5, "weight": 1 },
+      "total": { "max": 20, "pass": 16 }
+    },
+    "gateTambahan": {
+      "G5_engagementPotential": { "max": 8, "weight": 1 },
+      "G6_technicalQuality": { "max": 8, "weight": 1 },
+      "total": { "max": 16, "pass": 14 }
+    },
+    "penilaianInternal": {
+      "hookScore": { "max": 10, "weight": 1 },
+      "emotionScore": { "max": 10, "weight": 1 },
+      "ctScore": { "max": 10, "weight": 1 },
+      "uniquenessScore": { "max": 10, "weight": 1 },
+      "readabilityScore": { "max": 10, "weight": 1 },
+      "viralPotentialScore": { "max": 10, "weight": 1 },
+      "total": { "max": 60, "pass": 54 }
+    },
+    "overall": {
+      "maxTotal": 96,
+      "passPercentage": 85
+    }
+  },
+  
+  "blacklist": {
+    "weakOpenings": [
+      "the ", "a ", "an ", "this is", "there are", "there is",
+      "i think", "in the", "today ", "so ", "well ",
+      "basically", "honestly ", "actually ", "first ",
+      "let me", "here is", "here are"
+    ],
+    "aiPatternWords": [
+      "delve", "leverage", "realm", "tapestry", "paradigm",
+      "landscape", "nuance", "underscores", "pivotal", "crucial"
+    ],
+    "aiPatternPhrases": [
+      "picture this", "lets dive in", "in this thread", "key takeaways",
+      "heres the thing", "imagine a world", "it goes without saying",
+      "at the end of the day"
+    ],
+    "templateHooks": [
+      "unpopular opinion", "hot take", "thread alert", "breaking",
+      "this is your sign", "psa", "reminder that", "quick thread",
+      "important thread", "drop everything", "stop scrolling",
+      "hear me out", "let me explain", "nobody is talking about", "story time"
+    ],
+    "bannedWords": [
+      "guaranteed", "guarantee", "100%", "risk-free", "sure thing",
+      "financial advice", "investment advice", "buy now", "sell now",
+      "get rich", "quick money", "easy money", "passive income",
+      "follow me", "subscribe to my", "check my profile",
+      "click here", "limited time offer", "act now",
+      "legally binding", "court order", "official ruling"
+    ]
+  },
+  
+  "powerPatterns": [
+    { "name": "number_problem", "regex": "^\\$?\\d+", "bonus": 2 },
+    { "name": "question", "regex": "^(what|who|why|how|when|where|which)", "bonus": 2 },
+    { "name": "bold_statement", "regex": "^(no|wrong|false|never|stop|don't|code|execution)", "bonus": 2 },
+    { "name": "personal_pain", "regex": "^i (lost|failed|got|spent|wasted|built)", "bonus": 2 },
+    { "name": "imagine", "regex": "^(imagine|picture|consider|think)", "bonus": 2 },
+    { "name": "urgency", "regex": "^(warning|alert|urgent|breaking|stop|wait)", "bonus": 2 }
+  ],
+  
+  "emotionTriggers": {
+    "fear": ["risk", "danger", "threat", "warning", "scary", "terrifying", "afraid", "worried", "nightmare", "silence", "no judge", "no appeal", "no recourse"],
+    "curiosity": ["wonder", "curious", "secret", "hidden", "mystery", "discover", "surprising", "unexpected", "what happens", "consider what"],
+    "surprise": ["unexpected", "shocking", "surprised", "blew my mind", "plot twist", "wait what", "finally", "breakthrough", "nobody talks", "gap", "forgot"],
+    "hope": ["finally", "breakthrough", "opportunity", "potential", "future", "imagine", "possible", "building", "solution"],
+    "pain": ["lost", "failed", "broke", "destroyed", "killed", "wasted", "missed", "regret", "hurt", "pain", "dispute", "problem", "chaos"],
+    "urgency": ["now", "today", "immediately", "urgent", "quickly", "fast", "running out", "years", "seconds"]
+  },
+  
+  "bodyFeelings": [
+    "cold sweat", "panic", "anxiety", "heart racing", "stomach dropped",
+    "heart sank", "chest tightened", "jaw dropped", "couldn't believe"
+  ]
+}

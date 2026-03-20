@@ -1,0 +1,71 @@
+{
+  "name": "judge-workflow",
+  "version": "1.0.0",
+  "description": "Independent Judge Workflow for Rally.fun content competition",
+  "type": "workflow",
+  "input": {
+    "campaignData": {
+      "source": "file | api",
+      "path": "/download/campaign-data.json",
+      "required": ["title", "knowledgeBase", "rules", "requiredUrl"]
+    },
+    "content": {
+      "source": "file",
+      "path": "/download/konten-kandidat.txt",
+      "note": "BLIND - tanpa info pembuat"
+    }
+  },
+  "output": {
+    "path": "/download/judge-output/",
+    "files": {
+      "judge1-result.json": "Gate Utama (G1-G4)",
+      "judge2-result.json": "Gate Tambahan (G5-G6)",
+      "judge3-result.json": "Penilaian Internal",
+      "hasil-akhir.json": "Final result with all scores"
+    }
+  },
+  "thresholds": {
+    "gateUtama": { "pass": 16, "max": 20 },
+    "gateTambahan": { "pass": 14, "max": 16 },
+    "penilaianInternal": { "pass": 54, "max": 60 }
+  },
+  "capabilities": {
+    "blindJudging": true,
+    "factCheck": true,
+    "webSearch": true,
+    "evidenceRequired": true
+  },
+  "flow": [
+    {
+      "step": 1,
+      "name": "Load Campaign Data",
+      "action": "read file / fetch API"
+    },
+    {
+      "step": 2,
+      "name": "Load Content (Blind)",
+      "action": "read file without metadata"
+    },
+    {
+      "step": 3,
+      "name": "Judge 1: Gate Utama",
+      "action": "evaluate G1-G4",
+      "onPass": "continue to step 4",
+      "onFail": "return with suggestions"
+    },
+    {
+      "step": 4,
+      "name": "Judge 2: Gate Tambahan",
+      "action": "evaluate G5-G6",
+      "onPass": "continue to step 5",
+      "onFail": "return with suggestions"
+    },
+    {
+      "step": 5,
+      "name": "Judge 3: Penilaian Internal",
+      "action": "evaluate all 6 criteria",
+      "onPass": "return APPROVED",
+      "onFail": "return with suggestions"
+    }
+  ]
+}

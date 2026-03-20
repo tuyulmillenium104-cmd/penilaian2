@@ -1,0 +1,123 @@
+{
+  "name": "creator-workflow",
+  "version": "1.0.0",
+  "description": "Content Creator Workflow for Rally.fun content competition",
+  "type": "workflow",
+  "input": {
+    "campaignData": {
+      "source": "file | api",
+      "path": "/download/campaign-data.json",
+      "required": ["title", "knowledgeBase", "rules", "style", "requiredUrl"]
+    },
+    "competitorHooks": {
+      "source": "file | api",
+      "path": "/download/competitor-hooks.json",
+      "note": "Untuk menghindari duplikasi"
+    }
+  },
+  "output": {
+    "path": "/download/creator-output/",
+    "files": {
+      "konten-kandidat.json": "3 versi konten kandidat"
+    }
+  },
+  "hookPatterns": {
+    "number_problem": {
+      "description": "Angka + masalah",
+      "examples": ["$50M locked. No key.", "2.3 billion dollars. Zero judges."]
+    },
+    "bold_statement": {
+      "description": "Pernyataan berani",
+      "examples": ["Code runs. Justice doesn't.", "Execution without resolution isn't justice."]
+    },
+    "question_tension": {
+      "description": "Pertanyaan + ketegangan",
+      "examples": ["What happens when your smart contract disagrees with you?"]
+    },
+    "personal_pain": {
+      "description": "Pengalaman pribadi yang menyakitkan",
+      "examples": ["I watched $10K vanish into a black hole."]
+    },
+    "contrarian": {
+      "description": "Pandangan berlawanan dengan mainstream",
+      "examples": ["Everyone's wrong about dispute resolution."]
+    }
+  },
+  "blacklist": {
+    "weakOpenings": [
+      "the ", "a ", "an ", "this is", "there are", "there is",
+      "i think", "in the", "today ", "so ", "well ",
+      "basically", "honestly ", "actually ", "first "
+    ],
+    "aiPatternWords": [
+      "delve", "leverage", "realm", "tapestry", "paradigm",
+      "landscape", "nuance", "underscores", "pivotal", "crucial"
+    ],
+    "aiPatternPhrases": [
+      "picture this", "lets dive in", "in this thread", "key takeaways",
+      "heres the thing", "imagine a world", "it goes without saying"
+    ],
+    "templateHooks": [
+      "unpopular opinion", "hot take", "thread alert", "breaking",
+      "this is your sign", "psa", "reminder that", "quick thread",
+      "important thread", "drop everything", "stop scrolling",
+      "hear me out", "let me explain", "nobody is talking about", "story time"
+    ],
+    "bannedWords": [
+      "guaranteed", "guarantee", "100%", "risk-free", "sure thing",
+      "financial advice", "investment advice", "buy now", "sell now",
+      "get rich", "quick money", "easy money", "passive income",
+      "follow me", "subscribe to my", "check my profile",
+      "click here", "limited time offer", "act now",
+      "legally binding", "court order", "official ruling"
+    ]
+  },
+  "emotionTypes": {
+    "fear": ["risk", "danger", "threat", "warning", "scary", "terrifying", "afraid", "worried", "nightmare"],
+    "curiosity": ["wonder", "curious", "secret", "hidden", "mystery", "discover", "surprising", "unexpected"],
+    "surprise": ["unexpected", "shocking", "surprised", "blew my mind", "plot twist", "wait what", "finally"],
+    "hope": ["finally", "breakthrough", "opportunity", "potential", "future", "imagine", "possible"],
+    "pain": ["lost", "failed", "broke", "destroyed", "killed", "wasted", "missed", "regret", "hurt"],
+    "urgency": ["now", "today", "immediately", "urgent", "quickly", "fast", "running out"]
+  },
+  "constraints": {
+    "hookMaxLength": 200,
+    "tweetMaxLength": 280,
+    "tweetIdealRange": [240, 400],
+    "tweetsPerVersion": 5,
+    "versionsToCreate": 3,
+    "minEmotionTypes": 2
+  },
+  "flow": [
+    {
+      "step": 1,
+      "name": "Load Campaign Data",
+      "action": "read file / fetch API"
+    },
+    {
+      "step": 2,
+      "name": "Load Competitor Hooks",
+      "action": "read file / fetch API"
+    },
+    {
+      "step": 3,
+      "name": "Analyze Knowledge Base",
+      "action": "extract key points, terminology, style"
+    },
+    {
+      "step": 4,
+      "name": "Generate 3 Content Versions",
+      "action": "create with different hook patterns"
+    },
+    {
+      "step": 5,
+      "name": "Self-Check Each Version",
+      "action": "validate against blacklist and constraints"
+    },
+    {
+      "step": 6,
+      "name": "Save Output",
+      "action": "write to konten-kandidat.json"
+    }
+  ]
+}
