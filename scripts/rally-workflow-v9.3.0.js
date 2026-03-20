@@ -807,6 +807,93 @@ async function fetchLeaderboardAndSubmissions(campaignAddress) {
 }
 
 // ============================================================================
+// CAMPAIGN SEARCH BY NAME
+// ============================================================================
+
+async function searchCampaignByName(campaignName) {
+  console.log('\n' + '─'.repeat(60));
+  console.log('🔍 Searching campaign by name...');
+  console.log('─'.repeat(60));
+  console.log(`   Query: "${campaignName}"`);
+  
+  try {
+    // Fetch all campaigns
+    const url = `${CONFIG.rallyApiBase}/campaigns?limit=50`;
+    const response = await fetchUrl(url);
+    
+    if (response.status === 200) {
+      const data = JSON.parse(response.data);
+      const campaigns = data.campaigns || data;
+      
+      if (!Array.isArray(campaigns)) {
+        console.log('   ❌ Invalid campaign list format');
+        return null;
+      }
+      
+      // Search by name (case insensitive, partial match)
+      const searchLower = campaignName.toLowerCase();
+      const matches = campaigns.filter(c => {
+        const title = (c.title || c.name || '').toLowerCase();
+        return title.includes(searchLower) || searchLower.includes(title);
+      });
+      
+      if (matches.length === 0) {
+        console.log('   ❌ No campaign found with that name');
+        console.log('\n   📋 Available campaigns:');
+        campaigns.slice(0, 10).forEach((c, i) => {
+          console.log(`      ${i + 1}. ${c.title || c.name}`);
+        });
+        return null;
+      }
+      
+      if (matches.length === 1) {
+        const match = matches[0];
+        console.log(`   ✅ Found: "${match.title || match.name}"`);
+        console.log(`      Address: ${match.intelligentContractAddress || match.address}`);
+        return match;
+      }
+      
+      // Multiple matches - show list
+      console.log(`   Found ${matches.length} matching campaigns:\n`);
+      matches.forEach((c, i) => {
+        console.log(`      ${i + 1}. ${c.title || c.name}`);
+        console.log(`         Address: ${c.intelligentContractAddress || c.address}`);
+      });
+      
+      // Return first match
+      const firstMatch = matches[0];
+      console.log(`\n   ➡️ Using: "${firstMatch.title || firstMatch.name}"`);
+      return firstMatch;
+    }
+  } catch (error) {
+    console.log(`   ❌ Search failed: ${error.message}`);
+  }
+  
+  return null;
+}
+
+async function resolveCampaignInput(input) {
+  // If input starts with 0x, it's an address
+  if (input && input.startsWith('0x')) {
+    return { address: input, name: null };
+  }
+  
+  // If input is provided but not an address, search by name
+  if (input && input.length > 0) {
+    const campaign = await searchCampaignByName(input);
+    if (campaign) {
+      return { 
+        address: campaign.intelligentContractAddress || campaign.address, 
+        name: campaign.title || campaign.name 
+      };
+    }
+  }
+  
+  // No valid input
+  return { address: null, name: null };
+}
+
+// ============================================================================
 // JUDGING SYSTEM
 // ============================================================================
 
@@ -1284,19 +1371,35 @@ function generateFeedback(aggregatedScores, judgeResults) {
 // ============================================================================
 
 async function main() {
-  const campaignAddress = process.argv[2];
+  const userInput = process.argv[2];
   const maxRetries = 3;
   
   console.log('\n' + '═'.repeat(70));
   console.log('  RALLY WORKFLOW V9.3.0 - MULTI-LLM JUDGING EDITION');
   console.log('═'.repeat(70));
-  console.log(`  Campaign: ${campaignAddress || 'No address provided'}`);
+  console.log(`  Input: ${userInput || 'No input provided'}`);
   console.log(`  Time: ${new Date().toISOString()}`);
   console.log('  Features: Blind Judging, Multi-LLM, No Bias from Campaign');
   console.log('  Max Retries: ' + maxRetries);
   console.log('═'.repeat(70));
   
   const startTime = Date.now();
+  
+  // ===== RESOLVE CAMPAIGN INPUT (name or address) =====
+  const resolved = await resolveCampaignInput(userInput);
+  const campaignAddress = resolved.address;
+  
+  if (!campaignAddress) {
+    console.log('\n❌ No campaign found. Exiting.');
+    console.log('\n📋 Usage:');
+    console.log('   node scripts/rally-workflow-v9.3.0.js <campaign_address>');
+    console.log('   node scripts/rally-workflow-v9.3.0.js <campaign_name>');
+    console.log('\n📌 Examples:');
+    console.log('   node scripts/rally-workflow-v9.3.0.js 0x5B303819B946F464d275b25552f8c9fD3F7029d8');
+    console.log('   node scripts/rally-workflow-v9.3.0.js "Grvt Momentum"');
+    console.log('   node scripts/rally-workflow-v9.3.0.js "Internet Court"');
+    return { success: false, error: 'No campaign found' };
+  }
   
   // ===== PHASE 0: Campaign Data =====
   const campaign = await fetchCampaignData(campaignAddress);
@@ -1469,6 +1572,8 @@ module.exports = {
   fetchCampaignData, 
   fetchLeaderboardAndSubmissions,
   generateJudgeInstructions,
+  searchCampaignByName,
+  resolveCampaignInput,
   
   // Content generation
   generateContent,
