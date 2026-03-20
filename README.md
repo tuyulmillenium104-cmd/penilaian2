@@ -1,369 +1,340 @@
-# Rally Content Workflow V8.7.6
+# RALLY CONTENT WORKFLOW V8.7.6
 
-> **The Ultimate AI-Powered Content Creation System for Rally.fun**
+## 🎯 SATU PROMPT UNTUK CHAT BARU
 
-A complete 24-phase content creation workflow that generates high-quality, viral-optimized Twitter/X content for crypto/Web3 campaigns on Rally.fun platform.
+```
+Buat konten Rally untuk hook: "CODE RUNS, DISPUTES DON'T. ENTER INTERNET COURT"
+
+Baca README lengkap di: https://github.com/tuyulmillenium104-cmd/penilaian2
+
+Ikuti semua instruksi di README, jalankan workflow, tampilkan konten + SCORE CARD.
+```
 
 ---
 
-## 🚀 Quick Start
+## 📋 INSTRUKSI LENGKAP UNTUK AI
+
+### LANGKAH 1: EKSEKUSI SCRIPT
 
 ```bash
-# Run with a custom hook
-node scripts/rally-workflow-v8.7.6.js --hook "Your Hook Here"
+cd /home/z/my-project
+node scripts/rally-ai-workflow.js "CODE RUNS, DISPUTES DON'T. ENTER INTERNET COURT"
+```
 
-# Example
-node scripts/rally-workflow-v8.7.6.js --hook "Code Runs, Disputes Don't. Enter Internet Court"
+**JIKA BERHASIL:** Tampilkan output dari script.
+
+**JIKA GAGAL (error/rate-limit):** Lanjut ke LANGKAH 2.
+
+---
+
+### LANGKAH 2: GENERATE KONTEN MANUAL
+
+#### HOOK (WAJIB SAMA PERSIS):
+```
+Code Runs, Disputes Don't. Enter Internet Court
+```
+
+#### STRUKTUR KONTEN:
+1. Hook = kalimat pertama (JANGAN diubah!)
+2. 3-5 paragraf, masing-masing <280 karakter
+3. Pisahkan paragraf dengan baris kosong
+4. Include: `internetcourt.org`
+5. Include minimal 1 BODY FEELING
+6. Akhiri dengan PERTANYAAN engaging
+
+#### BODY FEELINGS (WAJIB 1+):
+```
+stomach dropped | heart racing | cold sweat | chest tightened | 
+couldn't sleep | jaw dropped | couldn't breathe | heart sank |
+itching to know | sick feeling
+```
+
+#### EMOTION TRIGGERS (WAJIB 3+ TIPE):
+
+| Emotion | Triggers |
+|---------|----------|
+| **Fear** | risk, danger, threat, warning, scary, terrifying, afraid, worried, nightmare, what if, could lose, at stake, crisis, wrong, fail, lost, vanish, drained |
+| **Curiosity** | wonder, curious, secret, hidden, mystery, discover, surprising, unexpected, few people know, what most don't realize, gap, missing, problem |
+| **Surprise** | unexpected, shocking, surprised, didn't expect, blew my mind, plot twist, wait what, finally, breakthrough |
+| **Hope** | finally, breakthrough, opportunity, potential, future, imagine, possible, could change everything, solution |
+| **Pain** | lost, failed, broke, destroyed, killed, wasted, missed, regret, hurt, pain, lost everything, too late, gone, rugged |
+
+---
+
+### LANGKAH 3: BANNED ITEMS (JANGAN GUNAKAN)
+
+#### BANNED WORDS:
+```
+delve, leverage, realm, tapestry, paradigm, catalyst, cornerstone, 
+pivotal, myriad, moreover, furthermore, groundbreaking, game-changer, 
+cutting-edge, unprecedented, ecosystem, landscape, foster, harness, 
+robust, seamless, innovative, transformative, imperative, crucial, 
+underscore, testament, epitome, beacon, embark, journey, navigate, 
+unravel, unlock
+```
+
+#### BANNED PHRASES:
+```
+in the world of, picture this, imagine a world, lets dive in, 
+at its core, in conclusion, it is important to note, moving forward,
+not only but also, a testament to, it's worth noting, needless to say,
+at the heart of, the fact of the matter, in the digital age, 
+with the rise of, in recent years, double-edged sword, tip of the iceberg,
+game changer, first and foremost, last but not least,
+plays a crucial role, paved the way
+```
+
+#### BANNED AI PATTERNS:
+```
+in this thread, here's what you need to know, let me break it down,
+the bottom line is, what does this mean for you, key takeaways,
+in summary
+```
+
+#### BANNED TEMPLATE HOOKS:
+```
+unpopular opinion, hot take, thread alert, breaking, this is your sign,
+psa, reminder that, quick thread, important thread, drop everything,
+stop scrolling, hear me out, let me explain, nobody is talking about,
+story time
+```
+
+#### WEAK OPENINGS (JANGAN BUKA DENGAN):
+```
+the, a, an, this is, there are, there is, i think, it is, in the,
+today, so, well, basically, honestly, actually, first, let me,
+here is, here are
 ```
 
 ---
 
-## 📋 What This Workflow Does
+### LANGKAH 4: SCORING SYSTEM
 
-This workflow takes a **hook** (opening statement) and generates complete Twitter/X thread content through 24 rigorous phases:
+#### HOOK SCORE (0-10) - MIN: 7
 
-1. **Gathers Data** - Campaign info, competitor analysis, web research
-2. **Creates Content** - Multi-version generation with LLM
-3. **Validates Quality** - Hook, Emotion, CT scoring
-4. **Optimizes** - Micro-polish, viral enhancement
-5. **Delivers Output** - Ready-to-post content
+| Kriteria | Poin |
+|----------|------|
+| Tidak buka dengan weak opening | +3 |
+| Pakai power pattern (lihat bawah) | +3 |
+| Ada curiosity element | +1 |
+| Ada tension element | +1 |
+| Ada surprise element | +1 |
+| Ada relevance element | +1 |
+
+**POWER PATTERNS:**
+- Number/Data: `$50M vanished...`, `400 million users...`
+- Question: `What happens when...`, `Who decides...`
+- Action verb: `Imagine this...`, `Picture...`
+- Bold statement: `Code executes perfectly. Justice doesn't.`
+- Contrarian: `No one talks about...`, `Wrong...`
+- Personal pain: `I lost everything...`, `I couldn't believe...`
+- Urgency: `Warning: Your funds...`, `Alert...`
 
 ---
 
-## 📁 File Structure
+#### EMOTION SCORE (0-10) - MIN: 8
+
+| Kriteria | Poin |
+|----------|------|
+| Setiap emotion trigger | +2 |
+| Body feeling included | +3 |
+| 3+ emotion types | +2 |
+| 5 emotion types | +1 |
+
+---
+
+#### CT SCORE (0-10) - MIN: 8
+
+| Elemen | Poin | Pattern |
+|--------|------|---------|
+| Question | +2 | `?` |
+| Reply bait | +2 | `what do you think`, `thoughts?`, `who else`, `agree?` |
+| Engagement hook | +2 | `what if`, `have you ever`, `imagine if`, `would you` |
+| Personal | +1 | `I`, `my`, `me`, `we`, `our` |
+| FOMO | +1 | `now`, `today`, `finally`, `before`, `last chance` |
+| Controversy | +1 | `wrong`, `problem`, `fail`, `nobody`, `truth is` |
+| Share-worthy | +1 | `this is why`, `here's what`, `the truth` |
+
+---
+
+#### GATE UTAMA RALLY (0-5 each) - MIN: 4
+
+| Gate | Kriteria Scoring |
+|------|------------------|
+| **G1: Content Alignment** | Mention Internet Court/internetcourt.org (+1.5), terminology benar (+1.25), brand consistency (+1.25), audience fit (+1.0) |
+| **G2: Information Accuracy** | Technical terms (+1.5), credible sources (+1.25), ada data/angka (+1.25), proper context (+1.0) |
+| **G3: Campaign Compliance** | URL included (+1.5), format benar (+1.25), no banned items (+1.25), disclosures (+1.0) |
+| **G4: Originality** | No template hooks (+1.5), personal insights (+1.25), no AI patterns (+1.25), creative expression (+1.0) |
+
+---
+
+#### GATE TAMBAHAN (0-8 each) - MIN: 8
+
+| Gate | Kriteria Scoring |
+|------|------------------|
+| **G5: Engagement Potential** | Hook effectiveness (+2), CTA quality (+2), content structure (+2), conversation potential (+2) |
+| **G6: Technical Quality** | Grammar/spelling (+2), formatting (+2), platform optimization (+2), media integration (+2) |
+
+---
+
+#### PENILAIAN INTERNAL (0-10 each) - MIN: 9
+
+| Metrik | Kriteria |
+|--------|----------|
+| **Hook Score** | Lihat rumus Hook Score di atas |
+| **Emotion Score** | Lihat rumus Emotion Score di atas |
+| **CT Score** | Lihat rumus CT Score di atas |
+| **Uniqueness** | 10 - (banned violations × 0.5) - (AI patterns × 1) |
+| **Readability** | Base 8 + paragraph count bonus, minus long sentences |
+| **Viral Potential** | Controversy + emotional + question + personal + data + urgency + share-worthy |
+
+---
+
+#### OVERALL SCORE - MIN: 9.0
 
 ```
-penilaian2/
-├── README.md                          # This file
-├── package.json                       # Dependencies
-├── package-lock.json                  # Lock file
-├── scripts/
-│   ├── rally-workflow-v8.7.6.js       # MAIN WORKFLOW (24 phases)
-│   ├── smart-content-generator.js     # Fallback generator (rate limit handling)
-│   └── llm-rate-limiter.js            # API rate limiting
-└── docs/
-    └── V8.7.6-DOCUMENTATION.md        # Detailed documentation
-```
-
----
-
-## 🔧 Requirements
-
-- Node.js v18+
-- `z-ai-web-dev-sdk` package
-- `cheerio` package
-
-```bash
-npm install z-ai-web-dev-sdk cheerio
-```
-
----
-
-## 📥 Input
-
-| Parameter | Required | Description |
-|-----------|----------|-------------|
-| `--hook` | Yes | Opening hook for the content |
-| `--campaign` | Optional | Campaign ID (defaults to Internet Court) |
-
-### Hook Requirements
-
-The hook should be attention-grabbing. Examples:
-- `"Code Runs, Disputes Don't. Enter Internet Court"`
-- `"$50M vanished in seconds. No court could help."`
-- `"What happens when your DAO gets rugged?"`
-
----
-
-## 📤 Output
-
-The workflow generates:
-
-1. **JSON Report** - Complete execution log
-2. **Text Content** - Ready-to-post thread
-3. **Quality Scores** - Hook, Emotion, CT scores
-
-Output location: `/home/z/my-project/download/`
-
----
-
-## 🎯 24 Phases Overview
-
-### INPUT SECTION (Data Gathering)
-
-| Phase | Name | Description |
-|-------|------|-------------|
-| 0 | Campaign Fetch | Get campaign data from Rally API |
-| 1 | Research | Web scraper + Web Search for external data |
-| 2 | Leaderboard | Fetch current leaderboard rankings |
-| 2B | Competitor Analysis | Deep LLM analysis of competitor content |
-
-### PROCESS SECTION (Content Creation)
-
-| Phase | Name | Description |
-|-------|------|-------------|
-| 3 | Gap Identification | Find content gaps in competitor landscape |
-| 4 | Strategy Definition | Define content angles and approach |
-| 5 | Content Generation | LLM generates multiple content versions |
-| 6 | Banned Items Scan | Detect AI patterns, banned words |
-| 6B | Rewrite | LLM rewrites if violations found |
-| 7 | Uniqueness Check | Compare against competitors |
-| 8 | Emotion Injection | Add emotional triggers via LLM |
-| 9 | HES + Viral Score | Calculate Hook-Emotion-System scores |
-| 9B | Viral Enhancement | Loop to improve viral potential |
-
-### LOCK POINT
-
-| Phase | Name | Description |
-|-------|------|-------------|
-| 10 | Quality Selection | Select best version (LOCKS to 1 version) |
-
-### REFINE SECTION (Optimization)
-
-| Phase | Name | Description |
-|-------|------|-------------|
-| 11 | Micro-Optimization | 5-layer polish (power words, flow, etc.) |
-| 12 | Flow Polish | Improve content flow and readability |
-| 12B | Gate Simulation | 16 quality gates validation |
-| 13 | Benchmark Compare | Compare against real competitor data |
-| 13B | Beat Top 20 | Loop to improve ranking potential |
-| 14 | Final Emotion | Re-inject emotion via LLM |
-| 14B | Final Polish | Last content refinement |
-
-### OUTPUT SECTION (Delivery)
-
-| Phase | Name | Description |
-|-------|------|-------------|
-| 15 | Output Generation | Format final content |
-| 15B | CT Maximizer | Loop to maximize CT score |
-| 15C | Campaign Compliance | Validate against campaign rules |
-| 16 | Export | Save and deliver content |
-
----
-
-## 📊 Quality Standards - "200% Above Rally Maximum"
-
-### 🚦 GATE UTAMA RALLY (Min: 4/5 each)
-
-| Gate | Range | Min Pass | Description |
-|------|-------|----------|-------------|
-| Content Alignment | 0-5 | **4** | Message accuracy, terminology, brand consistency, audience fit |
-| Information Accuracy | 0-5 | **4** | Technical accuracy, official consistency, data accuracy, context |
-| Campaign Compliance | 0-5 | **4** | Required mentions, format, style guidelines, disclosures |
-| Originality & Authenticity | 0-5 | **4** | Fresh perspective, personal insights, natural language, creative expression |
-
-### 🎯 GATE TAMBAHAN (Min: 8/8 each)
-
-| Metric | Range | Min Pass | Description |
-|--------|-------|----------|-------------|
-| Engagement Potential | 0-8 | **8** | Hook effectiveness, CTA quality, structure, conversation potential |
-| Technical Quality | 0-8 | **8** | Grammar, formatting, platform optimization, media integration |
-
-### 📊 PENILAIAN INTERNAL (Min: 9/10 each)
-
-| Metric | Range | Min Pass | Description |
-|--------|-------|----------|-------------|
-| Hook Score | 0-10 | **9** | Opening hook quality |
-| Emotion Score | 0-10 | **9** | Emotional impact |
-| CT Score | 0-10 | **9** | Call-to-action elements |
-| Uniqueness Score | 0-10 | **9** | Originality vs competitors |
-| Readability Score | 0-10 | **9** | Ease of reading |
-| Viral Potential | 0-10 | **9** | Share-worthiness |
-| **OVERALL** | 0-10 | **9** | Weighted combination |
-
-### 📈 Overall Score Formula
-
-```
-Overall = (0.40 × Gate_Average) + (0.60 × Internal_Average)
-
-Where:
-- Gate_Average = Average of all Gate scores (normalized to 0-10)
-- Internal_Average = Average of all Internal scores
-
-Statistical Confidence = 1 - (Standard_Deviation / Mean)
-```
-
-### ✅ Pass/Fail Criteria
-
-Content PASSES if ALL conditions are met:
-- All 6 Gates ≥ minimum pass score
-- All 7 Internal Metrics ≥ minimum pass score
-- Overall Score ≥ 9/10
-
-If ANY metric fails → **Regenerate content (max 3 loops)**
-
----
-
-## 🔄 Loop Protection
-
-The workflow includes intelligent looping:
-
-| Loop Type | Max Iterations | Trigger |
-|-----------|---------------|---------|
-| Score Card Regeneration | 3 | Any gate or metric < minimum |
-| Viral Enhancement | 2 | Viral potential < 9 |
-| CT Maximizer | 2 | CT Score < 9 |
-| Emotion Re-injection | 2 | Emotion Score < 9 |
-| Total Regenerations | 3 | Force proceed |
-
----
-
-## 🛡️ Banned Items Detection
-
-The workflow detects and removes:
-
-- **AI Words**: delve, leverage, realm, tapestry, paradigm, etc.
-- **AI Phrases**: "picture this", "imagine a world", "lets dive in"
-- **Template Markers**: "unpopular opinion", "hot take", "thread alert"
-- **Smart Quotes**: Em dashes, curly quotes, ellipsis
-
----
-
-## 🌐 Web Search Integration
-
-V8.7.6 includes external data gathering:
-
-- **Real-time News** - Latest industry trends
-- **Competitor Analysis** - Current market landscape
-- **Topic Research** - Subject-specific information
-
-Search queries are auto-generated from campaign data.
-
----
-
-## ⚡ Rate Limiting
-
-Built-in rate limiting for API calls:
-
-- **Token Bucket Algorithm** - Smooth request distribution
-- **Exponential Backoff** - Smart retry on rate limit
-- **Request Queue** - Priority-based execution
-- **Caching** - Reduce duplicate API calls
-
----
-
-## 📝 Example Usage
-
-```javascript
-// Run from command line
-node scripts/rally-workflow-v8.7.6.js --hook "Code Runs, Disputes Don't. Enter Internet Court"
-
-// Or import as module
-const { runWorkflow } = require('./scripts/rally-workflow-v8.7.6.js');
-
-const result = await runWorkflow({
-  hook: "Your Hook Here",
-  campaignId: "optional-campaign-id"
-});
+OVERALL = (Gate_Average / 8 × 4) + (Internal_Average / 10 × 6)
 ```
 
 ---
 
-## 📈 Expected Output Format
+### LANGKAH 5: FORMAT OUTPUT
 
-```json
-{
-  "hook": "Code Runs, Disputes Don't. Enter Internet Court",
-  "content": "Full thread content...",
-  "scores": {
-    "hook": 9,
-    "emotion": 8,
-    "ct": 9,
-    "viral": 8
-  },
-  "phases": {
-    "completed": 24,
-    "details": {...}
-  },
-  "generationMethod": "full_llm",
-  "timestamp": "2026-03-20T..."
-}
+#### KONTEN:
+```
+[Hook - sama persis]
+
+[Paragraf 2]
+
+[Paragraf 3]
+
+[Paragraf 4 - dengan body feeling]
+
+[Paragraf 5 - pertanyaan]
+
+internetcourt.org
+```
+
+#### SCORE CARD:
+```
+╔════════════════════════════════════════════════════════════════════════╗
+║                    FINAL CONTENT SCORE CARD - V8.7.6                   ║
+║                   "Quality 200% Above Rally Standards"                 ║
+╠════════════════════════════════════════════════════════════════════════╣
+║                                                                        ║
+║  🚦 GATE UTAMA RALLY (Min: 4/5 each)                                   ║
+║  │ Content Alignment:           X.X/5   │ ✅ PASS / ❌ FAIL            ║
+║  │ Information Accuracy:        X.X/5   │ ✅ PASS / ❌ FAIL            ║
+║  │ Campaign Compliance:         X.X/5   │ ✅ PASS / ❌ FAIL            ║
+║  │ Originality & Authenticity:  X.X/5   │ ✅ PASS / ❌ FAIL            ║
+║                                                                        ║
+║  🎯 GATE TAMBAHAN (Min: 8/8 each)                                      ║
+║  │ Engagement Potential:        X.X/8   │ ✅ PASS / ❌ FAIL            ║
+║  │ Technical Quality:           X.X/8   │ ✅ PASS / ❌ FAIL            ║
+║                                                                        ║
+║  📊 PENILAIAN INTERNAL (Min: 9/10 each)                                ║
+║  │ Hook Score:                  X/10    │ ✅ PASS / ❌ FAIL            ║
+║  │ Emotion Score:               X/10    │ ✅ PASS / ❌ FAIL            ║
+║  │ CT Score:                    X/10    │ ✅ PASS / ❌ FAIL            ║
+║  │ Uniqueness:                  X/10    │ ✅ PASS / ❌ FAIL            ║
+║  │ Readability:                 X/10    │ ✅ PASS / ❌ FAIL            ║
+║  │ Viral Potential:             X/10    │ ✅ PASS / ❌ FAIL            ║
+║  ├────────────────────────────────────────────────────────────────────┤ ║
+║  │ OVERALL SCORE:               X.X/10  │ ✅ PASS / ❌ FAIL            ║
+║                                                                        ║
+║  😱 EMOTION TYPES: [list detected types]                               ║
+║  │ Body Feelings: Yes/No                                               ║
+║                                                                        ║
+║  📈 SUMMARY                                                            ║
+║  │ Gate Utama + Tambahan:  X/6 PASS                                    ║
+║  │ Penilaian Internal:     X/6 PASS                                    ║
+║  │ Emotion Types:          X/5                                         ║
+║  ├────────────────────────────────────────────────────────────────────┤ ║
+║  │ READY FOR SUBMISSION:   ✅ YES / ❌ NO                               ║
+║  │ Confidence Level:       XX%                                          ║
+║                                                                        ║
+╚════════════════════════════════════════════════════════════════════════╝
 ```
 
 ---
 
-## 🔍 Troubleshooting
+### LANGKAH 6: CONTOH OUTPUT YANG BENAR
 
-| Issue | Solution |
-|-------|----------|
-| Rate limit errors | Workflow auto-retries with backoff |
-| Low hook score | Check hook against HOOK_STANDARDS |
-| Low CT score | Add questions, engagement hooks |
-| Content drift | Phase 15C validates compliance |
-
----
-
-## 📚 Documentation
-
-For detailed documentation, see: `docs/V8.7.6-DOCUMENTATION.md`
-
----
-
-## 🔥 SINGLE PROMPT FOR AI
-
-**Copy-paste this prompt when starting a new chat:**
-
+#### KONTEN:
 ```
-Read this GitHub repo: https://github.com/tuyulmillenium104-cmd/penilaian2
+Code Runs, Disputes Don't. Enter Internet Court
 
-Then create Rally content with this hook: "[YOUR HOOK HERE]"
+Your smart contract executes in milliseconds. But when something goes wrong? Traditional courts take years. Cost thousands. Cross borders? Good luck.
 
-Execute the complete 24-phase workflow and return the final content with scores.
+400 million people use smart contracts. Zero courts can help them.
+
+I learned this the hard way. Watching my savings vanish in a buggy transaction, stomach dropped, heart racing, nowhere to turn.
+
+Internet Court changes this. AI validators evaluate evidence and deliver verdicts in minutes, not months. No geographical limits. No astronomical legal fees.
+
+What happens when your DAO gets rugged? Who do you call?
+
+internetcourt.org
 ```
 
-**Example:**
-```
-Read this GitHub repo: https://github.com/tuyulmillenium104-cmd/penilaian2
-
-Then create Rally content with this hook: "Code Runs, Disputes Don't. Enter Internet Court"
-
-Execute the complete 24-phase workflow and return the final content with scores.
-```
-
----
-
-## 🤝 How AI Should Use This
-
-If you're an AI reading this:
-
-### Step-by-Step Instructions:
-
-1. **Read the hook** provided by user
-2. **Clone/setup the repo** if needed
-3. **Run the workflow**:
-   ```bash
-   node scripts/rally-workflow-v8.7.6.js --hook "THE HOOK FROM USER"
-   ```
-4. **Wait for completion** - All 24 phases will execute (may take 2-5 minutes)
-5. **Return the output** to user:
-   - Final content text
-   - Quality scores (Hook, Emotion, CT, Viral)
-   - Any important notes from execution
-
-### CRITICAL RULES:
-
-**DO NOT**:
-- Skip phases - All 24 phases MUST execute
-- Use templates - Workflow generates dynamic content via LLM
-- Ignore low scores - Workflow will automatically regenerate
-- Modify the workflow files - Run as-is
-
-**MUST**:
-- Execute complete workflow from Phase 0 to Phase 16
-- Return all scores (Hook ≥7, Emotion ≥8, CT ≥8)
-- Include the full content text ready to post
-- Report any errors or warnings from execution
+#### ANALISIS:
+- Hook: ✅ Power pattern (bold statement + contrast)
+- Emotions: ✅ fear, curiosity, surprise, hope, pain
+- Body Feelings: ✅ stomach dropped, heart racing
+- CT: ✅ question, reply bait, personal, FOMO, controversy
+- Banned: ✅ 0 violations
+- Overall: 9.1/10 ✅ PASS
 
 ---
 
-## Version History
+## 🔄 REGENERATION RULES
 
-| Version | Changes |
-|---------|---------|
-| V8.7.6 | **Scoring System 200% Above Rally**: Gate Utama (4/5), Gate Tambahan (8/8), Internal (9/10), Final Score Card, Statistical Confidence |
-| V8.7.5 | Rate limiter, CT threshold 7/10 |
-| V8.7 | 24 phases structure |
+Jika overall < 9.0 atau ada gate yang fail:
+
+1. Identifikasi masalah
+2. Fix konten
+3. Re-score
+4. Max 3 regeneration attempts
+5. Jika masih fail setelah 3x, tampilkan hasil terbaik dengan warning
 
 ---
 
-**Created for Rally.fun content creation campaigns**
+## 📁 FILE DI REPOSITORY
+
+| File | Fungsi |
+|------|--------|
+| `README.md` | **File ini - semua instruksi** |
+| `scripts/rally-ai-workflow.js` | Script Node.js workflow |
+| `scripts/rally-workflow-v8.7.6.js` | Full 24-phase workflow |
+| `scripts/llm-rate-limiter.js` | Rate limiter module |
+
+---
+
+## 🚀 TROUBLESHOOTING
+
+| Masalah | Solusi |
+|---------|--------|
+| Script error 429 | Rate limit, lanjut generate manual |
+| Script not found | Generate manual mengikuti instruksi di atas |
+| Score < 9.0 | Regenerate dengan perbaikan |
+| Missing body feeling | Tambahkan body feeling |
+| Banned word detected | Ganti dengan alternatif |
+
+---
+
+## ✅ CHECKLIST FINAL
+
+Sebelum submit, pastikan:
+
+- [ ] Hook sama persis dengan input
+- [ ] Semua gates pass (min 4/5 untuk Gate Utama, 8/8 untuk Tambahan)
+- [ ] Semua internal scores pass (min 9/10)
+- [ ] Overall score >= 9.0
+- [ ] Ada 3+ emotion types
+- [ ] Ada body feeling
+- [ ] Tidak ada banned items
+- [ ] Format score card lengkap
+
+---
+
+**END OF README**
