@@ -284,5 +284,55 @@
     "HIGH": ["Hard checks verified", "Factual claims with credible source", "Clear pattern match"],
     "MEDIUM": ["Subjective assessment with evidence", "Emotion without body feeling", "Originality with some competitors"],
     "LOW": ["Web search failed", "KB unavailable", "Edge case without precedent"]
+  },
+  
+  "feedbackMechanism": {
+    "principles": {
+      "goal": "Menjaga objectivity dan memaksa Creator berpikir sendiri",
+      "given": [
+        "Identifikasi masalah (APA yang salah)",
+        "Penjelasan masalah (KENAPA salah)",
+        "Impact ke score (BERAPA point hilang)",
+        "Arah perbaikan (GUIDANCE umum)"
+      ],
+      "notGiven": [
+        "Contoh revision (menjadi template)",
+        "Kata-kata spesifik yang harus diganti",
+        "Template jawaban",
+        "Lokasi tepat yang harus diubah"
+      ]
+    },
+    "issueCategories": {
+      "critical": {
+        "description": "Masalah yang menyebabkan auto-fail",
+        "examples": ["Required URL tidak ada", "Banned words terdeteksi", "Em dash di hook"],
+        "priority": 1
+      },
+      "major": {
+        "description": "Masalah yang signifikan mempengaruhi score",
+        "examples": ["AI patterns terdeteksi", "CTA tidak engaging", "Body feeling tidak ada"],
+        "priority": 2
+      },
+      "minor": {
+        "description": "Masalah kecil yang bisa diperbaiki",
+        "examples": ["Sentence length tidak optimal", "Viral elements kurang"],
+        "priority": 3
+      }
+    },
+    "outputFormat": {
+      "issues": {
+        "critical": ["{ gate, category, issue, impact, guidance }"],
+        "major": ["{ gate, category, issue, impact, guidance }"],
+        "minor": ["{ gate, category, issue, impact, guidance }"]
+      },
+      "scoreImpact": {
+        "currentTotal": "string",
+        "targetTotal": "string",
+        "gap": "string",
+        "affectedGates": ["array"]
+      },
+      "strengths": ["array"],
+      "overallAssessment": "string"
+    }
   }
 }

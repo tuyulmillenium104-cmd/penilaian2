@@ -452,6 +452,103 @@ Return JSON dengan struktur berikut:
 }
 ```
 
+═══════════════════════════════════════════════════════════════
+HANDLING FEEDBACK DARI JUDGE
+═══════════════════════════════════════════════════════════════
+
+Ketika konten REJECTED oleh Judge, Creator akan menerima feedback objektif.
+
+STRUKTUR FEEDBACK YANG DITERIMA:
+
+{
+  "issues": {
+    "critical": [...],  // Masalah yang menyebabkan auto-fail
+    "major": [...],     // Masalah signifikan mempengaruhi score
+    "minor": [...]      // Masalah kecil
+  },
+  "scoreImpact": {
+    "currentTotal": "15/20",
+    "targetTotal": "16/20",
+    "gap": "1 point",
+    "affectedGates": ["G3", "G4"]
+  },
+  "strengths": [...],
+  "overallAssessment": "..."
+}
+
+CARA MEMBACA FEEDBACK:
+
+1. IDENTIFIKASI PRIORITAS
+   ┌─────────────────────────────────────────────────────────────┐
+   │  Priority 1: CRITICAL issues (auto-fail)                    │
+   │  Priority 2: MAJOR issues (score impact besar)              │
+   │  Priority 3: MINOR issues (optimization)                    │
+   └─────────────────────────────────────────────────────────────┘
+
+2. INTERPRETASI GUIDANCE
+   - Guidance memberikan ARAH, bukan CONTOH
+   - Creator harus mencari solusi sendiri
+   - Jangan copy-paste atau membuat template
+
+3. CONTOH INTERPRETASI:
+   
+   Feedback: "Required URL tidak ditemukan"
+   Guidance: "Pastikan required URL ter-include dalam konten"
+   
+   ✅ BENAR: Creator mencari cara natural untuk include URL
+   ❌ SALAH: Creator minta contoh penempatan URL
+
+CONTOH PROSES REVISION:
+
+┌─────────────────────────────────────────────────────────────┐
+│  FEEDBACK DITERIMA                                          │
+├─────────────────────────────────────────────────────────────┤
+│  Issues:                                                    │
+│  - Critical: Required URL tidak ada                         │
+│  - Major: AI pattern word terdeteksi                        │
+│  - Minor: CTA kurang engaging                               │
+│                                                             │
+│  Score Impact:                                              │
+│  - Current: 15/20                                           │
+│  - Target: 16/20                                            │
+│  - Gap: 1 point                                             │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│  ANALISIS CREATOR                                           │
+├─────────────────────────────────────────────────────────────┤
+│  1. URL harus ditambahkan → cari posisi natural             │
+│  2. AI pattern harus dihindari → review kata-kata           │
+│  3. CTA perlu diperkuat → pikirkan angle baru               │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│  REVISI KONTEN (tanpa contoh dari Judge)                    │
+├─────────────────────────────────────────────────────────────┤
+│  - Tambahkan URL di bagian yang relevan                     │
+│  - Hapus/ganti kata AI pattern dengan bahasa sendiri        │
+│  - Buat CTA baru yang lebih engaging                        │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+                      KONTEN REVISI
+
+PRINSIP REVISION:
+
+┌─────────────────────────────────────────────────────────────┐
+│  ✅ YANG DILAKUKAN                                          │
+│  - Baca dan pahami feedback                                 │
+│  - Prioritaskan critical > major > minor                    │
+│  - Cari solusi sendiri berdasarkan guidance                 │
+│  - Pertahankan gaya penulisan sendiri                       │
+│  - Pastikan semua elemen WAJIB tetap ada                    │
+│                                                             │
+│  ❌ YANG TIDAK DILAKUKAN                                    │
+│  - Meminta contoh revision                                  │
+│  - Copy-paste solusi                                        │
+│  - Mengubah konten menjadi template                         │
+│  - Mengabaikan feedback                                     │
+└─────────────────────────────────────────────────────────────┘
+
 ## Input Template
 
 ```

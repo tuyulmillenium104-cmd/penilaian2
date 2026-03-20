@@ -424,28 +424,82 @@ ATURAN VERIFICATION 2x:
    ├── Jika selisih 2-3 poin: Analisis penyebab, gunakan yang lebih konservatif
    └── Jika selisih > 3 poin: WAJIB penilaian ke-3 sebagai tie-breaker
 
-2. FEEDBACK FORMAT untuk setiap penilaian:
+2. FEEDBACK PRINCIPLES (PENTING):
+   
+   ┌─────────────────────────────────────────────────────────────┐
+   │  PRINSIP FEEDBACK OBJEKTIF                                  │
+   ├─────────────────────────────────────────────────────────────┤
+   │  ✅ YANG DIBERIKAN:                                         │
+   │  - Identifikasi masalah (APA yang salah)                    │
+   │  - Penjelasan masalah (KENAPA salah)                        │
+   │  - Impact ke score (BERAPA point hilang)                    │
+   │  - Arah perbaikan (GUIDANCE umum)                           │
+   │                                                             │
+   │  ❌ YANG TIDAK DIBERIKAN:                                   │
+   │  - Contoh revision (menjadi template)                       │
+   │  - Kata-kata spesifik yang harus diganti                    │
+   │  - Template jawaban                                         │
+   │  - Lokasi tepat yang harus diubah                           │
+   │                                                             │
+   │  TUJUAN:                                                    │
+   │  - Menjaga objectivity saat re-judge                        │
+   │  - Memaksa Creator berpikir sendiri                         │
+   │  - Menghindari konten jadi template                         │
+   │  - Score mencerminkan kualitas asli                         │
+   └─────────────────────────────────────────────────────────────┘
+
+3. FEEDBACK FORMAT untuk setiap penilaian:
    {
      "assessmentNumber": 1,
      "timestamp": "ISO datetime",
      "scores": { ... },
+     
+     "issues": {
+       "critical": [
+         {
+           "gate": "G3",
+           "category": "Campaign Compliance",
+           "issue": "Required URL tidak ditemukan",
+           "impact": "Auto-fail G3, konten tidak memenuhi requirement",
+           "guidance": "Pastikan required URL ter-include dalam konten"
+         }
+       ],
+       "major": [
+         {
+           "gate": "G4",
+           "category": "Originality",
+           "issue": "AI pattern word terdeteksi",
+           "impact": "Penalty -2 pada G4 score",
+           "guidance": "Hindari penggunaan kata-kata yang umum digunakan AI"
+         }
+       ],
+       "minor": [
+         {
+           "gate": "G5",
+           "category": "Engagement Potential",
+           "issue": "CTA kurang engaging",
+           "impact": "CTA score rendah",
+           "guidance": "Buat CTA yang lebih mengajak reader untuk respond"
+         }
+       ]
+     },
+     
+     "scoreImpact": {
+       "currentTotal": "15/20",
+       "targetTotal": "16/20",
+       "gap": "1 point",
+       "affectedGates": ["G3", "G4"]
+     },
+     
      "strengths": [
-       "Hook kuat dengan power pattern",
-       "Emotion types terdeteksi: 3 jenis"
+       "Hook menggunakan power pattern",
+       "3 emotion types terdeteksi"
      ],
-     "weaknesses": [
-       "CTA kurang kuat",
-       "Ada 1 AI pattern word terdeteksi"
-     ],
-     "evidenceSummary": "Evidence untuk setiap kriteria",
-     "improvementSuggestions": [
-       "Perkuat CTA dengan pertanyaan langsung",
-       "Ganti kata 'delve' dengan alternatif natural"
-     ],
-     "overallImpression": "Konten cukup baik namun perlu perbaikan minor"
+     
+     "overallAssessment": "Konten memiliki potensi namun memiliki 1 issue kritikal yang harus diperbaiki"
    }
 
-3. RECONCILIATION PROCESS:
+4. RECONCILIATION PROCESS:
    
    a) IDENTIFIKASI PERBEDAAN:
       - Bandingkan setiap skor G1-G6 dan Internal
@@ -468,14 +522,14 @@ ATURAN VERIFICATION 2x:
       │    └── Document reasoning untuk decision               │
       └─────────────────────────────────────────────────────────┘
 
-4. FINAL SCORE CALCULATION:
+5. FINAL SCORE CALCULATION:
    
    Untuk setiap gate/kriteria:
    - Jika selisih ≤ 1: finalScore = (score1 + score2) / 2, round down
    - Jika selisih 2-3: finalScore = min(score1, score2) - konservatif
    - Jika selisih > 3: finalScore = score3 (tie-breaker)
 
-5. OUTPUT VERIFICATION 2x:
+6. OUTPUT VERIFICATION 2x:
    
    {
      "verification": {
@@ -669,22 +723,46 @@ OUTPUT FORMAT (JSON) - VERIFICATION 2x
       "judge3": { "hookScore": {...}, "emotionScore": {...}, ..., "penilaianInternalTotal": "48/60", "penilaianInternalPass": false }
     },
     "feedback": {
+      "issues": {
+        "critical": [],
+        "major": [
+          {
+            "gate": "G5",
+            "category": "Engagement Potential",
+            "issue": "CTA tidak mencapai threshold engagement",
+            "impact": "CTA quality score rendah",
+            "guidance": "Buat CTA yang lebih mengajak reader untuk memberikan respons"
+          },
+          {
+            "gate": "G4",
+            "category": "Originality",
+            "issue": "AI pattern word terdeteksi",
+            "impact": "Penalty pada G4 score",
+            "guidance": "Hindari penggunaan kata-kata yang umum digunakan AI"
+          }
+        ],
+        "minor": [
+          {
+            "gate": "Internal",
+            "category": "Penilaian Internal",
+            "issue": "Body feeling tidak ditemukan",
+            "impact": "Emotion score tidak mencapai maksimal",
+            "guidance": "Tambahkan body feeling untuk emotion score lebih tinggi"
+          }
+        ]
+      },
+      "scoreImpact": {
+        "currentTotal": "48/60",
+        "targetTotal": "54/60",
+        "gap": "6 points",
+        "affectedGates": ["G4", "G5", "Internal"]
+      },
       "strengths": [
-        "Hook kuat dengan bold statement pattern",
-        "3 emotion types terdeteksi: curiosity, surprise, urgency",
-        "Struktur konten sangat baik dengan line breaks optimal"
+        "Hook menggunakan power pattern",
+        "3 emotion types terdeteksi",
+        "Struktur konten baik dengan line breaks optimal"
       ],
-      "weaknesses": [
-        "CTA kurang kuat, hanya 'learn more'",
-        "Ada 1 AI pattern word terdeteksi: 'delve'",
-        "Penilaian Internal di bawah threshold (48 < 54)"
-      ],
-      "improvementSuggestions": [
-        "Perkuat CTA dengan pertanyaan langsung ke reader",
-        "Ganti kata 'delve' dengan alternatif lebih natural",
-        "Tambahkan body feeling untuk meningkatkan emotion score"
-      ],
-      "overallImpression": "Konten memiliki hook kuat dan struktur baik, namun perlu perbaikan pada CTA dan penghapusan AI patterns"
+      "overallAssessment": "Konten memiliki hook kuat dan struktur baik, namun memiliki beberapa issues yang perlu diperbaiki"
     },
     "pass": false
   },
@@ -698,22 +776,46 @@ OUTPUT FORMAT (JSON) - VERIFICATION 2x
       "judge3": { "hookScore": {...}, "emotionScore": {...}, ..., "penilaianInternalTotal": "52/60", "penilaianInternalPass": false }
     },
     "feedback": {
+      "issues": {
+        "critical": [],
+        "major": [
+          {
+            "gate": "Internal",
+            "category": "Penilaian Internal",
+            "issue": "Score total di bawah threshold",
+            "impact": "6 points di bawah target",
+            "guidance": "Tingkatkan elemen viral dan conversation potential"
+          }
+        ],
+        "minor": [
+          {
+            "gate": "G5",
+            "category": "Engagement Potential",
+            "issue": "Conversation potential bisa ditingkatkan",
+            "impact": "Conversation score tidak maksimal",
+            "guidance": "Buat konten yang lebih mengajak diskusi"
+          },
+          {
+            "gate": "Internal",
+            "category": "Viral Potential",
+            "issue": "Viral elements kurang diverse",
+            "impact": "Viral score bisa lebih tinggi",
+            "guidance": "Tambahkan lebih banyak elemen viral"
+          }
+        ]
+      },
+      "scoreImpact": {
+        "currentTotal": "52/60",
+        "targetTotal": "54/60",
+        "gap": "2 points",
+        "affectedGates": ["G5", "Internal"]
+      },
       "strengths": [
         "Originality tinggi dengan perspektif unik",
-        "Formatting profesional dan platform-optimized",
-        "Fact-check results semua ACCURATE"
+        "Formatting profesional",
+        "Fact-check results semua accurate"
       ],
-      "weaknesses": [
-        "Conversation potential bisa ditingkatkan",
-        "Viral elements hanya 4, perlu 5+ untuk score optimal",
-        "Penilaian Internal masih di bawah threshold (52 < 54)"
-      ],
-      "improvementSuggestions": [
-        "Tambahkan pertanyaan yang lebih engaging",
-        "Include data/angka untuk viral potential",
-        "Perkuat emotion dengan body feeling words"
-      ],
-      "overallImpression": "Konten berkualitas baik dengan originality tinggi, membutuhkan minor improvements untuk pass threshold"
+      "overallAssessment": "Konten berkualitas baik dengan originality tinggi, membutuhkan minor improvements untuk pass threshold"
     },
     "pass": false
   },
