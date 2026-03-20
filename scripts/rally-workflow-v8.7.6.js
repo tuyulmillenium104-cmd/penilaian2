@@ -580,6 +580,759 @@ const CT_STANDARDS = {
   ]
 };
 
+// ============================================================================
+// RALLY GATE STANDARDS - 200% ABOVE RALLY MAXIMUM
+// ============================================================================
+
+const RALLY_GATE_STANDARDS = {
+  // Minimum passing score (Rally max = 2, we require 4 = 200%)
+  minPassingScore: 4,
+  maxScore: 5,
+  
+  // Gate definitions with sub-criteria
+  gates: {
+    G1_ContentAlignment: {
+      name: 'Content Alignment',
+      weight: 0.30,
+      subCriteria: {
+        messageAccuracy: { weight: 0.30, description: 'Message accurately represents campaign' },
+        terminology: { weight: 0.25, description: 'Correct terminology usage' },
+        brandConsistency: { weight: 0.25, description: 'Brand consistency maintained' },
+        audienceFit: { weight: 0.20, description: 'Target audience fit' }
+      }
+    },
+    G2_InformationAccuracy: {
+      name: 'Information Accuracy',
+      weight: 0.30,
+      subCriteria: {
+        technicalAccuracy: { weight: 0.30, description: 'Technical accuracy verified' },
+        officialConsistency: { weight: 0.25, description: 'Consistency with official materials' },
+        dataStatistics: { weight: 0.25, description: 'Accurate data and statistics' },
+        properContext: { weight: 0.20, description: 'Proper context provided' }
+      }
+    },
+    G3_CampaignCompliance: {
+      name: 'Campaign Compliance',
+      weight: 0.25,
+      subCriteria: {
+        requiredHashtags: { weight: 0.30, description: 'Required hashtags and mentions' },
+        formatRequirements: { weight: 0.25, description: 'Format requirements met' },
+        styleGuidelines: { weight: 0.25, description: 'Style guidelines followed' },
+        disclosures: { weight: 0.20, description: 'Necessary disclosures included' }
+      }
+    },
+    G4_Originality: {
+      name: 'Originality & Authenticity',
+      weight: 0.15,
+      subCriteria: {
+        freshPerspective: { weight: 0.30, description: 'Fresh perspective provided' },
+        personalInsights: { weight: 0.25, description: 'Personal insights included' },
+        naturalLanguage: { weight: 0.25, description: 'Natural language used' },
+        creativeExpression: { weight: 0.20, description: 'Creative expression present' }
+      }
+    }
+  }
+};
+
+// ============================================================================
+// QUALITY GATE STANDARDS - ADDITIONAL METRICS
+// ============================================================================
+
+const QUALITY_GATE_STANDARDS = {
+  // Rally max = 5, we require 8 = 160%+ (scaled to 0-8)
+  minPassingScore: 8,
+  maxScore: 8,
+  
+  metrics: {
+    G5_EngagementPotential: {
+      name: 'Engagement Potential',
+      weight: 0.50,
+      subCriteria: {
+        hookEffectiveness: { weight: 0.25, maxScore: 2, description: 'Hook effectiveness' },
+        ctaQuality: { weight: 0.25, maxScore: 2, description: 'Call-to-action quality' },
+        contentStructure: { weight: 0.25, maxScore: 2, description: 'Content structure' },
+        conversationPotential: { weight: 0.25, maxScore: 2, description: 'Conversation potential' }
+      }
+    },
+    G6_TechnicalQuality: {
+      name: 'Technical Quality',
+      weight: 0.50,
+      subCriteria: {
+        grammarSpelling: { weight: 0.30, maxScore: 2, description: 'Grammar and spelling' },
+        formatting: { weight: 0.30, maxScore: 2, description: 'Formatting and structure' },
+        platformOptimization: { weight: 0.20, maxScore: 2, description: 'Platform optimization' },
+        mediaIntegration: { weight: 0.20, maxScore: 2, description: 'Media integration' }
+      }
+    }
+  }
+};
+
+// ============================================================================
+// INTERNAL SCORING STANDARDS - MINIMUM 9/10
+// ============================================================================
+
+const INTERNAL_SCORING_STANDARDS = {
+  minPassingScore: 9,
+  maxScore: 10,
+  
+  metrics: {
+    hookScore: {
+      name: 'Hook Score',
+      weight: 0.20,
+      description: 'Opening hook quality'
+    },
+    emotionScore: {
+      name: 'Emotion Score',
+      weight: 0.20,
+      description: 'Emotional impact'
+    },
+    ctScore: {
+      name: 'CT Score',
+      weight: 0.15,
+      description: 'Call-to-action elements'
+    },
+    uniquenessScore: {
+      name: 'Uniqueness',
+      weight: 0.15,
+      description: 'Originality vs competitors'
+    },
+    readabilityScore: {
+      name: 'Readability',
+      weight: 0.15,
+      description: 'Ease of reading'
+    },
+    viralPotential: {
+      name: 'Viral Potential',
+      weight: 0.15,
+      description: 'Share-worthiness'
+    }
+  },
+  
+  // Overall calculation weights
+  overallWeights: {
+    gates: 0.40,      // Gate Utama + Tambahan
+    internal: 0.60    // Penilaian Internal
+  }
+};
+
+// ============================================================================
+// SCORING FORMULA IMPLEMENTATION
+// ============================================================================
+
+/**
+ * Calculate Gate Score with weighted sub-criteria
+ * Returns score 0-5 for Gate Utama, 0-8 for Quality Gates
+ */
+function calculateGateScore(scores, maxScore = 5) {
+  const weights = Object.values(scores);
+  const totalWeight = weights.reduce((sum, w) => sum + w.weight, 0);
+  const weightedSum = weights.reduce((sum, item) => {
+    const subScore = item.score || 0; // 0-2 scale per sub-criterion
+    return sum + (subScore * item.weight);
+  }, 0);
+  
+  // Normalize to target scale
+  return Math.min(maxScore, (weightedSum / totalWeight) * (maxScore / 2));
+}
+
+/**
+ * Calculate Internal Metric Score
+ * Returns score 0-10
+ */
+function calculateInternalMetricScore(content, metricType, campaignData = {}) {
+  switch (metricType) {
+    case 'hookScore':
+      return calculateHookScore(content).score;
+    case 'emotionScore':
+      return calculateEmotionScoreDetailed(content).score;
+    case 'ctScore':
+      return calculateCTScoreDetailed(content).score;
+    case 'uniquenessScore':
+      return calculateUniquenessScore(content);
+    case 'readabilityScore':
+      return calculateReadabilityScore(content);
+    case 'viralPotential':
+      return calculateViralPotentialScore(content);
+    default:
+      return 0;
+  }
+}
+
+/**
+ * Calculate Uniqueness Score
+ * Score 0-10 based on originality
+ */
+function calculateUniquenessScore(content) {
+  const violations = scanBannedItems(content);
+  const lowerContent = content.toLowerCase();
+  
+  let score = 10;
+  
+  // Deduct for each violation type
+  const templateViolations = violations.filter(v => v.type.startsWith('TEMPLATE'));
+  const aiPatterns = violations.filter(v => v.type === 'AI_PATTERN');
+  const bannedWords = violations.filter(v => v.type === 'WORD');
+  
+  score -= templateViolations.length * 3;
+  score -= aiPatterns.length * 2;
+  score -= bannedWords.length * 0.5;
+  
+  // Check for common phrases
+  const commonPhrases = [
+    'in the world of', 'picture this', 'imagine a world',
+    'game changer', 'paradigm shift', 'cutting edge'
+  ];
+  
+  for (const phrase of commonPhrases) {
+    if (lowerContent.includes(phrase)) {
+      score -= 1;
+    }
+  }
+  
+  return Math.max(0, Math.min(10, score));
+}
+
+/**
+ * Calculate Readability Score
+ * Score 0-10 based on sentence structure
+ */
+function calculateReadabilityScore(content) {
+  const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  const words = content.split(/\s+/).filter(w => w.length > 0);
+  
+  let score = 10;
+  
+  // Average sentence length (optimal: 15-20 words)
+  const avgSentenceLength = words.length / Math.max(1, sentences.length);
+  if (avgSentenceLength > 25) score -= 2;
+  if (avgSentenceLength > 30) score -= 2;
+  if (avgSentenceLength < 8) score -= 1;
+  
+  // Check for very long sentences
+  const longSentences = sentences.filter(s => s.split(/\s+/).length > 35);
+  score -= longSentences.length * 0.5;
+  
+  // Check for paragraph breaks (good for readability)
+  const paragraphs = content.split('\n\n').filter(p => p.trim().length > 0);
+  if (paragraphs.length >= 2) score += 0.5;
+  if (paragraphs.length >= 3) score += 0.5;
+  
+  return Math.max(0, Math.min(10, score));
+}
+
+/**
+ * Calculate Viral Potential Score
+ * Score 0-10 based on share-worthiness factors
+ */
+function calculateViralPotentialScore(content) {
+  const lowerContent = content.toLowerCase();
+  let score = 0;
+  
+  // Controversy elements (2 points)
+  const controversyWords = ['wrong', 'problem', 'fail', 'nobody', 'truth', 'actually'];
+  if (controversyWords.some(w => lowerContent.includes(w))) score += 2;
+  
+  // Emotional triggers (2 points)
+  const emotionWords = ['scary', 'terrifying', 'finally', 'shocking', 'brutal', 'pain'];
+  if (emotionWords.some(w => lowerContent.includes(w))) score += 2;
+  
+  // Question hook (2 points)
+  if (content.includes('?')) score += 2;
+  
+  // Personal element (1 point)
+  if (/i |my |me /i.test(content)) score += 1;
+  
+  // Numbers/data (1 point)
+  if (/\d+/.test(content)) score += 1;
+  
+  // Urgency (1 point)
+  const urgencyWords = ['now', 'today', 'finally', 'before', 'last chance'];
+  if (urgencyWords.some(w => lowerContent.includes(w))) score += 1;
+  
+  // Share-worthy phrases (1 point)
+  const sharePhrases = ['this is why', "here's what", 'the truth'];
+  if (sharePhrases.some(p => lowerContent.includes(p))) score += 1;
+  
+  return Math.min(10, score);
+}
+
+/**
+ * Calculate Overall Score with Statistical Confidence
+ */
+function calculateOverallScore(gateScores, internalScores) {
+  const allScores = [
+    ...Object.values(gateScores).map(s => s.normalized || s.score),
+    ...Object.values(internalScores).map(s => s.score || s)
+  ];
+  
+  // Mean
+  const mean = allScores.reduce((a, b) => a + b, 0) / allScores.length;
+  
+  // Standard Deviation
+  const squaredDiffs = allScores.map(s => Math.pow(s - mean, 2));
+  const avgSquaredDiff = squaredDiffs.reduce((a, b) => a + b, 0) / squaredDiffs.length;
+  const stdDev = Math.sqrt(avgSquaredDiff);
+  
+  // Confidence Score (higher = more consistent)
+  const confidence = stdDev > 0 ? Math.max(0, 1 - (stdDev / mean)) : 1;
+  
+  // Weighted Overall Score
+  const gateAvg = Object.values(gateScores).reduce((sum, g) => sum + (g.normalized || g.score), 0) / Object.keys(gateScores).length;
+  const internalAvg = Object.values(internalScores).reduce((sum, i) => sum + (i.score || i), 0) / Object.keys(internalScores).length;
+  
+  const overall = (INTERNAL_SCORING_STANDARDS.overallWeights.gates * gateAvg) + 
+                  (INTERNAL_SCORING_STANDARDS.overallWeights.internal * internalAvg);
+  
+  return {
+    score: Math.round(overall * 10) / 10,
+    confidence: Math.round(confidence * 100) / 100,
+    standardDeviation: Math.round(stdDev * 100) / 100,
+    mean: Math.round(mean * 100) / 100,
+    gateAverage: Math.round(gateAvg * 10) / 10,
+    internalAverage: Math.round(internalAvg * 10) / 10
+  };
+}
+
+/**
+ * Generate Final Score Card
+ */
+function generateFinalScoreCard(content, campaignData = {}) {
+  const scoreCard = {
+    timestamp: new Date().toISOString(),
+    gates: {},
+    internal: {},
+    overall: null,
+    passed: false,
+    issues: []
+  };
+  
+  // Calculate Gate Utama (G1-G4) - Scale 0-5
+  scoreCard.gates.G1 = {
+    name: 'Content Alignment',
+    score: calculateContentAlignment(content, campaignData),
+    maxScore: 5,
+    minPass: 4,
+    passed: false
+  };
+  scoreCard.gates.G1.passed = scoreCard.gates.G1.score >= 4;
+  
+  scoreCard.gates.G2 = {
+    name: 'Information Accuracy',
+    score: calculateInformationAccuracy(content, campaignData),
+    maxScore: 5,
+    minPass: 4,
+    passed: false
+  };
+  scoreCard.gates.G2.passed = scoreCard.gates.G2.score >= 4;
+  
+  scoreCard.gates.G3 = {
+    name: 'Campaign Compliance',
+    score: calculateCampaignCompliance(content, campaignData),
+    maxScore: 5,
+    minPass: 4,
+    passed: false
+  };
+  scoreCard.gates.G3.passed = scoreCard.gates.G3.score >= 4;
+  
+  scoreCard.gates.G4 = {
+    name: 'Originality & Authenticity',
+    score: calculateOriginalityScore(content),
+    maxScore: 5,
+    minPass: 4,
+    passed: false
+  };
+  scoreCard.gates.G4.passed = scoreCard.gates.G4.score >= 4;
+  
+  // Calculate Quality Gates (G5-G6) - Scale 0-8
+  scoreCard.gates.G5 = {
+    name: 'Engagement Potential',
+    score: calculateEngagementPotential(content),
+    maxScore: 8,
+    minPass: 8,
+    passed: false
+  };
+  scoreCard.gates.G5.passed = scoreCard.gates.G5.score >= 8;
+  
+  scoreCard.gates.G6 = {
+    name: 'Technical Quality',
+    score: calculateTechnicalQuality(content),
+    maxScore: 8,
+    minPass: 8,
+    passed: false
+  };
+  scoreCard.gates.G6.passed = scoreCard.gates.G6.score >= 8;
+  
+  // Calculate Internal Scores (0-10)
+  scoreCard.internal.hookScore = {
+    score: calculateInternalMetricScore(content, 'hookScore'),
+    maxScore: 10,
+    minPass: 9,
+    passed: false
+  };
+  scoreCard.internal.hookScore.passed = scoreCard.internal.hookScore.score >= 9;
+  
+  scoreCard.internal.emotionScore = {
+    score: calculateInternalMetricScore(content, 'emotionScore'),
+    maxScore: 10,
+    minPass: 9,
+    passed: false
+  };
+  scoreCard.internal.emotionScore.passed = scoreCard.internal.emotionScore.score >= 9;
+  
+  scoreCard.internal.ctScore = {
+    score: calculateInternalMetricScore(content, 'ctScore'),
+    maxScore: 10,
+    minPass: 9,
+    passed: false
+  };
+  scoreCard.internal.ctScore.passed = scoreCard.internal.ctScore.score >= 9;
+  
+  scoreCard.internal.uniquenessScore = {
+    score: calculateInternalMetricScore(content, 'uniquenessScore'),
+    maxScore: 10,
+    minPass: 9,
+    passed: false
+  };
+  scoreCard.internal.uniquenessScore.passed = scoreCard.internal.uniquenessScore.score >= 9;
+  
+  scoreCard.internal.readabilityScore = {
+    score: calculateInternalMetricScore(content, 'readabilityScore'),
+    maxScore: 10,
+    minPass: 9,
+    passed: false
+  };
+  scoreCard.internal.readabilityScore.passed = scoreCard.internal.readabilityScore.score >= 9;
+  
+  scoreCard.internal.viralPotential = {
+    score: calculateInternalMetricScore(content, 'viralPotential'),
+    maxScore: 10,
+    minPass: 9,
+    passed: false
+  };
+  scoreCard.internal.viralPotential.passed = scoreCard.internal.viralPotential.score >= 9;
+  
+  // Normalize gate scores for overall calculation
+  const normalizedGates = {};
+  for (const [key, gate] of Object.entries(scoreCard.gates)) {
+    normalizedGates[key] = {
+      score: gate.score,
+      normalized: (gate.score / gate.maxScore) * 10
+    };
+  }
+  
+  // Calculate Overall
+  scoreCard.overall = calculateOverallScore(normalizedGates, scoreCard.internal);
+  scoreCard.internal.overall = {
+    score: scoreCard.overall.score,
+    maxScore: 10,
+    minPass: 9,
+    passed: scoreCard.overall.score >= 9
+  };
+  
+  // Check all passes
+  const allGatesPassed = Object.values(scoreCard.gates).every(g => g.passed);
+  const allInternalPassed = Object.values(scoreCard.internal).every(i => i.passed);
+  
+  scoreCard.passed = allGatesPassed && allInternalPassed;
+  
+  // Collect issues
+  for (const [key, gate] of Object.entries(scoreCard.gates)) {
+    if (!gate.passed) {
+      scoreCard.issues.push(`${gate.name}: ${gate.score}/${gate.maxScore} (need ${gate.minPass})`);
+    }
+  }
+  for (const [key, metric] of Object.entries(scoreCard.internal)) {
+    if (!metric.passed) {
+      scoreCard.issues.push(`${key}: ${metric.score}/${metric.maxScore} (need ${metric.minPass})`);
+    }
+  }
+  
+  return scoreCard;
+}
+
+/**
+ * Helper functions for gate calculations
+ */
+function calculateContentAlignment(content, campaignData) {
+  let score = 0;
+  const lowerContent = content.toLowerCase();
+  
+  // Check message accuracy (max 1.25)
+  if (campaignData?.title && lowerContent.includes(campaignData.title.toLowerCase())) {
+    score += 1.25;
+  } else if (campaignData?.title) {
+    score += 0.5;
+  }
+  
+  // Check terminology (max 1.25)
+  const terms = ['internet court', 'smart contract', 'dispute', 'blockchain', 'ai jury'];
+  const termCount = terms.filter(t => lowerContent.includes(t)).length;
+  score += Math.min(1.25, termCount * 0.3);
+  
+  // Check brand consistency (max 1.25)
+  if (lowerContent.includes('internetcourt.org')) {
+    score += 1.25;
+  } else {
+    score += 0.5;
+  }
+  
+  // Check audience fit (max 1.25)
+  const audienceWords = ['you', 'your', 'protocol', 'dao', 'users'];
+  const audienceCount = audienceWords.filter(w => lowerContent.includes(w)).length;
+  score += Math.min(1.25, audienceCount * 0.25);
+  
+  return Math.min(5, Math.round(score * 10) / 10);
+}
+
+function calculateInformationAccuracy(content, campaignData) {
+  let score = 0;
+  const lowerContent = content.toLowerCase();
+  
+  // Technical accuracy (max 1.5)
+  const techTerms = ['millisecond', 'minutes', 'verdict', 'true', 'false', 'undetermined'];
+  const techCount = techTerms.filter(t => lowerContent.includes(t)).length;
+  score += Math.min(1.5, techCount * 0.3);
+  
+  // Official consistency (max 1.25)
+  if (lowerContent.includes('internetcourt.org') || lowerContent.includes('genlayer')) {
+    score += 1.25;
+  } else {
+    score += 0.5;
+  }
+  
+  // Data/statistics (max 1.25)
+  if (/\d+/.test(content)) {
+    score += 1.25;
+  } else {
+    score += 0.5;
+  }
+  
+  // Proper context (max 1.0)
+  if (lowerContent.includes('court') || lowerContent.includes('dispute') || lowerContent.includes('justice')) {
+    score += 1.0;
+  } else {
+    score += 0.3;
+  }
+  
+  return Math.min(5, Math.round(score * 10) / 10);
+}
+
+function calculateCampaignCompliance(content, campaignData) {
+  let score = 0;
+  const lowerContent = content.toLowerCase();
+  
+  // Required mentions (max 1.5)
+  if (lowerContent.includes('internetcourt.org')) {
+    score += 1.5;
+  } else {
+    score += 0.3;
+  }
+  
+  // Format requirements (max 1.25)
+  const tweets = content.split('\n\n').filter(t => t.trim().length > 0);
+  const validLength = tweets.every(t => t.length <= 280);
+  if (validLength && tweets.length >= 2) {
+    score += 1.25;
+  } else {
+    score += 0.5;
+  }
+  
+  // Style guidelines (max 1.25)
+  const violations = scanBannedItems(content);
+  const criticalViolations = violations.filter(v => v.severity === 'critical' || v.severity === 'high');
+  if (criticalViolations.length === 0) {
+    score += 1.25;
+  } else {
+    score += Math.max(0, 1.25 - criticalViolations.length * 0.3);
+  }
+  
+  // Disclosures (max 1.0)
+  score += 1.0; // Default pass for disclosures
+  
+  return Math.min(5, Math.round(score * 10) / 10);
+}
+
+function calculateOriginalityScore(content) {
+  let score = 0;
+  const violations = scanBannedItems(content);
+  const lowerContent = content.toLowerCase();
+  
+  // Fresh perspective (max 1.5)
+  const templateViolations = violations.filter(v => v.type.startsWith('TEMPLATE'));
+  if (templateViolations.length === 0) {
+    score += 1.5;
+  } else {
+    score += Math.max(0, 1.5 - templateViolations.length * 0.5);
+  }
+  
+  // Personal insights (max 1.25)
+  if (/i |my |me |i've|i've|i lost|i failed/i.test(content)) {
+    score += 1.25;
+  } else {
+    score += 0.5;
+  }
+  
+  // Natural language (max 1.25)
+  const aiPatterns = violations.filter(v => v.type === 'AI_PATTERN');
+  const bannedWords = violations.filter(v => v.type === 'WORD');
+  if (aiPatterns.length === 0 && bannedWords.length === 0) {
+    score += 1.25;
+  } else {
+    score += Math.max(0, 1.25 - (aiPatterns.length + bannedWords.length) * 0.2);
+  }
+  
+  // Creative expression (max 1.0)
+  const creativeWords = ['brutal', 'gap', 'vanish', 'terrifying', 'stomach'];
+  const creativeCount = creativeWords.filter(w => lowerContent.includes(w)).length;
+  score += Math.min(1.0, creativeCount * 0.25);
+  
+  return Math.min(5, Math.round(score * 10) / 10);
+}
+
+function calculateEngagementPotential(content) {
+  let score = 0;
+  const lowerContent = content.toLowerCase();
+  
+  // Hook effectiveness (max 2)
+  const hookScore = calculateHookScore(content);
+  score += Math.min(2, hookScore.score / 5);
+  
+  // CTA quality (max 2)
+  if (content.includes('?')) score += 1;
+  if (/what do you think|thoughts|who else|agree/i.test(content)) score += 1;
+  
+  // Content structure (max 2)
+  const tweets = content.split('\n\n').filter(t => t.trim().length > 0);
+  if (tweets.length >= 2) score += 1;
+  if (tweets.length >= 3) score += 1;
+  
+  // Conversation potential (max 2)
+  const convoWords = ['what', 'how', 'why', 'who', 'when'];
+  const convoCount = convoWords.filter(w => lowerContent.includes(w)).length;
+  score += Math.min(2, convoCount * 0.5);
+  
+  return Math.min(8, Math.round(score * 10) / 10);
+}
+
+function calculateTechnicalQuality(content) {
+  let score = 0;
+  
+  // Grammar/spelling (max 2)
+  const violations = scanBannedItems(content);
+  const grammarIssues = violations.filter(v => v.severity !== 'critical');
+  if (grammarIssues.length === 0) {
+    score += 2;
+  } else {
+    score += Math.max(0, 2 - grammarIssues.length * 0.2);
+  }
+  
+  // Formatting (max 2)
+  const tweets = content.split('\n\n').filter(t => t.trim().length > 0);
+  const allValidLength = tweets.every(t => t.length <= 280);
+  if (allValidLength) score += 2;
+  else score += 1;
+  
+  // Platform optimization (max 2)
+  if (tweets.length >= 2 && tweets.length <= 5) score += 2;
+  else score += 1;
+  
+  // Media integration (max 2) - default pass for text
+  score += 2;
+  
+  return Math.min(8, Math.round(score * 10) / 10);
+}
+
+/**
+ * Format Score Card as String
+ */
+function formatScoreCard(scoreCard) {
+  const lines = [];
+  
+  lines.push('╔════════════════════════════════════════════════════════════════════════╗');
+  lines.push('║                    FINAL CONTENT SCORE CARD - V8.7.6                   ║');
+  lines.push('║                   "Quality 200% Above Rally Standards"                  ║');
+  lines.push('╠════════════════════════════════════════════════════════════════════════╣');
+  lines.push('║                                                                        ║');
+  lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
+  lines.push('║  █              🚦 GATE UTAMA RALLY (Min: 4/5 each)                  █ ║');
+  lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
+  lines.push('║                                                                        ║');
+  
+  for (const [key, gate] of Object.entries(scoreCard.gates)) {
+    if (key.startsWith('G1') || key.startsWith('G2') || key.startsWith('G3') || key.startsWith('G4')) {
+      const status = gate.passed ? '✅ PASS' : '❌ FAIL';
+      const scoreStr = `${gate.score}/${gate.maxScore}`.padEnd(5);
+      lines.push(`║  │ ${(gate.name + ':').padEnd(28)} ${scoreStr} │ ${status.padEnd(8)}        │ ║`);
+    }
+  }
+  
+  lines.push('║                                                                        ║');
+  lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
+  lines.push('║  █            🎯 GATE TAMBAHAN (Min: 8/8 each)                       █ ║');
+  lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
+  lines.push('║                                                                        ║');
+  
+  for (const [key, gate] of Object.entries(scoreCard.gates)) {
+    if (key.startsWith('G5') || key.startsWith('G6')) {
+      const status = gate.passed ? '✅ PASS' : '❌ FAIL';
+      const scoreStr = `${gate.score}/${gate.maxScore}`.padEnd(5);
+      lines.push(`║  │ ${(gate.name + ':').padEnd(28)} ${scoreStr} │ ${status.padEnd(8)}        │ ║`);
+    }
+  }
+  
+  lines.push('║                                                                        ║');
+  lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
+  lines.push('║  █           📊 PENILAIAN INTERNAL (Min: 9/10 each)                  █ ║');
+  lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
+  lines.push('║                                                                        ║');
+  
+  for (const [key, metric] of Object.entries(scoreCard.internal)) {
+    if (key !== 'overall') {
+      const status = metric.passed ? '✅ PASS' : '❌ FAIL';
+      const scoreStr = `${metric.score}/${metric.maxScore}`.padEnd(5);
+      const name = INTERNAL_SCORING_STANDARDS.metrics[key]?.name || key;
+      lines.push(`║  │ ${(name + ':').padEnd(28)} ${scoreStr} │ ${status.padEnd(8)}        │ ║`);
+    }
+  }
+  
+  lines.push('║  ├────────────────────────────────────────────────────────────────────┤ ║');
+  
+  const overallStatus = scoreCard.internal.overall?.passed ? '✅ PASS' : '❌ FAIL';
+  const overallStr = `${scoreCard.overall?.score || 0}/10`.padEnd(5);
+  lines.push(`║  │ OVERALL SCORE:                      ${overallStr} │ ${overallStatus.padEnd(8)}        │ ║`);
+  
+  lines.push('║                                                                        ║');
+  lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
+  lines.push('║  █                      📈 SUMMARY                                   █ ║');
+  lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
+  lines.push('║                                                                        ║');
+  
+  const gatesPassed = Object.values(scoreCard.gates).filter(g => g.passed).length;
+  const internalPassed = Object.values(scoreCard.internal).filter(i => i.passed).length;
+  const totalGates = Object.keys(scoreCard.gates).length;
+  const totalInternal = Object.keys(scoreCard.internal).length;
+  
+  lines.push(`║  │ Gate Utama + Tambahan:  ${gatesPassed}/${totalGates} PASS                             │ ║`);
+  lines.push(`║  │ Penilaian Internal:     ${internalPassed}/${totalInternal} PASS                             │ ║`);
+  lines.push('║  ├────────────────────────────────────────────────────────────────────┤ ║');
+  
+  const finalStatus = scoreCard.passed ? '✅ YES' : '❌ NO';
+  lines.push(`║  │ READY FOR SUBMISSION:   ${finalStatus}                                   │ ║`);
+  lines.push(`║  │ Confidence Level:       ${Math.round((scoreCard.overall?.confidence || 0) * 100)}%                                    │ ║`);
+  lines.push('║                                                                        ║');
+  lines.push('╚════════════════════════════════════════════════════════════════════════╝');
+  
+  if (scoreCard.issues.length > 0) {
+    lines.push('');
+    lines.push('⚠️ ISSUES TO FIX:');
+    for (const issue of scoreCard.issues) {
+      lines.push(`   • ${issue}`);
+    }
+  }
+  
+  return lines.join('\n');
+}
+
 /**
  * Calculate Hook Score based on HOOK_STANDARDS
  * Returns score 0-10 and breakdown

@@ -141,41 +141,56 @@ Output location: `/home/z/my-project/download/`
 
 ---
 
-## 📊 Quality Standards
+## 📊 Quality Standards - "200% Above Rally Maximum"
 
-### Hook Standards (HOOK_STANDARDS)
+### 🚦 GATE UTAMA RALLY (Min: 4/5 each)
 
-The workflow enforces strict hook quality:
+| Gate | Range | Min Pass | Description |
+|------|-------|----------|-------------|
+| Content Alignment | 0-5 | **4** | Message accuracy, terminology, brand consistency, audience fit |
+| Information Accuracy | 0-5 | **4** | Technical accuracy, official consistency, data accuracy, context |
+| Campaign Compliance | 0-5 | **4** | Required mentions, format, style guidelines, disclosures |
+| Originality & Authenticity | 0-5 | **4** | Fresh perspective, personal insights, natural language, creative expression |
 
-- **Weak Openings** - Avoids: "The ", "A ", "This is", "There are"
-- **Power Patterns** - Uses: Numbers, Questions, Action verbs, Bold statements
-- **Required Elements** - Must have: Curiosity, Tension, Surprise, Relevance
+### 🎯 GATE TAMBAHAN (Min: 8/8 each)
 
-**Minimum Hook Score: 7/10**
+| Metric | Range | Min Pass | Description |
+|--------|-------|----------|-------------|
+| Engagement Potential | 0-8 | **8** | Hook effectiveness, CTA quality, structure, conversation potential |
+| Technical Quality | 0-8 | **8** | Grammar, formatting, platform optimization, media integration |
 
-### Emotion Standards (EMOTION_STANDARDS)
+### 📊 PENILAIAN INTERNAL (Min: 9/10 each)
 
-Content must evoke emotions:
+| Metric | Range | Min Pass | Description |
+|--------|-------|----------|-------------|
+| Hook Score | 0-10 | **9** | Opening hook quality |
+| Emotion Score | 0-10 | **9** | Emotional impact |
+| CT Score | 0-10 | **9** | Call-to-action elements |
+| Uniqueness Score | 0-10 | **9** | Originality vs competitors |
+| Readability Score | 0-10 | **9** | Ease of reading |
+| Viral Potential | 0-10 | **9** | Share-worthiness |
+| **OVERALL** | 0-10 | **9** | Weighted combination |
 
-- **Primary Emotions** - Curiosity, Fear, Surprise, Hope, Pain
-- **Body Feelings** - "stomach dropped", "heart racing", "cold sweat"
-- **Emotion Triggers** - Specific words that evoke emotional response
+### 📈 Overall Score Formula
 
-**Minimum Emotion Score: 8/10**
-**Minimum Emotion Types: 3**
+```
+Overall = (0.40 × Gate_Average) + (0.60 × Internal_Average)
 
-### CT Standards (CT_STANDARDS)
+Where:
+- Gate_Average = Average of all Gate scores (normalized to 0-10)
+- Internal_Average = Average of all Internal scores
 
-Call-to-action elements required:
+Statistical Confidence = 1 - (Standard_Deviation / Mean)
+```
 
-- Questions (?)
-- Reply bait phrases
-- Engagement hooks
-- Personal elements
-- FOMO triggers
-- Controversy elements
+### ✅ Pass/Fail Criteria
 
-**Minimum CT Score: 8/10** (raised from 7 in V8.7.6)
+Content PASSES if ALL conditions are met:
+- All 6 Gates ≥ minimum pass score
+- All 7 Internal Metrics ≥ minimum pass score
+- Overall Score ≥ 9/10
+
+If ANY metric fails → **Regenerate content (max 3 loops)**
 
 ---
 
@@ -183,11 +198,12 @@ Call-to-action elements required:
 
 The workflow includes intelligent looping:
 
-| Loop Type | Max Iterations | Failback |
-|-----------|---------------|----------|
-| Viral Enhancement | 2 | Phase 8 |
-| Beat Top 20 | 2 | Phase 4 |
-| CT Maximizer | 2 | Phase 14 |
+| Loop Type | Max Iterations | Trigger |
+|-----------|---------------|---------|
+| Score Card Regeneration | 3 | Any gate or metric < minimum |
+| Viral Enhancement | 2 | Viral potential < 9 |
+| CT Maximizer | 2 | CT Score < 9 |
+| Emotion Re-injection | 2 | Emotion Score < 9 |
 | Total Regenerations | 3 | Force proceed |
 
 ---
@@ -344,7 +360,7 @@ If you're an AI reading this:
 
 | Version | Changes |
 |---------|---------|
-| V8.7.6 | Smart content generator, Web search, CT threshold 8/10, Campaign compliance |
+| V8.7.6 | **Scoring System 200% Above Rally**: Gate Utama (4/5), Gate Tambahan (8/8), Internal (9/10), Final Score Card, Statistical Confidence |
 | V8.7.5 | Rate limiter, CT threshold 7/10 |
 | V8.7 | 24 phases structure |
 
