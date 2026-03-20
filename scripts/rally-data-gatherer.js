@@ -104,6 +104,113 @@ const CONFIG = {
     }
   },
   
+// Fallback data jika API gagal
+  fallbackData: {
+    knowledgeBase: [
+      { fact: 'Internet Court uses AI validators to evaluate evidence and deliver verdicts', importance: 'high' },
+      { fact: 'Verdicts are delivered in minutes instead of months or years', importance: 'high' },
+      { fact: 'Internet Court handles cross-border disputes without jurisdiction issues', importance: 'medium' },
+      { fact: 'Built on GenLayer infrastructure for AI-powered consensus', importance: 'high' },
+      { fact: '400+ million smart contract users have no traditional legal recourse', importance: 'high' },
+      { fact: 'AI judges operate 24/7 without bias or corruption potential', importance: 'medium' },
+      { fact: 'Decentralized dispute resolution eliminates expensive legal fees', importance: 'medium' }
+    ],
+    news: [
+      { title: 'Internet Court Launches AI-Powered Dispute Resolution', summary: 'New platform promises verdicts in minutes using AI validators', source: 'fallback' }
+    ],
+    market: [
+      { insight: 'Blockchain arbitration market projected to grow 340% by 2027', source: 'fallback' }
+    ]
+  },
+
+  // Emotion triggers for content enhancement
+  emotionTriggers: {
+    fear: ['risk', 'danger', 'threat', 'warning', 'scary', 'what if', 'imagine losing'],
+    curiosity: ['secret', 'hidden', 'mystery', 'why', 'how', 'what happens when'],
+    surprise: ['unexpected', 'shocking', 'actually', 'turns out', 'but here\'s the thing'],
+    hope: ['finally', 'breakthrough', 'solution', 'imagine if', 'now you can'],
+    pain: ['lost', 'failed', 'stuck', 'problem', 'issue', 'frustrated'],
+    urgency: ['now', 'today', 'immediately', 'don\'t wait', 'before it\'s too late']
+  },
+
+  // Hook patterns that work (reference for AI)
+  hookPatterns: {
+    problemFirst: {
+      structure: '[Problem statement] → [Why it matters] → [Tension]',
+      example: 'Traditional courts take years. Smart contracts execute in milliseconds. See the gap?',
+      emotion: 'pain → curiosity'
+    },
+    contrast: {
+      structure: '[A does X] → [B does Y] → [The difference is stark]',
+      example: 'Code runs instantly. Justice takes forever. This is the problem nobody talks about.',
+      emotion: 'surprise → urgency'
+    },
+    fearExample: {
+      structure: '[Real incident] → [What could happen to you] → [Personal stakes]',
+      example: '$50M drained from The DAO in 2016. The blockchain didn\'t care. What happens when it\'s your transaction?',
+      emotion: 'fear → urgency'
+    },
+    analytical: {
+      structure: '[Logic statement] → [The missing piece] → [Implication]',
+      example: 'Smart contracts automate trust. But they don\'t automate justice. Here\'s the structural problem.',
+      emotion: 'curiosity → surprise'
+    },
+    futureFocused: {
+      structure: '[Future scenario] → [Unanswered question] → [Stakes]',
+      example: 'In 5 years, AI agents will handle most financial agreements. When they disagree, who decides?',
+      emotion: 'curiosity → fear'
+    }
+  },
+
+  // CTA examples that drive engagement
+  ctaExamples: {
+    question: [
+      'What disputes will you face in the Web3 economy?',
+      'Who decides when code is wrong?',
+      'What would you do differently?'
+    ],
+    challenge: [
+      'Think about your last smart contract interaction. What if something went wrong?',
+      'Consider this: every DeFi transaction is a potential dispute waiting to happen.'
+    ],
+    openEnded: [
+      'The infrastructure is here. How will you use it?',
+      'This is just the beginning. What\'s your take?'
+    ]
+  },
+
+  // 16 Gates validation logic
+  gatesValidation: {
+    gateUtama: {
+      gates: [
+        { id: 1, name: 'URL Presence', check: 'content.includes(requiredUrl)', passIf: true },
+        { id: 2, name: 'Hook Quality', check: 'firstParagraph.length < 200 && hasHookPattern', passIf: true },
+        { id: 3, name: 'Content Length', check: 'tweetCount >= 3 && tweetCount <= 5', passIf: true },
+        { id: 4, name: 'CTA Present', check: 'hasQuestion || hasEngagementHook', passIf: true },
+        { id: 5, name: 'Topic Relevance', check: 'mentionsTopicKeywords', passIf: true }
+      ]
+    },
+    gateTambahan: {
+      gates: [
+        { id: 6, name: 'No Banned Words', check: '!containsBannedWords', passIf: true },
+        { id: 7, name: 'Unique Hook', check: 'hookUniquenessScore > 0.7', passIf: true },
+        { id: 8, name: 'Emotional Appeal', check: 'emotionScore >= 7', passIf: true },
+        { id: 9, name: 'Educational Value', check: 'hasNewInformation', passIf: true },
+        { id: 10, name: 'Viral Potential', check: 'viralScore >= 0.6', passIf: true },
+        { id: 11, name: 'Authentic Voice', check: '!hasAIPatterns', passIf: true },
+        { id: 12, name: 'Proper Formatting', check: 'hasProperLineBreaks', passIf: true },
+        { id: 13, name: 'Engagement Hook', check: 'hasReplyBait || hasQuestion', passIf: true }
+      ]
+    }
+  },
+
+  // AI patterns to avoid
+  aiPatterns: {
+    words: ['delve', 'leverage', 'realm', 'tapestry', 'paradigm', 'landscape', 'nuance', 'underscores', 'pivotal', 'crucial'],
+    phrases: ['picture this', 'lets dive in', 'in this thread', 'key takeaways', 'heres the thing', 'imagine a world', 'it goes without saying', 'at the end of the day'],
+    structures: ['X/x numbering', 'Thread (1/X)', 'First, ... Second, ... Finally, ...']
+  },
+
   // Web research tasks for AI Chat (browser agent)
   webResearchTasks: [
     {
@@ -391,11 +498,29 @@ async function main() {
         viralScore: { minimum: 0.6 }
       },
       
+      // Knowledge base facts
+      knowledgeBase: CONFIG.fallbackData.knowledgeBase,
+      
       // Banned words
       bannedWords: CONFIG.bannedWords,
       
+      // AI patterns to avoid
+      aiPatterns: CONFIG.aiPatterns,
+      
+      // Emotion triggers
+      emotionTriggers: CONFIG.emotionTriggers,
+      
+      // Hook patterns reference
+      hookPatterns: CONFIG.hookPatterns,
+      
+      // CTA examples
+      ctaExamples: CONFIG.ctaExamples,
+      
       // 16 Gates definition
       gatesDefinition: CONFIG.gatesDefinition,
+      
+      // 16 Gates validation logic
+      gatesValidation: CONFIG.gatesValidation,
       
       // === WEB RESEARCH TASKS FOR AI CHAT (BROWSER AGENT) ===
       webResearchTasks: CONFIG.webResearchTasks,
