@@ -1,17 +1,18 @@
 # RALLY CONTENT WORKFLOW V9.0.0 - HYBRID ARCHITECTURE
 
-> **Versi Baru:** Arsitektur Hybrid - Script untuk Data, AI Chat untuk Konten
+> **Versi Baru:** Hybrid - Script untuk Data, AI Chat untuk Konten  
+> **Total Phases:** Masih 24 phases (dikelompokkan jadi 2 groups)
 
 ---
 
-## 🎯 APA YANG BARU DI V9.0.0?
+## 🎯 KENAPA V9.0.0 HYBRID?
 
-| V8.7.6 | V9.0.0 |
-|--------|--------|
-| Script untuk SEMUA | Script untuk DATA saja |
-| LLM di script (rate limit) | LLM di AI Chat (lebih stabil) |
-| Kompleks | Sederhana |
-| 24 phases otomatis | 2 phases terpisah |
+| Masalah V8.7.6 | Solusi V9.0.0 |
+|----------------|---------------|
+| LLM di script → Rate limit | LLM di AI Chat → Stabil |
+| Script crash → Workflow stop | Script gagal → AI tetap bisa |
+| Template-based output | AI creative output |
+| Rigid 24 phases | Flexible phases |
 
 ---
 
@@ -20,295 +21,248 @@
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    RALLY WORKFLOW V9.0.0                            │
+│                    Total: 24 PHASES (2 Groups)                      │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
-│  PHASE 1: DATA GATHERING (Script Node.js)                          │
-│  ─────────────────────────────────────────────                     │
-│  ├── Fetch Campaign Data (Rally API)                               │
-│  ├── Web Research (Project websites)                               │
-│  ├── Leaderboard Analysis                                          │
-│  └── Output: JSON data file                                        │
+│  ════════════════════════════════════════════════════════════════   │
+│  GROUP 1: DATA GATHERING (Script Node.js) - Phase 0-2B             │
+│  ════════════════════════════════════════════════════════════════   │
 │                                                                     │
-│                            │                                        │
-│                            ▼                                        │
+│  Phase 0: Campaign Data Fetch                                       │
+│  ├── HTTP GET Rally API                                            │
+│  └── Output: title, goal, rules, style, missions                   │
 │                                                                     │
-│  PHASE 2: CONTENT GENERATION (AI Chat)                             │
-│  ─────────────────────────────────────────────                     │
-│  ├── Read JSON data                                                │
-│  ├── Generate konten (LLM kreativitas)                             │
-│  ├── Hitung score (algoritma)                                      │
-│  └── Output: Konten + Score Card                                   │
+│  Phase 1: Research                                                  │
+│  ├── Web scraping project URLs                                     │
+│  ├── Extract facts                                                 │
+│  └── Output: knowledge base                                        │
+│                                                                     │
+│  Phase 2: Leaderboard Analysis                                      │
+│  ├── HTTP GET leaderboard data                                     │
+│  └── Output: top competitors, stats                                │
+│                                                                     │
+│  Phase 2B: Competitor Deep Analysis                                 │
+│  ├── Analyze competitor patterns                                   │
+│  └── Output: hook patterns, CTA styles, gaps                       │
+│                                                                     │
+│  LLM NEEDED: ❌ TIDAK (pure data fetching)                          │
+│                                                                     │
+│                              │                                      │
+│                              ▼                                      │
+│                                                                     │
+│  ════════════════════════════════════════════════════════════════   │
+│  GROUP 2: CONTENT PROCESSING (AI Chat) - Phase 3-16                │
+│  ════════════════════════════════════════════════════════════════   │
+│                                                                     │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ SUB-GROUP 2A: CONTENT CREATION (Phase 3-10)                 │   │
+│  │                                                             │   │
+│  │  Phase 3: Gap Identification                                │   │
+│  │  ├── Find unique angles vs competitors                      │   │
+│  │  └── Output: opportunity gaps                               │   │
+│  │                                                             │   │
+│  │  Phase 4: Strategy Definition                               │   │
+│  │  ├── Select hook type, emotion target, CTA type             │   │
+│  │  └── Output: content strategy                               │   │
+│  │                                                             │   │
+│  │  Phase 5: Content Generation ⭐ CORE                        │   │
+│  │  ├── LLM generates multi-version content                    │   │
+│  │  └── Output: 3-5 content versions                           │   │
+│  │                                                             │   │
+│  │  Phase 6: Banned Items Scanner                              │   │
+│  │  ├── Pattern match banned words/phrases                     │   │
+│  │  └── Output: violations list                                │   │
+│  │                                                             │   │
+│  │  Phase 6B: Rewrite (if violations)                          │   │
+│  │  ├── Fix violations                                         │   │
+│  │  └── Output: clean content                                  │   │
+│  │                                                             │   │
+│  │  Phase 7: Uniqueness Validation                             │   │
+│  │  ├── Compare vs competitor patterns                         │   │
+│  │  └── Output: uniqueness score                               │   │
+│  │                                                             │   │
+│  │  Phase 8: Emotion Injection ⭐ CORE                         │   │
+│  │  ├── Enhance emotional content                              │   │
+│  │  └── Output: emotion-enhanced content                       │   │
+│  │                                                             │   │
+│  │  Phase 9: HES + Viral Scoring                               │   │
+│  │  ├── Calculate HES score, viral score                       │   │
+│  │  └── Output: scores                                         │   │
+│  │                                                             │   │
+│  │  Phase 9B: Viral Enhancement (loop max 2x)                  │   │
+│  │  ├── Improve viral elements if score low                    │   │
+│  │  └── Output: enhanced content                               │   │
+│  │                                                             │   │
+│  │  Phase 10: Quality Selection 🔒 LOCK POINT                  │   │
+│  │  ├── Score all versions, select best                        │   │
+│  │  └── Output: 1 selected version                             │   │
+│  │                                                             │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ SUB-GROUP 2B: REFINEMENT (Phase 11-14B)                     │   │
+│  │                                                             │   │
+│  │  Phase 11: Micro-Optimization                               │   │
+│  │  ├── 5-layer optimization (word, sentence, char, etc.)      │   │
+│  │  └── Output: optimized content                              │   │
+│  │                                                             │   │
+│  │  Phase 12: Content Flow Polish                              │   │
+│  │  ├── Smooth transitions between paragraphs                  │   │
+│  │  └── Output: polished content                               │   │
+│  │                                                             │   │
+│  │  Phase 12B: 16 Gates Simulation                             │   │
+│  │  ├── Validate all 16 gates                                  │   │
+│  │  └── Output: gate results                                   │   │
+│  │                                                             │   │
+│  │  Phase 13: Benchmark Comparison                             │   │
+│  │  ├── Compare vs real competitor data                        │   │
+│  │  └── Output: benchmark score                                │   │
+│  │                                                             │   │
+│  │  Phase 13B: Beat Top 20 Strategy (loop max 2x)              │   │
+│  │  ├── Ensure content beats top competitors                   │   │
+│  │  └── Output: competitive content                            │   │
+│  │                                                             │   │
+│  │  Phase 14: Final Emotion Re-Check ⭐ CORE                   │   │
+│  │  ├── Verify emotion score meets minimum                     │   │
+│  │  └── Output: emotion-validated content                      │   │
+│  │                                                             │   │
+│  │  Phase 14B: Final Content Polish                            │   │
+│  │  ├── Last review before output                              │   │
+│  │  └── Output: final content (LOCKED)                         │   │
+│  │                                                             │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ SUB-GROUP 2C: OUTPUT (Phase 15-16)                          │   │
+│  │                                                             │   │
+│  │  Phase 15: Output Generation                                │   │
+│  │  ├── Format content, generate Q&A                           │   │
+│  │  └── Output: formatted content                              │   │
+│  │                                                             │   │
+│  │  Phase 15B: CT Maximizer (loop max 2x)                      │   │
+│  │  ├── Enhance CT elements                                    │   │
+│  │  └── Output: CT-enhanced content                            │   │
+│  │                                                             │   │
+│  │  Phase 16: Export & Delivery                                │   │
+│  │  ├── Save to file, display score card                       │   │
+│  │  └── Output: FINAL DELIVERABLE                              │   │
+│  │                                                             │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  LLM NEEDED: ✅ YA (Phase 5, 8, 14 core - yang lain algoritma)      │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🔧 KOMPONEN
+## 📊 PHASE BREAKDOWN:
 
-| Komponen | Perlu LLM? | Di Mana? |
-|----------|------------|----------|
-| Fetch Campaign | ❌ Tidak | Script Node.js |
-| Web Research | ❌ Tidak | Script Node.js |
-| Leaderboard | ❌ Tidak | Script Node.js |
-| Generate Konten | ✅ **YA** | **AI Chat** |
-| Scoring | ❌ Tidak | AI Chat |
-| Formatting | ❌ Tidak | AI Chat |
+| Phase | Nama | Di Mana? | Perlu LLM? | Fungsi |
+|-------|------|----------|------------|--------|
+| 0 | Campaign Fetch | Script | ❌ | API call |
+| 1 | Research | Script | ❌ | Web scraping |
+| 2 | Leaderboard | Script | ❌ | API call |
+| 2B | Competitor Analysis | Script | ❌ | Pattern analysis |
+| 3 | Gap Identification | AI Chat | ❌ | Algoritma |
+| 4 | Strategy | AI Chat | ❌ | Algoritma |
+| **5** | **Content Generation** | AI Chat | ✅ **YA** | **LLM generate** |
+| 6 | Banned Scanner | AI Chat | ❌ | Pattern match |
+| 6B | Rewrite | AI Chat | ✅ YA | LLM fix |
+| 7 | Uniqueness | AI Chat | ❌ | Comparison |
+| **8** | **Emotion Injection** | AI Chat | ✅ **YA** | **LLM enhance** |
+| 9 | HES + Viral | AI Chat | ❌ | Algoritma |
+| 9B | Viral Enhancement | AI Chat | ✅ YA | LLM improve |
+| 10 | Quality Selection | AI Chat | ❌ | Algoritma |
+| 11 | Micro-Optimization | AI Chat | ❌ | Text processing |
+| 12 | Flow Polish | AI Chat | ❌ | Text processing |
+| 12B | Gate Simulation | AI Chat | ❌ | Validation |
+| 13 | Benchmark | AI Chat | ❌ | Comparison |
+| 13B | Beat Top 20 | AI Chat | ✅ YA | LLM strategy |
+| **14** | **Final Emotion** | AI Chat | ✅ **YA** | **LLM validate** |
+| 14B | Final Polish | AI Chat | ❌ | Text processing |
+| 15 | Output | AI Chat | ❌ | Formatting |
+| 15B | CT Maximizer | AI Chat | ✅ YA | LLM enhance |
+| 16 | Export | AI Chat | ❌ | File writing |
 
 ---
 
-## 🚀 CARA PENGGUNAAN
+## 🎯 KESIMPULAN:
 
-### Step 1: Gather Data (Node.js)
+| Pertanyaan | Jawaban |
+|------------|---------|
+| Apakah phases berkurang? | **TIDAK - tetap 24 phases** |
+| Kenapa disebut 2 groups? | Berdasarkan **lokasi eksekusi** (Script vs AI Chat) |
+| Apa yang membedakan? | **LLM tidak di script, tapi di AI Chat** |
+| Apakah lengkap? | **YA - semua phase dari V8.7.6 ada** |
 
+---
+
+## 🚀 CARA PENGGUNAAN:
+
+### Step 1: Data Gathering (Script)
 ```bash
-cd /home/z/my-project
-node scripts/rally-data-gatherer.js <campaign_address>
+node scripts/rally-data-gatherer.js [campaign_address]
 ```
 
-**Output:** JSON file dengan:
-- Campaign data
-- Research facts
-- Leaderboard data
-- AI-ready summary
+**Output:** JSON dengan Phase 0-2B complete
 
-### Step 2: Generate Content (AI Chat)
+### Step 2: Content Processing (AI Chat)
 
 ```
-Baca data dari file output script, generate konten Rally.
+Buat konten Rally dengan data berikut:
 
-DATA INPUT:
-[paste JSON output dari script]
+[paste JSON output dari Step 1]
 
-INSTRUKSI:
-1. Gunakan campaign goal untuk alignment
-2. Gunakan research facts untuk konten
-3. Generate konten dengan hook yang ada
-4. Hitung score dan tampilkan SCORE CARD
+Ikuti Phase 3-16:
+1. Phase 3-10: Generate & validate content
+2. Phase 11-14B: Refine & optimize
+3. Phase 15-16: Output & score card
+
+Tampilkan hasil dengan SCORE CARD.
 ```
 
 ---
 
-## 📋 SINGLE PROMPT UNTUK CHAT BARU
-
-```
-Buat konten Rally untuk hook: "CODE RUNS, DISPUTES DON'T. ENTER INTERNET COURT"
-
-LANGKAH 1: Jika bisa, jalankan script untuk data:
-  cd /home/z/my-project && node scripts/rally-data-gatherer.js
-
-LANGKAH 2: Jika tidak bisa, gunakan data default:
-  Campaign: Internet Court
-  Goal: Spread awareness tentang decentralized dispute resolution
-  URL: internetcourt.org
-
-LANGKAH 3: Generate konten dengan rules berikut
-
-BANNED WORDS:
-delve, leverage, paradigm, ecosystem, groundbreaking, seamless, transformative, realm, tapestry, catalyst, cornerstone, pivotal, myriad
-
-BANNED PHRASES:
-in the world of, picture this, imagine a world, lets dive in, at its core, in conclusion, it is important to note
-
-BANNED AI PATTERNS:
-in this thread, here's what you need to know, key takeaways, in summary
-
-KONTEN REQUIREMENTS:
-- Hook SAMA PERSIS (jangan ubah)
-- 3-5 paragraf (masing-masing <280 char)
-- Include: internetcourt.org
-- Include body feeling (stomach dropped, heart racing, cold sweat)
-- Akhiri dengan pertanyaan engaging
-- 3+ emotion types (fear, curiosity, surprise, hope, pain)
-
-SCORING (min 9.0 overall):
-- Hook Score: min 7/10
-- Emotion Score: min 8/10  
-- CT Score: min 8/10
-- Overall: min 9.0/10
-
-TAMPILKAN:
-1. KONTEN
-2. SCORE CARD (format box)
-```
-
----
-
-## 📊 SCORING FORMULAS
-
-### HOOK SCORE (0-10)
-
-| Kriteria | Poin |
-|----------|------|
-| No weak opening | +3 |
-| Power pattern | +3 |
-| Curiosity element | +1 |
-| Tension element | +1 |
-| Surprise element | +1 |
-| Relevance element | +1 |
-
-**Power Patterns:**
-- Number: `$50M vanished...`, `400 million users...`
-- Question: `What happens when...`
-- Action verb: `Imagine this...`
-- Bold statement: `Code executes. Justice doesn't.`
-- Contrarian: `Wrong...`
-- Personal pain: `I lost everything...`
-
----
-
-### EMOTION SCORE (0-10)
-
-| Kriteria | Poin |
-|----------|------|
-| Each emotion trigger | +2 |
-| Body feeling | +3 |
-| 3+ emotion types | +2 |
-| All 5 emotion types | +1 |
-
-**Emotion Triggers:**
-
-| Emotion | Triggers |
-|---------|----------|
-| Fear | risk, danger, crisis, fail, lost, vanish, nightmare |
-| Curiosity | what if, why, how, secret, hidden, gap, mystery |
-| Surprise | unexpected, finally, breakthrough, shocking |
-| Hope | opportunity, potential, future, solution, imagine |
-| Pain | lost, failed, broke, destroyed, regret, hurt, rugged |
-
-**Body Feelings:**
-- stomach dropped
-- heart racing
-- cold sweat
-- chest tightened
-- couldn't sleep
-- jaw dropped
-- couldn't breathe
-
----
-
-### CT SCORE (0-10)
-
-| Elemen | Poin |
-|--------|------|
-| Question (?) | +2 |
-| Reply bait | +2 |
-| Engagement hook | +2 |
-| Personal (I, my) | +1 |
-| FOMO | +1 |
-| Controversy | +1 |
-| Share-worthy | +1 |
-
----
-
-### OVERALL SCORE
-
-```
-OVERALL = (Hook + Emotion + CT + Uniqueness + Readability + Viral) / 6
-```
-
-**Minimum: 9.0/10**
-
----
-
-## 📝 OUTPUT FORMAT
-
-### KONTEN:
-```
-Code Runs, Disputes Don't. Enter Internet Court
-
-[Paragraf 2 - problem statement dengan data]
-
-[Paragraf 3 - emotional dengan body feeling]
-
-[Paragraf 4 - solution dengan internetcourt.org]
-
-[Paragraf 5 - pertanyaan engaging]
-
-internetcourt.org
-```
-
-### SCORE CARD:
-```
-╔════════════════════════════════════════════════════════════════════════╗
-║                    FINAL CONTENT SCORE CARD - V9.0.0                   ║
-║                   "Quality 200% Above Rally Standards"                 ║
-╠════════════════════════════════════════════════════════════════════════╣
-║  📊 PENILAIAN INTERNAL (Min: 9/10 each)                                ║
-║  │ Hook Score:                  X/10    │ ✅ PASS / ❌ FAIL            ║
-║  │ Emotion Score:               X/10    │ ✅ PASS / ❌ FAIL            ║
-║  │ CT Score:                    X/10    │ ✅ PASS / ❌ FAIL            ║
-║  │ Uniqueness:                  X/10    │ ✅ PASS / ❌ FAIL            ║
-║  │ Readability:                 X/10    │ ✅ PASS / ❌ FAIL            ║
-║  │ Viral Potential:             X/10    │ ✅ PASS / ❌ FAIL            ║
-║  ├────────────────────────────────────────────────────────────────────┤║
-║  │ OVERALL SCORE:               X.X/10  │ ✅ PASS / ❌ FAIL            ║
-║                                                                        ║
-║  😱 EMOTION TYPES: [list]                                              ║
-║  │ Body Feelings: Yes/No                                               ║
-║                                                                        ║
-║  📈 SUMMARY                                                            ║
-║  │ Scores Passing:           X/6                                       ║
-║  │ READY FOR SUBMISSION:     ✅ YES / ❌ NO                             ║
-║  │ Confidence Level:         XX%                                        ║
-║                                                                        ║
-╚════════════════════════════════════════════════════════════════════════╝
-```
-
----
-
-## 📁 FILE STRUCTURE
+## 📁 FILE STRUCTURE:
 
 ```
 /home/z/my-project/
-├── README.md                        # File ini
+├── README.md                        # File ini (V9.0.0)
 ├── scripts/
-│   ├── rally-data-gatherer.js       # Data gathering (no LLM)
-│   ├── rally-ai-workflow.js         # Legacy - with LLM
-│   └── rally-workflow-v8.7.6.js     # Legacy - full workflow
+│   ├── rally-data-gatherer.js       # Phase 0-2B (Script)
+│   └── rally-workflow-v8.7.6.js     # Legacy (all in script)
 └── download/
     └── rally-data-*.json            # Output data files
 ```
 
 ---
 
-## ⚠️ TROUBLESHOOTING
+## ⚠️ PENTING:
 
-| Masalah | Solusi |
-|---------|--------|
-| Script error | Generate konten dengan data default |
-| No campaign address | Gunakan data default Internet Court |
-| Score < 9.0 | Regenerate dengan perbaikan |
-| Missing body feeling | Tambahkan dari list |
-| Banned word | Ganti dengan alternatif |
+**AI Chat harus menjalankan SEMUA Phase 3-16, bukan hanya generate konten!**
 
----
-
-## 🆚 PERBANDINGAN VERSI
-
-| Aspek | V8.7.6 | V9.0.0 |
-|-------|--------|--------|
-| LLM Location | Script | AI Chat |
-| Rate Limit Risk | Tinggi | Rendah |
-| Complexity | 24 phases | 2 phases |
-| Flexibility | Rigid | Adaptive |
-| Data Freshness | API realtime | API realtime |
-| Content Quality | Template-based | AI Creative |
-
----
-
-## ✅ CHECKLIST
-
-Sebelum output, pastikan:
-
-- [ ] Hook sama persis
-- [ ] 3-5 paragraf, <280 char each
-- [ ] internetcourt.org ada
-- [ ] Body feeling ada
-- [ ] Pertanyaan di akhir
-- [ ] 3+ emotion types
-- [ ] 0 banned items
-- [ ] Overall >= 9.0
+Checklist untuk AI:
+- [ ] Phase 3: Gap identification
+- [ ] Phase 4: Strategy definition
+- [ ] Phase 5: Generate content
+- [ ] Phase 6: Scan banned items
+- [ ] Phase 6B: Rewrite if needed
+- [ ] Phase 7: Uniqueness check
+- [ ] Phase 8: Emotion injection
+- [ ] Phase 9: HES + Viral score
+- [ ] Phase 9B: Enhance if needed
+- [ ] Phase 10: Select best version
+- [ ] Phase 11: Micro-optimization
+- [ ] Phase 12: Flow polish
+- [ ] Phase 12B: 16 Gates validation
+- [ ] Phase 13: Benchmark comparison
+- [ ] Phase 13B: Beat top 20
+- [ ] Phase 14: Final emotion check
+- [ ] Phase 14B: Final polish
+- [ ] Phase 15: Output format
+- [ ] Phase 15B: CT maximize
+- [ ] Phase 16: Export + Score Card
 
 ---
 
@@ -316,8 +270,9 @@ Sebelum output, pastikan:
 
 - **Version:** V9.0.0 Hybrid
 - **Branch:** v9.0.0-hybrid
-- **Created:** 2026-03-20
-- **Architecture:** Hybrid (Script + AI Chat)
+- **Total Phases:** 24 phases (unchanged)
+- **Groups:** 2 (Data Gathering + Content Processing)
+- **LLM Phases:** 6 phases (5, 6B, 8, 9B, 13B, 14, 15B)
 
 ---
 
