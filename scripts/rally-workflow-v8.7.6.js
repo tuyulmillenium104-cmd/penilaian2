@@ -1011,6 +1011,9 @@ function generateFinalScoreCard(content, campaignData = {}) {
   };
   scoreCard.internal.viralPotential.passed = scoreCard.internal.viralPotential.score >= 9;
   
+  // Detect Emotion Types
+  scoreCard.emotionTypes = detectEmotionTypes(content);
+  
   // Normalize gate scores for overall calculation
   const normalizedGates = {};
   for (const [key, gate] of Object.entries(scoreCard.gates)) {
@@ -1032,8 +1035,14 @@ function generateFinalScoreCard(content, campaignData = {}) {
   // Check all passes
   const allGatesPassed = Object.values(scoreCard.gates).every(g => g.passed);
   const allInternalPassed = Object.values(scoreCard.internal).every(i => i.passed);
+  const enoughEmotionTypes = scoreCard.emotionTypes.length >= 3;
   
-  scoreCard.passed = allGatesPassed && allInternalPassed;
+  scoreCard.passed = allGatesPassed && allInternalPassed && enoughEmotionTypes;
+  
+  // Add emotion types issue if not enough
+  if (!enoughEmotionTypes) {
+    scoreCard.issues.push(`Emotion Types: ${scoreCard.emotionTypes.length}/5 (need at least 3)`);
+  }
   
   // Collect issues
   for (const [key, gate] of Object.entries(scoreCard.gates)) {
@@ -1243,16 +1252,52 @@ function calculateTechnicalQuality(content) {
 }
 
 /**
+ * Calculate Emotion Types detected in content
+ * Returns array of detected emotion types
+ */
+function detectEmotionTypes(content) {
+  const lowerContent = content.toLowerCase();
+  const detectedTypes = [];
+  
+  for (const [emotion, data] of Object.entries(EMOTION_LIBRARY)) {
+    const hasTrigger = data.triggers.some(trigger => lowerContent.includes(trigger.toLowerCase()));
+    const hasBodyFeeling = data.bodyFeelings.some(feeling => lowerContent.includes(feeling.toLowerCase()));
+    
+    if (hasTrigger || hasBodyFeeling) {
+      detectedTypes.push({
+        emotion,
+        hasTrigger,
+        hasBodyFeeling,
+        intensity: hasBodyFeeling ? 'high' : (hasTrigger ? 'medium' : 'low')
+      });
+    }
+  }
+  
+  return detectedTypes;
+}
+
+/**
  * Format Score Card as String
  */
-function formatScoreCard(scoreCard) {
+function formatScoreCard(scoreCard, phasesCompleted = 24, phasesTotal = 24) {
   const lines = [];
   
   lines.push('╔════════════════════════════════════════════════════════════════════════╗');
   lines.push('║                    FINAL CONTENT SCORE CARD - V8.7.6                   ║');
   lines.push('║                   "Quality 200% Above Rally Standards"                  ║');
   lines.push('╠════════════════════════════════════════════════════════════════════════╣');
+  
+  // PHASE COMPLETION STATUS - HONEST
   lines.push('║                                                                        ║');
+  lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
+  lines.push('║  █                  📋 PHASE COMPLETION                              █ ║');
+  lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
+  lines.push('║                                                                        ║');
+  const phaseStatus = phasesCompleted >= phasesTotal ? '✅ PASS' : '❌ FAIL';
+  lines.push(`║  │ Pass All Phases:        ${phasesCompleted}/${phasesTotal}     │ ${phaseStatus.padEnd(8)}        │ ║`);
+  lines.push('║                                                                        ║');
+  
+  // GATE UTAMA RALLY
   lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
   lines.push('║  █              🚦 GATE UTAMA RALLY (Min: 4/5 each)                  █ ║');
   lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
@@ -1301,6 +1346,44 @@ function formatScoreCard(scoreCard) {
   const overallStr = `${scoreCard.overall?.score || 0}/10`.padEnd(5);
   lines.push(`║  │ OVERALL SCORE:                      ${overallStr} │ ${overallStatus.padEnd(8)}        │ ║`);
   
+  // EMOTION TYPES SECTION
+  lines.push('║                                                                        ║');
+  lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
+  lines.push('║  █                😱 EMOTION TYPES DETECTED                          █ ║');
+  lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
+  lines.push('║                                                                        ║');
+  
+  if (scoreCard.emotionTypes && scoreCard.emotionTypes.length > 0) {
+    const emotionList = scoreCard.emotionTypes.map(e => 
+      `${e.emotion.charAt(0).toUpperCase() + e.emotion.slice(1)}${e.hasBodyFeeling ? ' (body)' : ''}`
+    ).join(', ');
+    
+    // Wrap long emotion list
+    if (emotionList.length > 50) {
+      const emotions = scoreCard.emotionTypes;
+      const line1 = emotions.slice(0, 3).map(e => 
+        `${e.emotion.charAt(0).toUpperCase() + e.emotion.slice(1)}`
+      ).join(', ');
+      const line2 = emotions.slice(3).map(e => 
+        `${e.emotion.charAt(0).toUpperCase() + e.emotion.slice(1)}`
+      ).join(', ');
+      
+      lines.push(`║  │ Types: ${line1.padEnd(54)}│ ║`);
+      if (line2) {
+        lines.push(`║  │        ${line2.padEnd(54)}│ ║`);
+      }
+    } else {
+      lines.push(`║  │ Types: ${emotionList.padEnd(54)}│ ║`);
+    }
+    
+    const bodyFeelings = scoreCard.emotionTypes.filter(e => e.hasBodyFeeling).length;
+    const triggers = scoreCard.emotionTypes.filter(e => e.hasTrigger).length;
+    lines.push(`║  │ Body Feelings: ${String(bodyFeelings).padEnd(46)}│ ║`);
+    lines.push(`║  │ Trigger Words: ${String(triggers).padEnd(45)}│ ║`);
+  } else {
+    lines.push('║  │ No emotions detected                                                │ ║');
+  }
+  
   lines.push('║                                                                        ║');
   lines.push('║  ████████████████████████████████████████████████████████████████████ ║');
   lines.push('║  █                      📈 SUMMARY                                   █ ║');
@@ -1311,9 +1394,11 @@ function formatScoreCard(scoreCard) {
   const internalPassed = Object.values(scoreCard.internal).filter(i => i.passed).length;
   const totalGates = Object.keys(scoreCard.gates).length;
   const totalInternal = Object.keys(scoreCard.internal).length;
+  const emotionCount = scoreCard.emotionTypes?.length || 0;
   
   lines.push(`║  │ Gate Utama + Tambahan:  ${gatesPassed}/${totalGates} PASS                             │ ║`);
   lines.push(`║  │ Penilaian Internal:     ${internalPassed}/${totalInternal} PASS                             │ ║`);
+  lines.push(`║  │ Emotion Types:          ${emotionCount}/5 min                               │ ║`);
   lines.push('║  ├────────────────────────────────────────────────────────────────────┤ ║');
   
   const finalStatus = scoreCard.passed ? '✅ YES' : '❌ NO';
