@@ -1926,6 +1926,63 @@ function calculateEmotionScore(content, targetEmotion = 'curiosity') {
   return Math.min(10, score);
 }
 
+/**
+ * Calculate DETAILED Emotion Score with breakdown
+ * BUG FIX #1: This function was missing but called in calculateInternalMetricScore
+ * Returns score 0-10 with detailed breakdown
+ */
+function calculateEmotionScoreDetailed(content) {
+  const lowerContent = content.toLowerCase();
+  let score = 0;
+  const breakdown = {
+    triggerCount: 0,
+    bodyFeelingCount: 0,
+    intensifierCount: 0,
+    emotionTypes: [],
+    hasBodyFeeling: false
+  };
+  
+  // Check all emotion types
+  for (const [emotion, data] of Object.entries(EMOTION_LIBRARY)) {
+    const hasTrigger = data.triggers.some(t => lowerContent.includes(t.toLowerCase()));
+    const hasBodyFeeling = data.bodyFeelings.some(f => lowerContent.includes(f.toLowerCase()));
+    
+    if (hasTrigger || hasBodyFeeling) {
+      breakdown.emotionTypes.push(emotion);
+      breakdown.triggerCount += hasTrigger ? 1 : 0;
+      breakdown.bodyFeelingCount += hasBodyFeeling ? 1 : 0;
+      
+      if (hasTrigger) score += 2;
+      if (hasBodyFeeling) score += 3;
+      
+      if (hasBodyFeeling) breakdown.hasBodyFeeling = true;
+    }
+  }
+  
+  // Check high-intensity intensifiers
+  for (const intensifier of EMOTION_STANDARDS.intensityLevels.high) {
+    if (lowerContent.includes(intensifier.toLowerCase())) {
+      score += 1;
+      breakdown.intensifierCount++;
+    }
+  }
+  
+  // Bonus for multiple emotion types
+  if (breakdown.emotionTypes.length >= 3) score += 2;
+  if (breakdown.emotionTypes.length >= 5) score += 1;
+  
+  // Cap at 10
+  const finalScore = Math.min(10, score);
+  
+  return {
+    score: finalScore,
+    breakdown,
+    passed: finalScore >= EMOTION_STANDARDS.minEmotionScore,
+    emotionTypes: breakdown.emotionTypes,
+    hasBodyFeeling: breakdown.hasBodyFeeling
+  };
+}
+
 function calculateHESScore(content) {
   let score = 0;
   const details = {};
@@ -2407,6 +2464,15 @@ class RallyWorkflowExecutor {
     // COMPLIANCE ISSUES - Track issues from previous attempts
     this.complianceIssues = [];
     this.complianceFixMode = false;
+    
+    // BUG FIX #3: Absolute max to prevent infinite loops
+    this.absoluteMaxRegenerations = 10;  // Hard limit - never exceed
+    this.totalRegenerationAttempts = 0;  // Track ALL regeneration attempts
+    this.executionStartTime = null;       // For timeout detection
+    this.maxExecutionTimeMs = 10 * 60 * 1000; // 10 minutes max
+    this.previousPhase = 0;               // Track previous phase for better failback logic
+    this.scoreCardGenerated = false;      // Track if score card was generated
+    this.maxHistorySize = 50;             // PROBLEM FIX #5: Limit history size
   }
   
   log(phase, message, data = null) {
@@ -2419,6 +2485,16 @@ class RallyWorkflowExecutor {
     this.executionLog.push(entry);
     console.log(`[${phase}] ${message}`);
     if (data) console.log(JSON.stringify(data, null, 2));
+  }
+  
+  // PROBLEM FIX #5: Add to regeneration history with size limit
+  addRegenerationHistory(entry) {
+    this.regenerationHistory.push(entry);
+    
+    // Limit history size to prevent memory issues
+    if (this.regenerationHistory.length > this.maxHistorySize) {
+      this.regenerationHistory = this.regenerationHistory.slice(-this.maxHistorySize);
+    }
   }
   
   // =========================================================================
@@ -3060,6 +3136,28 @@ Based on typical crypto twitter content patterns and these competitor rankings, 
   async phase5_ContentGeneration() {
     this.log('Phase 5', 'Generating content versions with LLM using ALL campaign data...');
     this.phaseStatus['Phase 5'] = { status: 'running', started: new Date().toISOString() };
+    
+    // PROBLEM FIX #2: Minimum knowledge base check
+    if (this.knowledgeBase.length < 3) {
+      console.log('⚠️ Knowledge base too small - adding fallback facts');
+      const fallbackFacts = [
+        { fact: 'Internet Court provides AI-powered dispute resolution at machine speed', source: 'fallback', topic: 'fallback' },
+        { fact: 'Verdicts are delivered in minutes, not months - unlike traditional courts', source: 'fallback', topic: 'fallback' },
+        { fact: 'AI jury evaluates evidence objectively using consensus mechanism', source: 'fallback', topic: 'fallback' },
+        { fact: 'Internet Court handles smart contract disputes and cross-border agreements', source: 'fallback', topic: 'fallback' },
+        { fact: 'Built on GenLayer infrastructure for decentralized validation', source: 'fallback', topic: 'fallback' }
+      ];
+      
+      // Add fallback facts that don't duplicate existing ones
+      const existingFactKeys = new Set(this.knowledgeBase.map(f => (f.fact || f).toLowerCase().substring(0, 50)));
+      for (const fact of fallbackFacts) {
+        const key = fact.fact.toLowerCase().substring(0, 50);
+        if (!existingFactKeys.has(key)) {
+          this.knowledgeBase.push(fact);
+        }
+      }
+      console.log(`✅ Knowledge base expanded to ${this.knowledgeBase.length} facts`);
+    }
     
     // PREPARE ALL CAMPAIGN DATA FOR LLM
     // Include BOTH internal knowledge base AND external research facts
@@ -5305,9 +5403,11 @@ Return ONLY the enhanced content.`;
     console.log(`Campaign: ${this.campaignAddress}`);
     console.log(`Strict Mode: ${CONFIG.strictMode ? 'ENABLED' : 'disabled'}`);
     console.log(`Max Regenerations: ${this.maxRegenerations}`);
+    console.log(`Absolute Max Attempts: ${this.absoluteMaxRegenerations}`);
     console.log('='.repeat(80));
     
     const startTime = Date.now();
+    this.executionStartTime = startTime;  // BUG FIX #3: Track start time for timeout
     
     try {
       // INPUT SECTION - Always runs once
@@ -5324,15 +5424,36 @@ Return ONLY the enhanced content.`;
         loopIteration++;
         this.needsRegeneration = false; // Reset flag
         
+        // BUG FIX #3: Check for timeout and absolute max
+        const elapsedMs = Date.now() - startTime;
+        if (elapsedMs > this.maxExecutionTimeMs) {
+          console.log('\n⏰ MAXIMUM EXECUTION TIME REACHED (10 minutes)');
+          console.log('⚠️ Proceeding with best available content');
+          break;  // Exit loop with best content
+        }
+        
+        // BUG FIX #3: Check absolute max regeneration attempts
+        if (this.totalRegenerationAttempts > this.absoluteMaxRegenerations) {
+          console.log('\n🚨 ABSOLUTE MAX REGENERATION ATTEMPTS REACHED (10)');
+          console.log('⚠️ Proceeding with best available content');
+          break;  // Exit loop with best content
+        }
+        
+        // Determine starting phase based on failback
+        const startPhase = this.failbackPhase || 3;
+        
+        // Track previous phase for better failback logic (DEFECT FIX #4)
+        this.previousPhase = this.currentPhase || startPhase;
+        this.currentPhase = startPhase;
+        
         console.log('\n' + '-'.repeat(60));
         console.log(`🔄 ITERATION ${loopIteration}/${maxLoopIterations}`);
+        console.log(`📊 Total Regeneration Attempts: ${this.totalRegenerationAttempts}/${this.absoluteMaxRegenerations}`);
+        console.log(`⏱️ Elapsed: ${Math.round(elapsedMs / 1000)}s / ${this.maxExecutionTimeMs / 1000}s max`);
         if (this.failbackPhase) {
           console.log(`↩️ Failback to Phase ${this.failbackPhase}`);
         }
         console.log('-'.repeat(60) + '\n');
-        
-        // Determine starting phase based on failback
-        const startPhase = this.failbackPhase || 3;
         
         // Clear versions if regenerating from Phase 5 or earlier
         if (startPhase <= 5 && loopIteration > 1) {
@@ -5359,6 +5480,7 @@ Return ONLY the enhanced content.`;
           const rewriteResult = await this.phase6B_Rewrite();
           if (this.needsRegeneration) {
             this.regenerationCount++;
+            this.totalRegenerationAttempts++;  // BUG FIX #3: Track absolute total
             if (this.regenerationCount > this.maxRegenerations) {
               // Don't give up - reset counter and keep trying
               console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 6B - CONTINUING ANYWAY');
@@ -5376,6 +5498,7 @@ Return ONLY the enhanced content.`;
           const uniquenessResult = await this.phase7_UniquenessValidation();
           if (this.needsRegeneration) {
             this.regenerationCount++;
+            this.totalRegenerationAttempts++;  // BUG FIX #3: Track absolute total
             if (this.regenerationCount > this.maxRegenerations) {
               // Don't give up - reset counter and keep trying
               console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 7 - CONTINUING ANYWAY');
@@ -5398,6 +5521,7 @@ Return ONLY the enhanced content.`;
           const hesResult = this.phase9_HESSandViral();
           if (this.needsRegeneration) {
             this.regenerationCount++;
+            this.totalRegenerationAttempts++;  // BUG FIX #3: Track absolute total
             if (this.regenerationCount > this.maxRegenerations) {
               // Don't give up - reset counter and keep trying
               console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 9 - CONTINUING ANYWAY');
@@ -5416,6 +5540,7 @@ Return ONLY the enhanced content.`;
           const viralResult = await this.phase9B_ViralEnhancement();
           if (this.needsRegeneration) {
             this.regenerationCount++;
+            this.totalRegenerationAttempts++;  // BUG FIX #3: Track absolute total
             if (this.regenerationCount > this.maxRegenerations) {
               // Don't give up - reset counter and keep trying
               console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 9B - CONTINUING ANYWAY');
@@ -5434,6 +5559,7 @@ Return ONLY the enhanced content.`;
           const selectionResult = this.phase10_QualityScoringAndSelection();
           if (this.needsRegeneration) {
             this.regenerationCount++;
+            this.totalRegenerationAttempts++;  // BUG FIX #3: Track absolute total
             if (this.regenerationCount > this.maxRegenerations) {
               // Don't give up - reset counter and keep trying
               console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 10 - CONTINUING ANYWAY');
@@ -5462,6 +5588,7 @@ Return ONLY the enhanced content.`;
           // Check if gates failed and we need to regenerate
           if (this.needsRegeneration) {
             this.regenerationCount++;
+            this.totalRegenerationAttempts++;  // BUG FIX #3: Track absolute total
             
             if (this.regenerationCount > this.maxRegenerations) {
               // Don't give up - reset counter and keep trying
@@ -5487,6 +5614,7 @@ Return ONLY the enhanced content.`;
           const beatResult = await this.phase13B_BeatTop20Strategy();
           if (this.needsRegeneration) {
             this.regenerationCount++;
+            this.totalRegenerationAttempts++;  // BUG FIX #3: Track absolute total
             if (this.regenerationCount > this.maxRegenerations) {
               // Don't give up - reset counter and keep trying
               console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 13B - CONTINUING ANYWAY');
@@ -5504,6 +5632,7 @@ Return ONLY the enhanced content.`;
         const emotionResult = await this.phase14_FinalEmotionReCheck();
         if (this.needsRegeneration) {
           this.regenerationCount++;
+          this.totalRegenerationAttempts++;  // BUG FIX #3: Track absolute total
           if (this.regenerationCount > this.maxRegenerations) {
             // Don't give up - reset counter and keep trying
             console.log('\n🚨 MAX REGENERATIONS REACHED AFTER PHASE 14 - CONTINUING ANYWAY');
@@ -5522,6 +5651,7 @@ Return ONLY the enhanced content.`;
         // Check if final polish failed
         if (this.needsRegeneration && !polishResult.success) {
           this.regenerationCount++;
+          this.totalRegenerationAttempts++;  // BUG FIX #3: Track absolute total
           
           if (this.regenerationCount > this.maxRegenerations) {
             // Don't give up - reset counter and keep trying
@@ -5548,6 +5678,7 @@ Return ONLY the enhanced content.`;
         // CRITICAL: Check if CT score triggered regeneration
         if (this.needsRegeneration) {
           this.regenerationCount++;
+          this.totalRegenerationAttempts++;  // BUG FIX #3: Track absolute total
           
           if (this.regenerationCount > this.maxRegenerations) {
             // NO MORE GIVING UP! Continue regenerating until CT score passes
@@ -5605,6 +5736,14 @@ Return ONLY the enhanced content.`;
           console.log(`Issues: ${complianceResult.issues.join(', ')}`);
           
           this.regenerationCount++;
+          this.totalRegenerationAttempts++;  // BUG FIX #3: Track absolute total
+          
+          // BUG FIX #3: Check absolute max to prevent infinite loop
+          if (this.totalRegenerationAttempts > this.absoluteMaxRegenerations) {
+            console.log('\n🚨 ABSOLUTE MAX REGENERATIONS REACHED (10 attempts)');
+            console.log('⚠️ Proceeding with best available content despite compliance issues');
+            break;  // Exit loop with best content
+          }
           
           if (this.regenerationCount > this.maxRegenerations) {
             console.log('🚨 MAX REGENERATIONS REACHED - Resetting counter and continuing');
@@ -5628,6 +5767,64 @@ Return ONLY the enhanced content.`;
           }
           
           continue; // Restart from Phase 5
+        }
+        
+        // BUG FIX #2: GENERATE FINAL SCORE CARD (was missing)
+        console.log('\n' + '='.repeat(80));
+        console.log('📊 GENERATING FINAL SCORE CARD');
+        console.log('='.repeat(80));
+        
+        const scoreCard = generateFinalScoreCard(this.selectedVersion.content, this.campaignData);
+        this.finalScoreCard = scoreCard;
+        this.scoreCardGenerated = true;
+        
+        // Display the score card
+        console.log('\n' + formatScoreCard(scoreCard, 
+          Object.keys(this.phaseStatus).filter(p => this.phaseStatus[p]?.status === 'completed').length,
+          24
+        ));
+        
+        // DEFECT FIX #2: Enforce Score Card pass/fail
+        if (!scoreCard.passed) {
+          console.log('\n⚠️ FINAL SCORE CARD DID NOT PASS - Checking if we should regenerate');
+          console.log(`Issues found: ${scoreCard.issues.length}`);
+          scoreCard.issues.forEach(issue => console.log(`  - ${issue}`));
+          
+          this.totalRegenerationAttempts++;
+          
+          // Check if we have attempts left
+          if (this.totalRegenerationAttempts <= this.absoluteMaxRegenerations && 
+              this.regenerationCount < this.maxRegenerations) {
+            console.log('\n🔄 REGENERATING due to Score Card failure...');
+            this.regenerationCount++;
+            this.needsRegeneration = true;
+            this.failbackPhase = 5;
+            
+            // Store issues for next attempt
+            this.scoreCardIssues = scoreCard.issues;
+            
+            // Reset for regeneration
+            this.versions = [];
+            this.selectedVersion = null;
+            this.finalOutput = null;
+            
+            for (let p = 5; p <= 16; p++) {
+              delete this.phaseStatus[`Phase ${p}`];
+              delete this.phaseStatus[`Phase ${p}B`];
+              delete this.phaseStatus[`Phase ${p}C`];
+            }
+            
+            continue;  // Regenerate
+          } else {
+            console.log('\n⚠️ Max attempts reached - proceeding with current content despite score card issues');
+          }
+        } else {
+          console.log('\n✅ FINAL SCORE CARD PASSED - Content meets all quality standards');
+        }
+        
+        // Store score card in final output
+        if (this.finalOutput) {
+          this.finalOutput.scoreCard = scoreCard;
         }
         
         // If we get here, content is fully locked including CT and compliance - proceed to export

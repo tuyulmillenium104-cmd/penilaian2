@@ -246,15 +246,41 @@ Write the thread now.`;
     // Build content structure
     const parts = [];
     
-    // Part 1: Hook based on angle
-    const hooks = {
-      problem_first: this.buildProblemHook(facts),
-      contrast: this.buildContrastHook(facts),
-      fear_example: this.buildFearHook(facts),
-      analytical: this.buildAnalyticalHook(facts),
-      future_focused: this.buildFutureHook(facts)
-    };
-    parts.push(hooks[angle] || hooks.problem_first);
+    // PROBLEM FIX #3: Use async LLM hooks instead of hard-coded templates
+    // Part 1: Hook based on angle - use LLM versions
+    let hook;
+    try {
+      switch (angle) {
+        case 'problem_first':
+          hook = await this.buildProblemHookLLM(facts);
+          break;
+        case 'contrast':
+          hook = await this.buildContrastHookLLM(facts);
+          break;
+        case 'fear_example':
+          hook = await this.buildFearHookLLM(facts);
+          break;
+        case 'analytical':
+          hook = await this.buildAnalyticalHookLLM(facts);
+          break;
+        case 'future_focused':
+          hook = await this.buildFutureHookLLM(facts);
+          break;
+        default:
+          hook = await this.buildProblemHookLLM(facts);
+      }
+    } catch (e) {
+      // Fallback to synchronous methods if LLM fails
+      const syncHooks = {
+        problem_first: this.buildProblemHook(facts),
+        contrast: this.buildContrastHook(facts),
+        fear_example: this.buildFearHook(facts),
+        analytical: this.buildAnalyticalHook(facts),
+        future_focused: this.buildFutureHook(facts)
+      };
+      hook = syncHooks[angle] || syncHooks.problem_first;
+    }
+    parts.push(hook);
     
     // Part 2: Core information from facts
     const coreContent = this.buildCoreContent(facts);
@@ -278,7 +304,40 @@ Write the thread now.`;
     };
   }
   
+  // PROBLEM FIX #3: Use LLM instead of hard-coded templates
+  async buildProblemHookLLM(facts) {
+    const problemFact = facts.find(f => 
+      f.toLowerCase().includes('problem') || 
+      f.toLowerCase().includes('issue') ||
+      f.toLowerCase().includes('slow') ||
+      f.toLowerCase().includes('expensive')
+    ) || facts[0];
+    
+    const systemPrompt = `You write Twitter hooks for crypto/web3 content. Keep it under 200 chars. No AI words (delve, leverage, paradigm). Be punchy and direct.`;
+    
+    const userPrompt = `Write a problem-first hook about: ${this.campaignData?.title || 'Internet Court'}
+Problem fact: ${problemFact || 'Traditional courts are too slow'}
+Make it attention-grabbing. End with a tension statement.`;
+    
+    try {
+      const result = await this.callLLMWithRetry(systemPrompt, userPrompt, { maxTokens: 100 }, 1);
+      if (result.success && result.content && result.content.length > 20) {
+        return result.content.trim();
+      }
+    } catch (e) {
+      // Fallback to basic template
+    }
+    
+    // Emergency fallback
+    return `${problemFact || 'Traditional courts take years.'}
+
+This is the problem no one talks about.
+
+Code runs. Disputes don't.`;
+  }
+  
   buildProblemHook(facts) {
+    // Synchronous fallback for backward compatibility
     const problemFact = facts.find(f => 
       f.toLowerCase().includes('problem') || 
       f.toLowerCase().includes('issue') ||
@@ -293,12 +352,54 @@ This is the problem no one talks about.
 Code runs. Disputes don't.`;
   }
   
+  async buildContrastHookLLM(facts) {
+    const systemPrompt = `You write Twitter hooks. Keep under 150 chars. Contrast two things dramatically. No AI words.`;
+    const userPrompt = `Write a contrast hook comparing:
+- Smart contracts: fast (milliseconds)
+- Traditional courts: slow (years/decades)
+Make it punchy. End with "See the gap?" or similar.`;
+    
+    try {
+      const result = await this.callLLMWithRetry(systemPrompt, userPrompt, { maxTokens: 80 }, 1);
+      if (result.success && result.content && result.content.length > 20) {
+        return result.content.trim();
+      }
+    } catch (e) {}
+    
+    return `Smart contracts execute in milliseconds.
+
+Court cases take years.
+
+See the gap?`;
+  }
+  
   buildContrastHook(facts) {
     return `Smart contracts execute in milliseconds.
 
 Court cases take years.
 
 See the gap?`;
+  }
+  
+  async buildFearHookLLM(facts) {
+    const systemPrompt = `You write Twitter hooks. Keep under 180 chars. Use real fear but don't be sensational. No AI words.`;
+    const userPrompt = `Write a fear-based hook about blockchain risks:
+- Reference a real incident (The DAO 2016, $50M lost)
+- Show what could happen to the reader
+- Make it personal but factual`;
+    
+    try {
+      const result = await this.callLLMWithRetry(systemPrompt, userPrompt, { maxTokens: 100 }, 1);
+      if (result.success && result.content && result.content.length > 20) {
+        return result.content.trim();
+      }
+    } catch (e) {}
+    
+    return `$50 million drained from The DAO in 2016. A bug in the code.
+
+The blockchain didn't care. It just executed.
+
+What happens when it's your transaction next?`;
   }
   
   buildFearHook(facts) {
@@ -309,10 +410,50 @@ The blockchain didn't care. It just executed.
 What happens when it's your transaction next?`;
   }
   
+  async buildAnalyticalHookLLM(facts) {
+    const systemPrompt = `You write Twitter hooks. Keep under 150 chars. Be analytical and logical. No AI words.`;
+    const userPrompt = `Write an analytical hook about:
+- Smart contracts automate trust
+- But they don't automate justice
+- Point out the structural problem`;
+    
+    try {
+      const result = await this.callLLMWithRetry(systemPrompt, userPrompt, { maxTokens: 80 }, 1);
+      if (result.success && result.content && result.content.length > 20) {
+        return result.content.trim();
+      }
+    } catch (e) {}
+    
+    return `Smart contracts automate trust. But they don't automate justice.
+
+Here's the structural problem:`;
+  }
+  
   buildAnalyticalHook(facts) {
     return `Smart contracts automate trust. But they don't automate justice.
 
 Here's the structural problem:`;
+  }
+  
+  async buildFutureHookLLM(facts) {
+    const systemPrompt = `You write Twitter hooks. Keep under 180 chars. Be forward-looking and thought-provoking. No AI words.`;
+    const userPrompt = `Write a future-focused hook about:
+- AI agents making transactions autonomously
+- Who resolves their disputes?
+- Traditional courts can't handle this`;
+    
+    try {
+      const result = await this.callLLMWithRetry(systemPrompt, userPrompt, { maxTokens: 100 }, 1);
+      if (result.success && result.content && result.content.length > 20) {
+        return result.content.trim();
+      }
+    } catch (e) {}
+    
+    return `In 5 years, most financial agreements will be between AI agents.
+
+When they disagree, who resolves it?
+
+A court in Delaware? A judge in Singapore?`;
   }
   
   buildFutureHook(facts) {
