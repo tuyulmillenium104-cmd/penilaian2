@@ -1,185 +1,118 @@
-# RALLY CONTENT WORKFLOW V9.1.0 - REAL-TIME EDITION
+# RALLY CONTENT WORKFLOW V9.1.1 - REAL-TIME EDITION
 
-> **Versi:** V9.1.0 Real-Time Edition  
-> **Fitur Baru:** Web Search API untuk data real-time  
+> **Versi:** V9.1.1 Real-Time Edition  
+> **Fitur Baru:** Web Search API + Dynamic Campaign + Banned Words + 16 Gates  
 > **Total Phases:** 24 phases (dikelompokkan jadi 2 groups)
 
 ---
 
-## 🆕 APA YANG BARU DI V9.1.0?
+## 🆕 APA YANG BARU DI V9.1.1?
 
-| Feature | V9.0.0 | V9.1.0 |
-|---------|--------|--------|
-| Data dari Rally API | ✅ | ✅ |
-| Data dari Website Scrape | ✅ | ✅ |
-| **Real-time Web Search** | ❌ | ✅ **BARU** |
-| **News & Trends Data** | ❌ | ✅ **BARU** |
-| **Market Insights** | ❌ | ✅ **BARU** |
-| **Competitor Discovery** | ❌ | ✅ **BARU** |
-| Data Freshness Timestamp | ❌ | ✅ **BARU** |
-
----
-
-## 🎯 KENAPA V9.1.0 REAL-TIME?
-
-### Masalah Sebelumnya:
-1. **Data statis** - hanya dari web yang sudah ada
-2. **Tidak ada berita terbaru** - tidak tahu trend terkini
-3. **Market data missing** - tidak ada insight pasar
-4. **Competitor analysis terbatas** - hanya dari leaderboard
-
-### Solusi V9.1.0:
-1. ✅ **Web Search API** - mencari data real-time
-2. ✅ **News aggregation** - berita terkini tentang project
-3. ✅ **Market insights** - data market dan statistik
-4. ✅ **Trend analysis** - apa yang trending di komunitas
-5. ✅ **Competitor discovery** - info platform serupa
+| Feature | V9.0.0 | V9.1.0 | V9.1.1 |
+|---------|--------|--------|--------|
+| Data dari Rally API | ✅ | ✅ | ✅ |
+| Data dari Website Scrape | ✅ | ✅ | ✅ |
+| Real-time Web Search | ❌ | ✅ | ✅ |
+| News & Trends Data | ❌ | ✅ | ✅ |
+| **Dynamic Hook/URL** | ❌ | ❌ | ✅ **FIXED** |
+| **Comprehensive Fallback** | ❌ | ⚠️ Minimal | ✅ **FIXED** |
+| **Banned Words List** | ❌ | ❌ | ✅ **NEW** |
+| **16 Gates Definition** | ❌ | ❌ | ✅ **NEW** |
+| **Detailed AI Instructions** | ❌ | ⚠️ Basic | ✅ **FIXED** |
 
 ---
 
-## 🏗️ ARSITEKTUR V9.1.0
+## 🎯 ARSITEKTUR V9.1.1
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     RALLY WORKFLOW V9.1.0 - REAL-TIME EDITION               │
+│                     RALLY WORKFLOW V9.1.1 - REAL-TIME EDITION               │
 │                            Total: 24 PHASES                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  ════════════════════════════════════════════════════════════════════════  │
-│  GROUP 1: DATA GATHERING (Script Node.js) - Phase 0-2B                     │
+│  GROUP 1: DATA GATHERING (Script Node.js) - Phase 0-2                      │
 │  ════════════════════════════════════════════════════════════════════════  │
 │                                                                             │
 │  Phase 0: Campaign Data Fetch                                               │
 │  ├── HTTP GET Rally API                                                    │
-│  ├── Output: title, goal, rules, style, missions                           │
+│  ├── Extract: title, goal, rules, style, missions, HOOK, URL               │
 │  └── LLM: ❌ TIDAK DIPERLUKAN                                              │
 │                                                                             │
 │  Phase 1: Project Website Research                                          │
 │  ├── Web scraping project URLs                                             │
 │  ├── Extract facts dari HTML                                               │
-│  ├── Output: facts, headings, content                                      │
 │  └── LLM: ❌ TIDAK DIPERLUKAN                                              │
 │                                                                             │
 │  Phase 1B: Real-Time Data Gathering ⭐ BARU                                 │
 │  ├── Web Search API (z-ai-web-dev-sdk)                                     │
 │  ├── Search: News, Market, Trends, Competitors                             │
-│  ├── Output: real-time insights                                            │
 │  └── LLM: ❌ TIDAK DIPERLUKAN (API call)                                   │
 │                                                                             │
 │  Phase 2: Leaderboard Fetch                                                 │
 │  ├── HTTP GET Rally Leaderboard API                                        │
-│  ├── Output: top competitors, stats                                        │
+│  ├── Output: top competitors, stats, basic patterns                        │
 │  └── LLM: ❌ TIDAK DIPERLUKAN                                              │
 │                                                                             │
-│  Phase 2B: Competitor Pattern Analysis                                      │
-│  ├── Extract patterns dari competitor data                                 │
-│  ├── Basic: avg length, sentence count (algoritma)                         │
-│  ├── Deep: hook patterns, CTA styles, gaps (LLM)                           │
-│  └── LLM: ✅ DIPERLUKAN untuk deep analysis                                │
-│                                                                             │
 │  ─────────────────────────────────────────────────────────────────────────  │
-│  OUTPUT: JSON file dengan semua data siap untuk AI Chat                    │
+│  OUTPUT: JSON file dengan SEMUA data + INSTRUKSI LENGKAP untuk AI Chat     │
+│  Termasuk: bannedWords, gatesDefinition, workflowPhases                    │
 │  ─────────────────────────────────────────────────────────────────────────  │
 │                                                                             │
 │                              │                                              │
 │                              ▼                                              │
 │                                                                             │
 │  ════════════════════════════════════════════════════════════════════════  │
-│  GROUP 2: CONTENT PROCESSING (AI Chat) - Phase 3-16                        │
+│  GROUP 2: CONTENT PROCESSING (AI Chat) - Phase 2B + 3-16                   │
 │  ════════════════════════════════════════════════════════════════════════  │
+│                                                                             │
+│  ┌───────────────────────────────────────────────────────────────────────┐ │
+│  │ PHASE 2B: COMPETITOR DEEP ANALYSIS (AI Chat) ⭐ PINDAH KE AI CHAT     │ │
+│  │                                                                       │ │
+│  │ Analyze competitor data from JSON:                                    │ │
+│  │ ├── Hook patterns yang sering digunakan                              │ │
+│  │ ├── CTA styles yang efektif                                          │ │
+│  │ ├── Content gaps yang bisa diisi                                     │ │
+│  │ └── Unique angles yang belum dieksplorasi                            │ │
+│  │                                                                       │ │
+│  │ LLM: ✅ WAJIB (deep pattern analysis butuh LLM)                       │ │
+│  └───────────────────────────────────────────────────────────────────────┘ │
 │                                                                             │
 │  ┌───────────────────────────────────────────────────────────────────────┐ │
 │  │ SUB-GROUP 2A: CONTENT CREATION (Phase 3-10)                           │ │
 │  │                                                                       │ │
-│  │  Phase 3: Gap Identification                                          │ │
-│  │  ├── Find unique angles vs competitors                                │ │
-│  │  └── LLM: ❌ Algoritma comparison                                     │ │
-│  │                                                                       │ │
-│  │  Phase 4: Strategy Definition                                         │ │
-│  │  ├── Select hook type, emotion target, CTA type                       │ │
-│  │  └── LLM: ❌ Algoritma scoring                                        │ │
-│  │                                                                       │ │
-│  │  Phase 5: Content Generation ⭐ CORE                                  │ │
-│  │  ├── LLM generates multi-version content                              │ │
-│  │  └── LLM: ✅ **WAJIB** - Ini tahap utama generate                     │ │
-│  │                                                                       │ │
-│  │  Phase 6: Banned Items Scanner                                        │ │
-│  │  ├── Pattern match banned words/phrases                               │ │
-│  │  └── LLM: ❌ Pattern matching                                         │ │
-│  │                                                                       │ │
-│  │  Phase 6B: Rewrite (if violations)                                    │ │
-│  │  ├── Fix violations using LLM                                         │ │
-│  │  └── LLM: ✅ DIPERLUKAN jika ada violations                           │ │
-│  │                                                                       │ │
-│  │  Phase 7: Uniqueness Validation                                       │ │
-│  │  ├── Compare vs competitor patterns                                   │ │
-│  │  └── LLM: ❌ Similarity check                                         │ │
-│  │                                                                       │ │
-│  │  Phase 8: Emotion Injection ⭐ CORE                                   │ │
-│  │  ├── Enhance emotional content                                        │ │
-│  │  └── LLM: ✅ **WAJIB** - Butuh kreativitas LLM                        │ │
-│  │                                                                       │ │
-│  │  Phase 9: HES + Viral Scoring                                         │ │
-│  │  ├── Calculate HES score, viral score                                 │ │
-│  │  └── LLM: ❌ Mathematical calculation                                 │ │
-│  │                                                                       │ │
-│  │  Phase 9B: Viral Enhancement (loop max 2x)                            │ │
-│  │  ├── Improve viral elements if score low                              │ │
-│  │  └── LLM: ✅ DIPERLUKAN untuk enhancement                             │ │
-│  │                                                                       │ │
-│  │  Phase 10: Quality Selection 🔒 LOCK POINT                            │ │
-│  │  ├── Score all versions, select best                                  │ │
-│  │  └── LLM: ❌ Scoring algorithm                                        │ │
+│  │  Phase 3: Gap Identification        LLM: ❌                           │ │
+│  │  Phase 4: Strategy Definition       LLM: ❌                           │ │
+│  │  Phase 5: Content Generation ⭐     LLM: ✅ CORE                      │ │
+│  │  Phase 6: Banned Items Scanner      LLM: ❌ (check bannedWords)       │ │
+│  │  Phase 6B: Rewrite (if violations)  LLM: ✅                           │ │
+│  │  Phase 7: Uniqueness Validation     LLM: ❌                           │ │
+│  │  Phase 8: Emotion Injection ⭐      LLM: ✅ CORE                      │ │
+│  │  Phase 9: HES + Viral Scoring       LLM: ❌                           │ │
+│  │  Phase 9B: Viral Enhancement        LLM: ✅                           │ │
+│  │  Phase 10: Quality Selection        LLM: ❌                           │ │
 │  │                                                                       │ │
 │  └───────────────────────────────────────────────────────────────────────┘ │
 │                                                                             │
 │  ┌───────────────────────────────────────────────────────────────────────┐ │
 │  │ SUB-GROUP 2B: REFINEMENT (Phase 11-14B)                               │ │
 │  │                                                                       │ │
-│  │  Phase 11: Micro-Optimization                                         │ │
-│  │  ├── 5-layer optimization (word, sentence, char, etc.)                │ │
-│  │  └── LLM: ❌ Text processing                                          │ │
-│  │                                                                       │ │
-│  │  Phase 12: Content Flow Polish                                        │ │
-│  │  ├── Smooth transitions between paragraphs                            │ │
-│  │  └── LLM: ❌ Text processing                                          │ │
-│  │                                                                       │ │
-│  │  Phase 12B: 16 Gates Simulation                                       │ │
-│  │  ├── Validate all 16 gates                                            │ │
-│  │  └── LLM: ❌ Rule validation                                          │ │
-│  │                                                                       │ │
-│  │  Phase 13: Benchmark Comparison                                       │ │
-│  │  ├── Compare vs real competitor data                                  │ │
-│  │  └── LLM: ❌ Data comparison                                          │ │
-│  │                                                                       │ │
-│  │  Phase 13B: Beat Top 20 Strategy (loop max 2x)                        │ │
-│  │  ├── Ensure content beats top competitors                             │ │
-│  │  └── LLM: ✅ DIPERLUKAN untuk strategy                                │ │
-│  │                                                                       │ │
-│  │  Phase 14: Final Emotion Re-Check ⭐ CORE                             │ │
-│  │  ├── Verify emotion score meets minimum                               │ │
-│  │  └── LLM: ✅ **WAJIB** - Final emotion polish                         │ │
-│  │                                                                       │ │
-│  │  Phase 14B: Final Content Polish                                      │ │
-│  │  ├── Last review before output                                        │ │
-│  │  └── LLM: ❌ Text cleanup                                             │ │
+│  │  Phase 11: Micro-Optimization       LLM: ❌                           │ │
+│  │  Phase 12: Flow Polish              LLM: ❌                           │ │
+│  │  Phase 12B: 16 Gates Simulation     LLM: ❌ (use gatesDefinition)     │ │
+│  │  Phase 13: Benchmark Comparison     LLM: ❌                           │ │
+│  │  Phase 13B: Beat Top 20 Strategy    LLM: ✅                           │ │
+│  │  Phase 14: Final Emotion Check ⭐   LLM: ✅ CORE                      │ │
+│  │  Phase 14B: Final Polish            LLM: ❌                           │ │
 │  │                                                                       │ │
 │  └───────────────────────────────────────────────────────────────────────┘ │
 │                                                                             │
 │  ┌───────────────────────────────────────────────────────────────────────┐ │
 │  │ SUB-GROUP 2C: OUTPUT (Phase 15-16)                                    │ │
 │  │                                                                       │ │
-│  │  Phase 15: Output Generation                                          │ │
-│  │  ├── Format content, generate Q&A                                     │ │
-│  │  └── LLM: ❌ Formatting                                               │ │
-│  │                                                                       │ │
-│  │  Phase 15B: CT Maximizer (loop max 2x)                                │ │
-│  │  ├── Enhance CT elements                                              │ │
-│  │  └── LLM: ✅ DIPERLUKAN untuk CT enhancement                          │ │
-│  │                                                                       │ │
-│  │  Phase 16: Export & Delivery                                          │ │
-│  │  ├── Save to file, display score card                                 │ │
-│  │  └── LLM: ❌ File writing                                             │ │
+│  │  Phase 15: Output Format            LLM: ❌                           │ │
+│  │  Phase 15B: CT Maximizer            LLM: ✅                           │ │
+│  │  Phase 16: Export + SCORE CARD      LLM: ❌                           │ │
 │  │                                                                       │ │
 │  └───────────────────────────────────────────────────────────────────────┘ │
 │                                                                             │
@@ -196,11 +129,11 @@
 | **1** | Website Research | Script | ❌ | Scrape HTML dari project URLs |
 | **1B** | **Real-Time Search** ⭐ | Script | ❌ | Web Search API untuk data terkini |
 | **2** | Leaderboard Fetch | Script | ❌ | HTTP GET leaderboard data |
-| **2B** | Competitor Analysis | Script | ✅ | **Deep pattern analysis butuh LLM** |
+| **2B** | **Competitor Deep Analysis** | **AI Chat** | ✅ | **⭐ Deep pattern analysis** |
 | 3 | Gap Identification | AI Chat | ❌ | Algoritma comparison |
 | 4 | Strategy Definition | AI Chat | ❌ | Algoritma scoring |
 | **5** | **Content Generation** | AI Chat | ✅ | **⭐ CORE - LLM WAJIB** |
-| 6 | Banned Scanner | AI Chat | ❌ | Pattern matching |
+| 6 | Banned Scanner | AI Chat | ❌ | Check `bannedWords` array |
 | 6B | Rewrite | AI Chat | ✅ | Jika ada violations |
 | 7 | Uniqueness Check | AI Chat | ❌ | Similarity algorithm |
 | **8** | **Emotion Injection** | AI Chat | ✅ | **⭐ CORE - LLM WAJIB** |
@@ -209,7 +142,7 @@
 | 10 | Quality Selection | AI Chat | ❌ | Scoring algorithm |
 | 11 | Micro-Optimization | AI Chat | ❌ | Text processing |
 | 12 | Flow Polish | AI Chat | ❌ | Text processing |
-| 12B | Gate Simulation | AI Chat | ❌ | Rule validation |
+| 12B | Gate Simulation | AI Chat | ❌ | Use `gatesDefinition` |
 | 13 | Benchmark | AI Chat | ❌ | Data comparison |
 | 13B | Beat Top 20 | AI Chat | ✅ | LLM untuk strategy |
 | **14** | **Final Emotion** | AI Chat | ✅ | **⭐ CORE - LLM WAJIB** |
@@ -221,70 +154,110 @@
 ### Ringkasan LLM Requirement:
 | Kategori | Phases | Keterangan |
 |----------|--------|------------|
-| **WAJIB LLM** | 5, 8, 14 | Core content creation |
-| **Perlu LLM** | 2B, 6B, 9B, 13B, 15B | Conditional/enhancement |
+| **WAJIB LLM** | 2B, 5, 8, 14 | Core content creation |
+| **Perlu LLM** | 6B, 9B, 13B, 15B | Conditional/enhancement |
 | **Tidak Perlu LLM** | 0, 1, 1B, 2, 3, 4, 6, 7, 9, 10, 11, 12, 12B, 13, 14B, 15, 16 | Algoritma/data fetching |
 
 ---
 
-## 📡 DATA SOURCES V9.1.0
+## 📋 APA YANG ADA DI OUTPUT JSON?
 
-### 1. Rally API (Static)
-```
-Endpoint: https://app.rally.fun/api
-- Campaign data (title, goal, rules, missions)
-- Leaderboard (competitors, scores)
-- Creator info
-```
-
-### 2. Website Scraping (Semi-Static)
-```
-Sources:
-- internetcourt.org
-- genlayer.com
-
-Data extracted:
-- Meta descriptions
-- Page headings
-- Body text content
-- Links
+### 1. Campaign Data (Dynamic)
+```json
+"campaign": {
+  "name": "Internet Court",
+  "goal": "...",
+  "baseUrl": "internetcourt.org",
+  "hook": "Code Runs, Disputes Don't. Enter Internet Court",
+  "tags": ["blockchain", "AI", "justice"]
+}
 ```
 
-### 3. Real-Time Web Search ⭐ NEW
-```
-API: z-ai-web-dev-sdk web_search function
-
-Search Categories:
-├── News (4 queries)
-│   ├── "Internet Court blockchain dispute resolution latest news 2025"
-│   ├── "GenLayer AI validators crypto news update"
-│   ├── "decentralized justice Web3 recent developments"
-│   └── "smart contract dispute resolution latest"
-│
-├── Market (3 queries)
-│   ├── "blockchain arbitration market size statistics 2024 2025"
-│   ├── "Web3 dispute resolution adoption data"
-│   └── "crypto legal challenges market trends"
-│
-├── Trends (3 queries)
-│   ├── "AI court blockchain twitter trending"
-│   ├── "decentralized arbitration crypto community"
-│   └── "DAO governance disputes solutions"
-│
-└── Competitors (3 queries)
-    ├── "Kleros decentralized court reviews"
-    ├── "Aragon court vs Internet Court"
-    └── "Web3 dispute resolution platforms comparison"
+### 2. Real-Time Data
+```json
+"realTimeData": {
+  "news": [...],
+  "market": [...],
+  "trends": [...],
+  "competitors": [...],
+  "searchStatus": "ENABLED"
+}
 ```
 
-### 4. Knowledge Base (Curated)
+### 3. Banned Words List ⭐ NEW
+```json
+"aiInstructions": {
+  "bannedWords": [
+    "guaranteed", "guarantee", "100%", "risk-free",
+    "financial advice", "investment advice", "buy now",
+    "get rich", "quick money", "easy money",
+    "follow me", "subscribe to my", "click here",
+    "legally binding", "court order", "official ruling"
+  ]
+}
 ```
-Facts about Internet Court:
-- AI validators for evidence evaluation
-- Minutes instead of months for verdicts
-- Cross-border dispute handling
-- GenLayer infrastructure
-- 400M+ smart contract users without legal recourse
+
+### 4. 16 Gates Definition ⭐ NEW
+```json
+"aiInstructions": {
+  "gatesDefinition": {
+    "gateUtama": {
+      "name": "Gate Utama",
+      "maxScore": 5,
+      "minScore": 4,
+      "gates": [
+        { "id": 1, "name": "URL Presence", "desc": "Required URL must be present" },
+        { "id": 2, "name": "Hook Quality", "desc": "Opening hook must be engaging" },
+        { "id": 3, "name": "Content Length", "desc": "3-5 tweets (240-400 chars each)" },
+        { "id": 4, "name": "CTA Present", "desc": "Clear call-to-action" },
+        { "id": 5, "name": "Topic Relevance", "desc": "Content matches campaign topic" }
+      ]
+    },
+    "gateTambahan": {
+      "name": "Gate Tambahan",
+      "maxScore": 8,
+      "minScore": 8,
+      "gates": [
+        { "id": 6, "name": "No Banned Words" },
+        { "id": 7, "name": "Unique Hook" },
+        { "id": 8, "name": "Emotional Appeal" },
+        { "id": 9, "name": "Educational Value" },
+        { "id": 10, "name": "Viral Potential" },
+        { "id": 11, "name": "Authentic Voice" },
+        { "id": 12, "name": "Proper Formatting" },
+        { "id": 13, "name": "Engagement Hook" }
+      ]
+    },
+    "penilaianInternal": {
+      "name": "Penilaian Internal",
+      "maxScore": 10,
+      "minScore": 9,
+      "criteria": [
+        "Originality and creativity",
+        "Depth of insight",
+        "Quality of writing",
+        "Emotional resonance",
+        "Viral coefficient potential"
+      ]
+    }
+  }
+}
+```
+
+### 5. Workflow Phases ⭐ NEW
+```json
+"aiInstructions": {
+  "workflowPhases": {
+    "group2": {
+      "name": "Content Processing (AI Chat)",
+      "phases": [
+        { "phase": "2B", "name": "Competitor Deep Analysis", "llm": true },
+        { "phase": 3, "name": "Gap Identification", "llm": false },
+        ...
+      ]
+    }
+  }
+}
 ```
 
 ---
@@ -300,71 +273,187 @@ node scripts/rally-data-gatherer.js 0x123abc...
 node scripts/rally-data-gatherer.js
 ```
 
-**Output:** JSON file di `/home/z/my-project/download/rally-data-*.json`
-
 ### Step 2: Content Processing (AI Chat)
 
-Copy-paste output JSON ke AI Chat dengan prompt:
+**PENTING:** AI Chat baru harus menjalankan workflow lengkap. Copy-paste JSON output dengan prompt ini:
 
 ```
-Buat konten Rally menggunakan data berikut:
+Saya ingin membuat konten Rally.fun menggunakan data berikut.
 
 [PASTE JSON OUTPUT DARI STEP 1]
 
-Jalankan Phase 3-16 lengkap:
-1. Phase 3-10: Content creation & validation
-2. Phase 11-14B: Refinement & optimization  
-3. Phase 15-16: Output & score card
-
-Gunakan real-time data dari JSON untuk konten yang relevan dan fresh.
-Tampilkan SCORE CARD di akhir.
-```
+JIKA JSON TIDAK ADA, JALANKAN DULU:
+git clone https://github.com/tuyulmillenium104-cmd/penilaian2
+cd penilaian2 && git checkout v9.0.0-hybrid
+node scripts/rally-data-gatherer.js
 
 ---
 
-## 📁 FILE STRUCTURE
+SETIAP JSON SUDAH BERISI SEMUA YANG KAMU BUTUHKAN:
 
-```
-/home/z/my-project/
-├── README.md                          # File ini (V9.1.0)
-├── scripts/
-│   ├── rally-data-gatherer.js         # Main script V9.1.0
-│   ├── rally-data-gatherer-v9.1.0.js  # Backup
-│   └── rally-workflow-v8.7.6.js       # Legacy
-├── docs/
-│   ├── V9.1.0-DATA-SOURCES.md         # Data sources documentation
-│   └── WORKFLOW-ARCHITECTURE.md       # Architecture docs
-└── download/
-    └── rally-data-*.json              # Output data files
-```
+1. CAMPAIGN DATA:
+   - aiInstructions.hook = hook yang harus digunakan
+   - aiInstructions.requiredUrl = URL yang harus ada di konten
+   - aiInstructions.campaignName = nama campaign
+
+2. CONTENT REQUIREMENTS:
+   - aiInstructions.requirements.gates = target score
+   - aiInstructions.bannedWords = kata-kata yang DILARANG
+
+3. 16 GATES DEFINITION:
+   - aiInstructions.gatesDefinition = detail setiap gate
+
+4. WORKFLOW PHASES:
+   - aiInstructions.workflowPhases = semua phase yang harus dijalankan
 
 ---
 
-## ⚠️ PENTING UNTUK AI CHAT
+JALANKAN WORKFLOW LENGKAP:
 
-**AI Chat HARUS menjalankan SEMUA Phase 3-16 dengan lengkap!**
+PHASE 2B: Competitor Deep Analysis (LLM)
+├── Analyze leaderboard.top10[].content
+├── Analyze realTimeData.competitors
+├── Find hook patterns, CTA styles, content gaps
+└── Output: unique angles yang bisa diambil
 
-### Checklist:
-- [ ] Phase 3: Gap identification from competitor data
-- [ ] Phase 4: Strategy definition based on gaps
-- [ ] Phase 5: Generate 3-5 content versions
-- [ ] Phase 6: Scan for banned items
-- [ ] Phase 6B: Rewrite if violations found
-- [ ] Phase 7: Uniqueness validation
-- [ ] Phase 8: Emotion injection
-- [ ] Phase 9: Calculate HES + Viral scores
-- [ ] Phase 9B: Enhance if viral score < 0.6
-- [ ] Phase 10: Select best version
-- [ ] Phase 11: Micro-optimization
-- [ ] Phase 12: Flow polish
-- [ ] Phase 12B: 16 Gates validation
-- [ ] Phase 13: Benchmark comparison
-- [ ] Phase 13B: Beat top 20 strategy
-- [ ] Phase 14: Final emotion check
-- [ ] Phase 14B: Final polish
-- [ ] Phase 15: Output formatting
-- [ ] Phase 15B: CT maximizer
-- [ ] Phase 16: Export with SCORE CARD
+PHASE 3: Gap Identification
+├── Compare vs competitor patterns
+└── Output: opportunity gaps
+
+PHASE 4: Strategy Definition
+├── Select hook type based on gaps
+├── Define emotion target
+└── Output: content strategy
+
+PHASE 5: Content Generation ⭐ CORE (LLM)
+├── Generate 3-5 content versions
+├── Each: 3-5 tweets, 240-400 chars each
+├── Include: hook, requiredUrl, CTA
+└── Output: content versions array
+
+PHASE 6: Banned Items Scanner
+├── Check each version against bannedWords
+└── Output: violations list (if any)
+
+PHASE 6B: Rewrite (if violations found)
+├── Fix violations using LLM
+└── Output: clean content
+
+PHASE 7: Uniqueness Validation
+├── Compare vs competitor content patterns
+├── Calculate similarity score
+└── Output: uniqueness score per version
+
+PHASE 8: Emotion Injection ⭐ CORE (LLM)
+├── Enhance emotional appeal
+├── Add emotional triggers
+└── Output: emotion-enhanced content
+
+PHASE 9: HES + Viral Scoring
+├── Calculate Emotional Score
+├── Calculate Viral Score
+└── Output: scores per version
+
+PHASE 9B: Viral Enhancement (if score < 0.6)
+├── Improve viral elements
+└── Output: enhanced content
+
+PHASE 10: Quality Selection 🔒 LOCK
+├── Score all versions
+├── Select highest scoring version
+└── Output: selected content
+
+PHASE 11: Micro-Optimization
+├── Word-level optimization
+├── Sentence-level optimization
+├── Character-level optimization
+└── Output: optimized content
+
+PHASE 12: Flow Polish
+├── Smooth transitions
+└── Output: polished content
+
+PHASE 12B: 16 Gates Simulation
+├── Validate all gates from gatesDefinition
+├── Score each gate
+└── Output: gate results
+
+PHASE 13: Benchmark Comparison
+├── Compare vs leaderboard data
+└── Output: benchmark score
+
+PHASE 13B: Beat Top 20 Strategy (if not beating)
+├── Identify improvements needed
+├── Enhance content
+└── Output: competitive content
+
+PHASE 14: Final Emotion Check ⭐ CORE (LLM)
+├── Verify emotional score >= 7.0
+├── Final emotion polish
+└── Output: final content
+
+PHASE 14B: Final Polish
+├── Last cleanup
+└── Output: FINAL CONTENT (LOCKED)
+
+PHASE 15: Output Format
+├── Format for Rally submission
+└── Output: formatted content
+
+PHASE 15B: CT Maximizer
+├── Enhance CT elements
+└── Output: CT-enhanced content
+
+PHASE 16: Export
+├── Display SCORE CARD
+└── DONE
+
+---
+
+SCORE CARD FORMAT:
+
+╔══════════════════════════════════════════════════════════════╗
+║                    RALLY CONTENT SCORE CARD                   ║
+╠══════════════════════════════════════════════════════════════╣
+║ Campaign: [campaignName]                                      ║
+║ Required URL: [requiredUrl]                                   ║
+╠══════════════════════════════════════════════════════════════╣
+║ GATE UTAMA (Target: 4-5)                                      ║
+║ ├── URL Present: ✓/✗                                         ║
+║ ├── Hook Quality: [score]/1                                   ║
+║ ├── Content Length: ✓/✗                                      ║
+║ ├── CTA Present: ✓/✗                                         ║
+║ └── Topic Relevance: ✓/✗                                     ║
+║ TOTAL GATE UTAMA: [X]/5                                       ║
+╠══════════════════════════════════════════════════════════════╣
+║ GATE TAMBAHAN (Target: 8)                                     ║
+║ ├── No Banned Words: ✓/✗                                     ║
+║ ├── Unique Hook: ✓/✗                                         ║
+║ ├── Emotional Appeal: ✓/✗                                    ║
+║ ├── Educational Value: ✓/✗                                   ║
+║ ├── Viral Potential: ✓/✗                                     ║
+║ ├── Authentic Voice: ✓/✗                                     ║
+║ ├── Proper Formatting: ✓/✗                                   ║
+║ └── Engagement Hook: ✓/✗                                     ║
+║ TOTAL GATE TAMBAHAN: [X]/8                                    ║
+╠══════════════════════════════════════════════════════════════╣
+║ PENILAIAN INTERNAL (Target: 9-10)                             ║
+║ ├── Originality: [X]/2                                        ║
+║ ├── Insight Depth: [X]/2                                      ║
+║ ├── Writing Quality: [X]/2                                    ║
+║ ├── Emotional Resonance: [X]/2                                ║
+║ └── Viral Coefficient: [X]/2                                  ║
+║ TOTAL PENILAIAN INTERNAL: [X]/10                              ║
+╠══════════════════════════════════════════════════════════════╣
+║ EMOTIONAL SCORE: [X]/10 (Min: 7.0)                            ║
+║ VIRAL SCORE: [X]/1.0 (Min: 0.6)                               ║
+╠══════════════════════════════════════════════════════════════╣
+║ FINAL CONTENT:                                                ║
+║ [Content here]                                                ║
+╠══════════════════════════════════════════════════════════════╣
+║ STATUS: ✅ PASS / ❌ NEEDS IMPROVEMENT                         ║
+╚══════════════════════════════════════════════════════════════╝
+```
 
 ---
 
@@ -380,47 +469,42 @@ Tampilkan SCORE CARD di akhir.
 
 ---
 
-## 📊 CONTOH OUTPUT JSON
+## 📁 FILE STRUCTURE
 
-```json
-{
-  "version": "9.1.0",
-  "timestamp": "2025-03-20T10:30:00.000Z",
-  "campaignAddress": "default",
-  
-  "campaign": {
-    "name": "Internet Court",
-    "goal": "Spread awareness about...",
-    "baseUrl": "internetcourt.org"
-  },
-  
-  "realTimeData": {
-    "news": [
-      {
-        "title": "Internet Court Launches AI Jury...",
-        "snippet": "...",
-        "source": "cryptonews.com",
-        "date": "2025-03-19"
-      }
-    ],
-    "market": [...],
-    "trends": [...],
-    "totalResults": 25
-  },
-  
-  "summary": {
-    "campaignName": "Internet Court",
-    "topFacts": [...],
-    "latestNews": [...],
-    "dataFreshness": "2025-03-20T10:30:00.000Z"
-  },
-  
-  "aiInstructions": {
-    "hook": "Code Runs, Disputes Don't. Enter Internet Court",
-    "requiredUrl": "internetcourt.org",
-    "minScore": 9.0
-  }
-}
+```
+/home/z/my-project/
+├── README.md                          # File ini (V9.1.1)
+├── scripts/
+│   ├── rally-data-gatherer.js         # Main script V9.1.1
+│   └── rally-workflow-v8.7.6.js       # Legacy
+├── docs/
+│   ├── V9.1.0-DATA-SOURCES.md         # Data sources documentation
+│   └── WORKFLOW-ARCHITECTURE.md       # Architecture docs
+└── download/
+    └── rally-data-*.json              # Output data files
+```
+
+---
+
+## 🔧 TROUBLESHOOTING
+
+### Web Search Rate Limited (429)
+```
+Script akan otomatis menggunakan comprehensive fallback data.
+Fallback mencakup: news, market, trends, competitors.
+```
+
+### z-ai-web-dev-sdk Not Found
+```
+npm install z-ai-web-dev-sdk
+```
+
+### Content Rejected by Rally
+```
+1. Check bannedWords list in JSON
+2. Verify requiredUrl is present in content
+3. Ensure hook is unique vs competitors
+4. Run 16 Gates simulation again
 ```
 
 ---
@@ -429,36 +513,16 @@ Tampilkan SCORE CARD di akhir.
 
 | Field | Value |
 |-------|-------|
-| Version | V9.1.0 Real-Time Edition |
+| Version | V9.1.1 Real-Time Edition |
 | Branch | v9.0.0-hybrid |
 | Total Phases | 24 phases |
 | Groups | 2 (Data Gathering + Content Processing) |
-| LLM Phases | 8 phases (5, 2B, 6B, 8, 9B, 13B, 14, 15B) |
-| Core LLM Phases | 3 phases (5, 8, 14) |
+| LLM Phases | 8 phases (2B, 5, 6B, 8, 9B, 13B, 14, 15B) |
+| Core LLM Phases | 4 phases (2B, 5, 8, 14) |
 | Real-Time Search | ✅ Enabled via z-ai-web-dev-sdk |
+| Banned Words | ✅ 15 words/phrases |
+| 16 Gates | ✅ Full definition |
 
 ---
 
-## 🔧 TROUBLESHOOTING
-
-### Web Search Tidak Berfungsi
-```
-Error: "z-ai-web-dev-sdk not found"
-Solution: npm install z-ai-web-dev-sdk
-```
-
-### Rate Limit pada Web Search
-```
-Script otomatis menambahkan delay 300ms antara searches.
-Jika masih rate limit, tambahkan delay di CONFIG.
-```
-
-### Data Tidak Lengkap
-```
-Pastikan koneksi internet stabil.
-Script akan menggunakan fallback data jika fetch gagal.
-```
-
----
-
-**END OF README V9.1.0**
+**END OF README V9.1.1**
