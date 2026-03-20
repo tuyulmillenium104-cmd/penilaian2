@@ -118,65 +118,26 @@ const CONFIG = {
     ]
   },
 
-  // Emotion triggers for content enhancement
-  emotionTriggers: {
-    fear: ['risk', 'danger', 'threat', 'warning', 'scary', 'what if', 'imagine losing'],
-    curiosity: ['secret', 'hidden', 'mystery', 'why', 'how', 'what happens when'],
-    surprise: ['unexpected', 'shocking', 'actually', 'turns out', 'but here\'s the thing'],
-    hope: ['finally', 'breakthrough', 'solution', 'imagine if', 'now you can'],
-    pain: ['lost', 'failed', 'stuck', 'problem', 'issue', 'frustrated'],
-    urgency: ['now', 'today', 'immediately', 'don\'t wait', 'before it\'s too late']
+  // EMOTION PRINCIPLES (bukan template, tapi prinsip)
+  emotionPrinciples: {
+    types: ['fear', 'curiosity', 'surprise', 'hope', 'pain', 'urgency'],
+    principle: 'Gunakan 2-3 emosi dalam konten. Emosi pertama di hook, emosi kedua di body, emosi ketiga di CTA.',
+    intensity: 'Emosi harus meningkat sepanjang konten, bukan datar.'
   },
 
-// Hook patterns that work (reference for AI) - GENERIC, no campaign-specific examples
-  hookPatterns: {
-    problemFirst: {
-      structure: '[Problem statement] → [Why it matters] → [Tension]',
-      template: '[X] takes too long/is broken/has issue. [Y] shows the gap. This is what nobody talks about.',
-      emotion: 'pain → curiosity',
-      tips: ['Start dengan fakta mengejutkan', 'Tunjukkan gap yang jelas', 'End dengan tension']
-    },
-    contrast: {
-      structure: '[A does X] → [B does Y] → [The difference is stark]',
-      template: '[Traditional way] is slow/expensive/limited. [New way] is fast/cheap/unlimited. See the difference?',
-      emotion: 'surprise → urgency',
-      tips: ['Gunakan perbandingan yang jelas', 'Angka lebih kuat dari kata', 'End dengan pertanyaan']
-    },
-    fearExample: {
-      structure: '[Real incident] → [What could happen to you] → [Personal stakes]',
-      template: '[Specific amount/event] lost/happened because [reason]. What happens when it\'s your turn?',
-      emotion: 'fear → urgency',
-      tips: ['Gunakan data/angka real', 'Buat personal dengan "your"', 'Jangan terlalu sensational']
-    },
-    analytical: {
-      structure: '[Logic statement] → [The missing piece] → [Implication]',
-      template: '[Thing A] handles [X]. But it doesn\'t handle [Y]. Here\'s why that matters.',
-      emotion: 'curiosity → surprise',
-      tips: ['Start dengan fakta yang diterima', 'Tunjukkan logical gap', 'Explain implication']
-    },
-    futureFocused: {
-      structure: '[Future scenario] → [Unanswered question] → [Stakes]',
-      template: 'In [timeframe], [trend/change] will happen. When that happens, [question]?',
-      emotion: 'curiosity → fear',
-      tips: ['Gunakan timeframe realistic', 'Base trend pada data', 'End dengan open question']
-    }
+  // HOOK PRINCIPLES (bukan template)
+  hookPrinciples: {
+    structure: 'Hook harus punya: 1) Attention grabber, 2) Gap/tension, 3) Relevance ke reader',
+    length: 'Maksimal 200 karakter untuk hook.',
+    patterns: ['problem-first', 'contrast', 'fear-based', 'analytical', 'future-focused'],
+    principle: 'Pilih pattern berdasarkan target audience dan campaign goal. Jangan copy template.'
   },
 
-  // CTA examples that drive engagement
-  ctaExamples: {
-    question: [
-      'What disputes will you face in the Web3 economy?',
-      'Who decides when code is wrong?',
-      'What would you do differently?'
-    ],
-    challenge: [
-      'Think about your last smart contract interaction. What if something went wrong?',
-      'Consider this: every DeFi transaction is a potential dispute waiting to happen.'
-    ],
-    openEnded: [
-      'The infrastructure is here. How will you use it?',
-      'This is just the beginning. What\'s your take?'
-    ]
+  // CTA PRINCIPLES (bukan template)
+  ctaPrinciples: {
+    types: ['question', 'challenge', 'open-ended'],
+    principle: 'CTA harus invite response. Question = engagement. Challenge = thought. Open-ended = discussion.',
+    placement: 'CTA di tweet terakhir, clear dan direct.'
   },
 
   // 16 Gates validation logic
@@ -487,36 +448,18 @@ async function main() {
         viralScore: { minimum: 0.6 }
       },
       
-      // Knowledge base instructions (NO hardcoded facts)
-      knowledgeBaseInstructions: {
-        note: 'Extract facts from these sources - DO NOT use hardcoded campaign data',
-        sources: [
-          'campaign.knowledgeBase (from Rally API if available)',
-          'websites[].textPreview (from scrape)',
-          'Web research results (from your browser search)'
-        ],
-        howToExtract: [
-          'Look for unique facts not commonly known',
-          'Find numbers, statistics, specific claims',
-          'Identify pain points and solutions',
-          'Note competitive advantages'
-        ]
-      },
-      
       // Banned words
       bannedWords: CONFIG.bannedWords,
       
       // AI patterns to avoid
       aiPatterns: CONFIG.aiPatterns,
       
-      // Emotion triggers
-      emotionTriggers: CONFIG.emotionTriggers,
-      
-      // Hook patterns reference
-      hookPatterns: CONFIG.hookPatterns,
-      
-      // CTA examples
-      ctaExamples: CONFIG.ctaExamples,
+      // Content principles (bukan template)
+      contentPrinciples: {
+        emotion: CONFIG.emotionPrinciples,
+        hook: CONFIG.hookPrinciples,
+        cta: CONFIG.ctaPrinciples
+      },
       
       // 16 Gates definition
       gatesDefinition: CONFIG.gatesDefinition,
