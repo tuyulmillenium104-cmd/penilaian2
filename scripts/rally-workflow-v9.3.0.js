@@ -36,11 +36,17 @@ const CONFIG = {
   outputDir: '/home/z/my-project/download',
   userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
   
-  // Scoring thresholds
+  // Scoring thresholds (DIGUNAKAN di aggregateScores)
   thresholds: {
-    gateUtama: { min: 4, max: 5 },
-    gateTambahan: { min: 8, max: 8 },
-    penilaianInternal: { min: 9, max: 10 }
+    gateUtama: { pass: 16, max: 20 },        // 80% of 20
+    gateTambahan: { pass: 14, max: 16 },     // 87.5% of 16
+    penilaianInternal: { pass: 54, max: 60 } // 90% of 60
+  },
+  
+  // Retry settings
+  retry: {
+    maxAttempts: 3,
+    delayMs: 2000  // 2 detik delay antara retry
   },
   
   // Hard requirements untuk penilaian (tanpa bias)
@@ -663,6 +669,36 @@ KONTEN:`
 // UTILITY FUNCTIONS
 // ============================================================================
 
+// Delay function untuk retry
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Retry wrapper dengan exponential backoff
+async function retryWithBackoff(fn, maxAttempts = CONFIG.retry.maxAttempts, delayMs = CONFIG.retry.delayMs) {
+  let lastError;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      const isRateLimit = error.message?.includes('429') || error.message?.includes('rate');
+      
+      if (isRateLimit && attempt < maxAttempts) {
+        const waitTime = delayMs * Math.pow(2, attempt - 1); // Exponential backoff
+        console.log(`   ⏳ Rate limited. Waiting ${waitTime/1000}s before retry ${attempt}/${maxAttempts}...`);
+        await delay(waitTime);
+      } else if (attempt < maxAttempts) {
+        console.log(`   ⚠️ Attempt ${attempt} failed: ${error.message}. Retrying...`);
+        await delay(delayMs);
+      } else {
+        throw error;
+      }
+    }
+  }
+  throw lastError;
+}
+
 function fetchUrl(url) {
   return new Promise((resolve, reject) => {
     const protocol = url.startsWith('https') ? https : require('http');
@@ -696,7 +732,7 @@ function fetchUrl(url) {
 
 async function fetchCampaignData(campaignAddress) {
   console.log('\n' + '─'.repeat(60));
-  console.log('📦 PHASE 0: Campaign Data Fetch (Rally API)');
+  console.log('📦 PHASE 1: Campaign Data Fetch (Rally API)');
   console.log('─'.repeat(60));
   
   if (campaignAddress && campaignAddress.startsWith('0x')) {
@@ -993,7 +1029,7 @@ function generateJudgeInstructions(campaignData, competitorHooks) {
 
 async function generateContent(campaignData, competitorHooks) {
   console.log('\n' + '─'.repeat(60));
-  console.log('✨ PHASE 3-5: Content Generation');
+  console.log('✨ PHASE 3: Content Generation');
   console.log('─'.repeat(60));
   
   try {
@@ -1002,7 +1038,8 @@ async function generateContent(campaignData, competitorHooks) {
     
     const requiredUrl = extractRequiredUrl(campaignData);
     const rules = campaignData.missions?.[0]?.rules || '';
-    const competitorHooksStr = competitorHooks.map(c => `- "${c.hook}"`).join('\n') || 'No competitor data';
+    const competitorHooksArray = Array.isArray(competitorHooks) ? competitorHooks : [];
+    const competitorHooksStr = competitorHooksArray.map(c => `- "${c.hook}"`).join('\n') || 'No competitor data';
     
     const userInput = CONTENT_PROMPTS.userTemplate
       .replace('{{campaignTitle}}', campaignData.title || campaignData.name || 'Unknown Campaign')
@@ -1014,16 +1051,23 @@ async function generateContent(campaignData, competitorHooks) {
     
     console.log('   📝 Generating 3 content versions...');
     
-    const result = await zai.chat.completions.create({
-      messages: [
-        { role: 'system', content: CONTENT_PROMPTS.system },
-        { role: 'user', content: userInput }
-      ],
-      temperature: 0.8,
-      max_tokens: 4000
+    // Gunakan retry dengan backoff
+    const result = await retryWithBackoff(async () => {
+      return await zai.chat.completions.create({
+        messages: [
+          { role: 'system', content: CONTENT_PROMPTS.system },
+          { role: 'user', content: userInput }
+        ],
+        temperature: 0.8,
+        max_tokens: 4000
+      });
     });
     
     const contentText = result.choices[0]?.message?.content;
+    
+    if (!contentText || contentText.trim().length < 50) {
+      throw new Error('Generated content is too short or empty');
+    }
     
     // Try to parse JSON from response
     let versions = [];
@@ -1080,12 +1124,16 @@ async function runJudge1(content, inputData) {
     const ZAI = await initZAI();
     const zai = await ZAI.create();
     
+    // Safe array handling
+    const competitorHooks = Array.isArray(inputData.competitorHooks) ? inputData.competitorHooks : [];
+    const bannedWords = Array.isArray(inputData.bannedWords) ? inputData.bannedWords : [];
+    
     const userInput = JUDGE_PROMPTS.judge1.userTemplate
       .replace('{{knowledgeBase}}', inputData.knowledgeBase || 'Not provided')
       .replace('{{requiredUrl}}', inputData.requiredUrl || 'Not specified')
       .replace('{{rules}}', inputData.rules || 'No specific rules')
-      .replace('{{bannedWords}}', inputData.bannedWords.join(', '))
-      .replace('{{competitorHooks}}', inputData.competitorHooks.map(c => `- "${c.hook}"`).join('\n') || 'No competitor data')
+      .replace('{{bannedWords}}', bannedWords.join(', '))
+      .replace('{{competitorHooks}}', competitorHooks.map(c => `- "${c.hook}"`).join('\n') || 'No competitor data')
       .replace('{{content}}', content);
     
     const result = await zai.chat.completions.create({
@@ -1172,10 +1220,15 @@ async function runJudge3(content, inputData) {
     const ZAI = await initZAI();
     const zai = await ZAI.create();
     
+    // Safe array handling
+    const competitorHooks = Array.isArray(inputData.competitorHooks) ? inputData.competitorHooks : [];
+    const bannedWords = Array.isArray(inputData.bannedWords) ? inputData.bannedWords : [];
+    const aiPatterns = inputData.aiPatterns || CONFIG.hardRequirements.aiPatterns;
+    
     const userInput = JUDGE_PROMPTS.judge3.userTemplate
-      .replace('{{bannedWords}}', inputData.bannedWords.join(', '))
-      .replace('{{aiPatterns}}', JSON.stringify(inputData.aiPatterns, null, 2))
-      .replace('{{competitorHooks}}', inputData.competitorHooks.map(c => `- "${c.hook}"`).join('\n') || 'No competitor data')
+      .replace('{{bannedWords}}', bannedWords.join(', '))
+      .replace('{{aiPatterns}}', JSON.stringify(aiPatterns, null, 2))
+      .replace('{{competitorHooks}}', competitorHooks.map(c => `- "${c.hook}"`).join('\n') || 'No competitor data')
       .replace('{{content}}', content);
     
     const result = await zai.chat.completions.create({
@@ -1216,7 +1269,7 @@ async function runJudge3(content, inputData) {
 
 async function runAllJudges(content, judgeInstructions) {
   console.log('\n' + '─'.repeat(60));
-  console.log('⚖️ PHASE 11-13: Multi-LLM Blind Judging');
+  console.log('⚖️ PHASE 4: Multi-LLM Blind Judging');
   console.log('─'.repeat(60));
   
   const startTime = Date.now();
@@ -1245,7 +1298,7 @@ async function runAllJudges(content, judgeInstructions) {
 
 function aggregateScores(judgeResults) {
   console.log('\n' + '─'.repeat(60));
-  console.log('📊 PHASE 14: Score Aggregation');
+  console.log('📊 PHASE 5: Score Aggregation');
   console.log('─'.repeat(60));
   
   // Extract scores from judge results
@@ -1255,21 +1308,21 @@ function aggregateScores(judgeResults) {
     G3: judgeResults.judge1?.G3_campaignCompliance?.score || 0,
     G4: judgeResults.judge1?.G4_originality?.score || 0,
     total: 0,
-    max: 20,
+    max: CONFIG.thresholds.gateUtama.max,
     pass: false
   };
   gateUtama.total = gateUtama.G1 + gateUtama.G2 + gateUtama.G3 + gateUtama.G4;
-  gateUtama.pass = gateUtama.total >= 16; // 80% of 20
+  gateUtama.pass = gateUtama.total >= CONFIG.thresholds.gateUtama.pass;
   
   const gateTambahan = {
     G5: judgeResults.judge2?.G5_engagementPotential?.score || 0,
     G6: judgeResults.judge2?.G6_technicalQuality?.score || 0,
     total: 0,
-    max: 16,
+    max: CONFIG.thresholds.gateTambahan.max,
     pass: false
   };
   gateTambahan.total = gateTambahan.G5 + gateTambahan.G6;
-  gateTambahan.pass = gateTambahan.total >= 14; // 87.5% of 16
+  gateTambahan.pass = gateTambahan.total >= CONFIG.thresholds.gateTambahan.pass;
   
   const penilaianInternal = {
     hook: judgeResults.judge3?.hookScore?.score || 0,
@@ -1279,20 +1332,21 @@ function aggregateScores(judgeResults) {
     readability: judgeResults.judge3?.readabilityScore?.score || 0,
     viral: judgeResults.judge3?.viralPotentialScore?.score || 0,
     total: 0,
-    max: 60,
+    max: CONFIG.thresholds.penilaianInternal.max,
     pass: false
   };
   penilaianInternal.total = penilaianInternal.hook + penilaianInternal.emotion + 
                            penilaianInternal.ct + penilaianInternal.uniqueness + 
                            penilaianInternal.readability + penilaianInternal.viral;
-  penilaianInternal.pass = penilaianInternal.total >= 54; // 90% of 60
+  penilaianInternal.pass = penilaianInternal.total >= CONFIG.thresholds.penilaianInternal.pass;
   
   // Calculate total score
+  const maxTotal = CONFIG.thresholds.gateUtama.max + CONFIG.thresholds.gateTambahan.max + CONFIG.thresholds.penilaianInternal.max;
   const totalScore = {
     gateUtama: gateUtama.total,
     gateTambahan: gateTambahan.total,
     penilaianInternal: penilaianInternal.total,
-    maxTotal: 96, // 20 + 16 + 60
+    maxTotal: maxTotal,
     total: gateUtama.total + gateTambahan.total + penilaianInternal.total,
     percentage: 0
   };
@@ -1372,7 +1426,6 @@ function generateFeedback(aggregatedScores, judgeResults) {
 
 async function main() {
   const userInput = process.argv[2];
-  const maxRetries = 3;
   
   console.log('\n' + '═'.repeat(70));
   console.log('  RALLY WORKFLOW V9.3.0 - MULTI-LLM JUDGING EDITION');
@@ -1380,7 +1433,7 @@ async function main() {
   console.log(`  Input: ${userInput || 'No input provided'}`);
   console.log(`  Time: ${new Date().toISOString()}`);
   console.log('  Features: Blind Judging, Multi-LLM, No Bias from Campaign');
-  console.log('  Max Retries: ' + maxRetries);
+  console.log('  Max Retries: ' + CONFIG.retry.maxAttempts);
   console.log('═'.repeat(70));
   
   const startTime = Date.now();
@@ -1401,7 +1454,7 @@ async function main() {
     return { success: false, error: 'No campaign found' };
   }
   
-  // ===== PHASE 0: Campaign Data =====
+  // ===== PHASE 1: Campaign Data =====
   const campaign = await fetchCampaignData(campaignAddress);
   
   if (!campaign.success) {
@@ -1418,7 +1471,7 @@ async function main() {
     leaderboardData.data.competitorHooks || []
   );
   
-  // ===== PHASE 3-5: Content Generation =====
+  // ===== PHASE 3: Content Generation =====
   const contentResult = await generateContent(campaign.data, leaderboardData.data.competitorHooks || []);
   
   if (!contentResult.success || contentResult.versions.length === 0) {
@@ -1426,7 +1479,7 @@ async function main() {
     return { success: false, error: 'Content generation failed' };
   }
   
-  // ===== PHASE 6-13: Judging dengan Retry =====
+  // ===== PHASE 4: Judging dengan Retry =====
   let bestContent = null;
   let bestScores = null;
   let bestJudgeResults = null;
@@ -1480,7 +1533,7 @@ async function main() {
     }
   }
   
-  // ===== PHASE 15-16: Final Output =====
+  // ===== PHASE 6: Final Output =====
   const executionTime = ((Date.now() - startTime) / 1000).toFixed(2);
   
   const output = {
