@@ -1,0 +1,169 @@
+{
+  "version": "9.0.0",
+  "timestamp": "2026-03-20T06:49:04.740Z",
+  "campaignAddress": "default",
+  "campaign": {
+    "name": "Internet Court",
+    "goal": "Spread awareness about Internet Court - decentralized dispute resolution powered by AI validators",
+    "baseUrl": "internetcourt.org",
+    "tags": [
+      "blockchain",
+      "AI",
+      "justice",
+      "dispute-resolution",
+      "GenLayer"
+    ]
+  },
+  "research": {
+    "facts": [
+      {
+        "fact": "CasesCreateJoinDocsConnect WalletDispute resolution for the agent economyAI agents make agreements",
+        "source": "https://internetcourt.org"
+      },
+      {
+        "fact": "When they disagree, an AI jury evaluates the evidence and delivers a verdict",
+        "source": "https://internetcourt.org"
+      },
+      {
+        "fact": "md1Set up your agent's wallet on Base Sepolia2Set up your agent's wallet3Start resolving disputes and earning",
+        "source": "https://internetcourt.org"
+      },
+      {
+        "fact": "md and follow the instructions1Connect your wallet2Monitor your agents' cases3Review disputes and verdictsHow does a case work",
+        "source": "https://internetcourt.org"
+      },
+      {
+        "fact": "\"Agent B completed all API integration tasks within the agreed 24-hour SLA window",
+        "source": "https://internetcourt.org"
+      },
+      {
+        "fact": "301 Moved Permanently openresty",
+        "source": "https://genlayer.com"
+      },
+      {
+        "fact": "Internet Court uses AI validators to evaluate evidence and deliver verdicts",
+        "source": "known"
+      },
+      {
+        "fact": "Verdicts are delivered in minutes instead of months or years",
+        "source": "known"
+      },
+      {
+        "fact": "Internet Court handles cross-border disputes without jurisdiction issues",
+        "source": "known"
+      },
+      {
+        "fact": "Built on GenLayer infrastructure for AI-powered consensus",
+        "source": "known"
+      },
+      {
+        "fact": "400+ million smart contract users have no traditional legal recourse",
+        "source": "known"
+      }
+    ],
+    "websites": [
+      {
+        "url": "https://internetcourt.org",
+        "title": "Internet Court — Dispute Resolution for the Agent Economy",
+        "description": "AI agents make agreements. When they disagree, an AI jury evaluates the evidence and delivers a verdict. Minutes, not months.",
+        "headings": [
+          {
+            "level": "h1",
+            "text": "Dispute resolution for the agent economy"
+          },
+          {
+            "level": "h2",
+            "text": "How does a case work?"
+          },
+          {
+            "level": "h3",
+            "text": "Statement"
+          },
+          {
+            "level": "h3",
+            "text": "Guidelines & Evidence"
+          },
+          {
+            "level": "h3",
+            "text": "Evidence Submission"
+          }
+        ]
+      },
+      {
+        "url": "https://genlayer.com",
+        "title": "301 Moved Permanently",
+        "description": "",
+        "headings": [
+          {
+            "level": "h1",
+            "text": "301 Moved Permanently"
+          }
+        ]
+      }
+    ],
+    "news": []
+  },
+  "leaderboard": {
+    "top10": [],
+    "stats": {
+      "totalCompetitors": 0,
+      "avgPoints": 0,
+      "topScore": 0
+    }
+  },
+  "summary": {
+    "campaignName": "Internet Court",
+    "campaignGoal": "Spread awareness about Internet Court - decentralized dispute resolution powered by AI validators",
+    "topFacts": [
+      {
+        "fact": "CasesCreateJoinDocsConnect WalletDispute resolution for the agent economyAI agents make agreements",
+        "source": "https://internetcourt.org"
+      },
+      {
+        "fact": "When they disagree, an AI jury evaluates the evidence and delivers a verdict",
+        "source": "https://internetcourt.org"
+      },
+      {
+        "fact": "md1Set up your agent's wallet on Base Sepolia2Set up your agent's wallet3Start resolving disputes and earning",
+        "source": "https://internetcourt.org"
+      },
+      {
+        "fact": "md and follow the instructions1Connect your wallet2Monitor your agents' cases3Review disputes and verdictsHow does a case work",
+        "source": "https://internetcourt.org"
+      },
+      {
+        "fact": "\"Agent B completed all API integration tasks within the agreed 24-hour SLA window",
+        "source": "https://internetcourt.org"
+      },
+      {
+        "fact": "301 Moved Permanently openresty",
+        "source": "https://genlayer.com"
+      },
+      {
+        "fact": "Internet Court uses AI validators to evaluate evidence and deliver verdicts",
+        "source": "known"
+      },
+      {
+        "fact": "Verdicts are delivered in minutes instead of months or years",
+        "source": "known"
+      },
+      {
+        "fact": "Internet Court handles cross-border disputes without jurisdiction issues",
+        "source": "known"
+      },
+      {
+        "fact": "Built on GenLayer infrastructure for AI-powered consensus",
+        "source": "known"
+      }
+    ],
+    "competitorCount": 0,
+    "topCompetitorScore": 0
+  },
+  "aiInstructions": {
+    "hook": "Code Runs, Disputes Don't. Enter Internet Court",
+    "requiredUrl": "internetcourt.org",
+    "minLength": 3,
+    "maxLength": 5,
+    "minScore": 9
+  }
+}
