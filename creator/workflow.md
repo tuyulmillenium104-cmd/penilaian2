@@ -549,6 +549,105 @@ PRINSIP REVISION:
 │  - Mengabaikan feedback                                     │
 └─────────────────────────────────────────────────────────────┘
 
+═══════════════════════════════════════════════════════════════
+LLM EXECUTION ORDER DENGAN FALLBACK MECHANISM
+═══════════════════════════════════════════════════════════════
+
+Pembuatan konten dilakukan dengan urutan prioritas, jika gagal maka fallback ke metode berikutnya:
+
+┌─────────────────────────────────────────────────────────────┐
+│  PRIORITY 1: SDK LLM (z-ai-web-dev-sdk)                     │
+├─────────────────────────────────────────────────────────────┤
+│  Kondisi: SDK tersedia dan terkonfigurasi                   │
+│  Kualitas: ⭐⭐⭐⭐⭐ (Sangat Tinggi)                           │
+│  Kelebihan:                                                  │
+│  - Model terbaru dan powerful                               │
+│  - Konteks panjang untuk leaderboard analysis               │
+│  - Output kreatif dan natural                               │
+│  - Web search terintegrasi                                  │
+│  Kekurangan:                                                 │
+│  - Rate limit bisa terjadi                                  │
+│  - Memerlukan koneksi internet stabil                       │
+└─────────────────────────────────────────────────────────────┘
+                            ↓ (jika gagal)
+┌─────────────────────────────────────────────────────────────┐
+│  PRIORITY 2: GROQ API                                       │
+├─────────────────────────────────────────────────────────────┤
+│  Kondisi: API key dikonfigurasi                             │
+│  Kualitas: ⭐⭐⭐⭐ (Tinggi)                                   │
+│  Model:                                                      │
+│  - Primary: llama-3.1-8b-instant (fast)                     │
+│  - Fallback: llama-3.3-70b-versatile (better quality)       │
+│  Kelebihan:                                                  │
+│  - Gratis (14M tokens/bulan)                                │
+│  - Response cepat                                           │
+│  - Cocok untuk multiple content versions                    │
+│  Kekurangan:                                                 │
+│  - Rate limit lebih ketat                                   │
+│  - Perlu API key                                            │
+│  - Web search perlu setup terpisah                          │
+└─────────────────────────────────────────────────────────────┘
+                            ↓ (jika gagal)
+┌─────────────────────────────────────────────────────────────┐
+│  PRIORITY 3: TEMPLATE-BASED GENERATION (FALLBACK TERAKHIR)  │
+├─────────────────────────────────────────────────────────────┤
+│  Kondisi: Semua LLM tidak tersedia                          │
+│  Kualitas: ⭐⭐ (Dasar)                                       │
+│  Metode:                                                     │
+│  - Pre-defined hook templates                               │
+│  - Fill-in-the-blank structures                             │
+│  - Static emotion word combinations                         │
+│  Kelebihan:                                                  │
+│  - Selalu tersedia                                          │
+│  - Tidak perlu API call                                     │
+│  - Response instan                                          │
+│  Kekurangan:                                                 │
+│  - TIDAK ADA kreativitas                                    │
+│  - Konten cenderung template                                │
+│  - TIDAK bisa web search                                    │
+│  - Originality rendah                                       │
+└─────────────────────────────────────────────────────────────┘
+
+FALLBACK TRIGGERS:
+
+| Trigger | Action |
+|---------|--------|
+| SDK timeout (>30s) | Fallback ke Groq |
+| SDK rate limit (429) | Fallback ke Groq |
+| SDK auth error | Fallback ke Groq |
+| Groq rate limit | Fallback ke Template-based |
+| Groq timeout | Fallback ke Template-based |
+| Semua gagal | Return error, JANGAN buat konten |
+
+FALLBACK OUTPUT MARKER:
+
+Setiap konten yang dihasilkan menyertakan source marker:
+{
+  "source": "sdk" | "groq" | "template_based",
+  "fallbackUsed": true/false,
+  "fallbackReason": "timeout" | "rate_limit" | "auth_error" | null,
+  "qualityWarning": "Template-based content - originality may be lower"
+}
+
+CATATAN PENTING UNTUK CREATOR:
+
+1. Jika menggunakan fallback ke Template-based:
+   - WAJIB berikan warning ke user
+   - Originality score akan rendah
+   - Disarankan untuk tidak submit tanpa review manual
+   - Catat: "Template-based generation used"
+
+2. Jika semua fallback gagal:
+   - Return error, jangan membuat konten
+   - JANGAN pernah membuat konten tanpa LLM
+   - Konten tanpa LLM = auto-fail di Judge
+
+3. Untuk menjaga kualitas:
+   - Prioritaskan SDK atau Groq
+   - Template-based hanya untuk emergency
+   - Selalu review konten dari fallback
+
+═══════════════════════════════════════════════════════════════
 ## Input Template
 
 ```

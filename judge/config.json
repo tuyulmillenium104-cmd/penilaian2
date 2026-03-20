@@ -334,5 +334,74 @@
       "strengths": ["array"],
       "overallAssessment": "string"
     }
+  },
+  
+  "llmExecutionOrder": {
+    "description": "Urutan prioritas LLM dengan fallback mechanism",
+    "priorities": {
+      "1_sdk": {
+        "name": "SDK LLM (z-ai-web-dev-sdk)",
+        "priority": 1,
+        "quality": 5,
+        "qualityLabel": "Sangat Tinggi",
+        "conditions": ["SDK tersedia", "Terkonfigurasi dengan benar"],
+        "advantages": ["Model terbaru dan powerful", "Konteks panjang", "Output konsisten"],
+        "disadvantages": ["Rate limit bisa terjadi", "Perlu koneksi internet stabil"],
+        "timeoutMs": 30000
+      },
+      "2_groq": {
+        "name": "Groq API",
+        "priority": 2,
+        "quality": 4,
+        "qualityLabel": "Tinggi",
+        "conditions": ["API key dikonfigurasi"],
+        "models": {
+          "primary": "llama-3.1-8b-instant",
+          "fallback": "llama-3.3-70b-versatile"
+        },
+        "advantages": ["Gratis 14M tokens/bulan", "Response cepat", "2 model tersedia"],
+        "disadvantages": ["Rate limit lebih ketat", "Perlu API key"],
+        "timeoutMs": 30000
+      },
+      "3_ruleBased": {
+        "name": "Rule-Based Assessment",
+        "priority": 3,
+        "quality": 2,
+        "qualityLabel": "Dasar",
+        "conditions": ["Semua LLM tidak tersedia"],
+        "methods": [
+          "Pattern matching untuk hook scoring",
+          "Keyword detection untuk emotion types",
+          "Hard checks untuk G3 compliance",
+          "Regex matching untuk AI patterns"
+        ],
+        "advantages": ["Selalu tersedia", "Tidak perlu API call", "Response instan"],
+        "disadvantages": ["Tidak bisa nuanced assessment", "Tidak ada reasoning mendalam", "Tidak bisa web search", "Score konservatif"]
+      }
+    },
+    "fallbackTriggers": {
+      "sdk_timeout": { "trigger": "timeout > 30s", "action": "fallback ke Groq" },
+      "sdk_rate_limit": { "trigger": "HTTP 429", "action": "fallback ke Groq" },
+      "sdk_auth_error": { "trigger": "auth error", "action": "fallback ke Groq" },
+      "groq_rate_limit": { "trigger": "HTTP 429", "action": "fallback ke Rule-based" },
+      "groq_timeout": { "trigger": "timeout > 30s", "action": "fallback ke Rule-based" },
+      "all_failed": { "trigger": "semua gagal", "action": "return error" }
+    },
+    "outputMarker": {
+      "source": "sdk | groq | rule_based",
+      "fallbackUsed": "boolean",
+      "fallbackReason": "timeout | rate_limit | auth_error | null"
+    },
+    "rules": {
+      "ruleBasedUsage": {
+        "confidenceLevel": "LOW",
+        "evidenceNote": "Rule-based assessment used",
+        "recommendation": "Review manual diperlukan"
+      },
+      "allFailed": {
+        "action": "Return error",
+        "prevent": "Jangan membuat konten tanpa LLM"
+      }
+    }
   }
 }

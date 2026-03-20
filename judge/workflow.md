@@ -691,6 +691,95 @@ LOW CONFIDENCE (skor perlu verifikasi):
 LOW CONFIDENCE = FLAG untuk review manual tambahan
 
 ═══════════════════════════════════════════════════════════════
+LLM EXECUTION ORDER DENGAN FALLBACK MECHANISM
+═══════════════════════════════════════════════════════════════
+
+Penilaian dilakukan dengan urutan prioritas, jika gagal maka fallback ke metode berikutnya:
+
+┌─────────────────────────────────────────────────────────────┐
+│  PRIORITY 1: SDK LLM (z-ai-web-dev-sdk)                     │
+├─────────────────────────────────────────────────────────────┤
+│  Kondisi: SDK tersedia dan terkonfigurasi                   │
+│  Kualitas: ⭐⭐⭐⭐⭐ (Sangat Tinggi)                           │
+│  Kelebihan:                                                  │
+│  - Model terbaru dan powerful                               │
+│  - Konteks panjang                                          │
+│  - Output konsisten                                         │
+│  Kekurangan:                                                 │
+│  - Rate limit bisa terjadi                                  │
+│  - Memerlukan koneksi internet stabil                       │
+└─────────────────────────────────────────────────────────────┘
+                            ↓ (jika gagal)
+┌─────────────────────────────────────────────────────────────┐
+│  PRIORITY 2: GROQ API                                       │
+├─────────────────────────────────────────────────────────────┤
+│  Kondisi: API key dikonfigurasi                             │
+│  Kualitas: ⭐⭐⭐⭐ (Tinggi)                                   │
+│  Model:                                                      │
+│  - Primary: llama-3.1-8b-instant (fast)                     │
+│  - Fallback: llama-3.3-70b-versatile (better quality)       │
+│  Kelebihan:                                                  │
+│  - Gratis (14M tokens/bulan)                                │
+│  - Response cepat                                           │
+│  - 2 model tersedia                                         │
+│  Kekurangan:                                                 │
+│  - Rate limit lebih ketat                                   │
+│  - Perlu API key                                            │
+└─────────────────────────────────────────────────────────────┘
+                            ↓ (jika gagal)
+┌─────────────────────────────────────────────────────────────┐
+│  PRIORITY 3: RULE-BASED ASSESSMENT (FALLBACK TERAKHIR)      │
+├─────────────────────────────────────────────────────────────┤
+│  Kondisi: Semua LLM tidak tersedia                          │
+│  Kualitas: ⭐⭐ (Dasar)                                       │
+│  Metode:                                                     │
+│  - Pattern matching untuk hook scoring                       │
+│  - Keyword detection untuk emotion types                    │
+│  - Hard checks untuk G3 compliance                          │
+│  - Regex matching untuk AI patterns                         │
+│  Kelebihan:                                                  │
+│  - Selalu tersedia                                          │
+│  - Tidak perlu API call                                     │
+│  - Response instan                                          │
+│  Kekurangan:                                                 │
+│  - Tidak bisa nuanced assessment                            │
+│  - Tidak ada reasoning mendalam                             │
+│  - Tidak bisa web search                                    │
+│  - Score cenderung konservatif                              │
+└─────────────────────────────────────────────────────────────┘
+
+FALLBACK TRIGGERS:
+
+| Trigger | Action |
+|---------|--------|
+| SDK timeout (>30s) | Fallback ke Groq |
+| SDK rate limit (429) | Fallback ke Groq |
+| SDK auth error | Fallback ke Groq |
+| Groq rate limit | Fallback ke Rule-based |
+| Groq timeout | Fallback ke Rule-based |
+| Semua gagal | Return error dengan message |
+
+FALLBACK OUTPUT MARKER:
+
+Setiap hasil penilaian menyertakan source marker:
+{
+  "source": "sdk" | "groq" | "rule_based",
+  "fallbackUsed": true/false,
+  "fallbackReason": "timeout" | "rate_limit" | "auth_error" | null
+}
+
+CATATAN PENTING:
+
+1. Jika menggunakan fallback ke Rule-based:
+   - Confidence level otomatis turun ke LOW
+   - Catat dalam evidence: "Rule-based assessment used"
+   - Rekomendasikan review manual
+
+2. Jika semua fallback gagal:
+   - Return error, jangan membuat konten
+   - Jangan coba-coba generate tanpa LLM
+
+═══════════════════════════════════════════════════════════════
 OUTPUT FORMAT (JSON) - VERIFICATION 2x
 ═══════════════════════════════════════════════════════════════
 

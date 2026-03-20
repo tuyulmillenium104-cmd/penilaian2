@@ -444,5 +444,112 @@
       "provider": "z-ai-web-dev-sdk",
       "purpose": "Fresh data, fact verification, case studies"
     }
+  },
+
+  "llmExecutionOrder": {
+    "description": "Urutan prioritas LLM dengan fallback mechanism untuk pembuatan konten",
+    "priorities": {
+      "1_sdk": {
+        "name": "SDK LLM (z-ai-web-dev-sdk)",
+        "priority": 1,
+        "quality": 5,
+        "qualityLabel": "Sangat Tinggi",
+        "conditions": ["SDK tersedia", "Terkonfigurasi dengan benar"],
+        "advantages": ["Model terbaru dan powerful", "Konteks panjang", "Output kreatif dan natural", "Web search terintegrasi"],
+        "disadvantages": ["Rate limit bisa terjadi", "Perlu koneksi internet stabil"],
+        "timeoutMs": 30000,
+        "capabilities": {
+          "leaderboardAnalysis": true,
+          "webSearch": true,
+          "creativeGeneration": true,
+          "nuancedUnderstanding": true
+        }
+      },
+      "2_groq": {
+        "name": "Groq API",
+        "priority": 2,
+        "quality": 4,
+        "qualityLabel": "Tinggi",
+        "conditions": ["API key dikonfigurasi"],
+        "models": {
+          "primary": "llama-3.1-8b-instant",
+          "fallback": "llama-3.3-70b-versatile"
+        },
+        "advantages": ["Gratis 14M tokens/bulan", "Response cepat", "Cocok untuk multiple content versions"],
+        "disadvantages": ["Rate limit lebih ketat", "Perlu API key", "Web search perlu setup terpisah"],
+        "timeoutMs": 30000,
+        "capabilities": {
+          "leaderboardAnalysis": true,
+          "webSearch": false,
+          "creativeGeneration": true,
+          "nuancedUnderstanding": true
+        }
+      },
+      "3_templateBased": {
+        "name": "Template-Based Generation",
+        "priority": 3,
+        "quality": 2,
+        "qualityLabel": "Dasar",
+        "conditions": ["Semua LLM tidak tersedia"],
+        "methods": [
+          "Pre-defined hook templates",
+          "Fill-in-the-blank structures",
+          "Static emotion word combinations"
+        ],
+        "advantages": ["Selalu tersedia", "Tidak perlu API call", "Response instan"],
+        "disadvantages": ["TIDAK ADA kreativitas", "Konten template", "TIDAK bisa web search", "Originality rendah"],
+        "capabilities": {
+          "leaderboardAnalysis": false,
+          "webSearch": false,
+          "creativeGeneration": false,
+          "nuancedUnderstanding": false
+        },
+        "templates": {
+          "hooks": {
+            "number_problem": "$X [unit]. No [solution].",
+            "bold_statement": "[Action]. [Result] doesn't.",
+            "question_tension": "What happens when [condition]?",
+            "personal_pain": "I [past tense verb] $X [noun].",
+            "contrarian": "Everyone's wrong about [topic]."
+          },
+          "bodies": {
+            "problem": "The [problem] is real. [Detail 1]. [Detail 2].",
+            "solution": "[Solution] addresses this. [How]. [URL].",
+            "cta": "[Question]? [Invitation]."
+          }
+        }
+      }
+    },
+    "fallbackTriggers": {
+      "sdk_timeout": { "trigger": "timeout > 30s", "action": "fallback ke Groq" },
+      "sdk_rate_limit": { "trigger": "HTTP 429", "action": "fallback ke Groq" },
+      "sdk_auth_error": { "trigger": "auth error", "action": "fallback ke Groq" },
+      "groq_rate_limit": { "trigger": "HTTP 429", "action": "fallback ke Template-based" },
+      "groq_timeout": { "trigger": "timeout > 30s", "action": "fallback ke Template-based" },
+      "all_failed": { "trigger": "semua gagal", "action": "return error, JANGAN buat konten" }
+    },
+    "outputMarker": {
+      "source": "sdk | groq | template_based",
+      "fallbackUsed": "boolean",
+      "fallbackReason": "timeout | rate_limit | auth_error | null",
+      "qualityWarning": "string | null"
+    },
+    "rules": {
+      "templateBasedUsage": {
+        "warning": "Template-based content - originality may be lower",
+        "recommendation": "Review manual diperlukan sebelum submit",
+        "originalityImpact": "Score akan rendah di G4 Originality"
+      },
+      "allFailed": {
+        "action": "Return error",
+        "prevent": "JANGAN pernah membuat konten tanpa LLM",
+        "reason": "Konten tanpa LLM = auto-fail di Judge"
+      },
+      "qualityPreservation": {
+        "priority": "Selalu prioritaskan SDK atau Groq",
+        "templateBased": "Hanya untuk emergency",
+        "review": "Selalu review konten dari fallback"
+      }
+    }
   }
 }
