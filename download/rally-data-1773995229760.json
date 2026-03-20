@@ -1,0 +1,645 @@
+{
+  "version": "9.2.0",
+  "timestamp": "2026-03-20T08:27:09.760Z",
+  "campaignAddress": "default",
+  "campaign": {
+    "address": "default",
+    "name": "Internet Court",
+    "goal": "Spread awareness about Internet Court - decentralized dispute resolution powered by AI validators",
+    "baseUrl": "internetcourt.org",
+    "hook": "Code Runs, Disputes Don't. Enter Internet Court",
+    "tags": [
+      "blockchain",
+      "AI",
+      "justice",
+      "dispute-resolution",
+      "GenLayer"
+    ]
+  },
+  "websites": [
+    {
+      "url": "https://internetcourt.org",
+      "title": "Internet Court — Dispute Resolution for the Agent Economy",
+      "description": "AI agents make agreements. When they disagree, an AI jury evaluates the evidence and delivers a verdict. Minutes, not months.",
+      "headings": [
+        {
+          "level": "h1",
+          "text": "Dispute resolution for the agent economy"
+        },
+        {
+          "level": "h2",
+          "text": "How does a case work?"
+        },
+        {
+          "level": "h3",
+          "text": "Statement"
+        },
+        {
+          "level": "h3",
+          "text": "Guidelines & Evidence"
+        },
+        {
+          "level": "h3",
+          "text": "Evidence Submission"
+        },
+        {
+          "level": "h3",
+          "text": "Verdict"
+        },
+        {
+          "level": "h2",
+          "text": "Recent Cases"
+        }
+      ],
+      "textPreview": "CasesCreateJoinDocsConnect WalletDispute resolution for the agent economyAI agents make agreements. When they disagree, an AI jury evaluates the evidence and delivers a verdict. Minutes, not months.I'm an agentI'm a human$curl -s https://internetcourt.org/skill.md1Set up your agent's wallet on Base Sepolia2Set up your agent's wallet3Start resolving disputes and earning!$Read internetcourt.org/skill.md and follow the instructions1Connect your wallet2Monitor your agents' cases3Review disputes and verdictsHow does a case work?From contract creation to verdict — the full lifecycle.SLA MetData RealBenchmark MetOn TimeUptime MetStatementThe claim to evaluate — TRUE or FALSE. Clear, specific, evaluable. No ambiguity, no wiggle room.\"Agent B completed all API integration tasks within the agreed 24-hour SLA window.\"\"The delivered dataset consists of genuine user behavior data, not synthetically generated records.\"\"The fine-tuned model achieves ≥90% F1 score on the pre-agreed evaluation benchmar"
+    },
+    {
+      "url": "https://genlayer.com",
+      "title": "301 Moved Permanently",
+      "description": "",
+      "headings": [
+        {
+          "level": "h1",
+          "text": "301 Moved Permanently"
+        }
+      ],
+      "textPreview": "301 Moved Permanently openresty"
+    }
+  ],
+  "leaderboard": {
+    "top10": [],
+    "stats": {}
+  },
+  "aiInstructions": {
+    "hook": "Code Runs, Disputes Don't. Enter Internet Court",
+    "requiredUrl": "internetcourt.org",
+    "campaignName": "Internet Court",
+    "campaignGoal": "Spread awareness about Internet Court - decentralized dispute resolution powered by AI validators",
+    "minLength": 3,
+    "maxLength": 5,
+    "minScore": 9,
+    "requirements": {
+      "gates": {
+        "gateUtama": {
+          "minScore": 4,
+          "maxScore": 5
+        },
+        "gateTambahan": {
+          "minScore": 8,
+          "maxScore": 8
+        },
+        "penilaianInternal": {
+          "minScore": 9,
+          "maxScore": 10
+        }
+      },
+      "emotionalScore": {
+        "minimum": 7
+      },
+      "viralScore": {
+        "minimum": 0.6
+      }
+    },
+    "knowledgeBaseInstructions": {
+      "note": "Extract facts from these sources - DO NOT use hardcoded campaign data",
+      "sources": [
+        "campaign.knowledgeBase (from Rally API if available)",
+        "websites[].textPreview (from scrape)",
+        "Web research results (from your browser search)"
+      ],
+      "howToExtract": [
+        "Look for unique facts not commonly known",
+        "Find numbers, statistics, specific claims",
+        "Identify pain points and solutions",
+        "Note competitive advantages"
+      ]
+    },
+    "bannedWords": [
+      "guaranteed",
+      "guarantee",
+      "100%",
+      "risk-free",
+      "sure thing",
+      "financial advice",
+      "investment advice",
+      "buy now",
+      "sell now",
+      "get rich",
+      "quick money",
+      "easy money",
+      "passive income",
+      "follow me",
+      "subscribe to my",
+      "check my profile",
+      "click here",
+      "limited time offer",
+      "act now",
+      "legally binding",
+      "court order",
+      "official ruling"
+    ],
+    "aiPatterns": {
+      "words": [
+        "delve",
+        "leverage",
+        "realm",
+        "tapestry",
+        "paradigm",
+        "landscape",
+        "nuance",
+        "underscores",
+        "pivotal",
+        "crucial"
+      ],
+      "phrases": [
+        "picture this",
+        "lets dive in",
+        "in this thread",
+        "key takeaways",
+        "heres the thing",
+        "imagine a world",
+        "it goes without saying",
+        "at the end of the day"
+      ],
+      "structures": [
+        "X/x numbering",
+        "Thread (1/X)",
+        "First, ... Second, ... Finally, ..."
+      ]
+    },
+    "emotionTriggers": {
+      "fear": [
+        "risk",
+        "danger",
+        "threat",
+        "warning",
+        "scary",
+        "what if",
+        "imagine losing"
+      ],
+      "curiosity": [
+        "secret",
+        "hidden",
+        "mystery",
+        "why",
+        "how",
+        "what happens when"
+      ],
+      "surprise": [
+        "unexpected",
+        "shocking",
+        "actually",
+        "turns out",
+        "but here's the thing"
+      ],
+      "hope": [
+        "finally",
+        "breakthrough",
+        "solution",
+        "imagine if",
+        "now you can"
+      ],
+      "pain": [
+        "lost",
+        "failed",
+        "stuck",
+        "problem",
+        "issue",
+        "frustrated"
+      ],
+      "urgency": [
+        "now",
+        "today",
+        "immediately",
+        "don't wait",
+        "before it's too late"
+      ]
+    },
+    "hookPatterns": {
+      "problemFirst": {
+        "structure": "[Problem statement] → [Why it matters] → [Tension]",
+        "template": "[X] takes too long/is broken/has issue. [Y] shows the gap. This is what nobody talks about.",
+        "emotion": "pain → curiosity",
+        "tips": [
+          "Start dengan fakta mengejutkan",
+          "Tunjukkan gap yang jelas",
+          "End dengan tension"
+        ]
+      },
+      "contrast": {
+        "structure": "[A does X] → [B does Y] → [The difference is stark]",
+        "template": "[Traditional way] is slow/expensive/limited. [New way] is fast/cheap/unlimited. See the difference?",
+        "emotion": "surprise → urgency",
+        "tips": [
+          "Gunakan perbandingan yang jelas",
+          "Angka lebih kuat dari kata",
+          "End dengan pertanyaan"
+        ]
+      },
+      "fearExample": {
+        "structure": "[Real incident] → [What could happen to you] → [Personal stakes]",
+        "template": "[Specific amount/event] lost/happened because [reason]. What happens when it's your turn?",
+        "emotion": "fear → urgency",
+        "tips": [
+          "Gunakan data/angka real",
+          "Buat personal dengan \"your\"",
+          "Jangan terlalu sensational"
+        ]
+      },
+      "analytical": {
+        "structure": "[Logic statement] → [The missing piece] → [Implication]",
+        "template": "[Thing A] handles [X]. But it doesn't handle [Y]. Here's why that matters.",
+        "emotion": "curiosity → surprise",
+        "tips": [
+          "Start dengan fakta yang diterima",
+          "Tunjukkan logical gap",
+          "Explain implication"
+        ]
+      },
+      "futureFocused": {
+        "structure": "[Future scenario] → [Unanswered question] → [Stakes]",
+        "template": "In [timeframe], [trend/change] will happen. When that happens, [question]?",
+        "emotion": "curiosity → fear",
+        "tips": [
+          "Gunakan timeframe realistic",
+          "Base trend pada data",
+          "End dengan open question"
+        ]
+      }
+    },
+    "ctaExamples": {
+      "question": [
+        "What disputes will you face in the Web3 economy?",
+        "Who decides when code is wrong?",
+        "What would you do differently?"
+      ],
+      "challenge": [
+        "Think about your last smart contract interaction. What if something went wrong?",
+        "Consider this: every DeFi transaction is a potential dispute waiting to happen."
+      ],
+      "openEnded": [
+        "The infrastructure is here. How will you use it?",
+        "This is just the beginning. What's your take?"
+      ]
+    },
+    "gatesDefinition": {
+      "gateUtama": {
+        "name": "Gate Utama",
+        "maxScore": 5,
+        "minScore": 4,
+        "gates": [
+          {
+            "id": 1,
+            "name": "URL Presence",
+            "desc": "Required URL must be present in content",
+            "weight": 1
+          },
+          {
+            "id": 2,
+            "name": "Hook Quality",
+            "desc": "Opening hook must be engaging and attention-grabbing",
+            "weight": 1
+          },
+          {
+            "id": 3,
+            "name": "Content Length",
+            "desc": "3-5 tweets with 240-400 characters each",
+            "weight": 1
+          },
+          {
+            "id": 4,
+            "name": "CTA Present",
+            "desc": "Clear call-to-action that encourages engagement",
+            "weight": 1
+          },
+          {
+            "id": 5,
+            "name": "Topic Relevance",
+            "desc": "Content matches campaign topic and goal",
+            "weight": 1
+          }
+        ]
+      },
+      "gateTambahan": {
+        "name": "Gate Tambahan",
+        "maxScore": 8,
+        "minScore": 8,
+        "gates": [
+          {
+            "id": 6,
+            "name": "No Banned Words",
+            "desc": "Free from prohibited phrases",
+            "weight": 1
+          },
+          {
+            "id": 7,
+            "name": "Unique Hook",
+            "desc": "Hook differs from top 20 competitors",
+            "weight": 1
+          },
+          {
+            "id": 8,
+            "name": "Emotional Appeal",
+            "desc": "Contains emotional triggers that resonate",
+            "weight": 1
+          },
+          {
+            "id": 9,
+            "name": "Educational Value",
+            "desc": "Provides useful information to reader",
+            "weight": 1
+          },
+          {
+            "id": 10,
+            "name": "Viral Potential",
+            "desc": "Has shareable elements",
+            "weight": 1
+          },
+          {
+            "id": 11,
+            "name": "Authentic Voice",
+            "desc": "Sounds natural, not robotic or AI-generated",
+            "weight": 1
+          },
+          {
+            "id": 12,
+            "name": "Proper Formatting",
+            "desc": "Good line breaks and structure",
+            "weight": 1
+          },
+          {
+            "id": 13,
+            "name": "Engagement Hook",
+            "desc": "Encourages replies and interaction",
+            "weight": 1
+          }
+        ]
+      },
+      "penilaianInternal": {
+        "name": "Penilaian Internal",
+        "maxScore": 10,
+        "minScore": 9,
+        "criteria": [
+          "Originality and creativity",
+          "Depth of insight",
+          "Quality of writing",
+          "Emotional resonance",
+          "Viral coefficient potential"
+        ]
+      }
+    },
+    "gatesValidation": {
+      "gateUtama": {
+        "gates": [
+          {
+            "id": 1,
+            "name": "URL Presence",
+            "check": "content.includes(requiredUrl)",
+            "passIf": true
+          },
+          {
+            "id": 2,
+            "name": "Hook Quality",
+            "check": "firstParagraph.length < 200 && hasHookPattern",
+            "passIf": true
+          },
+          {
+            "id": 3,
+            "name": "Content Length",
+            "check": "tweetCount >= 3 && tweetCount <= 5",
+            "passIf": true
+          },
+          {
+            "id": 4,
+            "name": "CTA Present",
+            "check": "hasQuestion || hasEngagementHook",
+            "passIf": true
+          },
+          {
+            "id": 5,
+            "name": "Topic Relevance",
+            "check": "mentionsTopicKeywords",
+            "passIf": true
+          }
+        ]
+      },
+      "gateTambahan": {
+        "gates": [
+          {
+            "id": 6,
+            "name": "No Banned Words",
+            "check": "!containsBannedWords",
+            "passIf": true
+          },
+          {
+            "id": 7,
+            "name": "Unique Hook",
+            "check": "hookUniquenessScore > 0.7",
+            "passIf": true
+          },
+          {
+            "id": 8,
+            "name": "Emotional Appeal",
+            "check": "emotionScore >= 7",
+            "passIf": true
+          },
+          {
+            "id": 9,
+            "name": "Educational Value",
+            "check": "hasNewInformation",
+            "passIf": true
+          },
+          {
+            "id": 10,
+            "name": "Viral Potential",
+            "check": "viralScore >= 0.6",
+            "passIf": true
+          },
+          {
+            "id": 11,
+            "name": "Authentic Voice",
+            "check": "!hasAIPatterns",
+            "passIf": true
+          },
+          {
+            "id": 12,
+            "name": "Proper Formatting",
+            "check": "hasProperLineBreaks",
+            "passIf": true
+          },
+          {
+            "id": 13,
+            "name": "Engagement Hook",
+            "check": "hasReplyBait || hasQuestion",
+            "passIf": true
+          }
+        ]
+      }
+    },
+    "webResearchTasks": {
+      "instructions": "Generate search queries based on campaign name, tags, and goal dynamically",
+      "categories": [
+        {
+          "category": "news",
+          "task": "Search for latest news about the campaign topic/project",
+          "queryTemplate": "[CAMPAIGN_NAME] [PROJECT_TAGS] latest news 2025",
+          "outputFormat": "Array of {title, source, date, summary}"
+        },
+        {
+          "category": "market",
+          "task": "Research market data and statistics relevant to the campaign",
+          "queryTemplate": "[CAMPAIGN_INDUSTRY] market size statistics [CURRENT_YEAR]",
+          "outputFormat": "Array of {insight, data, source}"
+        },
+        {
+          "category": "trends",
+          "task": "Identify trending topics in the campaign's industry/community",
+          "queryTemplate": "[CAMPAIGN_TOPIC] trending twitter discussions",
+          "outputFormat": "Array of {topic, sentiment, engagement}"
+        },
+        {
+          "category": "competitors",
+          "task": "Analyze competitor platforms/projects",
+          "queryTemplate": "[CAMPAIGN_NAME] vs alternatives competitors",
+          "outputFormat": "Array of {platform, features, comparison}"
+        }
+      ],
+      "note": "AI Chat harus generate actual queries berdasarkan: campaign.name, campaign.tags, campaign.goal"
+    },
+    "workflowPhases": {
+      "phase1_WebResearch": {
+        "description": "Use your browser/web search capability to gather real-time data",
+        "tasks": [
+          "Search for latest news about the campaign topic",
+          "Gather market data and statistics",
+          "Identify trending topics in the community",
+          "Analyze competitor platforms"
+        ],
+        "outputFormat": {
+          "news": "Array of {title, source, date, summary}",
+          "market": "Array of {insight, data, source}",
+          "trends": "Array of {topic, sentiment, engagement}",
+          "competitors": "Array of {platform, features, comparison}"
+        }
+      },
+      "phase2B_CompetitorAnalysis": {
+        "description": "Analyze competitor content patterns",
+        "llm": true,
+        "tasks": [
+          "Analyze leaderboard.top10[].content for patterns",
+          "Identify hook patterns used",
+          "Find CTA styles that work",
+          "Discover content gaps to fill"
+        ]
+      },
+      "phase3_16_ContentCreation": {
+        "description": "Full content creation workflow",
+        "phases": [
+          {
+            "phase": 3,
+            "name": "Gap Identification",
+            "llm": false
+          },
+          {
+            "phase": 4,
+            "name": "Strategy Definition",
+            "llm": false
+          },
+          {
+            "phase": 5,
+            "name": "Content Generation",
+            "llm": true,
+            "core": true
+          },
+          {
+            "phase": 6,
+            "name": "Banned Items Scan",
+            "llm": false
+          },
+          {
+            "phase": "6B",
+            "name": "Rewrite",
+            "llm": true
+          },
+          {
+            "phase": 7,
+            "name": "Uniqueness Check",
+            "llm": false
+          },
+          {
+            "phase": 8,
+            "name": "Emotion Injection",
+            "llm": true,
+            "core": true
+          },
+          {
+            "phase": 9,
+            "name": "HES + Viral Score",
+            "llm": false
+          },
+          {
+            "phase": "9B",
+            "name": "Viral Enhancement",
+            "llm": true
+          },
+          {
+            "phase": 10,
+            "name": "Quality Selection",
+            "llm": false
+          },
+          {
+            "phase": 11,
+            "name": "Micro-Optimization",
+            "llm": false
+          },
+          {
+            "phase": 12,
+            "name": "Flow Polish",
+            "llm": false
+          },
+          {
+            "phase": "12B",
+            "name": "16 Gates Validation",
+            "llm": false
+          },
+          {
+            "phase": 13,
+            "name": "Benchmark",
+            "llm": false
+          },
+          {
+            "phase": "13B",
+            "name": "Beat Top 20",
+            "llm": true
+          },
+          {
+            "phase": 14,
+            "name": "Final Emotion",
+            "llm": true,
+            "core": true
+          },
+          {
+            "phase": "14B",
+            "name": "Final Polish",
+            "llm": false
+          },
+          {
+            "phase": 15,
+            "name": "Output Format",
+            "llm": false
+          },
+          {
+            "phase": "15B",
+            "name": "CT Maximizer",
+            "llm": true
+          },
+          {
+            "phase": 16,
+            "name": "Export",
+            "llm": false
+          }
+        ]
+      }
+    }
+  }
+}

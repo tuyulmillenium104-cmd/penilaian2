@@ -212,48 +212,37 @@ const CONFIG = {
   },
 
   // Web research tasks for AI Chat (browser agent)
-  webResearchTasks: [
-    {
-      category: 'news',
-      task: 'Search for latest news about Internet Court and GenLayer',
-      queries: [
-        'Internet Court blockchain dispute resolution news 2025',
-        'GenLayer AI validators updates',
-        'decentralized justice Web3 developments'
-      ],
-      output: 'Array of news items with title, source, date, summary'
-    },
-    {
-      category: 'market',
-      task: 'Research market data and statistics',
-      queries: [
-        'blockchain arbitration market size',
-        'Web3 dispute resolution adoption',
-        'smart contract dispute statistics'
-      ],
-      output: 'Array of market insights with data points and sources'
-    },
-    {
-      category: 'trends',
-      task: 'Identify trending topics in crypto/Web3',
-      queries: [
-        'AI court blockchain twitter discussions',
-        'decentralized arbitration trending topics',
-        'DAO governance disputes examples'
-      ],
-      output: 'Array of trending topics with sentiment and engagement'
-    },
-    {
-      category: 'competitors',
-      task: 'Analyze competitor platforms',
-      queries: [
-        'Kleros decentralized court features',
-        'Aragon Court comparison',
-        'Web3 dispute resolution platforms'
-      ],
-      output: 'Array of competitor analysis with strengths/weaknesses'
-    }
-  ]
+  // NOTE: Queries akan digenerate dinamis oleh AI Chat berdasarkan campaign data
+  webResearchTasks: {
+    instructions: 'Generate search queries based on campaign name, tags, and goal dynamically',
+    categories: [
+      {
+        category: 'news',
+        task: 'Search for latest news about the campaign topic/project',
+        queryTemplate: '[CAMPAIGN_NAME] [PROJECT_TAGS] latest news 2025',
+        outputFormat: 'Array of {title, source, date, summary}'
+      },
+      {
+        category: 'market',
+        task: 'Research market data and statistics relevant to the campaign',
+        queryTemplate: '[CAMPAIGN_INDUSTRY] market size statistics [CURRENT_YEAR]',
+        outputFormat: 'Array of {insight, data, source}'
+      },
+      {
+        category: 'trends',
+        task: 'Identify trending topics in the campaign\'s industry/community',
+        queryTemplate: '[CAMPAIGN_TOPIC] trending twitter discussions',
+        outputFormat: 'Array of {topic, sentiment, engagement}'
+      },
+      {
+        category: 'competitors',
+        task: 'Analyze competitor platforms/projects',
+        queryTemplate: '[CAMPAIGN_NAME] vs alternatives competitors',
+        outputFormat: 'Array of {platform, features, comparison}'
+      }
+    ],
+    note: 'AI Chat harus generate actual queries berdasarkan: campaign.name, campaign.tags, campaign.goal'
+  }
 };
 
 // ============================================================================
