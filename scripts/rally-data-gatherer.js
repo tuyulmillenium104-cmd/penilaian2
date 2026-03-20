@@ -104,22 +104,17 @@ const CONFIG = {
     }
   },
   
-// Fallback data jika API gagal
-  fallbackData: {
-    knowledgeBase: [
-      { fact: 'Internet Court uses AI validators to evaluate evidence and deliver verdicts', importance: 'high' },
-      { fact: 'Verdicts are delivered in minutes instead of months or years', importance: 'high' },
-      { fact: 'Internet Court handles cross-border disputes without jurisdiction issues', importance: 'medium' },
-      { fact: 'Built on GenLayer infrastructure for AI-powered consensus', importance: 'high' },
-      { fact: '400+ million smart contract users have no traditional legal recourse', importance: 'high' },
-      { fact: 'AI judges operate 24/7 without bias or corruption potential', importance: 'medium' },
-      { fact: 'Decentralized dispute resolution eliminates expensive legal fees', importance: 'medium' }
-    ],
-    news: [
-      { title: 'Internet Court Launches AI-Powered Dispute Resolution', summary: 'New platform promises verdicts in minutes using AI validators', source: 'fallback' }
-    ],
-    market: [
-      { insight: 'Blockchain arbitration market projected to grow 340% by 2027', source: 'fallback' }
+// NOTE: Tidak ada fallback data spesifik campaign
+  // AI Chat harus mengekstrak facts dari:
+  // 1. campaign.knowledgeBase (dari Rally API)
+  // 2. websites[].textPreview (dari scrape)
+  // 3. Web research results (dari AI Chat browser)
+  fallbackInstructions: {
+    note: 'Tidak ada hardcoded campaign data. Ambil dari sumber dinamis.',
+    sources: [
+      'campaign.knowledgeBase - Jika ada dari Rally API',
+      'websites[].textPreview - Dari website scrape',
+      'Web research - AI Chat lakukan dengan browser'
     ]
   },
 
@@ -133,32 +128,37 @@ const CONFIG = {
     urgency: ['now', 'today', 'immediately', 'don\'t wait', 'before it\'s too late']
   },
 
-  // Hook patterns that work (reference for AI)
+// Hook patterns that work (reference for AI) - GENERIC, no campaign-specific examples
   hookPatterns: {
     problemFirst: {
       structure: '[Problem statement] → [Why it matters] → [Tension]',
-      example: 'Traditional courts take years. Smart contracts execute in milliseconds. See the gap?',
-      emotion: 'pain → curiosity'
+      template: '[X] takes too long/is broken/has issue. [Y] shows the gap. This is what nobody talks about.',
+      emotion: 'pain → curiosity',
+      tips: ['Start dengan fakta mengejutkan', 'Tunjukkan gap yang jelas', 'End dengan tension']
     },
     contrast: {
       structure: '[A does X] → [B does Y] → [The difference is stark]',
-      example: 'Code runs instantly. Justice takes forever. This is the problem nobody talks about.',
-      emotion: 'surprise → urgency'
+      template: '[Traditional way] is slow/expensive/limited. [New way] is fast/cheap/unlimited. See the difference?',
+      emotion: 'surprise → urgency',
+      tips: ['Gunakan perbandingan yang jelas', 'Angka lebih kuat dari kata', 'End dengan pertanyaan']
     },
     fearExample: {
       structure: '[Real incident] → [What could happen to you] → [Personal stakes]',
-      example: '$50M drained from The DAO in 2016. The blockchain didn\'t care. What happens when it\'s your transaction?',
-      emotion: 'fear → urgency'
+      template: '[Specific amount/event] lost/happened because [reason]. What happens when it\'s your turn?',
+      emotion: 'fear → urgency',
+      tips: ['Gunakan data/angka real', 'Buat personal dengan "your"', 'Jangan terlalu sensational']
     },
     analytical: {
       structure: '[Logic statement] → [The missing piece] → [Implication]',
-      example: 'Smart contracts automate trust. But they don\'t automate justice. Here\'s the structural problem.',
-      emotion: 'curiosity → surprise'
+      template: '[Thing A] handles [X]. But it doesn\'t handle [Y]. Here\'s why that matters.',
+      emotion: 'curiosity → surprise',
+      tips: ['Start dengan fakta yang diterima', 'Tunjukkan logical gap', 'Explain implication']
     },
     futureFocused: {
       structure: '[Future scenario] → [Unanswered question] → [Stakes]',
-      example: 'In 5 years, AI agents will handle most financial agreements. When they disagree, who decides?',
-      emotion: 'curiosity → fear'
+      template: 'In [timeframe], [trend/change] will happen. When that happens, [question]?',
+      emotion: 'curiosity → fear',
+      tips: ['Gunakan timeframe realistic', 'Base trend pada data', 'End dengan open question']
     }
   },
 
@@ -498,8 +498,21 @@ async function main() {
         viralScore: { minimum: 0.6 }
       },
       
-      // Knowledge base facts
-      knowledgeBase: CONFIG.fallbackData.knowledgeBase,
+      // Knowledge base instructions (NO hardcoded facts)
+      knowledgeBaseInstructions: {
+        note: 'Extract facts from these sources - DO NOT use hardcoded campaign data',
+        sources: [
+          'campaign.knowledgeBase (from Rally API if available)',
+          'websites[].textPreview (from scrape)',
+          'Web research results (from your browser search)'
+        ],
+        howToExtract: [
+          'Look for unique facts not commonly known',
+          'Find numbers, statistics, specific claims',
+          'Identify pain points and solutions',
+          'Note competitive advantages'
+        ]
+      },
       
       // Banned words
       bannedWords: CONFIG.bannedWords,
