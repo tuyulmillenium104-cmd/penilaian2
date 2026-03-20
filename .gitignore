@@ -32,3 +32,9 @@ browser-profile/
 # Large files
 *.zip
 *.tar.gz
+
+# Upload folder (temporary files)
+upload/
+
+# Worklog (local development log)
+worklog.md

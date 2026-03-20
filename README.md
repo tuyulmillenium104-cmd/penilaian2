@@ -1,357 +1,312 @@
-# 🚀 RALLY WORKFLOW V8.7.6 - Smart Content Generator
+# Rally Content Workflow V8.7.6
 
-> **AI-Powered Content Generation untuk Rally.fun dengan Validasi 16 Gates**
+> **The Ultimate AI-Powered Content Creation System for Rally.fun**
 
-[![Version](https://img.shields.io/badge/version-8.7.6-blue.svg)](https://github.com/tuyulmillenium104-cmd/penilaian2)
-[![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-green.svg)](https://nodejs.org)
-[![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
+A complete 24-phase content creation workflow that generates high-quality, viral-optimized Twitter/X content for crypto/Web3 campaigns on Rally.fun platform.
 
 ---
 
-## 📋 UNTUK AI BARU - BACA INI DULU!
+## 🚀 Quick Start
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  🤖 AI ASSISTANT QUICK CONTEXT                                              │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  PROJECT INI ADALAH:                                                        │
-│  - Rally.fun content generator dengan 21 phases                            │
-│  - Menggunakan LLM (z-ai-web-dev-sdk) untuk generate content               │
-│  - Memiliki 16 Gates validation untuk quality control                      │
-│  - Auto-regeneration jika validasi gagal (max 3x)                          │
-│                                                                             │
-│  FILE UTAMA:                                                                │
-│  ├─ scripts/rally-workflow-v8.7.6.js      ← MAIN WORKFLOW (EDIT INI)       │
-│  ├─ scripts/smart-content-generator.js    ← Content fallback logic         │
-│  ├─ scripts/llm-rate-limiter.js           ← Rate limiting untuk LLM        │
-│  └─ docs/WORKFLOW_V8.7.3_IDEAL_STRUCTURE.md ← Dokumentasi lengkap          │
-│                                                                             │
-│  CARA JALANKAN:                                                             │
-│  node scripts/rally-workflow-v8.7.6.js <CAMPAIGN_ADDRESS>                  │
-│                                                                             │
-│  OUTPUT:                                                                    │
-│  ├─ download/rally-output-<timestamp>.json  ← Full output                  │
-│  ├─ download/content-<timestamp>.txt        ← Content only                 │
-│  └─ workflow/                               ← Execution logs                │
-│                                                                             │
-│  VALIDATION PENTING:                                                        │
-│  - Phase 12B: 16 Gates (wajib pass untuk LOCK)                             │
-│  - Failback paths sudah ada untuk setiap phase                             │
-│  - Max regeneration = 3 untuk prevent infinite loop                        │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+```bash
+# Run with a custom hook
+node scripts/rally-workflow-v8.7.6.js --hook "Your Hook Here"
+
+# Example
+node scripts/rally-workflow-v8.7.6.js --hook "Code Runs, Disputes Don't. Enter Internet Court"
 ```
 
 ---
 
-## 📁 STRUKTUR REPOSITORY
+## 📋 What This Workflow Does
+
+This workflow takes a **hook** (opening statement) and generates complete Twitter/X thread content through 24 rigorous phases:
+
+1. **Gathers Data** - Campaign info, competitor analysis, web research
+2. **Creates Content** - Multi-version generation with LLM
+3. **Validates Quality** - Hook, Emotion, CT scoring
+4. **Optimizes** - Micro-polish, viral enhancement
+5. **Delivers Output** - Ready-to-post content
+
+---
+
+## 📁 File Structure
 
 ```
 penilaian2/
-├── 📄 README.md                           ← ANDA DI SINI
-├── 📄 QUICK_START.md                      ← Panduan cepat untuk AI
-│
-├── 📂 scripts/                            ← KODE UTAMA
-│   ├── rally-workflow-v8.7.6.js          ← ⭐ MAIN WORKFLOW
-│   ├── rally-workflow-v8.7.6-standalone.js ← Versi standalone
-│   ├── smart-content-generator.js         ← Content generator dengan fallback
-│   ├── llm-rate-limiter.js                ← Rate limiting untuk LLM calls
-│   ├── web-scraper-v2.js                  ← Web scraping untuk research
-│   └── ... (versi sebelumnya untuk referensi)
-│
-├── 📂 docs/                               ← DOKUMENTASI
-│   ├── WORKFLOW_V8.7.3_IDEAL_STRUCTURE.md ← ⭐ Dokumentasi lengkap
-│   ├── FLOW_BENAR_DAN_IDEAL_V876.md       ← Flow diagram
-│   └── ... (dokumentasi lainnya)
-│
-├── 📂 download/                           ← OUTPUT FILES
-│   ├── rally-output-*.json                ← Full JSON output
-│   ├── content-*.txt                      ← Content text only
-│   └── ... (reports, analysis, dll)
-│
-└── 📂 workflow/                           ← EXECUTION LOGS
-    └── research-tools/                    ← Research data
+├── README.md                          # This file
+├── package.json                       # Dependencies
+├── package-lock.json                  # Lock file
+├── scripts/
+│   ├── rally-workflow-v8.7.6.js       # MAIN WORKFLOW (24 phases)
+│   ├── smart-content-generator.js     # Fallback generator (rate limit handling)
+│   └── llm-rate-limiter.js            # API rate limiting
+└── docs/
+    └── V8.7.6-DOCUMENTATION.md        # Detailed documentation
 ```
 
 ---
 
-## 🔧 INSTALASI
+## 🔧 Requirements
+
+- Node.js v18+
+- `z-ai-web-dev-sdk` package
+- `cheerio` package
 
 ```bash
-# Clone repository
-git clone https://github.com/tuyulmillenium104-cmd/penilaian2.git
-cd penilaian2
-
-# Install dependencies
-npm install
-
-# atau dengan bun
-bun install
+npm install z-ai-web-dev-sdk cheerio
 ```
-
-### Dependencies Utama
-- `z-ai-web-dev-sdk` - LLM integration
-- `cheerio` - HTML parsing
-- `node-fetch` - HTTP requests
 
 ---
 
-## 🚀 CARA PENGGUNAAN
+## 📥 Input
 
-### Basic Usage
-```bash
-# Jalankan dengan campaign address
-node scripts/rally-workflow-v8.7.6.js 0x1234567890abcdef...
-```
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `--hook` | Yes | Opening hook for the content |
+| `--campaign` | Optional | Campaign ID (defaults to Internet Court) |
 
-### Programmatic Usage
+### Hook Requirements
+
+The hook should be attention-grabbing. Examples:
+- `"Code Runs, Disputes Don't. Enter Internet Court"`
+- `"$50M vanished in seconds. No court could help."`
+- `"What happens when your DAO gets rugged?"`
+
+---
+
+## 📤 Output
+
+The workflow generates:
+
+1. **JSON Report** - Complete execution log
+2. **Text Content** - Ready-to-post thread
+3. **Quality Scores** - Hook, Emotion, CT scores
+
+Output location: `/home/z/my-project/download/`
+
+---
+
+## 🎯 24 Phases Overview
+
+### INPUT SECTION (Data Gathering)
+
+| Phase | Name | Description |
+|-------|------|-------------|
+| 0 | Campaign Fetch | Get campaign data from Rally API |
+| 1 | Research | Web scraper + Web Search for external data |
+| 2 | Leaderboard | Fetch current leaderboard rankings |
+| 2B | Competitor Analysis | Deep LLM analysis of competitor content |
+
+### PROCESS SECTION (Content Creation)
+
+| Phase | Name | Description |
+|-------|------|-------------|
+| 3 | Gap Identification | Find content gaps in competitor landscape |
+| 4 | Strategy Definition | Define content angles and approach |
+| 5 | Content Generation | LLM generates multiple content versions |
+| 6 | Banned Items Scan | Detect AI patterns, banned words |
+| 6B | Rewrite | LLM rewrites if violations found |
+| 7 | Uniqueness Check | Compare against competitors |
+| 8 | Emotion Injection | Add emotional triggers via LLM |
+| 9 | HES + Viral Score | Calculate Hook-Emotion-System scores |
+| 9B | Viral Enhancement | Loop to improve viral potential |
+
+### LOCK POINT
+
+| Phase | Name | Description |
+|-------|------|-------------|
+| 10 | Quality Selection | Select best version (LOCKS to 1 version) |
+
+### REFINE SECTION (Optimization)
+
+| Phase | Name | Description |
+|-------|------|-------------|
+| 11 | Micro-Optimization | 5-layer polish (power words, flow, etc.) |
+| 12 | Flow Polish | Improve content flow and readability |
+| 12B | Gate Simulation | 16 quality gates validation |
+| 13 | Benchmark Compare | Compare against real competitor data |
+| 13B | Beat Top 20 | Loop to improve ranking potential |
+| 14 | Final Emotion | Re-inject emotion via LLM |
+| 14B | Final Polish | Last content refinement |
+
+### OUTPUT SECTION (Delivery)
+
+| Phase | Name | Description |
+|-------|------|-------------|
+| 15 | Output Generation | Format final content |
+| 15B | CT Maximizer | Loop to maximize CT score |
+| 15C | Campaign Compliance | Validate against campaign rules |
+| 16 | Export | Save and deliver content |
+
+---
+
+## 📊 Quality Standards
+
+### Hook Standards (HOOK_STANDARDS)
+
+The workflow enforces strict hook quality:
+
+- **Weak Openings** - Avoids: "The ", "A ", "This is", "There are"
+- **Power Patterns** - Uses: Numbers, Questions, Action verbs, Bold statements
+- **Required Elements** - Must have: Curiosity, Tension, Surprise, Relevance
+
+**Minimum Hook Score: 7/10**
+
+### Emotion Standards (EMOTION_STANDARDS)
+
+Content must evoke emotions:
+
+- **Primary Emotions** - Curiosity, Fear, Surprise, Hope, Pain
+- **Body Feelings** - "stomach dropped", "heart racing", "cold sweat"
+- **Emotion Triggers** - Specific words that evoke emotional response
+
+**Minimum Emotion Score: 8/10**
+**Minimum Emotion Types: 3**
+
+### CT Standards (CT_STANDARDS)
+
+Call-to-action elements required:
+
+- Questions (?)
+- Reply bait phrases
+- Engagement hooks
+- Personal elements
+- FOMO triggers
+- Controversy elements
+
+**Minimum CT Score: 8/10** (raised from 7 in V8.7.6)
+
+---
+
+## 🔄 Loop Protection
+
+The workflow includes intelligent looping:
+
+| Loop Type | Max Iterations | Failback |
+|-----------|---------------|----------|
+| Viral Enhancement | 2 | Phase 8 |
+| Beat Top 20 | 2 | Phase 4 |
+| CT Maximizer | 2 | Phase 14 |
+| Total Regenerations | 3 | Force proceed |
+
+---
+
+## 🛡️ Banned Items Detection
+
+The workflow detects and removes:
+
+- **AI Words**: delve, leverage, realm, tapestry, paradigm, etc.
+- **AI Phrases**: "picture this", "imagine a world", "lets dive in"
+- **Template Markers**: "unpopular opinion", "hot take", "thread alert"
+- **Smart Quotes**: Em dashes, curly quotes, ellipsis
+
+---
+
+## 🌐 Web Search Integration
+
+V8.7.6 includes external data gathering:
+
+- **Real-time News** - Latest industry trends
+- **Competitor Analysis** - Current market landscape
+- **Topic Research** - Subject-specific information
+
+Search queries are auto-generated from campaign data.
+
+---
+
+## ⚡ Rate Limiting
+
+Built-in rate limiting for API calls:
+
+- **Token Bucket Algorithm** - Smooth request distribution
+- **Exponential Backoff** - Smart retry on rate limit
+- **Request Queue** - Priority-based execution
+- **Caching** - Reduce duplicate API calls
+
+---
+
+## 📝 Example Usage
+
 ```javascript
-const { RallyWorkflowExecutor } = require('./scripts/rally-workflow-v8.7.6.js');
+// Run from command line
+node scripts/rally-workflow-v8.7.6.js --hook "Code Runs, Disputes Don't. Enter Internet Court"
 
-async function main() {
-  const executor = new RallyWorkflowExecutor('0x_campaign_address');
-  const result = await executor.execute();
-  
-  if (result.success) {
-    console.log('Content generated:', result.selectedVersion.content);
-    console.log('Gate Score:', result.selectedVersion.gateScore);
-  }
-}
+// Or import as module
+const { runWorkflow } = require('./scripts/rally-workflow-v8.7.6.js');
 
-main();
+const result = await runWorkflow({
+  hook: "Your Hook Here",
+  campaignId: "optional-campaign-id"
+});
 ```
 
 ---
 
-## 📊 WORKFLOW PHASES (21 PHASES)
+## 📈 Expected Output Format
 
-### INPUT SECTION (Phase 0-2B)
-| Phase | Nama | Fungsi | Output |
-|-------|------|--------|--------|
-| 0 | Preparation | Fetch campaign data | CAMPAIGN_DATA |
-| 1 | Research | Web scraping | KNOWLEDGE_BASE (25+ facts) |
-| 2 | Leaderboard | Analyze competitors | COMPETITOR_PATTERNS |
-| 2B | Competitor Deep | LLM analysis (optional) | COMPETITOR_CONTENT |
-
-### PROCESS SECTION (Phase 3-10)
-| Phase | Nama | Fungsi | Validasi/Failback |
-|-------|------|--------|-------------------|
-| 3 | Gap Identification | Find opportunities | - |
-| 4 | Strategy Definition | Define angle/emotion | - |
-| 5 | Content Generation | Generate 5 versions | - |
-| 6 | Banned Scanner | Detect violations | → Phase 6B |
-| 6B | Rewrite | Fix violations | → Phase 5 if severe |
-| 7 | Uniqueness | Compare with competitors | → Phase 5 if low |
-| 8 | Emotion Injection | Enhance emotion | Loop up to 2x |
-| 9 | HES + Viral | Calculate scores | → Phase 8 if HES fail |
-| 10 | Selection | **LOCK to 1 version** | → Phase 5 if no viable |
-
-### REFINE SECTION (Phase 11-14B)
-| Phase | Nama | Fungsi | Validasi/Failback |
-|-------|------|--------|-------------------|
-| 11 | Micro-Optimization | 5-layer optimize | - |
-| 12 | Flow Polish | Smooth transitions | - |
-| 12B | Gate Simulation | **16 Gates check** | Gate-based failback |
-| 13 | Benchmark | Compare with competitors | - |
-| 14 | Emotion Re-Check | Final emotion check | → Phase 8 if low |
-| 14B | Final Polish | **FINAL LOCK** | → Phase 5 if fail |
-
-### OUTPUT SECTION (Phase 15-16)
-| Phase | Nama | Fungsi | Output |
-|-------|------|--------|--------|
-| 15 | Output Generation | Format + Q&A | COMPLETE_ASSETS |
-| 16 | Export | Save files | JSON + TXT files |
-
----
-
-## 🚦 16 GATES VALIDATION
-
-### G1: Content Alignment (4 gates)
-- G1.1: Main topic aligned
-- G1.2: Tone matches guidelines
-- G1.3: Key message clear
-- G1.4: No off-topic tangents
-
-### G2: Information Accuracy (4 gates)
-- G2.1: Facts verifiable
-- G2.2: Numbers accurate
-- G2.3: No misleading claims
-- G2.4: Sources credible
-
-### G3: Campaign Compliance (4 gates)
-- G3.1: Required mentions
-- G3.2: Required topics
-- G3.3: Required links
-- G3.4: Character limits
-
-### G4: Originality (4 gates)
-- G4.1: Hook unique vs competitors
-- G4.2: CTA unique vs competitors
-- G4.3: No AI templates
-- G4.4: Emotion approach unique
-
-### Failback Paths
-```
-G1 FAIL → Phase 11 (re-align)
-G2 FAIL → Phase 1  (get more facts)
-G3 FAIL → Phase 5  (regenerate with requirements)
-G4 FAIL → Phase 3  (find new angle)
-```
-
----
-
-## 🔄 VALIDATION & REGENERATION FLOW
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    REGENERATION FLOW                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Phase 5 (Generate) → Phase 6 (Scan) → Phase 6B (Rewrite)       │
-│      ↑                     ↓ if severe                          │
-│      └─────────────────────┘                                    │
-│                                                                  │
-│  Phase 6B → Phase 7 (Uniqueness)                                │
-│      ↑              ↓ if low                                    │
-│      └──────────────┘                                           │
-│                                                                  │
-│  Phase 7 → Phase 8 (Emotion) → Phase 9 (HES)                    │
-│      ↑                               ↓ if HES fail              │
-│      └───────────────────────────────┘                          │
-│                                                                  │
-│  Phase 9 → Phase 10 (Selection)                                 │
-│      ↑              ↓ if no viable                              │
-│      └──────────────┘                                           │
-│                                                                  │
-│  Phase 10 → Phase 11-12 → Phase 12B (Gates)                     │
-│      ↑        ↑        ↓ G1→11, G2→1, G3→5, G4→3               │
-│      └────────┴────────┘                                        │
-│                                                                  │
-│  Phase 12B → Phase 13 → Phase 14 (Emotion Re-check)             │
-│      ↑                          ↓ if still low                  │
-│      └──────────────────────────┘                               │
-│                                                                  │
-│  Phase 14 → Phase 14B (Final Lock) → Phase 15-16 (Output)       │
-│      ↑              ↓ if fail                                   │
-│      └──────────────┘                                           │
-│                                                                  │
-│  MAX REGENERATIONS: 3 (prevent infinite loop)                   │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 📝 OUTPUT FORMAT
-
-### JSON Output
 ```json
 {
-  "success": true,
-  "executionTime": "45.23",
-  "selectedVersion": {
-    "id": "V1",
-    "content": "Thread content...",
-    "combinedScore": 85.5,
-    "gateScore": "16/16",
-    "allGatesPassed": true,
-    "emotionScore": 8,
-    "hesScore": { "score": 4, "passed": true },
-    "viralScore": { "score": 8, "elements": [...] }
+  "hook": "Code Runs, Disputes Don't. Enter Internet Court",
+  "content": "Full thread content...",
+  "scores": {
+    "hook": 9,
+    "emotion": 8,
+    "ct": 9,
+    "viral": 8
   },
-  "regenerationCount": 0,
-  "regenerationHistory": []
+  "phases": {
+    "completed": 24,
+    "details": {...}
+  },
+  "generationMethod": "full_llm",
+  "timestamp": "2026-03-20T..."
 }
 ```
 
-### Content Output
-```
-Tweet 1: Hook with emotion trigger...
+---
 
-Tweet 2: Main content with facts...
+## 🔍 Troubleshooting
 
-Tweet 3: Supporting evidence...
-
-...
-
-Link: https://internetcourt.org
-```
+| Issue | Solution |
+|-------|----------|
+| Rate limit errors | Workflow auto-retries with backoff |
+| Low hook score | Check hook against HOOK_STANDARDS |
+| Low CT score | Add questions, engagement hooks |
+| Content drift | Phase 15C validates compliance |
 
 ---
 
-## 🛠️ CONFIGURATION
+## 📚 Documentation
 
-```javascript
-const CONFIG = {
-  rallyApiBase: 'https://app.rally.fun/api',
-  outputDir: '/home/z/my-project/workflow',
-  downloadDir: '/home/z/my-project/download',
-  strictMode: true,  // Fail on errors
-  
-  rateLimiter: {
-    maxRequestsPerMinute: 15,
-    maxConcurrent: 2,
-    minDelayMs: 2000,
-    maxRetries: 3
-  }
-};
-```
+For detailed documentation, see: `docs/V8.7.6-DOCUMENTATION.md`
 
 ---
 
-## 🔍 BANNED ITEMS (AI Detection Prevention)
+## 🤝 How AI Should Use This
 
-### Words to Avoid
-```javascript
-['delve', 'leverage', 'realm', 'tapestry', 'paradigm', 
- 'catalyst', 'cornerstone', 'pivotal', 'myriad', ...]
-```
+If you're an AI reading this:
 
-### Phrases to Avoid
-```javascript
-['in the world of', 'picture this', 'imagine a world',
- 'lets dive in', 'at its core', 'in conclusion', ...]
-```
+1. **Read the hook** provided by user
+2. **Run the workflow**: `node scripts/rally-workflow-v8.7.6.js --hook "HOOK"`
+3. **Wait for completion** - All 24 phases will execute
+4. **Return the output** to user
 
-### Template Hooks to Avoid
-```javascript
-['unpopular opinion', 'hot take', 'thread alert',
- 'breaking', 'this is your sign', 'psa', ...]
-```
+**DO NOT**:
+- Skip phases
+- Use templates (workflow generates dynamic content)
+- Ignore low scores (workflow will regenerate)
 
 ---
 
-## 📚 DOCUMENTATION
+## Version History
 
-- [QUICK_START.md](./QUICK_START.md) - Panduan cepat untuk AI
-- [docs/WORKFLOW_V8.7.3_IDEAL_STRUCTURE.md](./docs/WORKFLOW_V8.7.3_IDEAL_STRUCTURE.md) - Dokumentasi lengkap
-- [docs/FLOW_BENAR_DAN_IDEAL_V876.md](./docs/FLOW_BENAR_DAN_IDEAL_V876.md) - Flow diagram
-
----
-
-## 🤝 CONTRIBUTING
-
-1. Fork repository
-2. Buat branch feature (`git checkout -b feature/amazing`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push ke branch (`git push origin feature/amazing`)
-5. Buat Pull Request
+| Version | Changes |
+|---------|---------|
+| V8.7.6 | Smart content generator, Web search, CT threshold 8/10, Campaign compliance |
+| V8.7.5 | Rate limiter, CT threshold 7/10 |
+| V8.7 | 24 phases structure |
 
 ---
 
-## 📄 LICENSE
-
-MIT License - see [LICENSE](LICENSE) for details.
-
----
-
-## 🙏 ACKNOWLEDGMENTS
-
-- Rally.fun untuk platform campaign
-- z-ai-web-dev-sdk untuk LLM integration
-- Semua contributor yang sudah membantu
-
----
-
-**Made with ❤️ for Rally.fun content creators**
+**Created for Rally.fun content creation campaigns**

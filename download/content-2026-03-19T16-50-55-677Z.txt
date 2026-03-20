@@ -1,7 +1,0 @@
-Smart contracts execute code perfectly but fail when intentions conflict. Traditional legal systems cannot enforce digital agreements across borders or resolve disputes between autonomous agents efficiently.
-
-We genuinely need a jurisdiction native to the web. Internet Court provides a decentralized framework for onchain enforcement and swift resolution without relying on legacy courts.
-
-As AI agents begin transacting autonomously, this layer becomes seriously critical to prevent actual chaos. Code runs the logic but we truly need a system to handle the exceptions.
-
-Visit internetcourt.org to see how this new structure works.
