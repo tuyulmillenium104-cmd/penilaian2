@@ -1,0 +1,329 @@
+# ╔═══════════════════════════════════════════════════════════════╗
+# ║        RALLY WORKFLOW V8.7.1 - ENHANCED EDITION               ║
+# ║        INPUT → PROCESS → OUTPUT → VALIDATE → REFINED          ║
+# ║        Created: 2025-01-19                                     ║
+# ║        Version: 8.7.1 (Web Scraper Integrated)                 ║
+# ╚═══════════════════════════════════════════════════════════════╝
+
+================================================================================
+                    V8.7.1 ENHANCEMENT OVER V8.7
+================================================================================
+
+**MASALAH DI V8.7:**
+1. ❌ Pure Generation Mode = konten akan template
+2. ❌ Internal knowledge terbatas (cutoff date)
+3. ❌ Tidak bisa akses data real-time
+4. ❌ X-Token tetap tidak tersedia
+
+**SOLUSI V8.7.1:**
+1. ✅ INTEGRATED WEB SCRAPER: curl + cheerio (no X-Token needed!)
+2. ✅ Real-time data access tanpa API
+3. ✅ Phase 1 Research bisa pakai web scraping
+4. ✅ Phase 2B Competitor Analysis bisa pakai web scraping
+5. ✅ Konten tidak template - data fresh dari web
+
+================================================================================
+                    NEW EXECUTION MODE: WEB SCRAPER MODE
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  WEB SCRAPER MODE - NO X-Token REQUIRED!                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Technology:                                                                 │
+│  - curl: HTTP requests (already available)                                   │
+│  - cheerio: HTML parser (v1.2.0 installed)                                   │
+│  - scripts/web-scraper.js: Custom implementation                             │
+│                                                                              │
+│  Available Functions:                                                        │
+│  1. webReader(url) - Fetch and parse any webpage                             │
+│  2. webSearch(query) - Search using DuckDuckGo HTML                          │
+│  3. batchFetch(urls) - Fetch multiple URLs concurrently                      │
+│                                                                              │
+│  CLI Usage:                                                                  │
+│  node scripts/web-scraper.js read "https://example.com"                      │
+│  node scripts/web-scraper.js search "performance appraisal"                   │
+│                                                                              │
+│  Programmatic Usage:                                                         │
+│  const { webReader, webSearch } = require('./scripts/web-scraper.js');       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  SUPPORTED SITES:                                                            │
+│  ✅ Wikipedia (Indonesia & English)                                          │
+│  ✅ DuckDuckGo Search                                                        │
+│  ✅ Most public websites                                                     │
+│  ✅ Academic sources (via links)                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    UPDATED MODE SELECTION LOGIC
+================================================================================
+
+**START WORKFLOW:**
+
+```
+STEP 0: CHECK AVAILABLE MODES
+-----------------------------
+PRIORITY ORDER:
+1. API Mode (if X-Token available)
+2. Web Scraper Mode (curl + cheerio)
+3. Pure Generation Mode (fallback)
+
+CHECK API:
+TRY: z-ai function -n web_search -a '{"query": "test"}'
+IF SUCCESS → MODE = "API_ENABLED"
+
+CHECK WEB SCRAPER:
+TRY: node scripts/web-scraper.js read "https://example.com"
+IF SUCCESS → MODE = "WEB_SCRAPER_ENABLED"
+
+IF BOTH FAIL:
+→ MODE = "PURE_GENERATION" (last resort)
+```
+
+================================================================================
+                    MODE COMPARISON TABLE
+================================================================================
+
+| Feature              | API Mode     | Web Scraper    | Pure Gen      |
+|----------------------|--------------|----------------|---------------|
+| X-Token Required     | ✅ YES       | ❌ NO          | ❌ NO         |
+| Real-time Data       | ✅ YES       | ✅ YES         | ❌ NO         |
+| Web Search           | ✅ YES       | ✅ YES (DDG)   | ❌ NO         |
+| Web Reader           | ✅ YES       | ✅ YES         | ❌ NO         |
+| Content Quality      | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐      | ⭐⭐⭐       |
+| Template Risk        | LOW          | LOW            | HIGH          |
+| Speed                | Fast         | Medium         | Fast          |
+| Availability         | Limited      | HIGH           | Always        |
+
+================================================================================
+                    UPDATED PHASE FLOW V8.7.1
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 0: PREPARATION + MODE DETECTION                                       │
+│ INPUT: Campaign request                                                     │
+│ PROCESS:                                                                    │
+│   1. Fetch campaign data from Rally API (public, no auth needed)           │
+│   2. Check available modes (API → Web Scraper → Pure Gen)                  │
+│   3. Set MODE flag for subsequent phases                                   │
+│ OUTPUT: CAMPAIGN_DATA + MODE                                               │
+│ VALIDATE: All required fields filled + MODE determined                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 1: RESEARCH                                                           │
+│ INPUT: CAMPAIGN_DATA + MODE                                                │
+│ PROCESS:                                                                    │
+│   IF API_MODE:                                                              │
+│     → Use z-ai web_search for 4 searches                                   │
+│   IF WEB_SCRAPER_MODE:                                                      │
+│     → Use webSearch() for DuckDuckGo search                                │
+│     → Use webReader() for Wikipedia/specific sources                       │
+│   IF PURE_GEN_MODE:                                                         │
+│     → Use internal knowledge                                               │
+│ OUTPUT: KNOWLEDGE_BASE (20+ verified facts)                                │
+│ VALIDATE: Minimum 20 verified facts extracted                              │
+│                                                                             │
+│ WEB SCRAPER EXAMPLES:                                                       │
+│   - Wikipedia ID: webReader("https://id.wikipedia.org/wiki/Pengukuran_kinerja")│
+│   - Wikipedia EN: webReader("https://en.wikipedia.org/wiki/Performance_appraisal")│
+│   - Search: webSearch("apa itu penilaian kinerja karyawan")                │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 2: LEADERBOARD ANALYSIS                                               │
+│ INPUT: CAMPAIGN_DATA                                                        │
+│ PROCESS:                                                                    │
+│   → Rally API is PUBLIC - fetch leaderboard directly                       │
+│   → curl "https://app.rally.fun/api/leaderboard?campaignAddress={addr}"    │
+│ OUTPUT: COMPETITOR_PATTERNS (scores, engagement metrics)                   │
+│ VALIDATE: Minimum 10 competitors analyzed                                  │
+│ NOTE: This phase works in ALL modes (API is public)                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 2B: COMPETITOR DEEP ANALYSIS                                          │
+│ INPUT: COMPETITOR_PATTERNS + tweet URLs                                     │
+│ PROCESS:                                                                    │
+│   IF API_MODE:                                                              │
+│     → Use z-ai page_reader                                                 │
+│   IF WEB_SCRAPER_MODE:                                                      │
+│     → Use webReader() for Twitter/X profiles                               │
+│     → Note: Twitter may require login, use alternative data               │
+│   IF PURE_GEN_MODE:                                                         │
+│     → SKIP (use leaderboard data only)                                     │
+│ OUTPUT: COMPETITOR_CONTENT (hooks, CTAs, patterns)                         │
+│ VALIDATE: At least 5 competitor contents analyzed                          │
+│ STATUS: OPTIONAL in non-API modes                                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    WEB SCRAPER INTEGRATION DETAILS
+================================================================================
+
+**PHASE 1 RESEARCH - WEB SCRAPER MODE:**
+
+```
+Step 1: Determine Research Topics
+---------------------------------
+Based on campaign goal, identify 3-4 research topics
+
+Step 2: Execute Searches
+------------------------
+FOR each topic:
+  results = webSearch(topic)
+  FOR top result:
+    content = webReader(result.url)
+    extract facts, stats, quotes
+
+Step 3: Verify Facts
+--------------------
+Cross-reference with:
+  - Campaign knowledge base
+  - Multiple sources
+  - Internal knowledge
+
+Step 4: Compile Knowledge Base
+------------------------------
+Minimum 20 verified facts:
+  - Project statistics
+  - Industry data
+  - Technical specifications
+  - Market comparisons
+```
+
+**AVAILABLE DATA SOURCES:**
+
+1. **Wikipedia Indonesia**
+   - URL: https://id.wikipedia.org/wiki/{topic}
+   - Content: Definitions, concepts, Indonesian context
+   - Example: Pengukuran kinerja, Manajemen SDM
+
+2. **Wikipedia English**
+   - URL: https://en.wikipedia.org/wiki/{topic}
+   - Content: Comprehensive theory, academic references
+   - Example: Performance appraisal, Human resource management
+
+3. **DuckDuckGo Search**
+   - Query: Any search term
+   - Returns: 10+ results with URLs and snippets
+   - Can follow links for full content
+
+4. **Academic Sources**
+   - Via Wikipedia references
+   - ScienceDirect links (partial access)
+   - Research papers (if public)
+
+================================================================================
+                    RALLY API DIRECT ACCESS (NO AUTH)
+================================================================================
+
+**IMPORTANT DISCOVERY:** Rally API is PUBLIC - no authentication needed!
+
+```
+ENDPOINTS (Direct curl access):
+
+1. Campaign List:
+   curl "https://app.rally.fun/api/campaigns"
+   → Returns all active campaigns
+
+2. Campaign Details:
+   curl "https://app.rally.fun/api/campaigns/{contractAddress}"
+   → Returns: title, goal, knowledgeBase, rules, style, gateWeights
+
+3. Leaderboard:
+   curl "https://app.rally.fun/api/leaderboard?campaignAddress={addr}&limit=20"
+   → Returns: rank, username, points, user details
+
+4. Submissions:
+   curl "https://app.rally.fun/api/submissions?campaignAddress={addr}&limit=20"
+   → Returns: tweetId, content, analysis, engagement metrics
+```
+
+**This means Phase 0, 2, and 2B can get all campaign data WITHOUT any API!**
+
+================================================================================
+                    SIMPLIFIED EXECUTION V8.7.1
+================================================================================
+
+**Three-Tier Architecture:**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    DATA ACCESS LAYER                             │
+├─────────────────────────────────────────────────────────────────┤
+│ Rally API (Public) → Campaign data, leaderboard, submissions   │
+│ Web Scraper → Wikipedia, search, real-time info                 │
+│ Internal Knowledge → Fallback when both unavailable            │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                    PROCESSING LAYER                              │
+├─────────────────────────────────────────────────────────────────┤
+│ Phase 3-9: Gap Analysis → Strategy → Generation → Validation   │
+│ All phases work with data from access layer                     │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                    OUTPUT LAYER                                  │
+├─────────────────────────────────────────────────────────────────┤
+│ Phase 10-16: Selection → Optimization → Verification → Output  │
+│ Final content ready for submission                              │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+================================================================================
+                    QUICK START COMMANDS
+================================================================================
+
+**Test Web Scraper:**
+```bash
+cd /home/z/my-project
+node scripts/web-scraper.js read "https://id.wikipedia.org/wiki/Pengukuran_kinerja"
+node scripts/web-scraper.js search "penilaian kinerja karyawan"
+```
+
+**Test Rally API:**
+```bash
+curl "https://app.rally.fun/api/campaigns" | head -100
+curl "https://app.rally.fun/api/campaigns/0xFEE8b7ea0b4976AC1014980BE300F6EFbDa2B481"
+```
+
+**Full Workflow Execution:**
+```bash
+cd /home/z/my-project
+# Phase 0: Get campaign data
+curl -s "https://app.rally.fun/api/campaigns" > campaign_list.json
+
+# Phase 1: Research with web scraper
+node scripts/web-scraper.js search "campaign topic" > research.json
+
+# Phase 2: Get leaderboard
+curl -s "https://app.rally.fun/api/leaderboard?campaignAddress={addr}" > leaderboard.json
+```
+
+================================================================================
+                    V8.7.1 STATUS SUMMARY
+================================================================================
+
+| Component          | Status      | Notes                           |
+|--------------------|-------------|----------------------------------|
+| Rally API Access   | ✅ WORKS    | Public, no auth needed          |
+| Web Scraper        | ✅ WORKS    | curl + cheerio                  |
+| Web Search         | ✅ WORKS    | DuckDuckGo HTML                 |
+| Wikipedia Access   | ✅ WORKS    | ID & EN verified                |
+| Content Research   | ✅ WORKS    | Real-time data                  |
+| Template Risk      | ✅ SOLVED   | Fresh data = no template        |
+| X-Token Dependency | ✅ REMOVED  | Not needed anymore              |
+
+================================================================================
+                    NEXT: FULL WORKFLOW DETAILS
+================================================================================
+
+The complete phase details from V8.7 remain valid.
+Key changes in V8.7.1:
+1. Phase 0: Add mode detection (API → Web Scraper → Pure Gen)
+2. Phase 1: Add web scraper option
+3. Phase 2B: Add web scraper option
+4. All other phases: Unchanged
+
+See Rally_Workflow_V8.7_COMPLETE.txt for full phase details.

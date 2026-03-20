@@ -1,0 +1,2007 @@
+================================================================================
+                    RALLY CONTENT WORKFLOW - VERSION 2.0
+              Complete Guide dengan Top 1-20 Beat Strategy
+================================================================================
+
+Versi: 2.0 (Updated)
+Tanggal: Maret 2026
+Tujuan: Workflow sistematis untuk beat Top 1-20 dan create konten Rally optimized
+Changelog: Added Phase 0, 2.5, 4.5, 8, 9 + Top 1-20 Beat Analysis
+
+================================================================================
+                         DAFTAR ISI
+================================================================================
+
+PHASE 0: PRE-WORKFLOW PREPARATION
+PHASE 1: CAMPAIGN RESEARCH
+PHASE 2: KNOWLEDGE BASE EXTRACTION
+PHASE 2.5: EXTERNAL RESEARCH
+PHASE 3: COMPETITIVE ANALYSIS (TOP 1-20 BEAT STRATEGY)
+PHASE 4: CONTENT CREATION
+PHASE 4.5: PLATFORM OPTIMIZATION
+PHASE 5: G4 ORIGINALITY OPTIMIZATION
+PHASE 6: VERIFICATION & VALIDATION
+PHASE 7: CONTENT ANALYSIS REPORT GENERATION
+PHASE 8: POST-SUBMISSION STRATEGY
+PHASE 9: LEARNING & ITERATION
+
+================================================================================
+                    PHASE 0: PRE-WORKFLOW PREPARATION
+================================================================================
+
+TUJUAN: Setup mindset dan resources sebelum mulai
+
+--------------------------------------------------------------------------------
+STEP 0.1: Mindset Reset
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ MINDSET RESET                                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │                                                                     │   │
+│   │   TARGET  : Beat Top 10 (minimum) - Aim for Top 1-3                │   │
+│   │                                                                     │   │
+│   │   EFFORT  : Maximum (no shortcuts, every detail matters)           │   │
+│   │                                                                     │   │
+│   │   ACCEPT  : Any result (learn and improve regardless)              │   │
+│   │                                                                     │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+│ QUESTIONS TO ANSWER BEFORE STARTING:                                       │
+│                                                                             │
+│ [ ] Am I ready to give maximum effort for this campaign?                   │
+│ [ ] Do I have enough time allocated? (Min 60-90 minutes for full workflow) │
+│ [ ] Am I in the right mental state to create quality content?              │
+│                                                                             │
+│ IF ANY ANSWER IS NO:                                                        │
+│   → Stop and come back when ready                                          │
+│   → Half-effort will produce half-results                                  │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 0.2: Resource Preparation
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ RESOURCE CHECKLIST                                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ A. TOOLS REQUIRED                                                           │
+│    ─────────────────                                                        │
+│    [ ] API access to Rally.fun confirmed                                   │
+│    [ ] Web search capability ready                                         │
+│    [ ] Twitter/X access for competitor analysis                            │
+│    [ ] Text editor for content drafting                                    │
+│                                                                             │
+│ B. FILES TO LOAD (if applicable)                                            │
+│    ──────────────────────────────                                           │
+│    [ ] Previous campaign reports (for learning)                            │
+│    [ ] Uploaded knowledge base files                                       │
+│    [ ] Personal pattern tracker                                            │
+│                                                                             │
+│ C. TIME ALLOCATION                                                          │
+│    ─────────────────                                                        │
+│    Recommended minimum: 90 minutes                                         │
+│                                                                             │
+│    Phase 0-2:   [20] minutes (Research & KB)                               │
+│    Phase 2.5-3: [25] minutes (External + Competitor Analysis)              │
+│    Phase 4-5:   [25] minutes (Content Creation & Optimization)             │
+│    Phase 6-7:   [15] minutes (Verification & Report)                       │
+│    Phase 8-9:   [Ongoing] (Post-submission & Learning)                     │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 0.3: Goal Definition
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ GOAL SETTING                                                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ CAMPAIGN TARGET:                                                            │
+│ [ ] Target score to beat: [will fill after Phase 1]                        │
+│ [ ] Target rank: Top [X]                                                    │
+│ [ ] Previous personal best: [X.XX] (if applicable)                         │
+│                                                                             │
+│ DIFFERENTIATION GOAL:                                                       │
+│ [ ] What unique angle will I bring? [to be determined]                     │
+│ [ ] What will make my content stand out from top performers?               │
+│                                                                             │
+│ QUALITY GOAL:                                                               │
+│ [ ] 100% knowledge base coverage                                            │
+│ [ ] All G4 elements implemented                                             │
+│ [ ] Beat top performer content quality                                     │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 1: CAMPAIGN RESEARCH
+================================================================================
+
+TUJUAN: Mengumpulkan semua informasi campaign
+
+--------------------------------------------------------------------------------
+STEP 1.1: Fetch Campaign List
+--------------------------------------------------------------------------------
+API Endpoint: GET https://app.rally.fun/api/campaigns
+
+Action:
+- List semua campaign aktif
+- Identifikasi campaign yang akan diikuti
+- Catat campaign address
+
+--------------------------------------------------------------------------------
+STEP 1.2: Fetch Campaign Detail
+--------------------------------------------------------------------------------
+API Endpoint: GET https://app.rally.fun/api/campaigns/{address}
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ CAMPAIGN INFO TEMPLATE                                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Campaign Title: [title]                                                     │
+│ Campaign Address: [address]                                                 │
+│ Token: [symbol]                                                             │
+│ Total Reward Pool: [amount] [token]                                        │
+│ Distribution Alpha: [1/3/8]                                                │
+│ Start Date: [date]                                                          │
+│ End Date: [date]                                                            │
+│ Current Period: [X] of [Y]                                                  │
+│ Min Followers: [X]                                                          │
+│ Total Submissions: [X]                                                      │
+│                                                                             │
+│ MISSIONS:                                                                   │
+│ ┌─────────────────────────────────────────────────────────────────────┐    │
+│ │ Mission 0: [title]                                                   │    │
+│ │ Mission 1: [title]                                                   │    │
+│ │ Mission 2: [title]                                                   │    │
+│ └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 1.3: Fetch Leaderboard (Top 20+)
+--------------------------------------------------------------------------------
+API Endpoint: GET https://app.rally.fun/api/leaderboard?campaignAddress={address}&limit=100
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ LEADERBOARD TEMPLATE                                                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Rank │ Username          │ Score    │ Submissions                          │
+│ ─────┼───────────────────┼──────────┼──────────────────                     │
+│ 1    │ [username]        │ [X.XX]   │ [X]                                  │
+│ 2    │ [username]        │ [X.XX]   │ [X]                                  │
+│ ...  │ ...               │ ...      │ ...                                  │
+│ 10   │ [username]        │ [X.XX]   │ [X]  ← MINIMUM TARGET               │
+│ ...  │ ...               │ ...      │ ...                                  │
+│ 20   │ [username]        │ [X.XX]   │ [X]                                  │
+│ ...  │ ...               │ ...      │ ...                                  │
+│ 100  │ [username]        │ [X.XX]   │ [X]                                  │
+│                                                                             │
+│ TOTAL PARTICIPANTS: [X]                                                     │
+│                                                                             │
+│ TARGET ANALYSIS:                                                            │
+│ - Rank 1 Score: [X.XX] ← STRETCH GOAL                                      │
+│ - Rank 3 Score: [X.XX] ← AMBITIOUS GOAL                                    │
+│ - Rank 10 Score: [X.XX] ← MINIMUM GOAL                                     │
+│ - Rank 20 Score: [X.XX] ← FLOOR                                            │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 2: KNOWLEDGE BASE EXTRACTION
+================================================================================
+
+TUJUAN: Extract 100% informasi dari knowledge base
+
+--------------------------------------------------------------------------------
+STEP 2.1: Parse Knowledge Base Content
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ KNOWLEDGE BASE CHECKLIST                                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ KNOWLEDGE BASE RAW CONTENT:                                                 │
+│ [paste full knowledgeBase field here]                                       │
+│                                                                             │
+│ EXTRACTED FACTS:                                                            │
+│ ────────────────────                                                        │
+│                                                                             │
+│ [ ] Fact 1: [extract fact]                                                  │
+│ [ ] Fact 2: [extract fact]                                                  │
+│ [ ] Fact 3: [extract fact]                                                  │
+│ [ ] Fact 4: [extract fact]                                                  │
+│ [ ] Fact 5: [extract fact]                                                  │
+│ [ ] Fact 6: [extract fact]                                                  │
+│ [ ] Fact 7: [extract fact]                                                  │
+│ [ ] Fact 8: [extract fact]                                                  │
+│ [ ] Fact 9: [extract fact]                                                  │
+│ [ ] Fact 10: [extract fact]                                                 │
+│ [ ] Fact 11: [extract fact]                                                 │
+│ [ ] Fact 12: [extract fact]                                                 │
+│ [ ] Fact 13: [extract fact]                                                 │
+│ [ ] Fact 14: [extract fact]                                                 │
+│ [ ] Fact 15: [extract fact]                                                 │
+│ [ ] Fact 16: [extract fact]                                                 │
+│ [ ] Fact 17: [extract fact]                                                 │
+│ [ ] Fact 18: [extract fact]                                                 │
+│ [ ] Fact 19: [extract fact]                                                 │
+│ [ ] Fact 20: [extract fact]                                                 │
+│                                                                             │
+│ TOTAL FACTS EXTRACTED: [X]                                                  │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 2.2: Parse Core Thesis
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ CORE THESIS EXTRACTION                                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ MAIN THESIS:                                                                │
+│ [What is the core argument this campaign wants to convey?]                  │
+│                                                                             │
+│ KEY DIFFERENTIATORS (from KB):                                              │
+│ 1. [differentiator 1]                                                       │
+│ 2. [differentiator 2]                                                       │
+│ 3. [differentiator 3]                                                       │
+│                                                                             │
+│ INSTITUTIONAL ANGLE:                                                        │
+│ [What institutional perspective is emphasized?]                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 2.3: Extract Style Guidelines
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ STYLE GUIDELINES                                                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ REQUIRED TONE:                                                              │
+│ [e.g., "Institutional, analytical, and grounded"]                           │
+│                                                                             │
+│ DO:                                                                         │
+│ ✓ [what is allowed/encouraged]                                              │
+│ ✓ [what is allowed/encouraged]                                              │
+│ ✓ [what is allowed/encouraged]                                              │
+│                                                                             │
+│ DON'T:                                                                      │
+│ ✗ [what is forbidden]                                                       │
+│ ✗ [what is forbidden]                                                       │
+│ ✗ [what is forbidden]                                                       │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 2.4: Mission Requirements Extraction
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ MISSION REQUIREMENTS CHECKLIST                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Mission Being Targeted: [Mission X]                                         │
+│                                                                             │
+│ REQUIRED ELEMENTS:                                                          │
+│ ────────────────────                                                        │
+│ [ ] Required Mention 1: @[account]                                          │
+│ [ ] Required Mention 2: @[account]                                          │
+│ [ ] Required Phrase: "[exact phrase]"                                       │
+│ [ ] Required Topic 1: [topic]                                               │
+│ [ ] Required Topic 2: [topic]                                               │
+│ [ ] Required Topic 3: [topic]                                               │
+│ [ ] Required Topic 4: [topic]                                               │
+│                                                                             │
+│ FORMAT REQUIREMENTS:                                                        │
+│ ─────────────────────                                                       │
+│ [ ] Single tweet / Thread                                                   │
+│ [ ] Original content only                                                   │
+│ [ ] Any language allowed / Specific language                                │
+│ [ ] Image/video optional / required                                         │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 2.5: EXTERNAL RESEARCH
+================================================================================
+
+TUJUAN: Memperkaya konten dengan research eksternal dan verifikasi
+
+--------------------------------------------------------------------------------
+STEP 2.5.1: Web Search for Additional Context
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ EXTERNAL RESEARCH QUERIES                                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ SEARCH QUERY 1: "[project name] recent news"                               │
+│ Results:                                                                    │
+│ - [key finding 1]                                                           │
+│ - [key finding 2]                                                           │
+│ - [key finding 3]                                                           │
+│                                                                             │
+│ SEARCH QUERY 2: "[project name] technical architecture"                    │
+│ Results:                                                                    │
+│ - [key finding 1]                                                           │
+│ - [key finding 2]                                                           │
+│ - [key finding 3]                                                           │
+│                                                                             │
+│ SEARCH QUERY 3: "[project name] vs competitors"                            │
+│ Results:                                                                    │
+│ - [key finding 1]                                                           │
+│ - [key finding 2]                                                           │
+│ - [key finding 3]                                                           │
+│                                                                             │
+│ SEARCH QUERY 4: "[project name] [specific feature from KB]"                │
+│ Results:                                                                    │
+│ - [key finding 1]                                                           │
+│ - [key finding 2]                                                           │
+│ - [key finding 3]                                                           │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 2.5.2: Cross-Reference Verification
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ CLAIM VERIFICATION MATRIX                                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ KB Claim                          │ External Source │ Verified? │ Notes     │
+│ ──────────────────────────────────┼─────────────────┼───────────┼─────────  │
+│ [claim 1 from KB]                 │ [source]        │ [✓/✗]     │ [notes]   │
+│ [claim 2 from KB]                 │ [source]        │ [✓/✗]     │ [notes]   │
+│ [claim 3 from KB]                 │ [source]        │ [✓/✗]     │ [notes]   │
+│ [claim 4 from KB]                 │ [source]        │ [✓/✗]     │ [notes]   │
+│ [claim 5 from KB]                 │ [source]        │ [✓/✗]     │ [notes]   │
+│                                                                             │
+│ DISCREPANCIES FOUND:                                                        │
+│ [list any claims that don't match external sources]                         │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 2.5.3: Additional Facts Extraction
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ADDITIONAL FACTS NOT IN KNOWLEDGE BASE                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Facts found from external research that enhance understanding:              │
+│                                                                             │
+│ [ ] Additional Fact 1: [fact + source]                                      │
+│ [ ] Additional Fact 2: [fact + source]                                      │
+│ [ ] Additional Fact 3: [fact + source]                                      │
+│ [ ] Additional Fact 4: [fact + source]                                      │
+│ [ ] Additional Fact 5: [fact + source]                                      │
+│                                                                             │
+│ These facts can be used to:                                                 │
+│ - Add unique angle not covered by KB                                        │
+│ - Strengthen argument                                                       │
+│ - Provide recent developments                                               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 2.5.4: Unique Angle Discovery
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ANGLE DISCOVERY                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Based on combined KB + External research:                                   │
+│                                                                             │
+│ ANGLES EXPLORED BY OTHERS (to avoid or improve):                            │
+│ - [angle 1 - commonly used]                                                 │
+│ - [angle 2 - commonly used]                                                 │
+│ - [angle 3 - commonly used]                                                 │
+│                                                                             │
+│ UNIQUE ANGLES I CAN TAKE:                                                   │
+│ - [unique angle 1]                                                          │
+│ - [unique angle 2]                                                          │
+│ - [unique angle 3]                                                          │
+│                                                                             │
+│ SELECTED ANGLE:                                                             │
+│ [the angle that will differentiate my content]                              │
+│                                                                             │
+│ WHY THIS ANGLE IS STRONGER:                                                 │
+│ [explanation of competitive advantage]                                      │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 3: COMPETITIVE ANALYSIS (TOP 1-20 BEAT)
+================================================================================
+
+TUJUAN: Deep analysis top 1-20 untuk BEAT their quality
+
+--------------------------------------------------------------------------------
+STEP 3.1: Top 1-20 Content Collection
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TOP 1-20 CONTENT COLLECTION                                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ INSTRUCTIONS:                                                               │
+│ 1. Get tweet links from leaderboard (if accessible via X profile)          │
+│ 2. For each top 20, collect the actual tweet content                       │
+│ 3. Store for detailed analysis                                             │
+│                                                                             │
+│ COLLECTION STATUS:                                                          │
+│ ───────────────────                                                         │
+│ [ ] Rank 1: @[username] - Tweet collected                                  │
+│ [ ] Rank 2: @[username] - Tweet collected                                  │
+│ [ ] Rank 3: @[username] - Tweet collected                                  │
+│ [ ] Rank 4: @[username] - Tweet collected                                  │
+│ [ ] Rank 5: @[username] - Tweet collected                                  │
+│ [ ] Rank 6: @[username] - Tweet collected                                  │
+│ [ ] Rank 7: @[username] - Tweet collected                                  │
+│ [ ] Rank 8: @[username] - Tweet collected                                  │
+│ [ ] Rank 9: @[username] - Tweet collected                                  │
+│ [ ] Rank 10: @[username] - Tweet collected                                 │
+│ [ ] Rank 11: @[username] - Tweet collected                                 │
+│ [ ] Rank 12: @[username] - Tweet collected                                 │
+│ [ ] Rank 13: @[username] - Tweet collected                                 │
+│ [ ] Rank 14: @[username] - Tweet collected                                 │
+│ [ ] Rank 15: @[username] - Tweet collected                                 │
+│ [ ] Rank 16: @[username] - Tweet collected                                 │
+│ [ ] Rank 17: @[username] - Tweet collected                                 │
+│ [ ] Rank 18: @[username] - Tweet collected                                 │
+│ [ ] Rank 19: @[username] - Tweet collected                                 │
+│ [ ] Rank 20: @[username] - Tweet collected                                 │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 3.2: Individual Content Analysis Template
+--------------------------------------------------------------------------------
+
+UNTUK SETIAP TWEET TOP 1-20, ANALISIS:
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TOP PERFORMER ANALYSIS - RANK [X]: @[username]                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ CONTENT:                                                                    │
+│ ┌─────────────────────────────────────────────────────────────────────┐    │
+│ │ [paste tweet content here]                                           │    │
+│ └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                             │
+│ A. STRUCTURAL ANALYSIS                                                      │
+│    ───────────────────────                                                  │
+│    Format: [Single tweet / Thread]                                          │
+│    Word count: [X]                                                          │
+│    Character count: [X]                                                     │
+│    Number of tweets (if thread): [X]                                        │
+│    Number of paragraphs: [X]                                                │
+│                                                                             │
+│ B. HOOK ANALYSIS                                                            │
+│    ────────────────                                                         │
+│    Opening line: "[first line]"                                             │
+│    Hook type: [Problem / Question / Statement / Data / Contrarian]         │
+│    Hook strength: [Weak / Medium / Strong]                                  │
+│    Why it works/doesn't: [analysis]                                         │
+│                                                                             │
+│ C. CONTENT DEPTH                                                            │
+│    ────────────────                                                         │
+│    KB coverage: [Low / Medium / High - estimate %]                         │
+│    Technical terms used: [count + list]                                     │
+│    Unique facts not in KB: [count + list]                                   │
+│    Depth level: [Surface / Moderate / Deep]                                │
+│                                                                             │
+│ D. TONE & VOICE                                                             │
+│    ──────────────────                                                       │
+│    Tone: [Promotional / Educational / Analytical / Casual]                 │
+│    Voice: [Formal / Semi-formal / Casual]                                   │
+│    Contractions used: [Yes/No - count if yes]                               │
+│    AI markers detected: [list any]                                          │
+│                                                                             │
+│ E. STRUCTURE FLOW                                                           │
+│    ──────────────────                                                       │
+│    Opening → Middle → Closing pattern:                                      │
+│    [describe the flow]                                                      │
+│                                                                             │
+│    Is flow logical? [Yes/No]                                                │
+│    Is flow engaging? [Yes/No]                                               │
+│    Where does it lose momentum? [if applicable]                             │
+│                                                                             │
+│ F. CLOSING ANALYSIS                                                         │
+│    ──────────────────                                                       │
+│    Closing line: "[last line]"                                              │
+│    Closing type: [Summary / CTA / Statement / Question]                     │
+│    Closing strength: [Weak / Medium / Strong]                               │
+│    Memorable? [Yes/No]                                                      │
+│                                                                             │
+│ G. ENGAGEMENT INDICATORS                                                    │
+│    ────────────────────────────                                             │
+│    [If visible from X]                                                      │
+│    RTs: [X]                                                                 │
+│    Likes: [X]                                                               │
+│    Replies: [X]                                                             │
+│                                                                             │
+│ H. STRENGTHS                                                                │
+│    ──────────                                                               │
+│    [what this content does well]                                            │
+│    1. [strength 1]                                                          │
+│    2. [strength 2]                                                          │
+│    3. [strength 3]                                                          │
+│                                                                             │
+│ I. WEAKNESSES / GAPS                                                        │
+│    ────────────────────                                                     │
+│    [what this content could improve]                                        │
+│    1. [weakness/gap 1]                                                      │
+│    2. [weakness/gap 2]                                                      │
+│    3. [weakness/gap 3]                                                      │
+│                                                                             │
+│ J. BEAT OPPORTUNITIES                                                       │
+│    ────────────────────────                                                 │
+│    How can I BEAT this content?                                             │
+│    1. [specific improvement 1]                                              │
+│    2. [specific improvement 2]                                              │
+│    3. [specific improvement 3]                                              │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 3.3: Aggregate Pattern Analysis
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TOP 1-20 PATTERN ANALYSIS                                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ A. COMMON PATTERNS (What most top performers do)                           │
+│    ────────────────────────────────────────────                            │
+│                                                                             │
+│ Hook patterns:                                                              │
+│ - [most common hook type]                                                   │
+│ - [second most common]                                                      │
+│                                                                             │
+│ Structure patterns:                                                         │
+│ - [most common structure]                                                   │
+│ - [average word count range]                                                │
+│                                                                             │
+│ Content patterns:                                                           │
+│ - [depth level most use]                                                    │
+│ - [KB coverage level]                                                       │
+│                                                                             │
+│ Tone patterns:                                                              │
+│ - [dominant tone]                                                           │
+│ - [formality level]                                                         │
+│                                                                             │
+│ Closing patterns:                                                           │
+│ - [most common closing type]                                                │
+│ - [memorable vs forgettable ratio]                                          │
+│                                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ B. RARE PATTERNS (What few top performers do - opportunity)                │
+│    ─────────────────────────────────────────────────────────────            │
+│                                                                             │
+│ Unique approaches found in top 20:                                          │
+│ - [unique approach 1 - by @username at rank X]                             │
+│ - [unique approach 2 - by @username at rank X]                             │
+│ - [unique approach 3 - by @username at rank X]                             │
+│                                                                             │
+│ Underutilized elements:                                                     │
+│ - [element not commonly used but effective]                                 │
+│ - [element not commonly used but effective]                                 │
+│                                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ C. QUALITY GAPS IN TOP 20 (Where they fall short)                          │
+│    ────────────────────────────────────────────────────                     │
+│                                                                             │
+│ Most common weaknesses across top 20:                                       │
+│ 1. [weakness pattern 1]                                                     │
+│ 2. [weakness pattern 2]                                                     │
+│ 3. [weakness pattern 3]                                                     │
+│                                                                             │
+│ KB coverage gaps:                                                           │
+│ - [points often missed]                                                     │
+│ - [points often missed]                                                     │
+│                                                                             │
+│ AI detection risks:                                                         │
+│ - [AI markers commonly found]                                               │
+│ - [AI markers commonly found]                                               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 3.4: Beat Strategy Matrix
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ BEAT TOP 1-20 STRATEGY MATRIX                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ ┌─────────────────────────────────────────────────────────────────────┐    │
+│ │                     WHAT THEY DO          │ WHAT I WILL DO         │    │
+│ ├─────────────────────────────────────────────────────────────────────┤    │
+│ │ HOOK                                                │               │    │
+│ │ [common hook pattern]                    │ [my better approach]    │    │
+│ ├─────────────────────────────────────────────────────────────────────┤    │
+│ │ KB COVERAGE                                         │               │    │
+│ │ [typical coverage %]                    │ [100% - better]          │    │
+│ ├─────────────────────────────────────────────────────────────────────┤    │
+│ │ DEPTH                                               │               │    │
+│ │ [typical depth]                         │ [deeper analysis]        │    │
+│ ├─────────────────────────────────────────────────────────────────────┤    │
+│ │ ORIGINALITY                                         │               │    │
+│ │ [AI markers / template style]            │ [G4 optimized]           │    │
+│ ├─────────────────────────────────────────────────────────────────────┤    │
+│ │ STRUCTURE                                           │               │    │
+│ │ [common structure issues]                │ [my improved structure] │    │
+│ ├─────────────────────────────────────────────────────────────────────┤    │
+│ │ CLOSING                                             │               │    │
+│ │ [common closing weakness]                │ [memorable closing]     │    │
+│ ├─────────────────────────────────────────────────────────────────────┤    │
+│ │ UNIQUE ANGLE                                        │               │    │
+│ │ [angles they take]                       │ [my unique angle]        │    │
+│ └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 3.5: Top 1-3 Deep Dive (Primary Targets to Beat)
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ RANK 1 CONTENT - DEEP DIVE                                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Username: @[username]                                                       │
+│ Score: [X.XX]                                                               │
+│                                                                             │
+│ FULL CONTENT:                                                               │
+│ ┌─────────────────────────────────────────────────────────────────────┐    │
+│ │                                                                     │    │
+│ │ [paste full tweet content]                                          │    │
+│ │                                                                     │    │
+│ └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                             │
+│ WHY IT SCORED HIGH:                                                         │
+│ 1. [reason 1]                                                               │
+│ 2. [reason 2]                                                               │
+│ 3. [reason 3]                                                               │
+│                                                                             │
+│ WHAT IT'S MISSING:                                                          │
+│ 1. [gap 1]                                                                  │
+│ 2. [gap 2]                                                                  │
+│ 3. [gap 3]                                                                  │
+│                                                                             │
+│ HOW TO BEAT:                                                                │
+│ [specific strategy to surpass this content]                                 │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ RANK 2 CONTENT - DEEP DIVE                                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ [Same template as Rank 1]                                                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ RANK 3 CONTENT - DEEP DIVE                                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ [Same template as Rank 1]                                                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 3.6: Final Beat Strategy
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ FINAL BEAT TOP 1-20 STRATEGY                                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ MY CONTENT WILL:                                                            │
+│                                                                             │
+│ 1. HOOK                                                                     │
+│    Strategy: [how my hook beats theirs]                                     │
+│    Implementation: [specific approach]                                      │
+│                                                                             │
+│ 2. KNOWLEDGE BASE COVERAGE                                                  │
+│    Strategy: 100% coverage (vs their ~[X]%)                                │
+│    Implementation: Ensure all [X] facts included                           │
+│                                                                             │
+│ 3. DEPTH                                                                    │
+│    Strategy: Go deeper on [specific topics]                                │
+│    Implementation: [specific details to add]                                │
+│                                                                             │
+│ 4. ORIGINALITY                                                              │
+│    Strategy: Full G4 implementation (vs their [partial/none])              │
+│    Implementation: [specific G4 elements]                                   │
+│                                                                             │
+│ 5. UNIQUE ANGLE                                                             │
+│    Strategy: [angle that differentiates]                                    │
+│    Implementation: [how to execute]                                         │
+│                                                                             │
+│ 6. CLOSING                                                                  │
+│    Strategy: More memorable than [X]% of top 20                            │
+│    Implementation: [specific closing approach]                              │
+│                                                                             │
+│ 7. STRUCTURE                                                                │
+│    Strategy: Better flow than top performers                               │
+│    Implementation: [specific structure improvements]                        │
+│                                                                             │
+│ CONFIDENCE LEVEL TO BEAT: [X]%                                              │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 4: CONTENT CREATION
+================================================================================
+
+TUJUAN: Membuat konten yang mengalahkan top 1-20
+
+--------------------------------------------------------------------------------
+STEP 4.1: Multiple Hook Drafts
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ HOOK OPTIONS (Create 5 variations)                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ HOOK 1 - Problem-focused:                                                   │
+│ "[hook focusing on the problem]"                                            │
+│ Strength: [why this works]                                                  │
+│                                                                             │
+│ HOOK 2 - Question-based:                                                    │
+│ "[hook as a question]"                                                      │
+│ Strength: [why this works]                                                  │
+│                                                                             │
+│ HOOK 3 - Statement/Bold:                                                    │
+│ "[hook as bold statement]"                                                  │
+│ Strength: [why this works]                                                  │
+│                                                                             │
+│ HOOK 4 - Data/Fact-led:                                                     │
+│ "[hook starting with data/fact]"                                            │
+│ Strength: [why this works]                                                  │
+│                                                                             │
+│ HOOK 5 - Contrarian:                                                        │
+│ "[hook that challenges conventional thinking]"                              │
+│ Strength: [why this works]                                                  │
+│                                                                             │
+│ SELECTED HOOK: Hook [X]                                                     │
+│ Reason: [why this hook will beat top performers]                            │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 4.2: Content Structure Planning
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ CONTENT STRUCTURE PLAN                                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ PARA 1 - HOOK + PROBLEM STATEMENT                                           │
+│ ───────────────────────────────────────                                     │
+│ [Hook line]                                                                 │
+│ [Problem elaboration - why this matters]                                    │
+│ [Transition to solution]                                                    │
+│                                                                             │
+│ PARA 2 - SOLUTION INTRODUCTION                                              │
+│ ─────────────────────────────────                                           │
+│ [Introduce the main subject]                                                │
+│ [Core value proposition]                                                    │
+│ [How it addresses the problem]                                              │
+│                                                                             │
+│ PARA 3 - TECHNICAL DEEP DIVE                                                │
+│ ───────────────────────────────                                             │
+│ [Architecture details]                                                      │
+│ [How it works technically]                                                  │
+│ [Key differentiating features]                                              │
+│                                                                             │
+│ PARA 4 - COMPLIANCE/INSTITUTIONAL ANGLE                                     │
+│ ─────────────────────────────────────────                                   │
+│ [Compliance features]                                                       │
+│ [Institutional benefits]                                                    │
+│ [Regulatory alignment]                                                      │
+│                                                                             │
+│ PARA 5 - INTEROPERABILITY/CONNECTIVITY                                      │
+│ ──────────────────────────────────────                                      │
+│ [How it connects to broader ecosystem]                                      │
+│ [Liquidity/composability benefits]                                          │
+│                                                                             │
+│ PARA 6 - THESIS + CLOSING                                                   │
+│ ─────────────────────────────                                               │
+│ [Core thesis statement]                                                     │
+│ [Memorable closing line]                                                    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 4.3: Full Content Draft
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ FULL CONTENT DRAFT                                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ [Write full content here based on structure plan]                           │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ WORD COUNT: [X]                                                             │
+│ CHARACTER COUNT: [X]                                                        │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 4.4: Knowledge Base Coverage Verification
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ KB COVERAGE CHECK - DRAFT                                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ [ ] Fact 1: [present/missing - quote from content]                          │
+│ [ ] Fact 2: [present/missing - quote from content]                          │
+│ [ ] Fact 3: [present/missing - quote from content]                          │
+│ [ ] Fact 4: [present/missing - quote from content]                          │
+│ [ ] Fact 5: [present/missing - quote from content]                          │
+│ [ ] Fact 6: [present/missing - quote from content]                          │
+│ [ ] Fact 7: [present/missing - quote from content]                          │
+│ [ ] Fact 8: [present/missing - quote from content]                          │
+│ [ ] Fact 9: [present/missing - quote from content]                          │
+│ [ ] Fact 10: [present/missing - quote from content]                         │
+│ [ ] Fact 11: [present/missing - quote from content]                         │
+│ [ ] Fact 12: [present/missing - quote from content]                         │
+│ [ ] Fact 13: [present/missing - quote from content]                         │
+│ [ ] Fact 14: [present/missing - quote from content]                         │
+│ [ ] Fact 15: [present/missing - quote from content]                         │
+│ [ ] Fact 16: [present/missing - quote from content]                         │
+│ [ ] Fact 17: [present/missing - quote from content]                         │
+│ [ ] Fact 18: [present/missing - quote from content]                         │
+│ [ ] Fact 19: [present/missing - quote from content]                         │
+│ [ ] Fact 20: [present/missing - quote from content]                         │
+│                                                                             │
+│ COVERAGE: [X/20] = [X]%                                                     │
+│                                                                             │
+│ IF < 100%: ADD MISSING FACTS BEFORE PROCEEDING                              │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 4.5: Mission Requirements Verification
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ MISSION REQUIREMENTS CHECK - DRAFT                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ [ ] Required Mention 1: @[account] - [present/missing]                      │
+│ [ ] Required Mention 2: @[account] - [present/missing]                      │
+│ [ ] Required Phrase: "[phrase]" - [present/missing]                         │
+│ [ ] Required Topic 1: [topic] - [covered/not covered]                       │
+│ [ ] Required Topic 2: [topic] - [covered/not covered]                       │
+│ [ ] Required Topic 3: [topic] - [covered/not covered]                       │
+│ [ ] Required Topic 4: [topic] - [covered/not covered]                       │
+│                                                                             │
+│ COMPLIANCE: [X/X] = [X]%                                                    │
+│                                                                             │
+│ IF < 100%: ADD MISSING ELEMENTS BEFORE PROCEEDING                           │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 4.5: PLATFORM OPTIMIZATION
+================================================================================
+
+TUJUAN: Optimize untuk Twitter/X platform
+
+--------------------------------------------------------------------------------
+STEP 4.5.1: Character Count & Format Decision
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TWITTER FORMAT DECISION                                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Total Character Count: [X]                                                  │
+│                                                                             │
+│ DECISION:                                                                   │
+│                                                                             │
+│ IF < 280 characters:                                                        │
+│   ✓ Single tweet format                                                    │
+│                                                                             │
+│ IF > 280 characters:                                                        │
+│   ✓ Thread format required                                                 │
+│   ✓ Split into [X] tweets                                                  │
+│                                                                             │
+│ THREAD STRUCTURE (if applicable):                                           │
+│ ─────────────────────────────────                                           │
+│                                                                             │
+│ Tweet 1/ [X]:                                                               │
+│ [content]                                                                   │
+│ Character count: [X]/280                                                    │
+│                                                                             │
+│ Tweet 2/ [X]:                                                               │
+│ [content]                                                                   │
+│ Character count: [X]/280                                                    │
+│                                                                             │
+│ Tweet 3/ [X]:                                                               │
+│ [content]                                                                   │
+│ Character count: [X]/280                                                    │
+│                                                                             │
+│ [Continue as needed]                                                        │
+│                                                                             │
+│ Tweet [X]/ [X]:                                                             │
+│ [content including mentions/hashtags]                                       │
+│ Character count: [X]/280                                                    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 4.5.2: Hashtag & Mention Placement
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ HASHTAG & MENTION OPTIMIZATION                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ REQUIRED MENTIONS:                                                          │
+│ - @[mention1] - Placed: [location in content]                              │
+│ - @[mention2] - Placed: [location in content]                              │
+│                                                                             │
+│ REQUIRED HASHTAGS:                                                          │
+│ - [hashtag1] - Placed: [location - usually end of last tweet]              │
+│ - [hashtag2] - Placed: [location]                                          │
+│                                                                             │
+│ PLACEMENT STRATEGY:                                                         │
+│ - Mentions: Natural flow within content                                    │
+│ - Hashtags: End of final tweet                                             │
+│ - Total hashtags: Keep to 2-3 maximum                                      │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 4.5.3: Media Decision
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ IMAGE/MEDIA DECISION                                                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ IS IMAGE REQUIRED BY CAMPAIGN? [Yes/No]                                     │
+│ IS IMAGE OPTIONAL? [Yes/No]                                                 │
+│                                                                             │
+│ WOULD IMAGE ENHANCE CONTENT?                                                │
+│ [Assessment of whether visual would add value]                              │
+│                                                                             │
+│ DECISION:                                                                   │
+│ [ ] No image needed - content is strong alone                              │
+│ [ ] Image recommended - [type and reason]                                   │
+│                                                                             │
+│ IF IMAGE TO BE ADDED:                                                       │
+│ Type: [Diagram / Chart / Screenshot / Photo / Meme]                        │
+│ Purpose: [What it adds to content]                                          │
+│ Source: [Where to get/create]                                               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 4.5.4: Posting Time Optimization
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ POSTING TIME STRATEGY                                                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ OPTIMAL TIMES (US/EU overlap for crypto Twitter):                           │
+│ - 9:00 AM - 12:00 PM EST (2:00 PM - 5:00 PM UTC)                           │
+│ - 2:00 PM - 5:00 PM EST (7:00 PM - 10:00 PM UTC)                           │
+│ - 8:00 PM - 10:00 PM EST (1:00 AM - 3:00 AM UTC)                           │
+│                                                                             │
+│ CURRENT TIME: [TIME] [TIMEZONE]                                             │
+│                                                                             │
+│ CAMPAIGN DEADLINE: [DATE] [TIME]                                            │
+│                                                                             │
+│ POSTING DECISION:                                                           │
+│ [ ] Post now (within optimal window)                                        │
+│ [ ] Schedule for [TIME] (optimal window)                                    │
+│ [ ] Post immediately (deadline approaching)                                 │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 5: G4 ORIGINALITY OPTIMIZATION
+================================================================================
+
+TUJUAN: Apply G4 checklist untuk maximum Originality score
+
+--------------------------------------------------------------------------------
+STEP 5.1: G4 Checklist Implementation
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ G4 ORIGINALITY CHECKLIST                                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ ╔═══════════════════════════════════════════════════════════════════════╗   │
+│ ║ ELEMENT 1: CASUAL HOOK                                                ║   │
+│ ╠═══════════════════════════════════════════════════════════════════════╣   │
+│ ║                                                                       ║   │
+│ ║ Requirement: First line goes DIRECTLY to the point                   ║   │
+│ ║ No generic intros like "In the world of..." or "Let me tell you..."  ║   │
+│ ║                                                                       ║   │
+│ ║ My hook: "[first line]"                                               ║   │
+│ ║                                                                       ║   │
+│ ║ Checklist:                                                            ║   │
+│ ║ [ ] Starts with bold statement                                       ║   │
+│ ║ [ ] No intro filler                                                  ║   │
+│ ║ [ ] Grabs attention immediately                                      ║   │
+│ ║ [ ] Better than top 20 hooks analyzed                                ║   │
+│ ║                                                                       ║   │
+│ ║ STATUS: [✓ IMPLEMENTED / ✗ NEEDS WORK]                                ║   │
+│ ╚═══════════════════════════════════════════════════════════════════════╝   │
+│                                                                             │
+│ ╔═══════════════════════════════════════════════════════════════════════╗   │
+│ ║ ELEMENT 2: PARENTHETICAL ASIDE                                        ║   │
+│ ╠═══════════════════════════════════════════════════════════════════════╣   │
+│ ║                                                                       ║   │
+│ ║ Requirement: Human touch in parentheses - shows authentic voice       ║   │
+│ ║ Examples: "(well, some don't)", "(honestly, who would?)", "(tbh)"    ║   │
+│ ║                                                                       ║   │
+│ ║ My aside: "[parenthetical content]"                                   ║   │
+│ ║ Location: [where in content]                                          ║   │
+│ ║                                                                       ║   │
+│ ║ Checklist:                                                            ║   │
+│ ║ [ ] At least one parenthetical aside                                 ║   │
+│ ║ [ ] Feels natural, not forced                                        ║   │
+│ ║ [ ] Adds human touch                                                 ║   │
+│ ║                                                                       ║   │
+│ ║ STATUS: [✓ IMPLEMENTED / ✗ NEEDS WORK]                                ║   │
+│ ╚═══════════════════════════════════════════════════════════════════════╝   │
+│                                                                             │
+│ ╔═══════════════════════════════════════════════════════════════════════╗   │
+│ ║ ELEMENT 3: CONTRACTIONS (MINIMUM 5)                                   ║   │
+│ ╠═══════════════════════════════════════════════════════════════════════╣   │
+│ ║                                                                       ║   │
+│ ║ Requirement: Use contractions for natural, conversational feel        ║   │
+│ ║                                                                       ║   │
+│ ║ Contractions Checklist:                                               ║   │
+│ ║ [ ] can't (cannot) - found at: [location]                            ║   │
+│ ║ [ ] don't (do not) - found at: [location]                            ║   │
+│ ║ [ ] won't (will not) - found at: [location]                          ║   │
+│ ║ [ ] it's (it is) - found at: [location]                              ║   │
+│ ║ [ ] they're (they are) - found at: [location]                        ║   │
+│ ║ [ ] that's (that is) - found at: [location]                          ║   │
+│ ║ [ ] what's (what is) - found at: [location]                          ║   │
+│ ║ [ ] there's (there is) - found at: [location]                        ║   │
+│ ║ [ ] isn't (is not) - found at: [location]                            ║   │
+│ ║ [ ] doesn't (does not) - found at: [location]                        ║   │
+│ ║                                                                       ║   │
+│ ║ TOTAL CONTRACTIONS: [X]                                                ║   │
+│ ║                                                                       ║   │
+│ ║ STATUS: [✓ IMPLEMENTED (≥5) / ✗ NEEDS WORK (<5)]                      ║   │
+│ ╚═══════════════════════════════════════════════════════════════════════╝   │
+│                                                                             │
+│ ╔═══════════════════════════════════════════════════════════════════════╗   │
+│ ║ ELEMENT 4: FRAGMENTS                                                  ║   │
+│ ╠═══════════════════════════════════════════════════════════════════════╣   │
+│ ║                                                                       ║   │
+│ ║ Requirement: Break grammar rules naturally - shows human writing      ║   │
+│ ║                                                                       ║   │
+│ ║ Fragments found in content:                                           ║   │
+│ ║ 1. "[fragment 1]"                                                     ║   │
+│ ║ 2. "[fragment 2]"                                                     ║   │
+│ ║ 3. "[fragment 3]"                                                     ║   │
+│ ║                                                                       ║   │
+│ ║ Checklist:                                                            ║   │
+│ ║ [ ] At least 2-3 sentence fragments                                  ║   │
+│ ║ [ ] Fragments feel natural                                           ║   │
+│ ║ [ ] Not overused to point of confusion                               ║   │
+│ ║                                                                       ║   │
+│ ║ STATUS: [✓ IMPLEMENTED / ✗ NEEDS WORK]                                ║   │
+│ ╚═══════════════════════════════════════════════════════════════════════╝   │
+│                                                                             │
+│ ╔═══════════════════════════════════════════════════════════════════════╗   │
+│ ║ ELEMENT 5: PERSONAL ANGLE                                             ║   │
+│ ╠═══════════════════════════════════════════════════════════════════════╣   │
+│ ║                                                                       ║   │
+│ ║ Requirement: Unique perspective that differentiates from others       ║   │
+│ ║                                                                       ║   │
+│ ║ My personal angle:                                                    ║   │
+│ ║ [Describe the unique perspective/analysis brought to content]         ║   │
+│ ║                                                                       ║   │
+│ ║ How this differs from top 1-20:                                       ║   │
+│ ║ [Explain what makes this angle unique vs competitors]                ║   │
+│ ║                                                                       ║   │
+│ ║ Checklist:                                                            ║   │
+│ ║ [ ] Unique perspective present                                       ║   │
+│ ║ [ ] Not just reciting facts                                          ║   │
+│ ║ [ ] Adds value beyond KB                                             ║   │
+│ ║                                                                       ║   │
+│ ║ STATUS: [✓ IMPLEMENTED / ✗ NEEDS WORK]                                ║   │
+│ ╚═══════════════════════════════════════════════════════════════════════╝   │
+│                                                                             │
+│ ╔═══════════════════════════════════════════════════════════════════════╗   │
+│ ║ ELEMENT 6: CONVERSATIONAL ENDING                                      ║   │
+│ ╠═══════════════════════════════════════════════════════════════════════╣   │
+│ ║                                                                       ║   │
+│ ║ Requirement: Natural closing - NOT "In conclusion..." or "To sum up"  ║   │
+│ ║                                                                       ║   │
+│ ║ My closing: "[closing line]"                                          ║   │
+│ ║                                                                       ║   │
+│ ║ Checklist:                                                            ║   │
+│ ║ [ ] No formal conclusion phrases                                     ║   │
+│ ║ [ ] Memorable and punchy                                             ║   │
+│ ║ [ ] Better than top 20 closings                                      ║   │
+│ ║ [ ] Leaves impression                                                 ║   │
+│ ║                                                                       ║   │
+│ ║ STATUS: [✓ IMPLEMENTED / ✗ NEEDS WORK]                                ║   │
+│ ╚═══════════════════════════════════════════════════════════════════════╝   │
+│                                                                             │
+│ ╔═══════════════════════════════════════════════════════════════════════╗   │
+│ ║ G4 SCORE: [X]/6 ELEMENTS                                               ║   │
+│ ╚═══════════════════════════════════════════════════════════════════════╝   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 5.2: AI Detection Kill List Check
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ AI DETECTION KILL LIST - CHECK EACH ITEM                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ FORBIDDEN ELEMENT          │ SCAN RESULT │ ACTION IF FOUND                  │
+│ ───────────────────────────┼─────────────┼───────────────────────────────── │
+│ Em dashes (—)              │ [✓/✗]       │ Replace with comma or hyphen     │
+│ Smart quotes ("")          │ [✓/✗]       │ Replace with straight quotes     │
+│ "In the world of..."       │ [✓/✗]       │ Rewrite opening                  │
+│ "Let me tell you..."       │ [✓/✗]       │ Rewrite opening                  │
+│ "Here's why..."            │ [✓/✗]       │ Rewrite opening                  │
+│ "delve into"               │ [✓/✗]       │ Use "dig into" or remove         │
+│ "uncover"                  │ [✓/✗]       │ Use "find" or "show"             │
+│ "embark on"                │ [✓/✗]       │ Use "start" or "begin"           │
+│ "realm"                    │ [✓/✗]       │ Use "world" or "space"           │
+│ "revolutionize"            │ [✓/✗]       │ Use "change" or "shake up"       │
+│ "transform"                │ [✓/✗]       │ Use "shift" or "move"            │
+│ "game-changer"             │ [✓/✗]       │ Remove or rephrase               │
+│ "Furthermore,"             │ [✓/✗]       │ Remove or use "And"              │
+│ "Additionally,"            │ [✓/✗]       │ Remove or use "Also"             │
+│ "In conclusion,"           │ [✓/✗]       │ Remove entirely                  │
+│ "To summarize,"            │ [✓/✗]       │ Remove entirely                  │
+│ "In summary,"              │ [✓/✗]       │ Remove entirely                  │
+│ Perfect grammar throughout │ [✓/✗]       │ Add fragments, casual elements   │
+│ Long complex sentences     │ [✓/✗]       │ Break into shorter sentences     │
+│ Arrow points (→)           │ [✓/✗]       │ Use natural paragraphs           │
+│ Bullet point lists         │ [✓/✗]       │ Convert to prose                 │
+│                                                                             │
+│ ╔═══════════════════════════════════════════════════════════════════════╗   │
+│ ║ KILL LIST STATUS: [✓ ALL CLEAR / ✗ ISSUES FOUND - FIX BEFORE NEXT]   ║   │
+│ ╚═══════════════════════════════════════════════════════════════════════╝   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 5.3: Final Content Review
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ FINAL CONTENT - POST G4 & KILL LIST                                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ [PASTE FINAL CONTENT HERE - after all G4 elements and Kill List fixes]     │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ WORD COUNT: [X]                                                             │
+│ CHARACTER COUNT: [X]                                                        │
+│ G4 SCORE: [X]/6                                                             │
+│ KILL LIST: [CLEAR/ISSUES FIXED]                                             │
+│ KB COVERAGE: [X]%                                                           │
+│ MISSION COMPLIANCE: [X]%                                                    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 6: VERIFICATION & VALIDATION
+================================================================================
+
+TUJUAN: Final verification sebelum submit
+
+--------------------------------------------------------------------------------
+STEP 6.1: Four Gates Estimation
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ GATE 1: CONTENT ALIGNMENT (0-2)                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Scoring Criteria:                                                           │
+│ 0 = Fails alignment completely                                              │
+│ 1 = Partially aligned                                                       │
+│ 2 = Fully aligned with campaign message                                     │
+│                                                                             │
+│ Checklist:                                                                  │
+│ [ ] Message matches campaign goal                                           │
+│ [ ] Correct terminology used                                                │
+│ [ ] Brand consistency maintained                                            │
+│ [ ] Target audience fit                                                     │
+│ [ ] Aligns with campaign thesis                                             │
+│                                                                             │
+│ ESTIMATED SCORE: [X]/2                                                      │
+│                                                                             │
+│ CONFIDENCE: [High/Medium/Low]                                               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ GATE 2: INFORMATION ACCURACY (0-2)                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Scoring Criteria:                                                           │
+│ 0 = Contains factual errors                                                 │
+│ 1 = Minor inaccuracies or missing context                                   │
+│ 2 = All facts accurate and well-contextualized                              │
+│                                                                             │
+│ Checklist:                                                                  │
+│ [ ] Technical facts verified with KB/external sources                       │
+│ [ ] Consistent with official materials                                      │
+│ [ ] Data/statistics accurate (if any used)                                  │
+│ [ ] Proper context provided                                                 │
+│ [ ] No fabricated or assumed information                                    │
+│                                                                             │
+│ ESTIMATED SCORE: [X]/2                                                      │
+│                                                                             │
+│ CONFIDENCE: [High/Medium/Low]                                               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ GATE 3: CAMPAIGN COMPLIANCE (0-2)                                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Scoring Criteria:                                                           │
+│ 0 = Missing required elements                                               │
+│ 1 = Partially compliant                                                     │
+│ 2 = Fully compliant with all requirements                                   │
+│                                                                             │
+│ Checklist:                                                                  │
+│ [ ] All required mentions present                                           │
+│ [ ] Required phrase used exactly                                            │
+│ [ ] All required topics covered                                             │
+│ [ ] Format requirements met                                                 │
+│ [ ] Style guidelines followed                                               │
+│                                                                             │
+│ ESTIMATED SCORE: [X]/2                                                      │
+│                                                                             │
+│ CONFIDENCE: [High/Medium/Low]                                               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ GATE 4: ORIGINALITY & AUTHENTICITY (0-2)                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Scoring Criteria:                                                           │
+│ 0 = Clearly AI-generated or plagiarized                                     │
+│ 1 = Some originality but template-like                                      │
+│ 2 = Feels human-written, unique perspective                                 │
+│                                                                             │
+│ Checklist:                                                                  │
+│ [ ] Fresh perspective provided                                              │
+│ [ ] Personal insights included                                              │
+│ [ ] Natural language (not AI-template style)                                │
+│ [ ] G4 elements all implemented                                             │
+│ [ ] Kill List all cleared                                                   │
+│ [ ] Differentiated from top 1-20 content                                    │
+│                                                                             │
+│ ESTIMATED SCORE: [X]/2                                                      │
+│                                                                             │
+│ CONFIDENCE: [High/Medium/Low]                                               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 6.2: Quality Metrics Estimation
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ QUALITY METRICS ESTIMATION                                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ ENGAGEMENT POTENTIAL (0-5):                                                 │
+│ ───────────────────────────────                                             │
+│ Hook effectiveness:       [X]/5                                             │
+│ Call-to-action quality:   [X]/5                                             │
+│ Content structure:        [X]/5                                             │
+│ Conversation potential:   [X]/5                                             │
+│                                                                             │
+│ ESTIMATED EP SCORE: [X]/5                                                   │
+│                                                                             │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│                                                                             │
+│ TECHNICAL QUALITY (0-5):                                                    │
+│ ────────────────────────────                                                │
+│ Grammar and spelling:     [X]/5                                             │
+│ Formatting:               [X]/5                                             │
+│ Platform optimization:    [X]/5                                             │
+│ Flow and readability:     [X]/5                                             │
+│                                                                             │
+│ ESTIMATED TQ SCORE: [X]/5                                                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 6.3: Score Projection
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ SCORE PROJECTION CALCULATOR                                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ GATE SCORES:                                                                │
+│ G1 = [X]                                                                    │
+│ G2 = [X]                                                                    │
+│ G3 = [X]                                                                    │
+│ G4 = [X]                                                                    │
+│                                                                             │
+│ g_star = (G1 + G2 + G3 + G4) / 4 = [X.XX]                                   │
+│                                                                             │
+│ GATE MULTIPLIER:                                                            │
+│ M_gate = 1 + 0.5 × (g_star - 1) = [X.XX]                                    │
+│                                                                             │
+│ QUALITY SCORE:                                                              │
+│ Q = EP + TQ = [X.XX]                                                        │
+│                                                                             │
+│ BASE CAMPAIGN POINTS (without engagement):                                  │
+│ Base = M_gate × Q = [X.XX]                                                  │
+│                                                                             │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│                                                                             │
+│ TARGET ANALYSIS:                                                            │
+│ Target Score (Top 10): [X.XX]                                               │
+│ Target Score (Top 3): [X.XX]                                                │
+│ Target Score (Top 1): [X.XX]                                                │
+│                                                                             │
+│ My Base Score: [X.XX]                                                       │
+│ Gap to Top 10: [X.XX] (need from engagement)                                │
+│ Gap to Top 3: [X.XX] (need from engagement)                                 │
+│ Gap to Top 1: [X.XX] (need from engagement)                                 │
+│                                                                             │
+│ ╔═══════════════════════════════════════════════════════════════════════╗   │
+│ ║ VERDICT:                                                               ║   │
+│ ║ Quality component is [SUFFICIENT/INSUFFICIENT] to compete             ║   │
+│ ║ Need [X.XX] engagement points to beat Top 10                          ║   │
+│ ╚═══════════════════════════════════════════════════════════════════════╝   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 6.4: Pre-Submission Final Checklist
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PRE-SUBMISSION FINAL CHECKLIST                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ CONTENT QUALITY:                                                            │
+│ [ ] All G4 elements implemented                                             │
+│ [ ] Kill List cleared                                                       │
+│ [ ] 100% KB coverage                                                        │
+│ [ ] All mission requirements met                                            │
+│ [ ] No typos or errors                                                      │
+│                                                                             │
+│ PLATFORM READY:                                                             │
+│ [ ] Character count within limits                                           │
+│ [ ] Thread format correct (if applicable)                                   │
+│ [ ] Mentions placed correctly                                               │
+│ [ ] Hashtags placed correctly                                               │
+│                                                                             │
+│ COMPETITIVE ADVANTAGE:                                                      │
+│ [ ] Better hook than top 20                                                 │
+│ [ ] Better coverage than top 20                                             │
+│ [ ] Better originality than top 20                                          │
+│ [ ] Better closing than top 20                                              │
+│                                                                             │
+│ SUBMISSION READY:                                                           │
+│ [ ] Content posted to X/Twitter                                             │
+│ [ ] Tweet URL copied                                                        │
+│ [ ] Campaign address noted                                                  │
+│ [ ] Mission ID noted                                                        │
+│                                                                             │
+│ ╔═══════════════════════════════════════════════════════════════════════╗   │
+│ ║ READY TO SUBMIT: [YES / NO]                                           ║   │
+│ ║ IF NO: [list remaining issues]                                         ║   │
+│ ╚═══════════════════════════════════════════════════════════════════════╝   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 7: CONTENT ANALYSIS REPORT GENERATION
+================================================================================
+
+TUJUAN: Dokumentasi lengkap untuk pembelajaran dan tracking
+
+--------------------------------------------------------------------------------
+STEP 7.1: Report Generation Template
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ RALLY CONTENT ANALYSIS REPORT                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                           EXECUTIVE SUMMARY                                 │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                                                                             │
+│ Campaign: [title]                                                           │
+│ Mission: [mission number and title]                                         │
+│ Target: Beat Top 10 (Score: [X.XX])                                        │
+│ Date: [date]                                                                │
+│                                                                             │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│                                                                             │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                         1. CAMPAIGN CONTEXT                                 │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                                                                             │
+│ Campaign Address: [address]                                                 │
+│ Token: [symbol]                                                             │
+│ Total Reward Pool: [amount]                                                 │
+│ Distribution Alpha: [value]                                                 │
+│ Duration: [start] to [end]                                                  │
+│                                                                             │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│                                                                             │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                         2. LEADERBOARD ANALYSIS                             │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                                                                             │
+│ Top 1: @[username] - [score]                                                │
+│ Top 3: @[username] - [score]                                                │
+│ Top 10: @[username] - [score]                                               │
+│ Top 20: @[username] - [score]                                               │
+│                                                                             │
+│ Total Participants: [count]                                                 │
+│                                                                             │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│                                                                             │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                         3. TOP 1-20 BEAT ANALYSIS                           │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                                                                             │
+│ Key patterns found in top performers:                                       │
+│ 1. [pattern]                                                                │
+│ 2. [pattern]                                                                │
+│ 3. [pattern]                                                                │
+│                                                                             │
+│ Common weaknesses in top performers:                                        │
+│ 1. [weakness]                                                               │
+│ 2. [weakness]                                                               │
+│ 3. [weakness]                                                               │
+│                                                                             │
+│ My beat strategy:                                                           │
+│ [how my content will beat theirs]                                           │
+│                                                                             │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│                                                                             │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                         4. KNOWLEDGE BASE COVERAGE                          │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                                                                             │
+│ Total Facts in KB: [X]                                                      │
+│ Facts Covered: [X]                                                          │
+│ Coverage: 100%                                                              │
+│                                                                             │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│                                                                             │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                         5. G4 ORIGINALITY CHECKLIST                         │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                                                                             │
+│ [✓] Casual Hook: [hook text]                                               │
+│ [✓] Parenthetical Aside: [aside text]                                      │
+│ [✓] Contractions: [X] found                                                │
+│ [✓] Fragments: [X] found                                                   │
+│ [✓] Personal Angle: [angle description]                                    │
+│ [✓] Conversational Ending: [closing text]                                  │
+│                                                                             │
+│ G4 Score: 6/6                                                               │
+│ Kill List: Clear                                                            │
+│                                                                             │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│                                                                             │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                         6. SCORE ESTIMATION                                 │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                                                                             │
+│ Gate Scores: G1=[X] G2=[X] G3=[X] G4=[X]                                    │
+│ Gate Multiplier: [X.XX]x                                                    │
+│ Quality Score: [X.XX]                                                       │
+│ Base Score: [X.XX]                                                          │
+│                                                                             │
+│ Target: [X.XX]                                                              │
+│ Gap to Fill: [X.XX] (from engagement)                                       │
+│                                                                             │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│                                                                             │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                         7. FINAL CONTENT                                    │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                                                                             │
+│ [Full tweet content]                                                        │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│                                                                             │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│                                                                             │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                         8. SUBMISSION INFO                                  │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                                                                             │
+│ Tweet URL: [url]                                                            │
+│ Submission Time: [time]                                                     │
+│ Campaign Period: [X]                                                        │
+│                                                                             │
+│ ─────────────────────────────────────────────────────────────────────────── │
+│                                                                             │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                         9. MINDSET                                          │
+│ ══════════════════════════════════════════════════════════════════════════  │
+│                                                                             │
+│ TARGET: Beat Top 10                                                         │
+│ EFFORT: Maximum                                                             │
+│ ACCEPT: Any result                                                          │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 8: POST-SUBMISSION STRATEGY
+================================================================================
+
+TUJUAN: Maximize engagement dan score setelah submit
+
+--------------------------------------------------------------------------------
+STEP 8.1: Immediate Post-Submission Actions
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ IMMEDIATE POST-SUBMISSION (Within 1 Hour)                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ [ ] Note exact submission time: [TIME]                                      │
+│ [ ] Note submission period: [PERIOD X]                                      │
+│ [ ] Monitor tweet for initial engagement                                   │
+│ [ ] Prepare to reply to any immediate responses                            │
+│                                                                             │
+│ RALLY EVALUATION TIMELINE:                                                  │
+│ - Gate evaluation: Typically within minutes                                 │
+│ - Quality metrics: Within minutes                                           │
+│ - Engagement: Updates continuously                                          │
+│                                                                             │
+│ FIRST CHECK: Check Rally dashboard after [30-60 minutes]                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 8.2: Engagement Monitoring
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ENGAGEMENT TRACKING LOG                                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Track daily until campaign ends:                                            │
+│                                                                             │
+│ ┌─────────────────────────────────────────────────────────────────────┐    │
+│ │ Day │ Date │ RT │ Likes │ Replies │ Quality Replies │ Notes        │    │
+│ ├─────────────────────────────────────────────────────────────────────┤    │
+│ │ 1   │      │    │       │         │                  │              │    │
+│ │ 2   │      │    │       │         │                  │              │    │
+│ │ 3   │      │    │       │         │                  │              │    │
+│ │ 4   │      │    │       │         │                  │              │    │
+│ │ 5   │      │    │       │         │                  │              │    │
+│ │ 6   │      │    │       │         │                  │              │    │
+│ │ 7   │      │    │       │         │                  │              │    │
+│ └─────────────────────────────────────────────────────────────────────┘    │
+│                                                                             │
+│ QUALITY REPLIES = Replies from high-follower accounts                       │
+│ These matter for FR (Followers of Repliers) metric                          │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 8.3: Refresh Engagement Strategy
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ REFRESH ENGAGEMENT DECISION                                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ WHAT IS REFRESH ENGAGEMENT?                                                 │
+│ - Rally allows resubmitting in later periods                               │
+│ - Only POSITIVE difference in engagement is credited                        │
+│ - Quality component stays fixed from first submission                       │
+│                                                                             │
+│ WHEN TO REFRESH:                                                            │
+│ ─────────────────────                                                       │
+│ [ ] Significant engagement increase since last submission                  │
+│ [ ] Before period ends to capture maximum engagement                       │
+│ [ ] After getting quality replies from high-follower accounts              │
+│                                                                             │
+│ REFRESH CHECKLIST:                                                          │
+│ ─────────────────────                                                       │
+│ [ ] Check current engagement vs baseline                                   │
+│ [ ] Calculate potential score improvement                                  │
+│ [ ] If improvement > [threshold], consider refresh                         │
+│ [ ] Submit again before period deadline                                    │
+│                                                                             │
+│ CAMPAIGN PERIODS:                                                           │
+│ Period 1: [dates]                                                           │
+│ Period 2: [dates]                                                           │
+│ [Additional periods as applicable]                                          │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 8.4: Community Engagement Strategy
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ COMMUNITY ENGAGEMENT TO BOOST METRICS                                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ TO INCREASE REPLIES:                                                        │
+│ ─────────────────────                                                       │
+│ [ ] Ask questions in tweet (if appropriate)                                │
+│ [ ] Reply thoughtfully to all replies                                      │
+│ [ ] Ask follow-up questions in replies                                     │
+│                                                                             │
+│ TO INCREASE QUALITY REPLIES (from high-follower accounts):                  │
+│ ──────────────────────────────────────────────────────────────              │
+│ [ ] Tag relevant accounts organically (if adding value)                    │
+│ [ ] Quote tweet with added context                                         │
+│ [ ] Engage with related high-profile tweets                                │
+│                                                                             │
+│ TO INCREASE RTs AND LIKES:                                                  │
+│ ─────────────────────────────                                               │
+│ [ ] Provide genuine value                                                  │
+│ [ ] Make content shareable                                                  │
+│ [ ] Time posting for maximum visibility                                    │
+│                                                                             │
+│ DON'T:                                                                      │
+│ ──────                                                                      │
+│ ✗ Spam mentions                                                             │
+│ ✗ Ask for RT/likes directly                                                │
+│ ✗ Engage in bad faith arguments                                            │
+│ ✗ Post irrelevant content just for engagement                              │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    PHASE 9: LEARNING & ITERATION
+================================================================================
+
+TUJUAN: Learn from results and improve for next campaign
+
+--------------------------------------------------------------------------------
+STEP 9.1: Result Documentation
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ CAMPAIGN RESULT DOCUMENTATION                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ Campaign: [name]                                                            │
+│ Mission: [number]                                                           │
+│                                                                             │
+│ TARGET vs ACTUAL:                                                           │
+│ ──────────────────                                                          │
+│ Target Score: [X.XX]                                                        │
+│ Actual Score: [X.XX]                                                        │
+│ Target Rank: Top [X]                                                        │
+│ Actual Rank: [X]                                                            │
+│                                                                             │
+│ Target Met: [YES/NO]                                                        │
+│                                                                             │
+│ ENGAGEMENT METRICS:                                                         │
+│ ────────────────────                                                        │
+│ Total RTs: [X]                                                              │
+│ Total Likes: [X]                                                            │
+│ Total Replies: [X]                                                          │
+│ Quality Replies (high-follower): [X]                                        │
+│                                                                             │
+│ GATE SCORES (if visible):                                                   │
+│ ────────────────────────────                                                │
+│ G1 (Content Alignment): [X]                                                 │
+│ G2 (Information Accuracy): [X]                                              │
+│ G3 (Campaign Compliance): [X]                                               │
+│ G4 (Originality): [X]                                                       │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 9.2: Analysis Questions
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ POST-CAMPAIGN ANALYSIS                                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ 1. DID I MEET MY TARGET?                                                    │
+│    [Analysis of why or why not]                                             │
+│                                                                             │
+│ 2. WHAT WORKED WELL?                                                        │
+│    - [element that worked]                                                  │
+│    - [element that worked]                                                  │
+│    - [element that worked]                                                  │
+│                                                                             │
+│ 3. WHAT DIDN'T WORK?                                                        │
+│    - [element that didn't work]                                             │
+│    - [element that didn't work]                                             │
+│    - [element that didn't work]                                             │
+│                                                                             │
+│ 4. WAS MY HOOK EFFECTIVE?                                                   │
+│    [Analysis of hook performance]                                           │
+│                                                                             │
+│ 5. WAS MY CLOSING MEMORABLE?                                                │
+│    [Analysis of closing effectiveness]                                      │
+│                                                                             │
+│ 6. DID I BEAT THE TOP 1-20 CONTENT QUALITY?                                 │
+│    [Comparison with analyzed top performers]                                │
+│                                                                             │
+│ 7. WHAT WOULD I DO DIFFERENTLY?                                             │
+│    - [improvement 1]                                                        │
+│    - [improvement 2]                                                        │
+│    - [improvement 3]                                                        │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 9.3: Pattern Tracking
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PATTERN TRACKER - UPDATE AFTER EACH CAMPAIGN                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ ┌─────────────────────────────────────────────────────────────────────────┐│
+│ │ # │ Campaign │ Score │ Rank │ Hook Type │ Closing │ Success │ Learnings││
+│ ├─────────────────────────────────────────────────────────────────────────┤│
+│ │ 1 │ [name]   │ X.XX  │ X    │ [type]    │ [type]  │ [Y/N]   │ [notes]  ││
+│ │ 2 │ [name]   │ X.XX  │ X    │ [type]    │ [type]  │ [Y/N]  │ [notes]  ││
+│ │ 3 │ [name]   │ X.XX  │ X    │ [type]    │ [type]  │ [Y/N]  │ [notes]  ││
+│ │ 4 │ [name]   │ X.XX  │ X    │ [type]    │ [type]  │ [Y/N]  │ [notes]  ││
+│ │ 5 │ [name]   │ X.XX  │ X    │ [type]    │ [type]  │ [Y/N]  │ [notes]  ││
+│ └─────────────────────────────────────────────────────────────────────────┘│
+│                                                                             │
+│ PATTERNS IDENTIFIED:                                                        │
+│ ─────────────────────                                                       │
+│ Hook types that work best: [types]                                          │
+│ Closing types that work best: [types]                                       │
+│ Common success factors: [factors]                                           │
+│ Common failure factors: [factors]                                           │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+--------------------------------------------------------------------------------
+STEP 9.4: Workflow Improvements
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ WORKFLOW IMPROVEMENT LOG                                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ BASED ON THIS CAMPAIGN:                                                     │
+│                                                                             │
+│ NEW TECHNIQUES TO ADD:                                                      │
+│ ────────────────────────────                                                │
+│ [ ] [new technique 1]                                                       │
+│ [ ] [new technique 2]                                                       │
+│ [ ] [new technique 3]                                                       │
+│                                                                             │
+│ TECHNIQUES TO REMOVE/MODIFY:                                                │
+│ ────────────────────────────────                                            │
+│ [ ] [technique to change]                                                   │
+│ [ ] [technique to change]                                                   │
+│                                                                             │
+│ G4 CHECKLIST UPDATES:                                                       │
+│ ────────────────────────                                                    │
+│ [ ] [update if needed]                                                      │
+│                                                                             │
+│ KILL LIST UPDATES:                                                          │
+│ ─────────────────────                                                       │
+│ [ ] [new AI patterns to avoid]                                              │
+│                                                                             │
+│ WORKFLOW STEP UPDATES:                                                      │
+│ ──────────────────────────                                                  │
+│ [ ] [new step to add]                                                       │
+│ [ ] [step to modify]                                                        │
+│                                                                             │
+│ NEXT CAMPAIGN ACTION ITEMS:                                                 │
+│ ──────────────────────────────                                              │
+│ 1. [action item]                                                            │
+│ 2. [action item]                                                            │
+│ 3. [action item]                                                            │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    COMPLETE WORKFLOW DIAGRAM
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│                    RALLY CONTENT WORKFLOW V2.0                               │
+│                                                                             │
+│  PHASE 0           PHASE 1           PHASE 2           PHASE 2.5            │
+│  ┌────────┐       ┌────────┐       ┌────────┐       ┌────────┐             │
+│  │Pre-    │ ───►  │Campaign│ ───►  │Knowledge│ ───►  │External│             │
+│  │Workflow│       │Research│       │Base    │       │Research│             │
+│  └────────┘       └────────┘       └────────┘       └────────┘             │
+│      │                │                │                │                   │
+│      ▼                ▼                ▼                ▼                   │
+│  Mindset +        Campaign         100% KB          Additional              │
+│  Resources        Details          Facts            Facts + Angle           │
+│                                                                             │
+│  PHASE 3           PHASE 4           PHASE 4.5         PHASE 5              │
+│  ┌────────┐       ┌────────┐       ┌────────┐       ┌────────┐             │
+│  │Top 1-20│ ───►  │Content │ ───►  │Platform│ ───►  │G4      │             │
+│  │Beat    │       │Create  │       │Optimize│       │Optimize│             │
+│  └────────┘       └────────┘       └────────┘       └────────┘             │
+│      │                │                │                │                   │
+│      ▼                ▼                ▼                ▼                   │
+│  Competitor       Draft +          Twitter          Humanized               │
+│  Analysis         Variations       Ready            Content                 │
+│                                                                             │
+│  PHASE 6           PHASE 7           PHASE 8           PHASE 9              │
+│  ┌────────┐       ┌────────┐       ┌────────┐       ┌────────┐             │
+│  │Verify &│ ───►  │Report  │ ───►  │Post-   │ ───►  │Learn & │             │
+│  │Validate│       │Generate│       │Submit  │       │Iterate │             │
+│  └────────┘       └────────┘       └────────┘       └────────┘             │
+│      │                │                │                │                   │
+│      ▼                ▼                ▼                ▼                   │
+│  Final Check      Documentation     Engagement       Continuous             │
+│                                    Tracking         Improvement             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    KEY IMPROVEMENTS FROM V1.0
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     VERSION COMPARISON                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│ FEATURE                    │ V1.0        │ V2.0                             │
+│ ───────────────────────────┼─────────────┼───────────────────────────────── │
+│ Number of Phases           │ 7           │ 10                               │
+│ Pre-Workflow Preparation   │ ✗           │ ✓ Phase 0                        │
+│ External Research          │ ✗           │ ✓ Phase 2.5                      │
+│ Top 1-20 Analysis          │ Basic       │ ✓ Deep Analysis                  │
+│ Platform Optimization      │ ✗           │ ✓ Phase 4.5                      │
+│ Post-Submission Strategy   │ ✗           │ ✓ Phase 8                        │
+│ Learning & Iteration       │ ✗           │ ✓ Phase 9                        │
+│ Multiple Hook Options      │ ✗           │ ✓ 5 variations                   │
+│ Beat Strategy Matrix       │ ✗           │ ✓ Comprehensive                  │
+│ Engagement Tracking        │ ✗           │ ✓ Daily log                      │
+│ Pattern Tracking           │ ✗           │ ✓ Cross-campaign                 │
+│                                                                             │
+│ COMPLETENESS:              │ ~55%        │ ~95%                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                    FINAL NOTES
+================================================================================
+
+KEY SUCCESS FACTORS:
+
+1. PREPARATION - Don't skip Phase 0. Right mindset matters.
+
+2. RESEARCH - Use both KB and external sources. Find unique angles.
+
+3. COMPETITOR ANALYSIS - Analyze top 1-20 to know what to beat.
+
+4. QUALITY - 100% KB coverage is non-negotiable.
+
+5. ORIGINALITY - Full G4 implementation + Kill List clearance.
+
+6. PLATFORM - Optimize for Twitter/X constraints.
+
+7. ENGAGEMENT - Post-submission strategy matters for scores.
+
+8. LEARNING - Document results and improve continuously.
+
+================================================================================
+                    MINDSET REMINDER
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│   ╔═══════════════════════════════════════════════════════════════════╗    │
+│   ║                                                                   ║    │
+│   ║   TARGET  : Beat Top 1-3 (Stretch), Top 10 (Minimum)             ║    │
+│   ║                                                                   ║    │
+│   ║   EFFORT  : Maximum - Every phase, every detail                  ║    │
+│   ║                                                                   ║    │
+│   ║   ACCEPT  : Any result - Learn and improve                       ║    │
+│   ║                                                                   ║    │
+│   ╚═══════════════════════════════════════════════════════════════════╝    │
+│                                                                             │
+│   BEST PREPARATION + BEST EXECUTION + ACCEPT WHATEVER RESULT               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                         END OF WORKFLOW V2.0
+================================================================================
