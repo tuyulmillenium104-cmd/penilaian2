@@ -283,19 +283,60 @@ For detailed documentation, see: `docs/V8.7.6-DOCUMENTATION.md`
 
 ---
 
+## 🔥 SINGLE PROMPT FOR AI
+
+**Copy-paste this prompt when starting a new chat:**
+
+```
+Read this GitHub repo: https://github.com/tuyulmillenium104-cmd/penilaian2
+
+Then create Rally content with this hook: "[YOUR HOOK HERE]"
+
+Execute the complete 24-phase workflow and return the final content with scores.
+```
+
+**Example:**
+```
+Read this GitHub repo: https://github.com/tuyulmillenium104-cmd/penilaian2
+
+Then create Rally content with this hook: "Code Runs, Disputes Don't. Enter Internet Court"
+
+Execute the complete 24-phase workflow and return the final content with scores.
+```
+
+---
+
 ## 🤝 How AI Should Use This
 
 If you're an AI reading this:
 
+### Step-by-Step Instructions:
+
 1. **Read the hook** provided by user
-2. **Run the workflow**: `node scripts/rally-workflow-v8.7.6.js --hook "HOOK"`
-3. **Wait for completion** - All 24 phases will execute
-4. **Return the output** to user
+2. **Clone/setup the repo** if needed
+3. **Run the workflow**:
+   ```bash
+   node scripts/rally-workflow-v8.7.6.js --hook "THE HOOK FROM USER"
+   ```
+4. **Wait for completion** - All 24 phases will execute (may take 2-5 minutes)
+5. **Return the output** to user:
+   - Final content text
+   - Quality scores (Hook, Emotion, CT, Viral)
+   - Any important notes from execution
+
+### CRITICAL RULES:
 
 **DO NOT**:
-- Skip phases
-- Use templates (workflow generates dynamic content)
-- Ignore low scores (workflow will regenerate)
+- Skip phases - All 24 phases MUST execute
+- Use templates - Workflow generates dynamic content via LLM
+- Ignore low scores - Workflow will automatically regenerate
+- Modify the workflow files - Run as-is
+
+**MUST**:
+- Execute complete workflow from Phase 0 to Phase 16
+- Return all scores (Hook ≥7, Emotion ≥8, CT ≥8)
+- Include the full content text ready to post
+- Report any errors or warnings from execution
 
 ---
 
