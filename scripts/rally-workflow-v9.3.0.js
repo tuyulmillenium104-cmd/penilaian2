@@ -36,6 +36,23 @@ const CONFIG = {
   outputDir: '/home/z/my-project/download',
   userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
   
+  // Groq API Configuration (FREE - 14M tokens/bulan)
+  groq: {
+    apiKey: '', // PASTE YOUR API KEY HERE
+    baseUrl: 'https://api.groq.com/openai/v1',
+    model: 'llama-3.1-8b-instant',  // Fast & free
+    fallbackModel: 'llama-3.3-70b-versatile',  // Better quality
+    enabled: false
+  },
+  
+  // Together AI Configuration (FREE $1 credit)
+  together: {
+    enabled: true,
+    baseUrl: 'https://api.together.xyz/v1',
+    model: 'meta-llama/Llama-3-8b-chat-hf',
+    fallbackModel: 'mistralai/Mixtral-8x7B-Instruct-v0.1'
+  },
+  
   // Scoring thresholds (DIGUNAKAN di aggregateScores)
   thresholds: {
     gateUtama: { pass: 16, max: 20 },        // 80% of 20
@@ -1024,6 +1041,60 @@ function generateJudgeInstructions(campaignData, competitorHooks) {
 }
 
 // ============================================================================
+// GROQ API IMPLEMENTATION (FREE FALLBACK)
+// ============================================================================
+
+async function callGroqAPI(messages, model = null, maxTokens = 4000, temperature = 0.8) {
+  const selectedModel = model || CONFIG.groq.model;
+  
+  return new Promise((resolve, reject) => {
+    const postData = JSON.stringify({
+      model: selectedModel,
+      messages: messages,
+      max_tokens: maxTokens,
+      temperature: temperature
+    });
+    
+    const options = {
+      hostname: 'api.groq.com',
+      port: 443,
+      path: '/openai/v1/chat/completions',
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${CONFIG.groq.apiKey}`,
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData)
+      },
+      agent: false  // Disable connection pooling
+    };
+    
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          try {
+            resolve(JSON.parse(data));
+          } catch (e) {
+            reject(new Error(`JSON parse error: ${e.message}`));
+          }
+        } else {
+          reject(new Error(`Groq API error: ${res.statusCode} - ${data}`));
+        }
+      });
+    });
+    
+    req.on('error', (e) => reject(new Error(`Request error: ${e.message}`)));
+    req.setTimeout(60000, () => {
+      req.destroy();
+      reject(new Error('Request timeout'));
+    });
+    req.write(postData);
+    req.end();
+  });
+}
+
+// ============================================================================
 // SDK CALL IMPLEMENTATION - CONTENT GENERATION
 // ============================================================================
 
@@ -1032,62 +1103,80 @@ async function generateContent(campaignData, competitorHooks) {
   console.log('✨ PHASE 3: Content Generation');
   console.log('─'.repeat(60));
   
+  const requiredUrl = extractRequiredUrl(campaignData);
+  const rules = campaignData.missions?.[0]?.rules || '';
+  const competitorHooksArray = Array.isArray(competitorHooks) ? competitorHooks : [];
+  const competitorHooksStr = competitorHooksArray.map(c => `- "${c.hook}"`).join('\n') || 'No competitor data';
+  
+  const userInput = CONTENT_PROMPTS.userTemplate
+    .replace('{{campaignTitle}}', campaignData.title || campaignData.name || 'Unknown Campaign')
+    .replace('{{requiredUrl}}', requiredUrl || 'Not specified')
+    .replace('{{knowledgeBase}}', (campaignData.knowledgeBase || '').substring(0, 2000))
+    .replace('{{competitorHooks}}', competitorHooksStr)
+    .replace('{{rules}}', rules || 'No specific rules')
+    .replace('{{bannedWords}}', CONFIG.hardRequirements.bannedWords.join(', '));
+  
+  console.log('   📝 Generating 3 content versions...');
+  
+  let contentText = null;
+  let usedProvider = null;
+  
+  // TRY 1: Groq API (FREE - Primary)
   try {
-    const ZAI = await initZAI();
-    const zai = await ZAI.create();
+    console.log('   🚀 Trying Groq API (FREE)...');
+    const result = await callGroqAPI([
+      { role: 'system', content: CONTENT_PROMPTS.system },
+      { role: 'user', content: userInput }
+    ]);
     
-    const requiredUrl = extractRequiredUrl(campaignData);
-    const rules = campaignData.missions?.[0]?.rules || '';
-    const competitorHooksArray = Array.isArray(competitorHooks) ? competitorHooks : [];
-    const competitorHooksStr = competitorHooksArray.map(c => `- "${c.hook}"`).join('\n') || 'No competitor data';
+    contentText = result.choices[0]?.message?.content;
+    usedProvider = 'Groq API';
+    console.log('   ✅ Groq API success!');
+  } catch (groqError) {
+    console.log(`   ⚠️ Groq API failed: ${groqError.message}`);
     
-    const userInput = CONTENT_PROMPTS.userTemplate
-      .replace('{{campaignTitle}}', campaignData.title || campaignData.name || 'Unknown Campaign')
-      .replace('{{requiredUrl}}', requiredUrl || 'Not specified')
-      .replace('{{knowledgeBase}}', (campaignData.knowledgeBase || '').substring(0, 2000))
-      .replace('{{competitorHooks}}', competitorHooksStr)
-      .replace('{{rules}}', rules || 'No specific rules')
-      .replace('{{bannedWords}}', CONFIG.hardRequirements.bannedWords.join(', '));
-    
-    console.log('   📝 Generating 3 content versions...');
-    
-    // Gunakan retry dengan backoff
-    const result = await retryWithBackoff(async () => {
-      return await zai.chat.completions.create({
-        messages: [
-          { role: 'system', content: CONTENT_PROMPTS.system },
-          { role: 'user', content: userInput }
-        ],
-        temperature: 0.8,
-        max_tokens: 4000
-      });
-    });
-    
-    const contentText = result.choices[0]?.message?.content;
-    
-    if (!contentText || contentText.trim().length < 50) {
-      throw new Error('Generated content is too short or empty');
-    }
-    
-    // Try to parse JSON from response
-    let versions = [];
+    // TRY 2: SDK z-ai-web-dev-sdk (Backup)
     try {
-      // Try to find JSON array in response
-      const jsonMatch = contentText.match(/\[[\s\S]*\]/);
-      if (jsonMatch) {
-        versions = JSON.parse(jsonMatch[0]);
-      } else {
-        // If no array found, treat whole content as single version
-        versions = [{
-          version: 1,
-          hook: contentText.split('\n')[0].substring(0, 200),
-          fullContent: contentText,
-          emotionTypes: ['curiosity'],
-          hookPattern: 'unknown'
-        }];
-      }
-    } catch (parseError) {
-      console.log('   ⚠️ JSON parse failed, using raw content');
+      console.log('   🔄 Trying SDK (z-ai-web-dev-sdk)...');
+      const ZAI = await initZAI();
+      const zai = await ZAI.create();
+      
+      const result = await retryWithBackoff(async () => {
+        return await zai.chat.completions.create({
+          messages: [
+            { role: 'system', content: CONTENT_PROMPTS.system },
+            { role: 'user', content: userInput }
+          ],
+          temperature: 0.8,
+          max_tokens: 4000
+        });
+      }, 2, 3000); // Kurangi retry untuk SDK
+      
+      contentText = result.choices[0]?.message?.content;
+      usedProvider = 'SDK';
+      console.log('   ✅ SDK success!');
+    } catch (sdkError) {
+      console.log(`   ⚠️ SDK failed: ${sdkError.message}`);
+    }
+  }
+  
+  // Check if we got content
+  if (!contentText || contentText.trim().length < 50) {
+    console.log('   ❌ All providers failed');
+    return {
+      success: false,
+      versions: [],
+      error: 'All content generation providers failed'
+    };
+  }
+  
+  // Try to parse JSON from response
+  let versions = [];
+  try {
+    const jsonMatch = contentText.match(/\[[\s\S]*\]/);
+    if (jsonMatch) {
+      versions = JSON.parse(jsonMatch[0]);
+    } else {
       versions = [{
         version: 1,
         hook: contentText.split('\n')[0].substring(0, 200),
@@ -1096,21 +1185,24 @@ async function generateContent(campaignData, competitorHooks) {
         hookPattern: 'unknown'
       }];
     }
-    
-    console.log(`   ✅ Generated ${versions.length} content versions`);
-    
-    return {
-      success: true,
-      versions: versions
-    };
-  } catch (error) {
-    console.log(`   ❌ Content generation failed: ${error.message}`);
-    return {
-      success: false,
-      versions: [],
-      error: error.message
-    };
+  } catch (parseError) {
+    console.log('   ⚠️ JSON parse failed, using raw content');
+    versions = [{
+      version: 1,
+      hook: contentText.split('\n')[0].substring(0, 200),
+      fullContent: contentText,
+      emotionTypes: ['curiosity'],
+      hookPattern: 'unknown'
+    }];
   }
+  
+  console.log(`   ✅ Generated ${versions.length} content versions via ${usedProvider}`);
+  
+  return {
+    success: true,
+    versions: versions,
+    provider: usedProvider
+  };
 }
 
 // ============================================================================
@@ -1120,21 +1212,39 @@ async function generateContent(campaignData, competitorHooks) {
 async function runJudge1(content, inputData) {
   console.log('   👨‍⚖️ Judge 1: Gate Utama (G1-G4)...');
   
+  // Safe array handling
+  const competitorHooks = Array.isArray(inputData.competitorHooks) ? inputData.competitorHooks : [];
+  const bannedWords = Array.isArray(inputData.bannedWords) ? inputData.bannedWords : [];
+  
+  const userInput = JUDGE_PROMPTS.judge1.userTemplate
+    .replace('{{knowledgeBase}}', inputData.knowledgeBase || 'Not provided')
+    .replace('{{requiredUrl}}', inputData.requiredUrl || 'Not specified')
+    .replace('{{rules}}', inputData.rules || 'No specific rules')
+    .replace('{{bannedWords}}', bannedWords.join(', '))
+    .replace('{{competitorHooks}}', competitorHooks.map(c => `- "${c.hook}"`).join('\n') || 'No competitor data')
+    .replace('{{content}}', content);
+  
+  // TRY 1: Groq API (Primary)
+  try {
+    const result = await callGroqAPI([
+      { role: 'system', content: JUDGE_PROMPTS.judge1.system },
+      { role: 'user', content: userInput }
+    ], null, 2000, 0.3);
+    
+    const responseText = result.choices[0]?.message?.content;
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      console.log('   ✅ Judge 1 done (Groq)');
+      return JSON.parse(jsonMatch[0]);
+    }
+  } catch (groqError) {
+    console.log(`   ⚠️ Judge 1 Groq failed: ${groqError.message}`);
+  }
+  
+  // TRY 2: SDK (Fallback)
   try {
     const ZAI = await initZAI();
     const zai = await ZAI.create();
-    
-    // Safe array handling
-    const competitorHooks = Array.isArray(inputData.competitorHooks) ? inputData.competitorHooks : [];
-    const bannedWords = Array.isArray(inputData.bannedWords) ? inputData.bannedWords : [];
-    
-    const userInput = JUDGE_PROMPTS.judge1.userTemplate
-      .replace('{{knowledgeBase}}', inputData.knowledgeBase || 'Not provided')
-      .replace('{{requiredUrl}}', inputData.requiredUrl || 'Not specified')
-      .replace('{{rules}}', inputData.rules || 'No specific rules')
-      .replace('{{bannedWords}}', bannedWords.join(', '))
-      .replace('{{competitorHooks}}', competitorHooks.map(c => `- "${c.hook}"`).join('\n') || 'No competitor data')
-      .replace('{{content}}', content);
     
     const result = await zai.chat.completions.create({
       messages: [
@@ -1146,40 +1256,53 @@ async function runJudge1(content, inputData) {
     });
     
     const responseText = result.choices[0]?.message?.content;
-    
-    // Parse JSON from response
-    try {
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
-    } catch (parseError) {
-      console.log('   ⚠️ Judge 1 JSON parse failed');
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      console.log('   ✅ Judge 1 done (SDK)');
+      return JSON.parse(jsonMatch[0]);
     }
-    
-    // Fallback
-    return {
-      G1_contentAlignment: { score: 3, reasoning: 'Parse error, using fallback' },
-      G2_informationAccuracy: { score: 3, reasoning: 'Parse error, using fallback' },
-      G3_campaignCompliance: { score: 3, reasoning: 'Parse error, using fallback' },
-      G4_originality: { score: 3, reasoning: 'Parse error, using fallback' },
-      gateUtamaTotal: '12/20',
-      gateUtamaPass: false
-    };
-  } catch (error) {
-    console.log(`   ❌ Judge 1 failed: ${error.message}`);
-    return { error: error.message, gateUtamaPass: false };
+  } catch (sdkError) {
+    console.log(`   ⚠️ Judge 1 SDK failed: ${sdkError.message}`);
   }
+  
+  // Fallback score
+  console.log('   ⚠️ Judge 1 using fallback scores');
+  return {
+    G1_contentAlignment: { score: 3, reasoning: 'API failed, using fallback' },
+    G2_informationAccuracy: { score: 3, reasoning: 'API failed, using fallback' },
+    G3_campaignCompliance: { score: 3, reasoning: 'API failed, using fallback' },
+    G4_originality: { score: 3, reasoning: 'API failed, using fallback' },
+    gateUtamaTotal: '12/20',
+    gateUtamaPass: false
+  };
 }
 
 async function runJudge2(content) {
   console.log('   👨‍⚖️ Judge 2: Gate Tambahan (G5-G6)...');
   
+  const userInput = JUDGE_PROMPTS.judge2.userTemplate.replace('{{content}}', content);
+  
+  // TRY 1: Groq API (Primary)
+  try {
+    const result = await callGroqAPI([
+      { role: 'system', content: JUDGE_PROMPTS.judge2.system },
+      { role: 'user', content: userInput }
+    ], null, 2000, 0.3);
+    
+    const responseText = result.choices[0]?.message?.content;
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      console.log('   ✅ Judge 2 done (Groq)');
+      return JSON.parse(jsonMatch[0]);
+    }
+  } catch (groqError) {
+    console.log(`   ⚠️ Judge 2 Groq failed: ${groqError.message}`);
+  }
+  
+  // TRY 2: SDK (Fallback)
   try {
     const ZAI = await initZAI();
     const zai = await ZAI.create();
-    
-    const userInput = JUDGE_PROMPTS.judge2.userTemplate.replace('{{content}}', content);
     
     const result = await zai.chat.completions.create({
       messages: [
@@ -1191,45 +1314,60 @@ async function runJudge2(content) {
     });
     
     const responseText = result.choices[0]?.message?.content;
-    
-    try {
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
-    } catch (parseError) {
-      console.log('   ⚠️ Judge 2 JSON parse failed');
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      console.log('   ✅ Judge 2 done (SDK)');
+      return JSON.parse(jsonMatch[0]);
     }
-    
-    return {
-      G5_engagementPotential: { score: 5, reasoning: 'Parse error, using fallback' },
-      G6_technicalQuality: { score: 5, reasoning: 'Parse error, using fallback' },
-      gateTambahanTotal: '10/16',
-      gateTambahanPass: false
-    };
-  } catch (error) {
-    console.log(`   ❌ Judge 2 failed: ${error.message}`);
-    return { error: error.message, gateTambahanPass: false };
+  } catch (sdkError) {
+    console.log(`   ⚠️ Judge 2 SDK failed: ${sdkError.message}`);
   }
+  
+  // Fallback score
+  console.log('   ⚠️ Judge 2 using fallback scores');
+  return {
+    G5_engagementPotential: { score: 5, reasoning: 'API failed, using fallback' },
+    G6_technicalQuality: { score: 5, reasoning: 'API failed, using fallback' },
+    gateTambahanTotal: '10/16',
+    gateTambahanPass: false
+  };
 }
 
 async function runJudge3(content, inputData) {
   console.log('   👨‍⚖️ Judge 3: Penilaian Internal...');
   
+  // Safe array handling
+  const competitorHooks = Array.isArray(inputData.competitorHooks) ? inputData.competitorHooks : [];
+  const bannedWords = Array.isArray(inputData.bannedWords) ? inputData.bannedWords : [];
+  const aiPatterns = inputData.aiPatterns || CONFIG.hardRequirements.aiPatterns;
+  
+  const userInput = JUDGE_PROMPTS.judge3.userTemplate
+    .replace('{{bannedWords}}', bannedWords.join(', '))
+    .replace('{{aiPatterns}}', JSON.stringify(aiPatterns, null, 2))
+    .replace('{{competitorHooks}}', competitorHooks.map(c => `- "${c.hook}"`).join('\n') || 'No competitor data')
+    .replace('{{content}}', content);
+  
+  // TRY 1: Groq API (Primary)
+  try {
+    const result = await callGroqAPI([
+      { role: 'system', content: JUDGE_PROMPTS.judge3.system },
+      { role: 'user', content: userInput }
+    ], CONFIG.groq.fallbackModel, 2000, 0.3); // Use larger model for complex judging
+    
+    const responseText = result.choices[0]?.message?.content;
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      console.log('   ✅ Judge 3 done (Groq)');
+      return JSON.parse(jsonMatch[0]);
+    }
+  } catch (groqError) {
+    console.log(`   ⚠️ Judge 3 Groq failed: ${groqError.message}`);
+  }
+  
+  // TRY 2: SDK (Fallback)
   try {
     const ZAI = await initZAI();
     const zai = await ZAI.create();
-    
-    // Safe array handling
-    const competitorHooks = Array.isArray(inputData.competitorHooks) ? inputData.competitorHooks : [];
-    const bannedWords = Array.isArray(inputData.bannedWords) ? inputData.bannedWords : [];
-    const aiPatterns = inputData.aiPatterns || CONFIG.hardRequirements.aiPatterns;
-    
-    const userInput = JUDGE_PROMPTS.judge3.userTemplate
-      .replace('{{bannedWords}}', bannedWords.join(', '))
-      .replace('{{aiPatterns}}', JSON.stringify(aiPatterns, null, 2))
-      .replace('{{competitorHooks}}', competitorHooks.map(c => `- "${c.hook}"`).join('\n') || 'No competitor data')
-      .replace('{{content}}', content);
     
     const result = await zai.chat.completions.create({
       messages: [
@@ -1241,30 +1379,27 @@ async function runJudge3(content, inputData) {
     });
     
     const responseText = result.choices[0]?.message?.content;
-    
-    try {
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
-    } catch (parseError) {
-      console.log('   ⚠️ Judge 3 JSON parse failed');
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      console.log('   ✅ Judge 3 done (SDK)');
+      return JSON.parse(jsonMatch[0]);
     }
-    
-    return {
-      hookScore: { score: 5, reasoning: 'Parse error, using fallback' },
-      emotionScore: { score: 5, reasoning: 'Parse error, using fallback' },
-      ctScore: { score: 5, reasoning: 'Parse error, using fallback' },
-      uniquenessScore: { score: 5, reasoning: 'Parse error, using fallback' },
-      readabilityScore: { score: 5, reasoning: 'Parse error, using fallback' },
-      viralPotentialScore: { score: 5, reasoning: 'Parse error, using fallback' },
-      overallScore: 5,
-      allPass: false
-    };
-  } catch (error) {
-    console.log(`   ❌ Judge 3 failed: ${error.message}`);
-    return { error: error.message, allPass: false };
+  } catch (sdkError) {
+    console.log(`   ⚠️ Judge 3 SDK failed: ${sdkError.message}`);
   }
+  
+  // Fallback score
+  console.log('   ⚠️ Judge 3 using fallback scores');
+  return {
+    hookScore: { score: 5, reasoning: 'API failed, using fallback' },
+    emotionScore: { score: 5, reasoning: 'API failed, using fallback' },
+    ctScore: { score: 5, reasoning: 'API failed, using fallback' },
+    uniquenessScore: { score: 5, reasoning: 'API failed, using fallback' },
+    readabilityScore: { score: 5, reasoning: 'API failed, using fallback' },
+    viralPotentialScore: { score: 5, reasoning: 'API failed, using fallback' },
+    overallScore: 5,
+    allPass: false
+  };
 }
 
 async function runAllJudges(content, judgeInstructions) {

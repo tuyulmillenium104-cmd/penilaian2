@@ -1,0 +1,48 @@
+{
+  "description": "Rally Workflow API Configuration - Edit this file to add your API keys",
+  "instructions": [
+    "1. Get an API key from one of these providers:",
+    "   - Groq (FREE 14M tokens/month): https://console.groq.com/keys",
+    "   - Gemini (FREE 60 req/min): https://aistudio.google.com/app/apikey",
+    "   - Together AI (FREE $1 credit): https://api.together.ai/settings/api-keys",
+    "   - OpenRouter (Multiple FREE models): https://openrouter.ai/keys",
+    "   - DeepSeek (FREE tier): https://platform.deepseek.com/api_keys",
+    "",
+    "2. Paste your API key in the 'apiKey' field below",
+    "",
+    "3. Set 'enabled' to true for that provider",
+    "",
+    "4. Run: node scripts/rally-workflow-v9.4.0.js \"campaign_name\""
+  ],
+  "providers": {
+    "sdk": {
+      "enabled": true,
+      "note": "Built-in SDK - currently rate limited. Will be used as fallback."
+    },
+    "groq": {
+      "enabled": false,
+      "apiKey": "",
+      "note": "FREE 14M tokens/month. Paste your Groq API key here."
+    },
+    "gemini": {
+      "enabled": false,
+      "apiKey": "",
+      "note": "FREE 60 req/min. May be region blocked."
+    },
+    "together": {
+      "enabled": false,
+      "apiKey": "",
+      "note": "FREE $1 credit. Good quality models."
+    },
+    "openrouter": {
+      "enabled": false,
+      "apiKey": "",
+      "note": "Multiple FREE models available."
+    },
+    "deepseek": {
+      "enabled": false,
+      "apiKey": "",
+      "note": "FREE tier available. Good for Chinese/English content."
+    }
+  }
+}
