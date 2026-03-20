@@ -1,71 +1,288 @@
 {
   "name": "judge-workflow",
-  "version": "1.0.0",
-  "description": "Independent Judge Workflow for Rally.fun content competition",
+  "version": "1.1.0",
+  "description": "Independent Judge Workflow for Rally.fun with blind judging, evidence-based scoring, fact-checking, verification 2x, and tie-breaker system",
   "type": "workflow",
+  "lastUpdated": "2026-03-21",
+  
+  "verification": {
+    "method": "double_pass",
+    "totalAssessments": 2,
+    "toleranceThresholds": {
+      "sameScore": 0,
+      "averageRange": 1,
+      "conservativeRange": [2, 3],
+      "tieBreakerThreshold": 3
+    },
+    "reconciliationRules": {
+      "difference_0": "same - gunakan skor yang sama",
+      "difference_1": "average - rata-rata kedua skor, round down",
+      "difference_2_3": "conservative - gunakan skor terendah",
+      "difference_gt_3": "tie_breaker - penilaian ke-3 diperlukan"
+    },
+    "decisionRules": {
+      "both_pass": "APPROVED",
+      "both_fail": "REJECTED",
+      "mixed_gateUtama_fail": "REJECTED - Gate Utama fail prioritaskan rejection",
+      "mixed_other": "reconcile - gunakan reconciliation process"
+    },
+    "tieBreakerRequired": [
+      "selisih > 3 poin pada gate manapun",
+      "kontradiksi verdict (ACCURATE vs INACCURATE)",
+      "mixed pass/fail dengan gap besar"
+    ]
+  },
+  
   "input": {
     "campaignData": {
       "source": "file | api",
       "path": "/download/campaign-data.json",
-      "required": ["title", "knowledgeBase", "rules", "requiredUrl"]
+      "required": ["title", "knowledgeBase", "rules", "requiredUrl"],
+      "optional": ["style", "competitorHooks"]
     },
     "content": {
       "source": "file",
       "path": "/download/konten-kandidat.txt",
-      "note": "BLIND - tanpa info pembuat"
+      "note": "BLIND - tanpa info pembuat, tanpa metadata, tanpa timestamp",
+      "minLength": 50,
+      "rejectIfTooShort": true
     }
   },
+  
   "output": {
     "path": "/download/judge-output/",
     "files": {
-      "judge1-result.json": "Gate Utama (G1-G4)",
-      "judge2-result.json": "Gate Tambahan (G5-G6)",
-      "judge3-result.json": "Penilaian Internal",
-      "hasil-akhir.json": "Final result with all scores"
+      "assessment1-result.json": "First pass assessment results",
+      "assessment2-result.json": "Second pass assessment results",
+      "reconciliation.json": "Reconciliation analysis",
+      "tie-breaker.json": "Tie-breaker assessment (if needed)",
+      "hasil-akhir.json": "Final result with all scores and decision"
     }
   },
+  
   "thresholds": {
-    "gateUtama": { "pass": 16, "max": 20 },
-    "gateTambahan": { "pass": 14, "max": 16 },
+    "gateUtama": { "pass": 16, "max": 20, "gates": ["G1", "G2", "G3", "G4"] },
+    "gateTambahan": { "pass": 14, "max": 16, "gates": ["G5", "G6"] },
     "penilaianInternal": { "pass": 54, "max": 60 }
   },
-  "capabilities": {
-    "blindJudging": true,
-    "factCheck": true,
-    "webSearch": true,
-    "evidenceRequired": true
-  },
-  "flow": [
-    {
-      "step": 1,
-      "name": "Load Campaign Data",
-      "action": "read file / fetch API"
+  
+  "gateBreakdowns": {
+    "G1_contentAlignment": {
+      "max": 5,
+      "breakdown": {
+        "topicRelevance": { "max": 2, "description": "Konten membahas topik yang sama dengan KB" },
+        "terminologyUse": { "max": 2, "description": "Istilah teknis digunakan dengan benar" },
+        "factualConsistency": { "max": 1, "description": "Klaim konsisten dengan KB" }
+      },
+      "formula": "topicRelevance + terminologyUse + factualConsistency"
     },
-    {
-      "step": 2,
-      "name": "Load Content (Blind)",
-      "action": "read file without metadata"
+    "G2_informationAccuracy": {
+      "max": 5,
+      "breakdown": {
+        "technicalAccuracy": { "max": 2, "description": "Fakta teknis benar" },
+        "noMisleading": { "max": 2, "description": "Tidak ada klaim menyesatkan" },
+        "properContext": { "max": 1, "description": "Konteks penggunaan benar" }
+      },
+      "formula": "technicalAccuracy + noMisleading + properContext",
+      "factCheckRequired": true
     },
-    {
-      "step": 3,
-      "name": "Judge 1: Gate Utama",
-      "action": "evaluate G1-G4",
-      "onPass": "continue to step 4",
-      "onFail": "return with suggestions"
+    "G3_campaignCompliance": {
+      "max": 5,
+      "checks": {
+        "requiredUrlPresent": { "points": 1, "description": "URL required ada" },
+        "noEmDashes": { "points": 1, "description": "Tidak ada em dashes" },
+        "noBannedWords": { "points": 1, "description": "Tidak ada banned words" },
+        "properStart": { "points": 1, "description": "Tidak mulai dengan @mention" },
+        "noProhibitedElements": { "points": 1, "description": "Tidak ada Thread 🧵 atau excess hashtags" }
+      },
+      "formula": "sum of TRUE checks"
     },
-    {
-      "step": 4,
-      "name": "Judge 2: Gate Tambahan",
-      "action": "evaluate G5-G6",
-      "onPass": "continue to step 5",
-      "onFail": "return with suggestions"
+    "G4_originality": {
+      "max": 5,
+      "breakdown": {
+        "uniqueAngle": { "max": 2, "description": "Sudut pandang berbeda" },
+        "noAiPatterns": { "max": 2, "description": "Tidak ada AI patterns" },
+        "naturalVoice": { "max": 1, "description": "Bahasa natural" }
+      },
+      "formula": "uniqueAngle + noAiPatterns + naturalVoice",
+      "note": "AI Patterns dihukum di sini, JANGAN hukum lagi di Judge 3"
     },
-    {
-      "step": 5,
-      "name": "Judge 3: Penilaian Internal",
-      "action": "evaluate all 6 criteria",
-      "onPass": "return APPROVED",
-      "onFail": "return with suggestions"
+    "G5_engagementPotential": {
+      "max": 8,
+      "breakdown": {
+        "hookEffectiveness": { "max": 2, "description": "Hook kuat" },
+        "ctaQuality": { "max": 2, "description": "CTA kuat" },
+        "contentStructure": { "max": 2, "description": "Struktur baik" },
+        "conversationPotential": { "max": 2, "description": "Conversation starter" }
+      },
+      "formula": "sum of all breakdowns"
+    },
+    "G6_technicalQuality": {
+      "max": 8,
+      "breakdown": {
+        "grammarSpelling": { "max": 2, "description": "Tanpa error" },
+        "formatting": { "max": 2, "description": "Formatting profesional" },
+        "platformOptimization": { "max": 2, "description": "Optimal untuk X/Twitter" },
+        "charCountOptimal": { "max": 2, "description": "Tweet length optimal" }
+      },
+      "formula": "sum of all breakdowns"
     }
-  ]
+  },
+  
+  "internalScoring": {
+    "hookScore": {
+      "max": 10,
+      "method": "priority",
+      "priority": ["powerPattern", "weakOpening", "standard"],
+      "baseScores": { "powerPattern": 8, "weakOpening": 4, "standard": 6 },
+      "bonuses": {
+        "emotionInHook": { "points": 1, "description": "Ada emotion word di hook" },
+        "shortHook": { "points": 1, "description": "Hook < 100 chars" }
+      },
+      "cap": 10
+    },
+    "emotionScore": {
+      "max": 10,
+      "rules": {
+        "10": "3+ emotion types + body feeling",
+        "9": "3+ emotion types, no body feeling",
+        "7-8": "2 emotion types",
+        "5-6": "1 emotion type",
+        "0-4": "No emotion detected"
+      }
+    },
+    "ctScore": {
+      "max": 10,
+      "elements": {
+        "question": 2,
+        "replyBait": 2,
+        "engagementHook": 2,
+        "personal": 1,
+        "fomo": 1,
+        "controversy": 1,
+        "shareWorthy": 1
+      }
+    },
+    "uniquenessScore": {
+      "max": 10,
+      "start": 10,
+      "penalties": {
+        "templateHook": -3,
+        "bannedWord": -0.5
+      },
+      "note": "AI Patterns SUDAH dihukum di G4, JANGAN hukum lagi"
+    },
+    "readabilityScore": {
+      "max": 10,
+      "breakdown": {
+        "sentenceLength": { "max": 3, "ideal": "15-25 words" },
+        "structure": { "max": 4, "ideal": "Professional" },
+        "paragraphBreaks": { "max": 3, "ideal": "Optimal" }
+      }
+    },
+    "viralPotentialScore": {
+      "max": 10,
+      "base": 3,
+      "elements": ["controversy", "emotion", "question", "personal", "numbers", "urgency", "insight"],
+      "formula": "base + elementsCount"
+    }
+  },
+  
+  "capabilities": {
+    "blindJudging": {
+      "enabled": true,
+      "description": "Judge tidak tahu siapa pembuat konten, kapan dibuat, atau dari sumber mana"
+    },
+    "factCheck": {
+      "enabled": true,
+      "required": true,
+      "description": "Wajib untuk semua klaim faktual (angka, statistik, nama, tanggal)",
+      "webSearchIntegration": true,
+      "fallbackOnFailure": "Gunakan KB atau skor konservatif"
+    },
+    "webSearch": {
+      "enabled": true,
+      "purpose": "Verifikasi klaim faktual di G2 Information Accuracy"
+    },
+    "evidenceRequired": {
+      "enabled": true,
+      "description": "Setiap skor WAJIB disertai evidence dan reasoning"
+    },
+    "tieBreaker": {
+      "enabled": true,
+      "triggerConditions": [
+        "selisih > 3 poin",
+        "kontradiksi verdict",
+        "mixed pass/fail"
+      ]
+    }
+  },
+  
+  "bannedWords": [
+    "guaranteed", "guarantee", "100%", "risk-free", "sure thing",
+    "financial advice", "investment advice", "buy now", "sell now",
+    "get rich", "quick money", "easy money", "passive income",
+    "follow me", "subscribe to my", "check my profile",
+    "click here", "limited time offer", "act now",
+    "legally binding", "court order", "official ruling"
+  ],
+  
+  "aiPatterns": {
+    "words": ["delve", "leverage", "realm", "tapestry", "paradigm", "landscape", "nuance", "underscores", "pivotal", "crucial"],
+    "phrases": ["picture this", "lets dive in", "in this thread", "key takeaways", "heres the thing", "imagine a world"],
+    "penaltyLocation": "G4 Originality only"
+  },
+  
+  "templateHooks": [
+    "unpopular opinion", "hot take", "thread alert", "breaking", 
+    "this is your sign", "psa", "reminder that", "quick thread", 
+    "important thread", "drop everything", "stop scrolling", 
+    "hear me out", "let me explain", "nobody is talking about", "story time"
+  ],
+  
+  "weakOpenings": [
+    "the ", "a ", "an ", "this is", "there are", "there is", "i think",
+    "in the", "today ", "so ", "well ", "basically", "honestly ", 
+    "actually ", "first ", "let me", "here is", "here are"
+  ],
+  
+  "powerPatterns": [
+    "^\\$\\d+",
+    "^\\d+",
+    "^(what|who|why|how|when|where|which)",
+    "^(imagine|picture|consider|think)",
+    "^(no|wrong|false|never|stop|don't)",
+    "^i (lost|failed|got|spent|wasted|built)",
+    "^(warning|alert|urgent|breaking|stop|wait)",
+    "^(code|execution)"
+  ],
+  
+  "emotionTriggers": {
+    "fear": ["risk", "danger", "threat", "warning", "scary", "terrifying", "afraid", "worried", "nightmare", "silence", "no judge", "no appeal", "no recourse"],
+    "curiosity": ["wonder", "curious", "secret", "hidden", "mystery", "discover", "surprising", "unexpected", "what happens", "consider what"],
+    "surprise": ["unexpected", "shocking", "surprised", "blew my mind", "plot twist", "wait what", "finally", "breakthrough", "nobody talks", "gap", "forgot"],
+    "hope": ["finally", "breakthrough", "opportunity", "potential", "future", "imagine", "possible", "building", "solution"],
+    "pain": ["lost", "failed", "broke", "destroyed", "killed", "wasted", "missed", "regret", "hurt", "pain", "dispute", "problem", "chaos"],
+    "urgency": ["now", "today", "immediately", "urgent", "quickly", "fast", "running out", "years", "seconds"]
+  },
+  
+  "bodyFeelings": [
+    "cold sweat", "panic", "anxiety", "heart racing", "stomach dropped", 
+    "heart sank", "chest tightened", "jaw dropped", "couldn't believe"
+  ],
+  
+  "edgeCases": {
+    "contentTooShort": { "minLength": 50, "action": "REJECT" },
+    "noHook": { "action": "Hook Score = 0, give feedback" },
+    "allUppercase": { "action": "Readability Structure = 0" },
+    "wallOfText": { "action": "Paragraph Breaks = 0" },
+    "webSearchFailed": { "action": "Use KB or conservative score" },
+    "kbUnavailable": { "action": "Use external verification, note in evidence" }
+  },
+  
+  "confidenceLevels": {
+    "HIGH": ["Hard checks verified", "Factual claims with credible source", "Clear pattern match"],
+    "MEDIUM": ["Subjective assessment with evidence", "Emotion without body feeling", "Originality with some competitors"],
+    "LOW": ["Web search failed", "KB unavailable", "Edge case without precedent"]
+  }
 }
