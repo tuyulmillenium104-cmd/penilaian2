@@ -1,68 +1,91 @@
-# RALLY CONTENT WORKFLOW V9.2.0 - HYBRID EDITION
+# RALLY WORKFLOW V9.3.0 - MULTI-LLM JUDGING EDITION
 
-> **Versi:** V9.2.0 Hybrid Edition  
-> **Arsitektur:** Script untuk Data Dasar + AI Chat untuk Web Research  
-> **Total Phases:** 24 phases
+> **Versi:** V9.3.0 Multi-LLM Judging Edition  
+> **Arsitektur:** Script untuk Data + Multi-LLM untuk Blind Judging  
+> **Total Phases:** 24 phases + 3 Judge calls
 
 ---
 
-## 🆕 KENAPA V9.2.0 HYBRID?
+## 🆕 KENAPA V9.3.0?
 
-### Masalah V9.1.x:
+### Masalah Sebelumnya:
 | Masalah | Penyebab |
 |---------|----------|
-| Web Search API 429 error | Rate limited |
-| Data tidak real-time | API terbatas |
-| Tidak bisa navigate website | Hanya search snippets |
+| Penilaian bias | LLM yang buat konten juga yang nilai |
+| Subjektif | Campaign goal/style mempengaruhi penilaian |
+| Tidak konsisten | Satu LLM tidak objektif menilai diri sendiri |
 
-### Solusi V9.2.0:
-| Komponen | Eksekusi | Kemampuan |
-|----------|----------|-----------|
-| **Rally API** | Script | Campaign + Leaderboard data |
-| **Basic Scrape** | Script | HTML parsing project websites |
-| **Web Research** | **AI Chat** | Browser capability - navigate, scroll, click, extract |
-| **News/Trends** | **AI Chat** | Real-time search, deep analysis |
-| **Market Data** | **AI Chat** | Browse multiple sources |
+### Solusi V9.3.0:
+| Komponen | Eksekusi | Fungsi |
+|----------|----------|--------|
+| **Data Gatherer** | Script Node.js | Fetch campaign, leaderboard, submissions |
+| **Judge 1** | LLM terpisah via SDK | Gate Utama (G1-G4) |
+| **Judge 2** | LLM terpisah via SDK | Gate Tambahan (G5-G6) |
+| **Judge 3** | LLM terpisah via SDK | Penilaian Internal |
 
 ---
 
-## 🏗️ ARSITEKTUR V9.2.0
+## 🏗️ ARSITEKTUR V9.3.0
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     RALLY WORKFLOW V9.2.0 - HYBRID EDITION                  │
+│                     RALLY WORKFLOW V9.3.0                                    │
+│                     MULTI-LLM JUDGING EDITION                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ════════════════════════════════════════════════════════════════════════  │
-│  PART 1: SCRIPT NODE.JS (Data Dasar)                                        │
-│  ════════════════════════════════════════════════════════════════════════  │
-│                                                                             │
-│  ✅ Phase 0: Campaign Data (Rally API)                                      │
-│  ✅ Phase 1: Basic Website Scrape (HTML parsing)                            │
-│  ✅ Phase 2: Leaderboard (Rally API)                                        │
-│                                                                             │
-│  Output: JSON dengan data dasar + instruksi untuk AI Chat                   │
-│                                                                             │
-│  ════════════════════════════════════════════════════════════════════════  │
-│  PART 2: AI CHAT (Web Research + Content Creation)                          │
-│  ════════════════════════════════════════════════════════════════════════  │
-│                                                                             │
-│  🌐 BROWSER CAPABILITY (AI Chat)                                            │
-│  ├── Web Search: Real-time news dan trends                                  │
-│  ├── Navigate: Browse ke websites                                           │
-│  ├── Scroll: Baca konten lengkap                                            │
-│  ├── Click: Follow links                                                    │
-│  └── Extract: Ambil data yang relevan                                       │
-│                                                                             │
-│  ✅ Phase 1B: Web Research (via AI Chat browser)                            │
-│  ├── News: Latest news about campaign topic                                 │
-│  ├── Market: Statistics and market data                                     │
-│  ├── Trends: Trending topics in community                                   │
-│  └── Competitors: Platform analysis                                         │
-│                                                                             │
-│  ✅ Phase 2B: Competitor Deep Analysis                                      │
-│  ✅ Phase 3-16: Content Creation                                            │
-│                                                                             │
+│                                                                              │
+│  ════════════════════════════════════════════════════════════════════════   │
+│  PHASE 0-2: SCRIPT NODE.JS (Data Gathering)                                  │
+│  ════════════════════════════════════════════════════════════════════════   │
+│                                                                              │
+│  ✅ Campaign Data (Rally API)                                                │
+│  ✅ Leaderboard (Rally API)                                                  │
+│  ✅ Submissions (Rally API)                                                  │
+│  ✅ Competitor Hooks (extracted from submissions)                            │
+│                                                                              │
+│  Output: JSON dengan judge instructions                                      │
+│                                                                              │
+│  ════════════════════════════════════════════════════════════════════════   │
+│  JUDGING SYSTEM: MULTI-LLM BLIND JUDGING                                     │
+│  ════════════════════════════════════════════════════════════════════════   │
+│                                                                              │
+│         ┌──────────────┐                                                    │
+│         │   KONTEN     │                                                    │
+│         └──────┬───────┘                                                    │
+│                │                                                             │
+│    ┌───────────┼───────────┐                                                │
+│    ▼           ▼           ▼                                                │
+│  ┌────────┐ ┌────────┐ ┌────────┐                                          │
+│  │ JUDGE1 │ │ JUDGE2 │ │ JUDGE3 │                                          │
+│  │        │ │        │ │        │                                          │
+│  │ G1-G4  │ │ G5-G6  │ │ INT    │                                          │
+│  │ 0-5    │ │ 0-8    │ │ 0-10   │                                          │
+│  └───┬────┘ └───┬────┘ └───┬────┘                                          │
+│      │          │          │                                                 │
+│      └──────────┼──────────┘                                                 │
+│                 ▼                                                            │
+│         ┌──────────────┐                                                    │
+│         │  AGGREGATE   │                                                    │
+│         │  & DECISION  │                                                    │
+│         └──────────────┘                                                    │
+│                                                                              │
+│  ════════════════════════════════════════════════════════════════════════   │
+│  BLIND JUDGING - DATA YANG DIKIRIM KE JUDGE                                  │
+│  ════════════════════════════════════════════════════════════════════════   │
+│                                                                              │
+│  ✅ DIKIRIM (Hard Requirements):                                             │
+│  ├── Knowledge Base (untuk cek akurasi faktual)                              │
+│  ├── Required URL (hard check: ada/tidak)                                    │
+│  ├── Rules (hard requirements)                                               │
+│  ├── Banned Words (hard check)                                               │
+│  ├── AI Patterns (hard check)                                                │
+│  └── Competitor Hooks (untuk uniqueness check)                               │
+│                                                                              │
+│  ❌ TIDAK DIKIRIM (untuk hindari bias):                                       │
+│  ├── Campaign Goal                                                           │
+│  ├── Campaign Style                                                          │
+│  ├── Suggested Angles                                                        │
+│  └── Tips for Content                                                        │
+│                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -70,238 +93,131 @@
 
 ## 🚀 CARA PENGGUNAAN
 
-### Step 1: Run Script (Data Dasar)
+### Step 1: Run Data Gatherer Script
 
 ```bash
-# Clone repo
-git clone https://github.com/tuyulmillenium104-cmd/penilaian2
-cd penilaian2
-git checkout v9.0.0-hybrid
-
-# Run data gatherer
-node scripts/rally-data-gatherer.js [campaign_address]
+cd /home/z/my-project
+node scripts/rally-workflow-v9.3.0.js [campaign_address]
 ```
 
-### Step 2: AI Chat (Web Research + Content)
+Output: JSON file dengan judge instructions
 
-Copy JSON output dan paste ke AI Chat dengan prompt:
+### Step 2: Run Multi-LLM Judging
 
-```
-Buat konten Rally menggunakan data berikut:
+```javascript
+const ZAI = require('z-ai-web-dev-sdk').default;
 
-[PASTE JSON OUTPUT]
-
----
-
-SEBAGAI AI CHAT DENGAN BROWSER CAPABILITY, LAKUKAN:
-
-## STEP 1: WEB RESEARCH (Gunakan Browser/Search)
-
-Sebelum generate konten, lakukan web research:
-
-1. **News Search**
-   - Cari berita terbaru tentang Internet Court / GenLayer
-   - Cari developments terkini di Web3 dispute resolution
-   - Output: 3-5 news items relevan
-
-2. **Market Research**
-   - Cari statistik blockchain arbitration market
-   - Cari data adopsi Web3 dispute resolution
-   - Output: Data dan statistics
-
-3. **Trends Analysis**
-   - Cari trending topics di crypto twitter terkait
-   - Cari diskusi komunitas tentang decentralized justice
-   - Output: Trending angles
-
-4. **Competitor Analysis**
-   - Analyze content dari leaderboard.top10
-   - Identify hook patterns dan CTA styles
-   - Find content gaps
-
-## STEP 2: CONTENT CREATION (Phases 3-16)
-
-Ikuti workflow phases dari JSON:
-
-### Phase 2B: Competitor Deep Analysis (LLM)
-- Analyze patterns dari leaderboard data
-- Identify unique angles yang belum digunakan
-- Output: opportunity_gaps
-
-### Phase 3: Gap Identification
-- Compare dengan competitor patterns
-- Find differentiation opportunities
-
-### Phase 4: Strategy Definition
-- Select angle: problem_first / contrast / fear / analytical / future
-- Define emotion target
-- Define CTA approach
-
-### Phase 5: Content Generation ⭐ CORE (LLM)
-- Generate 3-5 content versions
-- Each: 3-5 tweets, 240-400 chars each
-- Include hook, requiredUrl, CTA
-- Use web research data
-
-### Phase 6: Banned Items Scanner
-- Check setiap version terhadap bannedWords
-- Output: violations list
-
-### Phase 6B: Rewrite (if violations)
-- Fix violations
-
-### Phase 7: Uniqueness Validation
-- Compare vs competitor content
-- Score uniqueness
-
-### Phase 8: Emotion Injection ⭐ CORE (LLM)
-- Enhance emotional appeal
-- Add emotional triggers
-
-### Phase 9: HES + Viral Scoring
-- Calculate scores
-
-### Phase 9B: Viral Enhancement (if score < 0.6)
-
-### Phase 10: Quality Selection 🔒 LOCK
-- Select best version
-
-### Phase 11: Micro-Optimization
-- Word/sentence/char optimization
-
-### Phase 12: Flow Polish
-- Smooth transitions
-
-### Phase 12B: 16 Gates Validation
-- Validate all gates dari gatesDefinition
-
-### Phase 13: Benchmark Comparison
-- Compare vs top competitors
-
-### Phase 13B: Beat Top 20 Strategy
-
-### Phase 14: Final Emotion Check ⭐ CORE (LLM)
-
-### Phase 14B: Final Polish
-
-### Phase 15: Output Format
-
-### Phase 15B: CT Maximizer
-
-### Phase 16: Export + SCORE CARD
-
----
-
-## SCORE CARD FORMAT:
-
-╔══════════════════════════════════════════════════════════════╗
-║                    RALLY CONTENT SCORE CARD                   ║
-╠══════════════════════════════════════════════════════════════╣
-║ Campaign: [campaignName]                                      ║
-║ Required URL: [requiredUrl]                                   ║
-╠══════════════════════════════════════════════════════════════╣
-║ GATE UTAMA (Target: 4-5)                                      ║
-║ ├── URL Present: ✓/✗                                         ║
-║ ├── Hook Quality: [score]/1                                   ║
-║ ├── Content Length: ✓/✗                                      ║
-║ ├── CTA Present: ✓/✗                                         ║
-║ └── Topic Relevance: ✓/✗                                     ║
-║ TOTAL GATE UTAMA: [X]/5                                       ║
-╠══════════════════════════════════════════════════════════════╣
-║ GATE TAMBAHAN (Target: 8)                                     ║
-║ ├── No Banned Words: ✓/✗                                     ║
-║ ├── Unique Hook: ✓/✗                                         ║
-║ ├── Emotional Appeal: ✓/✗                                    ║
-║ ├── Educational Value: ✓/✗                                   ║
-║ ├── Viral Potential: ✓/✗                                     ║
-║ ├── Authentic Voice: ✓/✗                                     ║
-║ ├── Proper Formatting: ✓/✗                                   ║
-║ └── Engagement Hook: ✓/✗                                     ║
-║ TOTAL GATE TAMBAHAN: [X]/8                                    ║
-╠══════════════════════════════════════════════════════════════╣
-║ PENILAIAN INTERNAL (Target: 9-10)                             ║
-║ ├── Originality: [X]/2                                        ║
-║ ├── Insight Depth: [X]/2                                      ║
-║ ├── Writing Quality: [X]/2                                    ║
-║ ├── Emotional Resonance: [X]/2                                ║
-║ └── Viral Coefficient: [X]/2                                  ║
-║ TOTAL PENILAIAN INTERNAL: [X]/10                              ║
-╠══════════════════════════════════════════════════════════════╣
-║ EMOTIONAL SCORE: [X]/10 (Min: 7.0)                            ║
-║ VIRAL SCORE: [X]/1.0 (Min: 0.6)                               ║
-╠══════════════════════════════════════════════════════════════╣
-║ WEB RESEARCH USED: ✅                                         ║
-║ ├── News Items: [X]                                           ║
-║ ├── Market Data: [X] points                                   ║
-║ └── Trends: [X] trending topics                               ║
-╠══════════════════════════════════════════════════════════════╣
-║ FINAL CONTENT:                                                ║
-║ [Content here]                                                ║
-╠══════════════════════════════════════════════════════════════╣
-║ STATUS: ✅ PASS / ❌ NEEDS IMPROVEMENT                         ║
-╚══════════════════════════════════════════════════════════════╝
+async function runJudging(workflowOutput, content) {
+  const zai = await ZAI.create();
+  
+  // Run 3 judges in parallel
+  const [judge1, judge2, judge3] = await Promise.all([
+    // Judge 1: Gate Utama
+    zai.chat.completions.create({
+      messages: [
+        { role: 'system', content: workflowOutput.judgeInstructions.judge1.systemPrompt },
+        { role: 'user', content: formatInput(workflowOutput.judgeInstructions.judge1, content) }
+      ],
+      response_format: { type: 'json_object' }
+    }),
+    // Judge 2: Gate Tambahan
+    zai.chat.completions.create({
+      messages: [
+        { role: 'system', content: workflowOutput.judgeInstructions.judge2.systemPrompt },
+        { role: 'user', content: formatInput(workflowOutput.judgeInstructions.judge2, content) }
+      ],
+      response_format: { type: 'json_object' }
+    }),
+    // Judge 3: Penilaian Internal
+    zai.chat.completions.create({
+      messages: [
+        { role: 'system', content: workflowOutput.judgeInstructions.judge3.systemPrompt },
+        { role: 'user', content: formatInput(workflowOutput.judgeInstructions.judge3, content) }
+      ],
+      response_format: { type: 'json_object' }
+    })
+  ]);
+  
+  return {
+    judge1: JSON.parse(judge1.choices[0].message.content),
+    judge2: JSON.parse(judge2.choices[0].message.content),
+    judge3: JSON.parse(judge3.choices[0].message.content)
+  };
+}
 ```
 
 ---
 
-## 📊 PHASE BREAKDOWN
+## 📊 PENILAIAN PER JUDGE
 
-| Phase | Nama | Eksekusi | LLM? | Keterangan |
-|-------|------|----------|------|------------|
-| 0 | Campaign Fetch | Script | ❌ | Rally API |
-| 1 | Website Scrape | Script | ❌ | Basic HTML |
-| **1B** | **Web Research** | **AI Chat** | ❌ | **Browser capability** |
-| 2 | Leaderboard | Script | ❌ | Rally API |
-| **2B** | **Competitor Analysis** | AI Chat | ✅ | Deep pattern analysis |
-| 3-16 | Content Creation | AI Chat | Mixed | See workflow |
+### JUDGE 1: GATE UTAMA (G1-G4) - Scale 0-5, Min: 4
 
----
+| Gate | Kriteria | Sub-Kriteria |
+|------|----------|--------------|
+| **G1** | Content Alignment | topicRelevance, terminologyUse, factualConsistency |
+| **G2** | Information Accuracy | technicalAccuracy, noMisleading, properContext |
+| **G3** | Campaign Compliance | requiredUrlPresent, noEmDashes, noBannedWords, properStart |
+| **G4** | Originality | uniqueAngle, noAiPatterns, naturalVoice |
 
-## 📡 DATA FLOW
+### JUDGE 2: GATE TAMBAHAN (G5-G6) - Scale 0-8, Min: 8
 
-```
-SCRIPT OUTPUT                    AI CHAT ACTIONS
-─────────────                    ───────────────
-campaign data        ────────>   Use for content requirements
-websites[]           ────────>   Reference for facts
-leaderboard.top10[]  ────────>   Analyze competitor patterns
-bannedWords[]        ────────>   Validate content
-gatesDefinition      ────────>   Validate all gates
-webResearchTasks[]   ────────>   🌐 PERFORM WEB RESEARCH
+| Gate | Kriteria | Sub-Kriteria |
+|------|----------|--------------|
+| **G5** | Engagement Potential | hookEffectiveness, ctaQuality, contentStructure, conversationPotential |
+| **G6** | Technical Quality | grammarSpelling, formatting, platformOptimization, noProhibitedElements |
 
-                                 ┌─────────────────────┐
-                                 │ AI CHAT BROWSER     │
-                                 │                     │
-                                 │ • Web Search        │
-                                 │ • Navigate URLs     │
-                                 │ • Extract Data      │
-                                 │ • Real-time Info    │
-                                 └─────────────────────┘
-                                          │
-                                          ▼
-                                 WEB RESEARCH DATA
-                                 ─────────────────
-                                 • news[]
-                                 • market[]
-                                 • trends[]
-                                 • competitors[]
-                                          │
-                                          ▼
-                                 CONTENT GENERATION
-                                 (Phases 3-16)
-```
+### JUDGE 3: PENILAIAN INTERNAL - Scale 0-10, Min: 9
+
+| Metrik | Cara Hitung |
+|--------|-------------|
+| **Hook Score** | Power patterns (+2) - Weak openings (-2) + Required elements (+1) |
+| **Emotion Score** | Emotion types + Body feelings presence |
+| **CT Score** | Question (+2) + Reply bait (+2) + Engagement hook (+2) + Personal (+1) + FOMO (+1) + Controversy (+1) + Share-worthy (+1) |
+| **Uniqueness Score** | 10 - (AI patterns × 2) - (Template hooks × 3) - (Banned words × 0.5) |
+| **Readability Score** | Sentence length + Structure + Paragraph breaks |
+| **Viral Potential Score** | Controversy + Emotion + Questions + Personal + Numbers + Urgency + Share-worthy |
 
 ---
 
 ## 🎯 SCORING TARGETS
 
-| Component | Minimum | Maximum |
-|-----------|---------|---------|
-| Gate Utama | 4 | 5 |
-| Gate Tambahan | 8 | 8 |
-| Penilaian Internal | 9 | 10 |
-| Emotional Score | 7.0 | 10.0 |
-| Viral Score | 0.6 | 1.0 |
+| Component | Minimum | Maximum | Judge |
+|-----------|---------|---------|-------|
+| G1 Content Alignment | 4 | 5 | Judge 1 |
+| G2 Information Accuracy | 4 | 5 | Judge 1 |
+| G3 Campaign Compliance | 4 | 5 | Judge 1 |
+| G4 Originality | 4 | 5 | Judge 1 |
+| G5 Engagement Potential | 8 | 8 | Judge 2 |
+| G6 Technical Quality | 8 | 8 | Judge 2 |
+| Hook Score | 9 | 10 | Judge 3 |
+| Emotion Score | 9 | 10 | Judge 3 |
+| CT Score | 9 | 10 | Judge 3 |
+| Uniqueness Score | 9 | 10 | Judge 3 |
+| Readability Score | 9 | 10 | Judge 3 |
+| Viral Potential Score | 9 | 10 | Judge 3 |
+
+---
+
+## 🔒 BLIND JUDGING PRINCIPLES
+
+### Apa itu Blind Judging?
+
+Blind Judging berarti penilai TIDAK tahu:
+- Siapa pembuat konten
+- Apa tujuan spesifik campaign
+- Style yang diharapkan
+
+Penilai HANYA tahu:
+- Hard requirements (URL, rules, banned words)
+- Knowledge base (untuk cek akurasi)
+- Standar kualitas Rally
+
+### Kenapa Blind Judging?
+
+| Dengan Campaign Info | Blind Judging |
+|---------------------|---------------|
+| "Oh, konten ini menjelaskan Internet Court, cukup sesuai dengan goal" | "Apakah konten ini akurat dan berkualitas? Tidak peduli goal-nya apa" |
+| Score: 4/5 (terlalu baik) | Score: 3/5 (lebih objektif) |
 
 ---
 
@@ -309,30 +225,12 @@ webResearchTasks[]   ────────>   🌐 PERFORM WEB RESEARCH
 
 ```
 /home/z/my-project/
-├── README.md                    # File ini (V9.2.0)
+├── README.md                           # File ini (V9.3.0)
 ├── scripts/
-│   └── rally-data-gatherer.js   # Data gatherer V9.2.0
+│   └── rally-workflow-v9.3.0.js        # Main workflow script
 └── download/
-    └── rally-data-*.json        # Output data files
+    └── rally-workflow-v9.3.0-*.json    # Output files
 ```
-
----
-
-## ⚠️ PENTING
-
-### Script Output Contains:
-- ✅ Campaign data (from Rally API)
-- ✅ Basic website scrape
-- ✅ Leaderboard data
-- ✅ Banned words list
-- ✅ 16 Gates definition
-- ✅ Web research instructions
-
-### AI Chat Must Do:
-- 🌐 **Web research** using browser capability
-- 📊 **Analyze** competitor patterns
-- ✍️ **Generate** content following all phases
-- ✅ **Validate** against 16 gates
 
 ---
 
@@ -340,12 +238,12 @@ webResearchTasks[]   ────────>   🌐 PERFORM WEB RESEARCH
 
 | Field | Value |
 |-------|-------|
-| Version | V9.2.0 Hybrid Edition |
+| Version | V9.3.0 Multi-LLM Judging Edition |
 | Branch | v9.0.0-hybrid |
-| Script Phases | 0, 1, 2 (data gathering) |
-| AI Chat Phases | 1B, 2B, 3-16 |
-| Web Research | AI Chat (browser capability) |
+| Script Phases | 0, 2 (data gathering) |
+| Judges | 3 independent LLM calls |
+| Blind Judging | Yes (no campaign goal/style sent to judges) |
 
 ---
 
-**END OF README V9.2.0**
+**END OF README V9.3.0**

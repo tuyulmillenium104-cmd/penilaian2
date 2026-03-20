@@ -312,20 +312,56 @@ async function fetchCampaignData(campaignAddress) {
 
 async function fetchLeaderboard(campaignAddress) {
   console.log('\n' + '─'.repeat(60));
-  console.log('🏆 PHASE 2: Leaderboard Fetch (Rally API)');
+  console.log('🏆 PHASE 2: Leaderboard + Submissions (Rally API)');
   console.log('─'.repeat(60));
   
   if (campaignAddress && campaignAddress.startsWith('0x')) {
     try {
-      const url = `${CONFIG.rallyApiBase}/leaderboard?campaignAddress=${campaignAddress}&limit=20`;
-      console.log(`   Fetching: ${url}`);
-      const response = await fetchUrl(url);
+      // Fetch leaderboard
+      const leaderboardUrl = `${CONFIG.rallyApiBase}/leaderboard?campaignAddress=${campaignAddress}&limit=20`;
+      console.log(`   Fetching leaderboard: ${leaderboardUrl}`);
+      const leaderboardResponse = await fetchUrl(leaderboardUrl);
       
-      if (response.status === 200) {
-        const data = JSON.parse(response.data);
-        const leaderboard = Array.isArray(data) ? data : (data.leaderboard || data.entries || []);
+      // Fetch submissions with content analysis
+      const submissionsUrl = `${CONFIG.rallyApiBase}/submissions?campaignAddress=${campaignAddress}&limit=20`;
+      console.log(`   Fetching submissions: ${submissionsUrl}`);
+      const submissionsResponse = await fetchUrl(submissionsUrl);
+      
+      if (leaderboardResponse.status === 200 && submissionsResponse.status === 200) {
+        const leaderboardData = JSON.parse(leaderboardResponse.data);
+        const submissionsData = JSON.parse(submissionsResponse.data);
         
-        console.log(`   ✅ Found ${leaderboard.length} competitors`);
+        const leaderboard = Array.isArray(leaderboardData) ? leaderboardData : (leaderboardData.leaderboard || leaderboardData.entries || []);
+        
+        // Process submissions to extract competitor content patterns
+        const competitorContent = submissionsData.map((sub, i) => {
+          const originality = sub.analysis?.find(a => a.category === 'Originality and Authenticity');
+          const contentAlignment = sub.analysis?.find(a => a.category === 'Content Alignment');
+          const engagement = sub.analysis?.find(a => a.category === 'Engagement Potential');
+          
+          // Extract hook from analysis
+          let hook = '';
+          if (originality?.analysis) {
+            const hookMatch = originality.analysis.match(/opening hook ['\"]([^'\"]+)['\"]/i);
+            if (hookMatch) hook = hookMatch[1];
+          }
+          
+          return {
+            rank: i + 1,
+            username: sub.xUsername,
+            tweetId: sub.tweetId,
+            tweetUrl: `https://x.com/${sub.xUsername}/status/${sub.tweetId}`,
+            points: Number(sub.atemporalPoints) / 1e18,
+            hook: hook,
+            scores: {
+              originality: originality ? Number(originality.atto_score) / 1e18 : 0,
+              contentAlignment: contentAlignment ? Number(contentAlignment.atto_score) / 1e18 : 0
+            },
+            analysisExcerpt: originality?.analysis?.substring(0, 300) || ''
+          };
+        });
+        
+        console.log(`   ✅ Found ${leaderboard.length} competitors, ${submissionsData.length} submissions with content analysis`);
         
         return {
           success: true,
@@ -335,26 +371,27 @@ async function fetchLeaderboard(campaignAddress) {
               rank: entry.rank || i + 1,
               username: entry.username || entry.user?.xUsername || 'Anonymous',
               points: entry.points || 0,
-              followers: entry.user?.xFollowersCount || 0,
-              content: entry.content || ''
+              followers: entry.user?.xFollowersCount || 0
             })),
+            submissions: competitorContent,
             stats: {
               totalCompetitors: leaderboard.length,
+              totalSubmissions: submissionsData.length,
               topScore: leaderboard[0]?.points || 0
             }
           }
         };
       }
     } catch (error) {
-      console.log(`   ⚠️ Leaderboard fetch failed: ${error.message}`);
+      console.log(`   ⚠️ Fetch failed: ${error.message}`);
     }
   }
   
-  console.log('   ℹ️ No leaderboard data available');
+  console.log('   ℹ️ No data available');
   return {
     success: false,
     source: 'none',
-    data: { top10: [], stats: {} }
+    data: { top10: [], submissions: [], stats: {} }
   };
 }
 
