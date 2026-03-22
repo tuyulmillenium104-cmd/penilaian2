@@ -6,52 +6,58 @@
 
 | Aspek | v9.8.0 | v9.8.1 |
 |-------|--------|--------|
-| **Jumlah Baris Kode** | 2,368 | 2,869 |
+| **Jumlah Baris Kode** | 2,368 | 3,202 |
 | **Jumlah Konten** | 1 per run | 5 per batch |
-| **Model LLM** | `'default'` | `'glm-4-plus'` |
+| **Model LLM** | `'default'` | `'glm-5'` (LATEST) |
 | **Mode Think** | Diambil dari response | Diaktifkan eksplisit |
 | **Web Search** | Hanya Judge 5 | Aktif semua proses |
+| **Quick Judge** | ❌ Tidak ada | ✅ Compliance Check |
 | **Ranking System** | ❌ Tidak ada | ✅ Ada |
 | **Batch Judging** | ❌ Tidak ada | ✅ Ada |
 | **Select Best** | ❌ Tidak ada | ✅ Ada |
-| **Multi-Content Class** | ❌ Tidak ada | ✅ Ada |
+| **Auto Regenerate** | ❌ Tidak ada | ✅ Max 5 attempts |
 
 ---
 
 ## 🆕 Fitur BARU di v9.8.1
 
-### 1. Multi-Content Generator
-- **Generate 5 konten sekaligus** dengan variasi berbeda
-- **Batch judging** untuk semua konten yang dihasilkan
-- **Ranking system** otomatis
-- **Select best content** dengan skor tertinggi
+### 1. ⚡ Quick Judge = Compliance Check
+Quick Judge menilai COMPLIANCE dulu sebelum Full Judge:
+- ✅ Campaign Description match
+- ✅ Rules followed
+- ✅ Style matched
+- ✅ Additional Info used
+- ✅ Knowledge Base used
+- ✅ No Banned Words
+- ✅ URL Present
 
-### 2. Model Optimization
-- **GLM-4-Plus** sebagai model default
-- **Mode Think** aktif untuk semua proses
-- **Web Search** aktif untuk fact-checking
+**Jika tidak ada yang pass compliance → REGENERATE 5 konten baru**
 
-### 3. Content Variations (5 Variasi)
+### 2. 🔄 New Workflow
+```
+Generate 5 Konten
+     ↓
+⚡ QUICK JUDGE (Compliance Check)
+     ↓
+Ada yang PASS compliance?
+├── NO  → REGENERATE 5 baru
+└── YES → Lanjut ke Full Judge
+     ↓
+⚖️  FULL DOUBLE PASS JUDGE (6 Judge)
+     ↓
+PASS?
+├── NO  → REGENERATE 5 baru
+└── YES → SELESAI ✅
+```
 
-| Content # | Angle | Emotions | Structure |
-|-----------|-------|----------|-----------|
-| 1 | Personal Story | Curiosity → Surprise | Hero's Journey |
-| 2 | Data Driven | Fear → Hope | Problem-Solution |
-| 3 | Contrarian | Anger → Trust | Before-After |
-| 4 | Insider Perspective | Sadness → Anticipation | Mystery Reveal |
-| 5 | Case Study | Surprise → Joy | Case Study |
+### 3. 🧠 Model GLM-5 (Latest)
+- Model terbaru dari GLM
+- Mode Think aktif
+- Web Search aktif
+- Temperature compliance: 0.1 (lebih strict)
 
-### 4. Scoring System (136 Poin Max)
-
-| Komponen | Max Score | Weight |
-|----------|-----------|--------|
-| Gate Utama | 20 | 15% |
-| Gate Tambahan | 16 | 12% |
-| Penilaian Internal | 60 | 35% |
-| Compliance | 10 | 10% |
-| Fact Check | 5 | 8% |
-| Uniqueness | 25 | 20% |
-| **TOTAL** | **136** | **100%** |
+### 4. 📊 Max Regenerate Attempts: 5
+Otomatis regenerate jika tidak ada konten yang lolos semua judge.
 
 ---
 
@@ -77,13 +83,10 @@
 
 | File/Function | Deskripsi |
 |---------------|-----------|
+| `quickJudgeCompliance()` | Compliance check untuk 1 konten |
+| `batchQuickJudge()` | Compliance check untuk multiple konten |
 | `MultiContentGenerator` class | Generate 5 konten + ranking |
-| `mainMultiContent()` function | Workflow multi-content |
-| `generateMultipleContents()` | Generate 5 konten |
-| `judgeAllContents()` | Batch judging |
-| `_calculateRankings()` | Ranking system |
-| `getBestContent()` | Ambil konten terbaik |
-| `getAllPassingContents()` | Ambil semua konten PASS |
+| `mainMultiContent()` function | Workflow multi-content dengan quick judge |
 
 ---
 
@@ -106,27 +109,28 @@ node rally-workflow-v9.8.1-complete.js [campaign] single
 ```json
 {
   "campaign": "Campaign Name",
-  "bestContent": {
-    "content": "...",
-    "score": 125,
-    "grade": "A",
-    "passed": true,
-    "rank": 1,
-    "index": 3,
-    "variation": {...}
+  "campaignData": {
+    "title": "...",
+    "description": "...",
+    "style": "...",
+    "rules": "...",
+    "url": "..."
   },
-  "allPassingContents": [...],
-  "totalGenerated": 5,
-  "totalPassed": 3,
-  "rankings": [
-    {"rank": 1, "index": 3, "totalScore": 125, "passed": true, "grade": "A"},
-    {"rank": 2, "index": 1, "totalScore": 118, "passed": true, "grade": "B+"},
-    {"rank": 3, "index": 5, "totalScore": 115, "passed": true, "grade": "B+"},
-    {"rank": 4, "index": 2, "totalScore": 98, "passed": false, "grade": "C"},
-    {"rank": 5, "index": 4, "totalScore": 85, "passed": false, "grade": "D"}
+  "success": true,
+  "finalContent": "The best content...",
+  "finalJudgingResult": {
+    "totalScore": 125,
+    "passed": true
+  },
+  "totalGenerateAttempts": 1,
+  "quickJudgeResults": [
+    {"index": 1, "passed": false, "failedChecks": ["style"]},
+    {"index": 2, "passed": true, "failedChecks": []},
+    ...
   ],
   "metadata": {
-    "version": "9.8.1-multi-content",
+    "version": "9.8.1-quick-judge-workflow",
+    "model": "glm-5",
     "duration": "180s"
   }
 }
@@ -139,16 +143,15 @@ node rally-workflow-v9.8.1-complete.js [campaign] single
 - Node.js 18+
 - Python 3.9+
 - 8GB RAM minimum (untuk batch processing)
-- Akses ke model GLM-4-Plus
+- Akses ke model GLM-5
 
 ---
 
 ## 🐛 Bug Fixes
 
-- Fixed: Model tidak menggunakan versi terbaik
-- Fixed: Tidak ada fitur generate multiple contents
-- Fixed: Tidak ada ranking system
-- Fixed: Tidak bisa memilih konten terbaik
+- Fixed: Model tidak menggunakan versi terbaik → sekarang GLM-5
+- Fixed: Tidak ada compliance check awal → sekarang ada Quick Judge
+- Fixed: Tidak ada auto regenerate → sekarang auto regenerate jika fail
 
 ---
 
@@ -156,5 +159,4 @@ node rally-workflow-v9.8.1-complete.js [campaign] single
 
 - [ ] Parallel generation untuk speed improvement
 - [ ] Caching untuk competitor analysis
-- [ ] Auto-retry dengan different angle jika fail
 - [ ] Export ke berbagai format (PDF, DOCX)

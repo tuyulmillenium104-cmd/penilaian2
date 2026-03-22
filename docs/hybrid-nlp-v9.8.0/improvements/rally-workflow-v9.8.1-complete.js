@@ -116,7 +116,7 @@ const CONFIG = {
       priority: 1,
       name: 'z-ai-web-dev-sdk',
       type: 'sdk',
-      models: { chat: 'glm-4-plus', fast: 'glm-4-flash' }  // v9.8.1: Model upgrade
+      models: { chat: 'glm-5', fast: 'glm-4-flash' }  // v9.8.1: GLM-5 (latest)
     }
   },
   
@@ -127,7 +127,8 @@ const CONFIG = {
     enabled: true,
     count: 5,                    // Generate 5 konten per batch
     selectBest: true,            // Pilih konten terbaik
-    minPassCount: 1,             // Minimal konten yang harus PASS
+    minPassCount: 1,             // Minimal konten yang harus PASS compliance
+    maxRegenerateAttempts: 5,    // Max attempt untuk regenerate jika tidak ada yang pass
     variations: {
       angles: ['personal_story', 'data_driven', 'contrarian', 'insider_perspective', 'case_study'],
       emotions: [
@@ -141,15 +142,31 @@ const CONFIG = {
     }
   },
   
-  // v9.8.1: Model Optimization
+  // v9.8.1: Model Optimization - GLM-5 (Latest)
   model: {
-    name: 'glm-4-plus',          // Model terbaik
+    name: 'glm-5',               // Model terbaru GLM-5
     enableThinking: true,        // Mode think aktif
     enableSearch: true,          // Web search aktif
     temperature: {
       generation: 0.8,
-      judging: 0.2
+      judging: 0.2,
+      compliance: 0.1            // Lower temp for compliance check (more strict)
     }
+  },
+  
+  // v9.8.1: Quick Judge = Compliance Check Only
+  quickJudge: {
+    enabled: true,
+    checks: [
+      'campaignDescription',     // Match dengan campaign description
+      'rules',                   // Follow campaign rules
+      'style',                   // Match campaign style
+      'additionalInfo',          // Use additional information
+      'knowledgeBase',           // Use knowledge base
+      'bannedWords',             // No banned words
+      'urlPresent'               // Required URL present
+    ],
+    allMustPass: true            // Semua harus pass untuk lanjut ke Full Judge
   },
   
   // v9.8.1: Ranking Configuration
@@ -1472,6 +1489,247 @@ Create content that stands out!`;
 }
 
 // ============================================================================
+// v9.8.1: QUICK JUDGE = COMPLIANCE CHECK ONLY
+// ═══════════════════════════════════════════════════════════════════════════════
+// Quick Judge menilai COMPLIANCE dulu sebelum Full Judge:
+// - Campaign Description match?
+// - Rules followed?
+// - Style matched?
+// - Additional Info used?
+// - Knowledge Base used?
+// - No Banned Words?
+// - URL Present?
+// ═══════════════════════════════════════════════════════════════════════════════
+// ============================================================================
+
+/**
+ * QUICK JUDGE - Compliance Check Only
+ * Cek apakah konten memenuhi semua requirement campaign
+ */
+async function quickJudgeCompliance(llm, content, campaignData) {
+  console.log('\n   ' + '┌' + '─'.repeat(56) + '┐');
+  console.log('   │         ⚡ QUICK JUDGE - Compliance Check              │');
+  console.log('   ' + '└' + '─'.repeat(56) + '┘');
+  
+  const ZAIClass = await initZAI();
+  const zai = await ZAIClass.create();
+  
+  const systemPrompt = `You are a COMPLIANCE CHECKER for Rally.fun content.
+Your job is to check if content meets ALL campaign requirements.
+
+Check each item STRICTLY. Mark PASS only if fully satisfied.
+Mark FAIL if there's ANY violation or missing requirement.
+
+Return ONLY valid JSON format.`;
+
+  const userPrompt = `COMPLIANCE CHECK for this content:
+
+═══════════════════════════════════════════════════════════════
+CONTENT TO CHECK:
+═══════════════════════════════════════════════════════════════
+${content}
+
+═══════════════════════════════════════════════════════════════
+CAMPAIGN REQUIREMENTS:
+═══════════════════════════════════════════════════════════════
+TITLE: ${campaignData.title || 'N/A'}
+DESCRIPTION: ${campaignData.description || campaignData.goal || 'N/A'}
+STYLE: ${campaignData.style || 'Standard professional style'}
+RULES: ${campaignData.rules || campaignData.requirements || 'No specific rules'}
+ADDITIONAL INFO: ${campaignData.additionalInfo || campaignData.additional_info || 'None'}
+KNOWLEDGE BASE: ${campaignData.knowledgeBase || campaignData.knowledge_base || 'None'}
+REQUIRED URL: ${campaignData.campaignUrl || campaignData.url || 'Required'}
+
+═══════════════════════════════════════════════════════════════
+BANNED WORDS (MUST NOT appear):
+═══════════════════════════════════════════════════════════════
+${CONFIG.hardRequirements.bannedWords.concat(CONFIG.hardRequirements.rallyBannedPhrases).join(', ')}
+
+═══════════════════════════════════════════════════════════════
+CHECK EACH ITEM:
+═══════════════════════════════════════════════════════════════
+
+Return JSON format:
+{
+  "checks": {
+    "campaignDescription": {
+      "pass": true/false,
+      "reason": "explain why pass or fail"
+    },
+    "rules": {
+      "pass": true/false,
+      "reason": "explain why pass or fail"
+    },
+    "style": {
+      "pass": true/false,
+      "reason": "explain why pass or fail"
+    },
+    "additionalInfo": {
+      "pass": true/false,
+      "reason": "explain why pass or fail"
+    },
+    "knowledgeBase": {
+      "pass": true/false,
+      "reason": "explain why pass or fail"
+    },
+    "bannedWords": {
+      "pass": true/false,
+      "foundBannedWords": ["word1", "word2"] or [],
+      "reason": "explain why pass or fail"
+    },
+    "urlPresent": {
+      "pass": true/false,
+      "urlFound": "the url found" or "not found",
+      "reason": "explain why pass or fail"
+    }
+  },
+  "allPass": true/false,
+  "failedChecks": ["list of failed check names"],
+  "summary": "brief summary of compliance status"
+}`;
+
+  try {
+    const response = await zai.chat.completions.create({
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
+      ],
+      temperature: CONFIG.model.temperature.compliance || 0.1,
+      max_tokens: 2000
+    });
+
+    const result = safeJsonParse(response.choices[0]?.message?.content || '');
+    
+    if (!result) {
+      return {
+        success: false,
+        allPass: false,
+        checks: {},
+        failedChecks: ['parse_failed'],
+        error: 'Failed to parse compliance result'
+      };
+    }
+    
+    // Ensure all checks exist
+    const defaultChecks = {
+      campaignDescription: { pass: false, reason: 'Not checked' },
+      rules: { pass: false, reason: 'Not checked' },
+      style: { pass: false, reason: 'Not checked' },
+      additionalInfo: { pass: false, reason: 'Not checked' },
+      knowledgeBase: { pass: false, reason: 'Not checked' },
+      bannedWords: { pass: false, reason: 'Not checked', foundBannedWords: [] },
+      urlPresent: { pass: false, reason: 'Not checked' }
+    };
+    
+    result.checks = { ...defaultChecks, ...(result.checks || {}) };
+    
+    // Recalculate allPass and failedChecks
+    const failedChecks = Object.entries(result.checks)
+      .filter(([key, check]) => check.pass !== true)
+      .map(([key]) => key);
+    
+    result.allPass = failedChecks.length === 0;
+    result.failedChecks = failedChecks;
+    result.success = true;
+    
+    // Display results
+    console.log('\n   ┌─────────────────────────────────────────────────────────┐');
+    console.log('   │              COMPLIANCE CHECK RESULTS                  │');
+    console.log('   ├─────────────────────────────────────────────────────────┤');
+    
+    const checkNames = {
+      campaignDescription: 'Description Match',
+      rules: 'Rules Followed',
+      style: 'Style Matched',
+      additionalInfo: 'Additional Info',
+      knowledgeBase: 'Knowledge Base',
+      bannedWords: 'No Banned Words',
+      urlPresent: 'URL Present'
+    };
+    
+    for (const [key, check] of Object.entries(result.checks)) {
+      const icon = check.pass ? '✅' : '❌';
+      const name = checkNames[key] || key;
+      console.log(`   │ ${icon} ${name.padEnd(20)} ${check.pass ? 'PASS' : 'FAIL'.padEnd(22)}│`);
+    }
+    
+    console.log('   ├─────────────────────────────────────────────────────────┤');
+    const statusIcon = result.allPass ? '✅' : '❌';
+    const statusText = result.allPass ? 'ALL PASSED' : `${failedChecks.length} FAILED`;
+    console.log(`   │              ${statusIcon} ${statusText.padEnd(30)}         │`);
+    console.log('   └─────────────────────────────────────────────────────────┘');
+    
+    if (!result.allPass && result.failedChecks.length > 0) {
+      console.log('\n   ⚠️  FAILED CHECKS:');
+      for (const checkName of result.failedChecks) {
+        const check = result.checks[checkName];
+        console.log(`      • ${checkName}: ${check?.reason || 'No reason provided'}`);
+      }
+    }
+    
+    return result;
+    
+  } catch (error) {
+    console.log(`   ❌ Quick Judge failed: ${error.message}`);
+    return {
+      success: false,
+      allPass: false,
+      checks: {},
+      failedChecks: ['error'],
+      error: error.message
+    };
+  }
+}
+
+/**
+ * BATCH QUICK JUDGE - Check compliance for multiple contents
+ * Returns array of results with pass/fail status
+ */
+async function batchQuickJudge(llm, contents, campaignData) {
+  console.log('\n' + '═'.repeat(60));
+  console.log('⚡ BATCH QUICK JUDGE - Compliance Check for All Contents');
+  console.log('═'.repeat(60));
+  console.log(`   Checking ${contents.length} contents for compliance...`);
+  
+  const results = [];
+  
+  for (let i = 0; i < contents.length; i++) {
+    const contentItem = contents[i];
+    console.log(`\n   ─── Content #${contentItem.index} ───`);
+    
+    const complianceResult = await quickJudgeCompliance(llm, contentItem.content, campaignData);
+    
+    results.push({
+      index: contentItem.index,
+      content: contentItem.content,
+      variation: contentItem.variation,
+      compliance: complianceResult,
+      passed: complianceResult.allPass,
+      failedChecks: complianceResult.failedChecks || []
+    });
+    
+    // Small delay between checks
+    await delay(1000);
+  }
+  
+  // Summary
+  const passedCount = results.filter(r => r.passed).length;
+  console.log('\n' + '═'.repeat(60));
+  console.log('📊 QUICK JUDGE SUMMARY');
+  console.log('═'.repeat(60));
+  console.log(`   Total Checked: ${results.length}`);
+  console.log(`   ✅ Passed: ${passedCount}`);
+  console.log(`   ❌ Failed: ${results.length - passedCount}`);
+  
+  if (passedCount > 0) {
+    const passedIndices = results.filter(r => r.passed).map(r => r.index);
+    console.log(`   🎯 Contents that passed: #${passedIndices.join(', #')}`);
+  }
+  
+  return results;
+}
+
+// ============================================================================
 // JUDGING SYSTEM (Enhanced with Python NLP)
 // ============================================================================
 
@@ -2564,7 +2822,7 @@ Create unique content!`;
 async function mainMultiContent(campaignAddress) {
   console.log('\n' + '═'.repeat(70));
   console.log('║      RALLY WORKFLOW V9.8.1 - MULTI-CONTENT SYSTEM              ║');
-  console.log('║   Generate 5 Contents → Batch Judge → Select Best              ║');
+  console.log('║   Generate 5 → Quick Judge → Full Judge → Regenerate if Fail   ║');
   console.log('═'.repeat(70));
   
   const startTime = Date.now();
@@ -2589,10 +2847,13 @@ async function mainMultiContent(campaignAddress) {
   
   console.log(`\n   📋 Campaign: ${campaignData.title}`);
   console.log(`   🔗 URL: ${campaignData.campaignUrl || campaignData.url}`);
+  console.log(`   📝 Description: ${(campaignData.description || campaignData.goal || 'N/A').substring(0, 100)}...`);
+  console.log(`   🎨 Style: ${campaignData.style || 'Standard'}`);
+  console.log(`   📜 Rules: ${(campaignData.rules || 'Standard rules').substring(0, 50)}...`);
   
   // Fetch competitor submissions
   console.log('\n📥 Fetching competitor submissions...');
-  const submissions = await fetchSubmissions(campaignData.id);
+  const submissions = await fetchLeaderboard(campaignAddress);
   console.log(`   📊 Found ${submissions?.length || 0} submissions`);
   
   // Deep competitor analysis
@@ -2605,56 +2866,128 @@ async function mainMultiContent(campaignAddress) {
   const competitorContents = (competitorAnalysis?.competitorContent || []).slice(0, 10);
   
   // ═══════════════════════════════════════════════════════════════════════════
-  // MULTI-CONTENT GENERATION
+  // NEW v9.8.1 WORKFLOW: Quick Judge → Full Judge → Regenerate
   // ═══════════════════════════════════════════════════════════════════════════
   
   const generator = new MultiContentGenerator(llm, CONFIG);
+  let generateAttempt = 0;
+  let finalContent = null;
+  let finalJudgingResult = null;
+  let allQuickJudgeResults = [];
+  let allFullJudgeResults = [];
   
-  // Generate 5 contents
-  await generator.generateMultipleContents(campaignData, competitorAnalysis, researchData);
+  const maxAttempts = CONFIG.multiContent.maxRegenerateAttempts || 5;
   
-  if (generator.generatedContents.length === 0) {
-    console.log('\n❌ No contents generated!');
-    return null;
+  while (generateAttempt < maxAttempts && !finalContent) {
+    generateAttempt++;
+    
+    console.log('\n' + '═'.repeat(70));
+    console.log(`║           🔄 GENERATION CYCLE ${generateAttempt}/${maxAttempts}                           ║`);
+    console.log('═'.repeat(70));
+    
+    // STEP 1: Generate 5 contents
+    console.log('\n📝 STEP 1: Generating 5 contents...');
+    await generator.generateMultipleContents(campaignData, competitorAnalysis, researchData);
+    
+    if (generator.generatedContents.length === 0) {
+      console.log('\n   ❌ No contents generated! Trying again...');
+      continue;
+    }
+    
+    // STEP 2: Quick Judge (Compliance Check) all 5
+    console.log('\n⚡ STEP 2: Quick Judge - Compliance Check...');
+    const quickJudgeResults = await batchQuickJudge(llm, generator.generatedContents, campaignData);
+    allQuickJudgeResults.push(...quickJudgeResults);
+    
+    // STEP 3: Filter only contents that PASSED compliance
+    const passedCompliance = quickJudgeResults.filter(r => r.passed);
+    
+    if (passedCompliance.length === 0) {
+      console.log('\n   ❌ No contents passed compliance check!');
+      console.log('   🔄 Regenerating all 5 contents...');
+      generator.generatedContents = []; // Reset for next iteration
+      await delay(3000);
+      continue;
+    }
+    
+    console.log(`\n   ✅ ${passedCompliance.length} content(s) passed compliance check!`);
+    
+    // STEP 4: Full Judge for content that passed compliance
+    // If multiple passed, pick the first one (or could rank them)
+    const contentToFullJudge = passedCompliance[0];
+    
+    console.log(`\n⚖️  STEP 3: Full Double Pass Judge for Content #${contentToFullJudge.index}...`);
+    const fullJudgeResult = await runHybridJudging(
+      llm,
+      contentToFullJudge.content,
+      campaignData,
+      competitorContents,
+      1
+    );
+    
+    allFullJudgeResults.push({
+      index: contentToFullJudge.index,
+      result: fullJudgeResult
+    });
+    
+    // STEP 5: Check if passed Full Judge
+    if (fullJudgeResult.passed) {
+      console.log('\n   ✅ FULL JUDGE PASSED!');
+      finalContent = contentToFullJudge.content;
+      finalJudgingResult = fullJudgeResult;
+    } else {
+      console.log('\n   ❌ Full Judge FAILED!');
+      console.log(`   Issues: ${fullJudgeResult.feedback?.issues?.join(', ') || 'Unknown'}`);
+      console.log('   🔄 Regenerating all 5 contents...');
+      generator.generatedContents = []; // Reset for next iteration
+      await delay(3000);
+    }
   }
   
-  // Judge all contents
-  await generator.judgeAllContents(campaignData, competitorContents);
+  // ═══════════════════════════════════════════════════════════════════════════
+  // FINAL RESULTS
+  // ═══════════════════════════════════════════════════════════════════════════
   
-  // Get best content
-  const bestContent = generator.getBestContent();
-  const allPassing = generator.getAllPassingContents();
-  
-  // Save results
   const endTime = Date.now();
   const duration = ((endTime - startTime) / 1000).toFixed(1);
   
   const finalResults = {
     campaign: campaignData.title,
-    bestContent: bestContent,
-    allPassingContents: allPassing,
-    totalGenerated: generator.generatedContents.length,
-    totalPassed: allPassing.length,
-    rankings: generator.rankings,
-    allJudgingResults: generator.judgingResults.map(r => ({
+    campaignData: {
+      title: campaignData.title,
+      description: campaignData.description,
+      style: campaignData.style,
+      rules: campaignData.rules,
+      url: campaignData.campaignUrl || campaignData.url
+    },
+    success: !!finalContent,
+    finalContent: finalContent,
+    finalJudgingResult: finalJudgingResult,
+    totalGenerateAttempts: generateAttempt,
+    quickJudgeResults: allQuickJudgeResults.map(r => ({
       index: r.index,
-      score: r.totalScore,
       passed: r.passed,
-      variation: r.variation
+      failedChecks: r.failedChecks
+    })),
+    fullJudgeResults: allFullJudgeResults.map(r => ({
+      index: r.index,
+      totalScore: r.result?.totalScore,
+      passed: r.result?.passed
     })),
     competitorAnalysis: {
       anglesUsed: competitorAnalysis?.anglesUsed?.slice(0, 5),
       saturatedElements: competitorAnalysis?.saturatedElements?.slice(0, 5)
     },
     metadata: {
-      version: '9.8.1-multi-content',
+      version: '9.8.1-quick-judge-workflow',
+      model: CONFIG.model.name,
       timestamp: new Date().toISOString(),
       duration: `${duration}s`
     }
   };
   
   // Save to file
-  const outputPath = `${CONFIG.outputDir}/rally-multi-content-${Date.now()}.json`;
+  const outputPath = `${CONFIG.outputDir}/rally-v9.8.1-${Date.now()}.json`;
   fs.writeFileSync(outputPath, JSON.stringify(finalResults, null, 2));
   console.log(`\n💾 Results saved to: ${outputPath}`);
   
@@ -2662,22 +2995,22 @@ async function mainMultiContent(campaignAddress) {
   console.log('\n' + '═'.repeat(70));
   console.log('║                    FINAL SUMMARY                                ║');
   console.log('═'.repeat(70));
-  console.log(`\n   📊 Total Generated: ${generator.generatedContents.length} contents`);
-  console.log(`   ✅ Total Passed: ${allPassing.length} contents`);
-  console.log(`   ⏱️  Duration: ${duration}s`);
   
-  if (bestContent) {
-    console.log(`\n   🥇 BEST CONTENT (Score: ${bestContent.score}, Grade: ${bestContent.grade}):`);
-    console.log('   ' + '─'.repeat(60));
-    console.log('   ' + bestContent.content.split('\n').join('\n   '));
-    console.log('   ' + '─'.repeat(60));
-  }
+  console.log(`\n   📊 Total Generate Attempts: ${generateAttempt}`);
+  console.log(`   ⚡ Quick Judge Results: ${allQuickJudgeResults.filter(r => r.passed).length}/${allQuickJudgeResults.length} passed`);
+  console.log(`   ⚖️  Full Judge Attempts: ${allFullJudgeResults.length}`);
+  console.log(`   ⏱️  Total Duration: ${duration}s`);
   
-  if (allPassing.length > 1) {
-    console.log(`\n   📋 ALL PASSING CONTENTS (${allPassing.length}):`);
-    allPassing.forEach((c, i) => {
-      console.log(`      ${i + 1}. Content ${c.index} - Score: ${c.score}`);
-    });
+  if (finalContent && finalJudgingResult) {
+    console.log(`\n   ✅ SUCCESS! Content passed all judges.`);
+    console.log(`   📊 Final Score: ${finalJudgingResult.totalScore}/136`);
+    console.log(`\n   📝 FINAL CONTENT:`);
+    console.log('   ' + '─'.repeat(60));
+    console.log('   ' + finalContent.split('\n').join('\n   '));
+    console.log('   ' + '─'.repeat(60));
+  } else {
+    console.log('\n   ❌ FAILED! No content passed all judges after maximum attempts.');
+    console.log('   Consider adjusting thresholds or reviewing campaign requirements.');
   }
   
   return finalResults;
