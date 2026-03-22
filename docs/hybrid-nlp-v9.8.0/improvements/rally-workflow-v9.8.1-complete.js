@@ -384,7 +384,83 @@ async function callAI(messages, options = {}) {
 }
 
 /**
- * Web Search - SDK with Multi-Token fallback!
+ * Web Search - Direct HTTP (No SDK rate limits!)
+ * Uses DuckDuckGo HTML search for reliable results
+ */
+async function webSearchDirect(query) {
+  console.log(`   🔍 Web search (direct): "${query.substring(0, 50)}..."`);
+  
+  return new Promise((resolve, reject) => {
+    const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
+    
+    const options = {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'identity'
+      }
+    };
+    
+    https.get(searchUrl, options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          // Parse DuckDuckGo HTML results
+          const results = [];
+          const resultRegex = /<a[^>]*class="result__a"[^>]*href="([^"]*)"[^>]*>([^<]*)<\/a>/g;
+          const snippetRegex = /<a[^>]*class="result__snippet"[^>]*>([^<]*(?:<[^>]*>[^<]*)*)<\/a>/g;
+          
+          let match;
+          const urls = [];
+          const titles = [];
+          const snippets = [];
+          
+          // Extract URLs and titles
+          while ((match = resultRegex.exec(data)) !== null) {
+            urls.push(match[1]);
+            titles.push(match[2].trim());
+          }
+          
+          // Extract snippets
+          while ((match = snippetRegex.exec(data)) !== null) {
+            snippets.push(match[1].replace(/<[^>]*>/g, '').trim());
+          }
+          
+          // Combine into results
+          const count = Math.min(urls.length, titles.length, 5);
+          for (let i = 0; i < count; i++) {
+            results.push({
+              url: urls[i] || '',
+              name: titles[i] || '',
+              snippet: snippets[i] || '',
+              host_name: urls[i] ? new URL(urls[i].replace(/^\/\//, 'https://')).hostname : ''
+            });
+          }
+          
+          if (results.length > 0) {
+            console.log(`   ✅ Found ${results.length} results`);
+            resolve(results);
+          } else {
+            // Fallback: return empty results (will trigger AI fallback)
+            console.log('   ⚠️ No results from DuckDuckGo, using AI fallback');
+            resolve([]);
+          }
+        } catch (e) {
+          console.log(`   ⚠️ Parse error: ${e.message}`);
+          resolve([]);
+        }
+      });
+    }).on('error', (error) => {
+      console.log(`   ⚠️ Search error: ${error.message}`);
+      resolve([]); // Return empty to trigger fallback
+    });
+  });
+}
+
+/**
+ * Web Search - SDK with Multi-Token fallback (backup)
  */
 async function webSearchSDK(query) {
   if (!SDK_AVAILABLE) {
@@ -1214,12 +1290,22 @@ ${webSearchResults.slice(0, 3).map((r, i) => `${i+1}. ${r.name || 'Source'}: ${r
   
   async webSearch(query) {
     const currentYear = new Date().getFullYear();
-    console.log(`   🔍 Web search: "${query}"`);
-    
     const enhancedQuery = `${query} ${currentYear} latest`;
-    const result = await webSearchSDK(enhancedQuery);
     
-    console.log(`   ✅ Found ${result.length} results`);
+    // Try direct web search first (no rate limits!)
+    let result = await webSearchDirect(enhancedQuery);
+    
+    // If no results, try SDK as backup
+    if (!result || result.length === 0) {
+      console.log('   🔄 Direct search returned no results, trying SDK...');
+      try {
+        result = await webSearchSDK(enhancedQuery);
+      } catch (e) {
+        console.log('   ⚠️ SDK search also failed, using empty results');
+        result = [];
+      }
+    }
+    
     return result;
   }
   
