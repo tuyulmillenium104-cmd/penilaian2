@@ -21,9 +21,10 @@
  * NEW IN v9.8.1:
  * ✅ Multi-Content Generator (5 konten sekaligus)
  * ✅ Batch Judging dengan Ranking System
- * ✅ Model GLM-4-Plus dengan Think + WebSearch
+ * ✅ Model GLM-5 dengan Think + WebSearch
  * ✅ Select Best Content dari 5 konten
  * ✅ Total Score System (136 poin max)
+ * ✅ SDK Only - No Fallbacks (All features must work!)
  * 
  * BASED ON: v9.8.0 Hybrid System
  * 
@@ -36,20 +37,390 @@
  */
 
 const https = require('https');
+const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-// Import Python NLP Client
-const PythonNLPClient = require('../python_nlp_client.js');
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
 
-// Dynamic import for ESM module
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Import Python NLP Client
+let PythonNLPClient = null;
+try {
+  PythonNLPClient = require('../python_nlp_client.js');
+} catch (e) {
+  console.log('   ⚠️ Python NLP Client not available, using fallback');
+}
+
+// Dynamic import for ESM module (SDK Only - Required!)
 let ZAI = null;
+let SDK_AVAILABLE = false;
+
 async function initZAI() {
-  if (!ZAI) {
+  if (ZAI && SDK_AVAILABLE) return ZAI;
+  
+  try {
     const module = await import('z-ai-web-dev-sdk');
     ZAI = module.default;
+    SDK_AVAILABLE = true;
+    console.log('   ✅ z-ai-web-dev-sdk loaded successfully');
+    return ZAI;
+  } catch (e) {
+    SDK_AVAILABLE = false;
+    throw new Error(`❌ z-ai-web-dev-sdk not available! Please install with: npm install z-ai-web-dev-sdk\n   Error: ${e.message}`);
   }
-  return ZAI;
+}
+
+// ============================================================================
+// PRE-FLIGHT CHECK - Must pass all checks!
+// ============================================================================
+
+async function preflightCheck() {
+  console.log('\n' + '═'.repeat(60));
+  console.log('🔍 PRE-FLIGHT CHECK - All Dependencies Required!');
+  console.log('═'.repeat(60));
+  
+  const status = {
+    sdk: false,
+    pythonNLP: false,
+    ready: false
+  };
+  
+  // Check SDK - REQUIRED!
+  try {
+    const ZAIClass = await initZAI();
+    if (ZAIClass) {
+      status.sdk = true;
+      console.log('   ✅ z-ai-web-dev-sdk: Available');
+    }
+  } catch (e) {
+    console.log('   ❌ z-ai-web-dev-sdk: NOT AVAILABLE');
+    console.log(`      ${e.message}`);
+    throw new Error('SDK not available! Cannot continue without z-ai-web-dev-sdk');
+  }
+  
+  // Check Python NLP Client
+  if (PythonNLPClient) {
+    status.pythonNLP = true;
+    console.log('   ✅ Python NLP Client: Available');
+  } else {
+    console.log('   ⚠️ Python NLP Client: Not available (optional)');
+  }
+  
+  status.ready = true;
+  console.log('\n   🎯 All required dependencies available!');
+  
+  // Display token pool status
+  displayTokenPoolStatus();
+  
+  console.log('═'.repeat(60));
+  
+  return status;
+}
+
+/**
+ * Display token pool status for rate limit handling
+ */
+function displayTokenPoolStatus() {
+  const tokens = CONFIG.tokens || [];
+  const activeTokens = tokens.filter(t => t !== null);
+  
+  console.log('\n   ╔════════════════════════════════════════════════════════════╗');
+  console.log('   ║           🎫 MULTI-TOKEN RATE LIMIT HANDLER               ║');
+  console.log('   ╠════════════════════════════════════════════════════════════╣');
+  
+  tokens.forEach((token, index) => {
+    const isActive = index === 0; // First token is active initially
+    const marker = isActive ? '►' : ' ';
+    const label = token?.label || 'Auto-Config (Primary)';
+    
+    console.log(`   ║ ${marker} #${index}: ${label.padEnd(42)}║`);
+  });
+  
+  console.log('   ╠════════════════════════════════════════════════════════════╣');
+  console.log(`   ║  Total: ${tokens.length} tokens available for rate limit fallback    ║`);
+  console.log('   ╚════════════════════════════════════════════════════════════╝');
+}
+
+// ============================================================================
+// RETRY WITH EXPONENTIAL BACKOFF
+// ============================================================================
+
+/**
+ * Check if error is a rate limit error (429)
+ */
+function isRateLimitError(error) {
+  const msg = error.message || '';
+  return msg.includes('429') || 
+         msg.includes('Too many requests') || 
+         msg.includes('rate limit') ||
+         msg.includes('速率限制');
+}
+
+/**
+ * Retry with exponential backoff - specifically for rate limits
+ */
+async function retryWithBackoff(fn, maxRetries = 5, baseDelay = 2000, name = 'Operation') {
+  let lastError = null;
+  
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      
+      // Check if rate limit - use longer delay
+      const isRateLimit = isRateLimitError(error);
+      const delayMs = isRateLimit ? 
+        Math.max(baseDelay * Math.pow(2, i), 10000) * (1 + Math.random() * 0.5) : // Rate limit: min 10s + jitter
+        baseDelay * Math.pow(2, i); // Normal error: exponential
+      
+      if (i < maxRetries - 1) {
+        if (isRateLimit) {
+          console.log(`   ⏳ ${name} - Rate limit hit! Waiting ${(delayMs/1000).toFixed(1)}s before retry ${i + 1}/${maxRetries}...`);
+        } else {
+          console.log(`   ⏳ ${name} retry ${i + 1}/${maxRetries} in ${(delayMs/1000).toFixed(1)}s...`);
+        }
+        await delay(delayMs);
+      }
+    }
+  }
+  
+  throw lastError;
+}
+
+// ============================================================================
+// MULTI-TOKEN MANAGER - For Rate Limit Handling
+// ============================================================================
+
+/**
+ * Token Manager - Handles multiple tokens for rate limit fallback
+ */
+class TokenManager {
+  constructor(config) {
+    this.tokens = config.tokens || [null];
+    this.currentIndex = 0;
+    this.exhaustedTokens = new Set(); // Track tokens that hit rate limit
+    this.lastRateLimitTime = 0;
+  }
+  
+  /**
+   * Get current token
+   */
+  getCurrentToken() {
+    return this.tokens[this.currentIndex];
+  }
+  
+  /**
+   * Get current token label for logging
+   */
+  getCurrentLabel() {
+    const token = this.getCurrentToken();
+    return token?.label || 'Auto-Config';
+  }
+  
+  /**
+   * Switch to next available token (for rate limit)
+   */
+  switchToNextToken() {
+    // Mark current token as exhausted
+    this.exhaustedTokens.add(this.currentIndex);
+    
+    // Find next available token
+    for (let i = 0; i < this.tokens.length; i++) {
+      const nextIndex = (this.currentIndex + 1 + i) % this.tokens.length;
+      if (!this.exhaustedTokens.has(nextIndex)) {
+        this.currentIndex = nextIndex;
+        console.log(`   🔄 SWITCHING TOKEN: ${this.getCurrentLabel()}`);
+        return true;
+      }
+    }
+    
+    // All tokens exhausted - reset and continue
+    console.log('   ⚠️ All tokens exhausted! Resetting...');
+    this.exhaustedTokens.clear();
+    this.currentIndex = 0;
+    return false;
+  }
+  
+  /**
+   * Reset exhausted tokens (call after successful request)
+   */
+  resetExhausted() {
+    this.exhaustedTokens.clear();
+  }
+  
+  /**
+   * Check if we have alternative tokens available
+   */
+  hasAlternativeTokens() {
+    return this.tokens.length > 1;
+  }
+  
+  /**
+   * Get token count
+   */
+  getTokenCount() {
+    return this.tokens.length;
+  }
+  
+  /**
+   * Create SDK instance with specific token
+   */
+  async createSDKWithToken(specificToken = null) {
+    if (!SDK_AVAILABLE) {
+      throw new Error('SDK not available');
+    }
+    
+    const token = specificToken || this.getCurrentToken();
+    
+    // If token is null, use default SDK (auto-config)
+    if (!token) {
+      return await ZAI.create();
+    }
+    
+    // Create SDK with specific token/chat
+    // The SDK accepts token in the create options
+    return await ZAI.create({
+      token: token.token,
+      chatId: token.chatId,
+      userId: token.userId
+    });
+  }
+}
+
+// Global token manager instance
+let tokenManager = null;
+
+function getTokenManager() {
+  if (!tokenManager) {
+    tokenManager = new TokenManager(CONFIG);
+  }
+  return tokenManager;
+}
+
+// ============================================================================
+// AI CALL - SDK Only with Multi-Token for Rate Limits!
+// ============================================================================
+
+/**
+ * Call AI using SDK with multi-token fallback for rate limits!
+ */
+async function callAI(messages, options = {}) {
+  const temperature = options.temperature || 0.7;
+  const maxTokens = options.maxTokens || 4000;
+  const maxRetries = options.maxRetries || 5;
+  
+  if (!SDK_AVAILABLE) {
+    throw new Error('SDK not available! Cannot call AI without z-ai-web-dev-sdk');
+  }
+  
+  const tm = getTokenManager();
+  let lastError = null;
+  
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      // Create SDK instance with current token
+      const zai = await tm.createSDKWithToken();
+      
+      const response = await zai.chat.completions.create({
+        messages,
+        temperature,
+        max_tokens: maxTokens
+      });
+      
+      // Success - reset exhausted tokens
+      tm.resetExhausted();
+      
+      return {
+        content: response.choices[0]?.message?.content || '',
+        thinking: response.choices[0]?.message?.thinking || null,
+        provider: 'sdk',
+        tokenUsed: tm.getCurrentLabel(),
+        success: true
+      };
+      
+    } catch (error) {
+      lastError = error;
+      
+      if (isRateLimitError(error)) {
+        console.log(`   ⚠️ Rate limit hit on ${tm.getCurrentLabel()}!`);
+        
+        // Try switching token first
+        if (tm.hasAlternativeTokens() && tm.switchToNextToken()) {
+          console.log(`   🔄 Retrying with new token: ${tm.getCurrentLabel()}`);
+          await delay(2000); // Short delay when switching token
+          continue;
+        }
+        
+        // No alternative tokens - use exponential backoff
+        const delayMs = Math.max(10000 * Math.pow(1.5, attempt), 15000) * (1 + Math.random() * 0.3);
+        console.log(`   ⏳ All tokens rate limited! Waiting ${(delayMs/1000).toFixed(1)}s...`);
+        await delay(delayMs);
+      } else {
+        // Non-rate-limit error - use shorter backoff
+        const delayMs = 2000 * Math.pow(2, attempt);
+        console.log(`   ⏳ AI Call error: ${error.message}. Retry ${attempt + 1}/${maxRetries} in ${(delayMs/1000).toFixed(1)}s...`);
+        await delay(delayMs);
+      }
+    }
+  }
+  
+  throw lastError;
+}
+
+/**
+ * Web Search - SDK with Multi-Token fallback!
+ */
+async function webSearchSDK(query) {
+  if (!SDK_AVAILABLE) {
+    throw new Error('SDK not available! Cannot perform web search without z-ai-web-dev-sdk');
+  }
+  
+  const tm = getTokenManager();
+  const maxRetries = 3;
+  let lastError = null;
+  
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const zai = await tm.createSDKWithToken();
+      
+      const result = await zai.functions.invoke("web_search", { query, num: 5 });
+      
+      if (!result || result.length === 0) {
+        throw new Error(`Web search returned no results for: ${query}`);
+      }
+      
+      tm.resetExhausted();
+      return result;
+      
+    } catch (error) {
+      lastError = error;
+      
+      if (isRateLimitError(error)) {
+        console.log(`   ⚠️ Web search rate limit on ${tm.getCurrentLabel()}!`);
+        
+        if (tm.hasAlternativeTokens() && tm.switchToNextToken()) {
+          console.log(`   🔄 Retrying web search with: ${tm.getCurrentLabel()}`);
+          await delay(2000);
+          continue;
+        }
+        
+        const delayMs = 10000 * (1 + Math.random());
+        console.log(`   ⏳ Web search waiting ${(delayMs/1000).toFixed(1)}s...`);
+        await delay(delayMs);
+      } else {
+        throw error; // Non-rate-limit errors fail immediately
+      }
+    }
+  }
+  
+  throw lastError;
 }
 
 // ============================================================================
@@ -57,25 +428,25 @@ async function initZAI() {
 // ============================================================================
 
 const CONFIG = {
-  // Python NLP Service
+  // Python NLP Service (Optional - will use fallback if unavailable)
   pythonNLP: {
     baseUrl: 'http://localhost:5000',
     enabled: true,
     timeout: 30000,
-    fallbackToBasic: true // Use basic JS analysis if Python service unavailable
+    fallbackToBasic: true
   },
   
+  // Rally API
   rallyApiBase: 'https://app.rally.fun/api',
   outputDir: '/home/z/my-project/download',
   userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
   
-  // Multi-Token Configuration
-  useAutoConfig: true,
-  baseUrl: 'http://172.25.136.210:8080/v1',
-  apiKey: 'Z.ai',
-  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MULTI-TOKEN POOL - For Rate Limit Handling
+  // When rate limit hit, automatically switch to next token
+  // ═══════════════════════════════════════════════════════════════════════════
   tokens: [
-    null, // Auto from .z-ai-config
+    null, // Auto from .z-ai-config (Primary)
     {
       token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiOTc2MzEyNjMtNWRiYS00ZTE2LWIxMjctMTkyMTJlMDEyYTliIiwiY2hhdF9pZCI6ImNoYXQtNTQ5ZmI5MTEtZWM0NS00NGJiLTg5YjEtMWY2MTljNTEzN2QzIn0.M6IQTOXasSbEw98a4R6p3LEPwJPCWyRZiJSUo8lr2PM',
       chatId: 'chat-549fb911-ec45-44bb-89b1-1f619c5137d3',
@@ -108,26 +479,15 @@ const CONFIG = {
     }
   ],
   
-  currentTokenIndex: 0,
-  
-  providers: {
-    sdk: {
-      enabled: true,
-      priority: 1,
-      name: 'z-ai-web-dev-sdk',
-      type: 'sdk',
-      models: { chat: 'glm-4-plus', fast: 'glm-4-flash' }  // v9.8.1: Model upgrade
-    }
-  },
-  
   // ═══════════════════════════════════════════════════════════════════════════
   // NEW v9.8.1: Multi-Content Configuration
   // ═══════════════════════════════════════════════════════════════════════════
   multiContent: {
     enabled: true,
-    count: 5,                    // Generate 5 konten per batch
-    selectBest: true,            // Pilih konten terbaik
-    minPassCount: 1,             // Minimal konten yang harus PASS
+    count: 5,
+    selectBest: true,
+    minPassCount: 1,
+    maxRegenerateAttempts: 5,
     variations: {
       angles: ['personal_story', 'data_driven', 'contrarian', 'insider_perspective', 'case_study'],
       emotions: [
@@ -141,15 +501,31 @@ const CONFIG = {
     }
   },
   
-  // v9.8.1: Model Optimization
+  // v9.8.1: Model Optimization - GLM-5 (Latest)
   model: {
-    name: 'glm-4-plus',          // Model terbaik
-    enableThinking: true,        // Mode think aktif
-    enableSearch: true,          // Web search aktif
+    name: 'glm-5',
+    enableThinking: true,
+    enableSearch: true,
     temperature: {
       generation: 0.8,
-      judging: 0.2
+      judging: 0.2,
+      compliance: 0.1
     }
+  },
+  
+  // v9.8.1: Quick Judge = Compliance Check Only
+  quickJudge: {
+    enabled: true,
+    checks: [
+      'campaignDescription',
+      'rules',
+      'style',
+      'additionalInfo',
+      'knowledgeBase',
+      'bannedWords',
+      'urlPresent'
+    ],
+    allMustPass: true
   },
   
   // v9.8.1: Ranking Configuration
@@ -174,30 +550,32 @@ const CONFIG = {
     compliance: { pass: 10, max: 10, allMustPass: true },
     factCheck: { pass: 4, max: 5 },
     uniqueness: { pass: 20, max: 25 },
-    // Hybrid-specific thresholds
-    readability: { min: 60, optimal: 70 }, // Flesch Reading Ease
+    readability: { min: 60, optimal: 70 },
     sentiment: { minConfidence: 0.3 },
     similarity: { maxThreshold: 0.7 },
     depth: { minScore: 40 },
     tieThreshold: 3
   },
   
-  revision: { maxAttempts: 3, delayMs: 8000 },
-  retry: { maxAttempts: 3, delayMs: 8000 },
+  revision: { maxAttempts: 3, delayMs: 10000 },
+  retry: { maxAttempts: 5, delayMs: 10000 },
   
+  // v9.8.1: Increased delays to prevent rate limits
   delays: {
-    betweenJudges: 3000,
-    betweenPasses: 5000,
-    beforeRevision: 3000,
-    beforeTieBreaker: 5000,
-    afterWebSearch: 2000,
-    afterPythonNLP: 500
+    betweenJudges: 8000,        // 8 seconds between each judge (was 3s)
+    betweenPasses: 10000,       // 10 seconds between passes
+    beforeRevision: 8000,       // 8 seconds before revision
+    beforeTieBreaker: 10000,    // 10 seconds before tie breaker
+    afterWebSearch: 3000,       // 3 seconds after web search
+    afterPythonNLP: 1000,       // 1 second after Python NLP
+    betweenContentGen: 5000,    // 5 seconds between content generation
+    betweenQuickJudge: 3000,    // 3 seconds between quick judge checks
+    afterRateLimit: 15000       // 15 seconds after rate limit detected
   },
   
   enableThinking: true,
   tweetOptions: [1, 3, 5, 7],
   
-  // Enhancement options (from v9.7.0)
   personas: [
     { id: 'skeptic', name: 'The Skeptic', trait: 'Doubt → Discovery → Conversion' },
     { id: 'victim_to_hero', name: 'Victim → Hero', trait: 'Pain → Solution → Redemption' },
@@ -305,7 +683,7 @@ const CONFIG = {
   
   calibration: {
     rallyMaxScore: 23,
-    v9_8_0MaxScore: 100, // Enhanced scoring with Python NLP
+    v9_8_0MaxScore: 100,
     thresholds: {
       excellent: { rally: 21, v9_8_0: 90 },
       pass: { rally: 18, v9_8_0: 75 },
@@ -338,16 +716,19 @@ const CONFIG = {
 class HybridNLPAnalyzer {
   constructor(config) {
     this.config = config;
-    this.pythonClient = new PythonNLPClient(config.pythonNLP.baseUrl);
+    this.pythonClient = PythonNLPClient ? new PythonNLPClient(config.pythonNLP.baseUrl) : null;
     this.serviceAvailable = null;
   }
   
-  /**
-   * Check if Python NLP service is available
-   */
   async checkService() {
     if (this.serviceAvailable !== null) {
       return this.serviceAvailable;
+    }
+    
+    if (!this.pythonClient) {
+      console.log('   ⚠️ Python NLP Client not available - using basic analysis');
+      this.serviceAvailable = false;
+      return false;
     }
     
     try {
@@ -365,7 +746,7 @@ class HybridNLPAnalyzer {
         console.log('   ║  Semantic Similarity:  ' + (health.services?.semantic_similarity ? '✓' : '✗').padEnd(33) + '║');
         console.log('   ╚════════════════════════════════════════════════════════════╝');
       } else {
-        console.log('   ⚠️ Python NLP Service not available - using fallback analysis');
+        console.log('   ⚠️ Python NLP Service not available - using basic analysis');
       }
       
       return this.serviceAvailable;
@@ -376,36 +757,27 @@ class HybridNLPAnalyzer {
     }
   }
   
-  /**
-   * Comprehensive content analysis using Python NLP
-   */
   async analyzeContent(content, campaignContext = null, competitorContents = []) {
     const serviceOk = await this.checkService();
     
-    if (serviceOk) {
+    if (serviceOk && this.pythonClient) {
       console.log('   🐍 Using Python NLP for content analysis...');
       const result = await this.pythonClient.analyzeContent(
         content, 
         campaignContext, 
         competitorContents
       );
-      
-      // Add hybrid-specific metrics
       result.hybridMetrics = this._calculateHybridMetrics(result);
       return result;
     }
     
-    // Fallback to basic JS analysis
     return this._fallbackContentAnalysis(content, competitorContents);
   }
   
-  /**
-   * Check semantic similarity with competitors
-   */
   async checkSimilarity(newContent, competitorContents, threshold = 0.7) {
     const serviceOk = await this.checkService();
     
-    if (serviceOk) {
+    if (serviceOk && this.pythonClient) {
       console.log('   🐍 Using Python NLP for similarity check...');
       return await this.pythonClient.checkSimilarity(newContent, competitorContents, threshold);
     }
@@ -413,13 +785,10 @@ class HybridNLPAnalyzer {
     return this._fallbackSimilarity(newContent, competitorContents);
   }
   
-  /**
-   * Detect emotions with rare combo detection
-   */
   async detectEmotions(content, detailed = false) {
     const serviceOk = await this.checkService();
     
-    if (serviceOk) {
+    if (serviceOk && this.pythonClient) {
       console.log('   🐍 Using Python NLP for emotion detection...');
       return await this.pythonClient.detectEmotions(content, detailed);
     }
@@ -427,13 +796,10 @@ class HybridNLPAnalyzer {
     return this._fallbackEmotions(content);
   }
   
-  /**
-   * Combined uniqueness analysis
-   */
   async analyzeUniqueness(content, competitorContents) {
     const serviceOk = await this.checkService();
     
-    if (serviceOk) {
+    if (serviceOk && this.pythonClient) {
       console.log('   🐍 Using Python NLP for uniqueness analysis...');
       return await this.pythonClient.analyzeUniqueness(content, competitorContents);
     }
@@ -441,9 +807,6 @@ class HybridNLPAnalyzer {
     return this._fallbackUniqueness(content, competitorContents);
   }
   
-  /**
-   * Calculate hybrid-specific metrics
-   */
   _calculateHybridMetrics(analysis) {
     const metrics = {
       overallQuality: 0,
@@ -451,10 +814,8 @@ class HybridNLPAnalyzer {
       recommendations: []
     };
     
-    // Calculate overall quality (0-100)
-    let score = 50; // Base score
+    let score = 50;
     
-    // Readability contribution (max +15)
     if (analysis.readability?.primary?.flesch_reading_ease) {
       const flesch = analysis.readability.primary.flesch_reading_ease;
       if (flesch >= 60 && flesch <= 80) {
@@ -466,34 +827,28 @@ class HybridNLPAnalyzer {
       }
     }
     
-    // Sentiment contribution (max +10)
     if (analysis.sentiment?.consensus_score !== undefined) {
       const sentiment = Math.abs(analysis.sentiment.consensus_score);
       if (sentiment > 0.3) {
-        score += 10; // Strong sentiment is good for engagement
+        score += 10;
       } else {
         metrics.recommendations.push('Add more emotional depth');
       }
     }
     
-    // Emotion variety contribution (max +15)
     if (analysis.emotions?.emotion_variety) {
       score += Math.min(analysis.emotions.emotion_variety * 5, 15);
-      
       if (analysis.emotions.rare_combo_detected) {
-        score += 5; // Bonus for rare emotion combo
+        score += 5;
       }
     }
     
-    // Depth contribution (max +15)
     if (analysis.depth_analysis?.overall_depth_score) {
       score += Math.min(analysis.depth_analysis.overall_depth_score * 0.15, 15);
     }
     
-    // Similarity penalty
     if (analysis.similarity?.primary?.max_similarity) {
       score -= analysis.similarity.primary.max_similarity * 20;
-      
       if (analysis.similarity.primary.max_similarity > 0.7) {
         metrics.recommendations.push('Content too similar to competitors - increase differentiation');
       }
@@ -501,7 +856,6 @@ class HybridNLPAnalyzer {
     
     metrics.overallQuality = Math.max(0, Math.min(100, Math.round(score)));
     
-    // Assign grade
     if (score >= 90) metrics.qualityGrade = 'A+';
     else if (score >= 85) metrics.qualityGrade = 'A';
     else if (score >= 80) metrics.qualityGrade = 'A-';
@@ -515,8 +869,6 @@ class HybridNLPAnalyzer {
     
     return metrics;
   }
-  
-  // Fallback methods (basic JS implementation)
   
   _fallbackContentAnalysis(content, competitorContents) {
     const words = content.split(/\s+/).filter(w => w.length > 0);
@@ -656,16 +1008,12 @@ class HybridNLPAnalyzer {
 }
 
 // ============================================================================
-// MULTI-PROVIDER LLM CLIENT (Extended for Hybrid)
+// MULTI-PROVIDER LLM CLIENT (SDK Only!)
 // ============================================================================
 
 class MultiProviderLLM {
   constructor(config) {
     this.config = config;
-    this.providers = this.getEnabledProviders();
-    this.currentProviderIndex = 0;
-    this.currentTokenIndex = config.currentTokenIndex || 0;
-    this.tokens = config.tokens || [null];
     this.nlpAnalyzer = new HybridNLPAnalyzer(config);
   }
   
@@ -687,216 +1035,109 @@ class MultiProviderLLM {
           const configStr = fs.readFileSync(filePath, 'utf-8');
           const autoConfig = JSON.parse(configStr);
           if (autoConfig.token) {
-            this.tokens[0] = {
-              token: autoConfig.token,
-              chatId: autoConfig.chatId,
-              userId: autoConfig.userId,
-              baseUrl: autoConfig.baseUrl || this.config.baseUrl,
-              apiKey: autoConfig.apiKey || this.config.apiKey,
-              label: 'AUTO (Chat Ini)'
-            };
             console.log(`   ✅ Auto-token loaded from ${filePath}`);
             return;
           }
         } catch (e) {}
       }
-      console.log('   ⚠️ No auto-token found, using fallback tokens');
+      console.log('   ⚠️ No auto-token found, using SDK default');
     } catch (e) {
       console.log('   ⚠️ Could not load auto-token:', e.message);
     }
   }
   
+  // Token pool status now displayed in preflightCheck
   displayTokenPoolStatus() {
-    console.log('\n   ╔════════════════════════════════════════════════════════════╗');
-    console.log('   ║           🎫 MULTI-TOKEN FALLBACK SYSTEM                  ║');
-    console.log('   ╠════════════════════════════════════════════════════════════╣');
-    
-    this.tokens.forEach((token, index) => {
-      const isActive = index === this.currentTokenIndex;
-      const marker = isActive ? '►' : ' ';
-      const label = token?.label || `Token #${index}`;
-      
-      if (token) {
-        console.log(`   ║ ${marker} #${index}: ${label.padEnd(20)}                         ║`);
-      } else if (index === 0) {
-        console.log(`   ║ ${marker} #${index}: Waiting for auto-load...                  ║`);
-      }
-    });
-    
-    console.log('   ╚════════════════════════════════════════════════════════════╝');
-  }
-  
-  getCurrentToken() {
-    return this.tokens[this.currentTokenIndex] || null;
-  }
-  
-  switchToNextToken() {
-    const nextIndex = this.currentTokenIndex + 1;
-    if (nextIndex < this.tokens.length) {
-      this.currentTokenIndex = nextIndex;
-      const newToken = this.getCurrentToken();
-      console.log(`   🔄 SWITCHING TO ${newToken?.label || `Token #${nextIndex}`}`);
-      return true;
-    }
-    console.log('   ❌ No more fallback tokens available!');
-    return false;
-  }
-  
-  resetTokenIndex() {
-    this.currentTokenIndex = 0;
-  }
-  
-  getEnabledProviders() {
-    return Object.entries(this.config.providers)
-      .filter(([key, provider]) => provider.enabled)
-      .sort((a, b) => a[1].priority - b[1].priority)
-      .map(([key, provider]) => ({ key, ...provider }));
-  }
-  
-  isRateLimitError(error) {
-    return error.message && (
-      error.message.includes('429') ||
-      error.message.includes('rate limit') ||
-      error.message.includes('速率限制') ||
-      error.message.includes('1302')
-    );
+    // No-op - token pool status is now displayed during preflight check
   }
 
   async chat(messages, options = {}) {
-    const ZAIClass = await initZAI();
-    const zai = await ZAIClass.create();
-
-    const requestOptions = {
-      messages: messages,
-      temperature: options.temperature || 0.7,
-      max_tokens: options.maxTokens || 4000
-    };
-
-    const completion = await zai.chat.completions.create(requestOptions);
-    console.log(`   ✅ Response received`);
-
+    const result = await callAI(messages, options);
+    console.log(`   ✅ Response received (${result.provider}, token: ${result.tokenUsed || 'auto'})`);
+    
     return {
-      content: completion.choices[0]?.message?.content || '',
-      thinking: completion.choices[0]?.message?.thinking || null,
-      provider: 'sdk',
-      model: 'default',
-      usage: completion.usage
+      content: result.content || '',
+      thinking: result.thinking || null,
+      provider: result.provider,
+      model: CONFIG.model?.name || 'glm-5',
+      usage: result.usage
     };
   }
   
   async blindJudge(systemPrompt, userPrompt, judgeId, options = {}) {
     console.log(`\n   🔒 TRUE BLIND JUDGE ${judgeId} - Fresh Context`);
 
-    const ZAIClass = await initZAI();
-    const zai = await ZAIClass.create();
-
-    const requestOptions = {
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
-      ],
-      temperature: 0.3,
-      max_tokens: 3000
-    };
-
-    const response = await zai.chat.completions.create(requestOptions);
+    const result = await callAI([
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userPrompt }
+    ], { temperature: 0.3, maxTokens: 3000 });
+    
     console.log(`   ✅ Judge ${judgeId} success!`);
 
     return {
-      content: response.choices[0]?.message?.content || '',
-      thinking: response.choices[0]?.message?.thinking || null,
-      provider: 'sdk-blind',
-      model: 'default'
+      content: result.content || '',
+      thinking: result.thinking || null,
+      provider: result.provider,
+      model: CONFIG.model?.name || 'glm-5'
     };
   }
   
   async contextAwareJudge(systemPrompt, userPrompt, judgeId) {
     console.log(`\n   📋 CONTEXT-AWARE JUDGE ${judgeId} - With Campaign Info`);
 
-    const ZAIClass = await initZAI();
-    const zai = await ZAIClass.create();
-
-    const requestOptions = {
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
-      ],
-      temperature: 0.3,
-      max_tokens: 3000
-    };
-
-    const response = await zai.chat.completions.create(requestOptions);
+    const result = await callAI([
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userPrompt }
+    ], { temperature: 0.3, maxTokens: 3000 });
+    
     console.log(`   ✅ Context-Aware Judge ${judgeId} success!`);
 
     return {
-      content: response.choices[0]?.message?.content || '',
-      thinking: response.choices[0]?.message?.thinking || null,
-      provider: 'sdk-context',
-      model: 'default'
+      content: result.content || '',
+      thinking: result.thinking || null,
+      provider: result.provider,
+      model: CONFIG.model?.name || 'glm-5'
     };
   }
   
   async factCheckJudge(systemPrompt, userPrompt, judgeId, customSearchQuery = null) {
     console.log(`\n   🔍 FACT-CHECK JUDGE ${judgeId} - With Web Search`);
 
-    const ZAIClass = await initZAI();
-    const zai = await ZAIClass.create();
-
     const currentYear = new Date().getFullYear();
     const searchQuery = customSearchQuery || `verify facts ${currentYear} latest`;
-    let webSearchResults = [];
 
     console.log(`   🔎 Searching for data from ${currentYear} and earlier...`);
 
-    try {
-      webSearchResults = await zai.functions.invoke("web_search", {
-        query: searchQuery,
-        num: 5
-      });
-      console.log(`   ✅ Web search found ${webSearchResults?.length || 0} results`);
-    } catch (error) {
-      console.log(`   ⚠️ Web search failed: ${error.message}`);
-    }
+    // Use SDK web search - MUST succeed!
+    const webSearchResults = await webSearchSDK(searchQuery);
+    console.log(`   ✅ Web search: ${webSearchResults.length} results`);
 
-    const enhancedPrompt = userPrompt + `\n\n═══════════════════════════════════════════════════════════════\n🔍 WEB SEARCH RESULTS FOR FACT VERIFICATION:\n═══════════════════════════════════════════════════════════════\n${webSearchResults && webSearchResults.length > 0
-      ? webSearchResults.slice(0, 3).map((r, i) => `${i+1}. ${r.name || 'Source'}: ${r.snippet || ''}\n   URL: ${r.url || 'N/A'}`).join('\n\n')
-      : 'No web search results available. Use your knowledge to verify claims.'}`;
+    const enhancedPrompt = userPrompt + `\n\n═══════════════════════════════════════════════════════════════
+🔍 WEB SEARCH RESULTS FOR FACT VERIFICATION:
+═══════════════════════════════════════════════════════════════
+${webSearchResults.slice(0, 3).map((r, i) => `${i+1}. ${r.name || 'Source'}: ${r.snippet || ''}\n   URL: ${r.url || 'N/A'}`).join('\n\n')}`;
 
-    const requestOptions = {
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: enhancedPrompt }
-      ],
-      temperature: 0.3,
-      max_tokens: 3000
-    };
-
-    const response = await zai.chat.completions.create(requestOptions);
+    const result = await callAI([
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: enhancedPrompt }
+    ], { temperature: 0.3, maxTokens: 3000 });
+    
     console.log(`   ✅ Fact-Check Judge ${judgeId} success!`);
 
     return {
-      content: response.choices[0]?.message?.content || '',
-      thinking: response.choices[0]?.message?.thinking || null,
-      webSearchUsed: webSearchResults && webSearchResults.length > 0,
-      provider: 'sdk-factcheck',
-      model: 'default'
+      content: result.content || '',
+      thinking: result.thinking || null,
+      webSearchUsed: true,
+      provider: result.provider,
+      model: CONFIG.model?.name || 'glm-5'
     };
   }
   
-  /**
-   * HYBRID JUDGE - Uses Python NLP for enhanced analysis
-   */
   async hybridJudge(systemPrompt, userPrompt, judgeId, content, competitorContents = []) {
     console.log(`\n   🐍 HYBRID JUDGE ${judgeId} - Python NLP Enhanced`);
 
-    // First, get Python NLP analysis
     const nlpAnalysis = await this.nlpAnalyzer.analyzeContent(content, null, competitorContents);
     
-    // Get AI judge response
-    const ZAIClass = await initZAI();
-    const zai = await ZAIClass.create();
-    
-    // Enhance prompt with NLP data
     const enhancedPrompt = userPrompt + `\n\n═══════════════════════════════════════════════════════════════
 🐍 PYTHON NLP ANALYSIS (Use this for scoring):
 ═══════════════════════════════════════════════════════════════
@@ -909,24 +1150,19 @@ class MultiProviderLLM {
 - Overall Quality Grade: ${nlpAnalysis.hybridMetrics?.qualityGrade || 'N/A'} (${nlpAnalysis.hybridMetrics?.overallQuality || 0}/100)
 `;
 
-    const requestOptions = {
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: enhancedPrompt }
-      ],
-      temperature: 0.3,
-      max_tokens: 3000
-    };
-
-    const response = await zai.chat.completions.create(requestOptions);
+    const result = await callAI([
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: enhancedPrompt }
+    ], { temperature: 0.3, maxTokens: 3000 });
+    
     console.log(`   ✅ Hybrid Judge ${judgeId} success!`);
 
     return {
-      content: response.choices[0]?.message?.content || '',
-      thinking: response.choices[0]?.message?.thinking || null,
+      content: result.content || '',
+      thinking: result.thinking || null,
       nlpAnalysis: nlpAnalysis,
-      provider: 'hybrid',
-      model: 'default'
+      provider: result.provider,
+      model: CONFIG.model?.name || 'glm-5'
     };
   }
   
@@ -934,27 +1170,13 @@ class MultiProviderLLM {
     const currentYear = new Date().getFullYear();
     console.log(`   🔍 Web search: "${query}"`);
     
-    try {
-      const ZAIClass = await initZAI();
-      const zai = await ZAIClass.create();
-      
-      const enhancedQuery = `${query} ${currentYear} latest`;
-      
-      const result = await zai.functions.invoke("web_search", {
-        query: enhancedQuery,
-        num: 5
-      });
-      
-      console.log(`   ✅ Found ${result?.length || 0} results`);
-      return result || [];
-      
-    } catch (error) {
-      console.log(`   ⚠️ Web search failed: ${error.message}`);
-      return [];
-    }
+    const enhancedQuery = `${query} ${currentYear} latest`;
+    const result = await webSearchSDK(enhancedQuery);
+    
+    console.log(`   ✅ Found ${result.length} results`);
+    return result;
   }
   
-  // Get NLP analyzer for external use
   getNLPAnalyzer() {
     return this.nlpAnalyzer;
   }
@@ -992,13 +1214,8 @@ class MultiProviderLLM {
 // UTILITY FUNCTIONS
 // ============================================================================
 
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function safeJsonParse(str) {
   try {
-    // Try to extract JSON from the string
     const jsonMatch = str.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       return JSON.parse(jsonMatch[0]);
@@ -1038,7 +1255,7 @@ function displayJudgeThinking(judgeNum, thinking) {
 }
 
 // ============================================================================
-// SELECTION FUNCTIONS (From v9.7.0)
+// SELECTION FUNCTIONS
 // ============================================================================
 
 function selectUnusedPersona(competitorAnalysis) {
@@ -1147,16 +1364,16 @@ function extractKeywords(title) {
 }
 
 // ============================================================================
-// COMPETITOR ANALYSIS (Enhanced with Python NLP)
+// COMPETITOR ANALYSIS - Must Succeed!
 // ============================================================================
 
 async function deepCompetitorContentAnalysis(llm, submissions, campaignTitle, campaignData) {
   console.log('\n' + '─'.repeat(60));
-  console.log('🔍 DEEP COMPETITOR CONTENT ANALYSIS (Hybrid Mode)');
+  console.log('🔍 DEEP COMPETITOR CONTENT ANALYSIS');
   console.log('─'.repeat(60));
   
   if (!submissions || submissions.length === 0) {
-    console.log('   ℹ️ No submissions to analyze');
+    console.log('   ℹ️ No submissions to analyze - returning empty analysis');
     return { 
       anglesUsed: [], 
       storiesTold: [],
@@ -1178,7 +1395,7 @@ async function deepCompetitorContentAnalysis(llm, submissions, campaignTitle, ca
     username: s.xUsername || 'Anonymous'
   })).filter(s => s.content && s.content.length > 50);
   
-  console.log(`   📄 Analyzing ${competitorContent.length} full competitor contents...`);
+  console.log(`   📄 Analyzing ${competitorContent.length} competitor contents...`);
   
   // Use Python NLP for each competitor content
   const nlpAnalyzer = llm.getNLPAnalyzer();
@@ -1237,52 +1454,36 @@ Extract and categorize in JSON format:
   }
 }`;
 
-  try {
-    const response = await llm.chat([
-      { role: 'system', content: 'You are a competitive content analyst specializing in content differentiation. Return JSON only.' },
-      { role: 'user', content: analysisPrompt }
-    ], { temperature: 0.5, maxTokens: 4000 });
-    
-    const analysis = safeJsonParse(response.content);
-    
-    if (analysis) {
-      const thinkingText = `Analyzing ${competitorContent.length} competitor contents...
-      
+  const response = await llm.chat([
+    { role: 'system', content: 'You are a competitive content analyst specializing in content differentiation. Return JSON only.' },
+    { role: 'user', content: analysisPrompt }
+  ], { temperature: 0.5, maxTokens: 4000 });
+  
+  const analysis = safeJsonParse(response.content);
+  
+  if (!analysis) {
+    throw new Error('Failed to parse competitor analysis result');
+  }
+  
+  const thinkingText = `Analyzing ${competitorContent.length} competitor contents...
+  
 Angles Already Used: ${(analysis.anglesUsed || []).slice(0, 5).join(', ')}
 Saturated (AVOID): ${(analysis.saturatedElements || []).slice(0, 3).join(', ')}
 Untapped (USE): ${(analysis.untappedOpportunities || []).slice(0, 3).join(', ')}
 
 Recommended Winning Angle: ${analysis.recommendations?.winningAngle || 'Be unique'}`;
 
-      displayThinking('COMPETITOR', thinkingText);
-      
-      return {
-        ...analysis,
-        competitorContent: competitorContent.map(c => c.content.substring(0, 300)),
-        nlpAnalysis: nlpResults
-      };
-    }
-  } catch (error) {
-    console.log(`   ⚠️ Analysis failed: ${error.message}`);
-  }
+  displayThinking('COMPETITOR', thinkingText);
   
-  return { 
-    anglesUsed: [], 
-    storiesTold: [],
-    personasUsed: [],
-    structuresUsed: [],
-    emotionsUsed: [],
-    analogiesUsed: [],
-    audienceAddressed: [],
-    saturatedElements: [],
-    untappedOpportunities: [],
+  return {
+    ...analysis,
     competitorContent: competitorContent.map(c => c.content.substring(0, 300)),
-    strategy: 'Be unique and avoid common patterns'
+    nlpAnalysis: nlpResults
   };
 }
 
 // ============================================================================
-// MULTI-QUERY DEEP RESEARCH
+// MULTI-QUERY DEEP RESEARCH - Must Succeed!
 // ============================================================================
 
 async function multiQueryDeepResearch(llm, campaignTitle, campaignData) {
@@ -1317,7 +1518,12 @@ async function multiQueryDeepResearch(llm, campaignTitle, campaignData) {
       });
     }
     
-    await delay(1000);
+    // Use configured delay after web search
+    await delay(CONFIG.delays.afterWebSearch || 3000);
+  }
+  
+  if (allResults.length === 0) {
+    throw new Error('All research queries failed - no results found');
   }
   
   const synthesisPrompt = `Synthesize these research findings for creating unique content about "${campaignTitle}":
@@ -1344,35 +1550,31 @@ Extract in JSON format:
   }
 }`;
 
-  try {
-    const response = await llm.chat([
-      { role: 'system', content: 'You are a research synthesizer. Extract unique angles and evidence for content creation. Return JSON only.' },
-      { role: 'user', content: synthesisPrompt }
-    ], { temperature: 0.5, maxTokens: 3000 });
-    
-    const synthesis = safeJsonParse(response.content);
-    
-    if (synthesis) {
-      displayThinking('RESEARCH', `Found ${synthesis.keyFacts?.length || 0} facts, ${synthesis.uniqueAngles?.length || 0} unique angles`);
-      return { rawResults: allResults, synthesis };
-    }
-  } catch (error) {
-    console.log(`   ⚠️ Synthesis failed: ${error.message}`);
+  const response = await llm.chat([
+    { role: 'system', content: 'You are a research synthesizer. Extract unique angles and evidence for content creation. Return JSON only.' },
+    { role: 'user', content: synthesisPrompt }
+  ], { temperature: 0.5, maxTokens: 3000 });
+  
+  const synthesis = safeJsonParse(response.content);
+  
+  if (!synthesis) {
+    throw new Error('Failed to parse research synthesis');
   }
   
-  return { rawResults: allResults, synthesis: {} };
+  displayThinking('RESEARCH', `Found ${synthesis.keyFacts?.length || 0} facts, ${synthesis.uniqueAngles?.length || 0} unique angles`);
+  
+  return { rawResults: allResults, synthesis };
 }
 
 // ============================================================================
-// CONTENT GENERATION (Hybrid Enhanced)
+// CONTENT GENERATION
 // ============================================================================
 
 async function generateUniqueContent(llm, campaignData, competitorAnalysis, researchData, tweetCount = 1) {
   console.log('\n' + '─'.repeat(60));
-  console.log('✨ GENERATING UNIQUE CONTENT (Hybrid Enhanced)');
+  console.log('✨ GENERATING UNIQUE CONTENT');
   console.log('─'.repeat(60));
   
-  // Select unique elements
   const persona = selectUnusedPersona(competitorAnalysis);
   const narrativeStructure = selectUnusedNarrativeStructure(competitorAnalysis);
   const audience = selectUnaddressedAudience(competitorAnalysis, campaignData.title);
@@ -1383,7 +1585,6 @@ async function generateUniqueContent(llm, campaignData, competitorAnalysis, rese
   console.log(`   👥 Target Audience: ${audience.name}`);
   console.log(`   💫 Emotion Combo: ${emotionCombo.emotions.join(' + ')} (${emotionCombo.rarityLevel})`);
   
-  // Build the generation prompt
   const systemPrompt = `You are an expert content creator for Rally.fun. Create UNIQUE, engaging content.
 
 CRITICAL RULES:
@@ -1442,37 +1643,235 @@ ${(competitorAnalysis?.anglesUsed || []).slice(0, 5).join(', ') || 'None'}
 
 Create content that stands out!`;
 
-  try {
-    const response = await llm.chat([
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt }
-    ], { temperature: 0.8, maxTokens: 4000 });
-    
-    const result = safeJsonParse(response.content);
-    
-    if (result && result.tweets) {
-      console.log(`   ✅ Generated ${result.tweets.length} tweets`);
-      
-      if (response.thinking) {
-        displayThinking('GENERATION', response.thinking);
-      }
-      
-      return {
-        tweets: result.tweets,
-        strategyUsed: result.strategyUsed || {},
-        selectedElements: { persona, narrativeStructure, audience, emotionCombo },
-        raw: response.content
-      };
-    }
-  } catch (error) {
-    console.log(`   ⚠️ Generation failed: ${error.message}`);
+  const response = await llm.chat([
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: userPrompt }
+  ], { temperature: 0.8, maxTokens: 4000 });
+  
+  const result = safeJsonParse(response.content);
+  
+  if (!result || !result.tweets) {
+    throw new Error('Failed to generate content - invalid response');
   }
   
-  return null;
+  console.log(`   ✅ Generated ${result.tweets.length} tweets`);
+  
+  if (response.thinking) {
+    displayThinking('GENERATION', response.thinking);
+  }
+  
+  return {
+    tweets: result.tweets,
+    strategyUsed: result.strategyUsed || {},
+    selectedElements: { persona, narrativeStructure, audience, emotionCombo },
+    raw: response.content
+  };
 }
 
 // ============================================================================
-// JUDGING SYSTEM (Enhanced with Python NLP)
+// v9.8.1: QUICK JUDGE = COMPLIANCE CHECK ONLY
+// ============================================================================
+
+async function quickJudgeCompliance(llm, content, campaignData) {
+  console.log('\n   ' + '┌' + '─'.repeat(56) + '┐');
+  console.log('   │         ⚡ QUICK JUDGE - Compliance Check              │');
+  console.log('   ' + '└' + '─'.repeat(56) + '┘');
+  
+  const systemPrompt = `You are a COMPLIANCE CHECKER for Rally.fun content.
+Your job is to check if content meets ALL campaign requirements.
+
+Check each item STRICTLY. Mark PASS only if fully satisfied.
+Mark FAIL if there's ANY violation or missing requirement.
+
+Return ONLY valid JSON format.`;
+
+  const userPrompt = `COMPLIANCE CHECK for this content:
+
+═══════════════════════════════════════════════════════════════
+CONTENT TO CHECK:
+═══════════════════════════════════════════════════════════════
+${content}
+
+═══════════════════════════════════════════════════════════════
+CAMPAIGN REQUIREMENTS:
+═══════════════════════════════════════════════════════════════
+TITLE: ${campaignData.title || 'N/A'}
+DESCRIPTION: ${campaignData.description || campaignData.goal || 'N/A'}
+STYLE: ${campaignData.style || 'Standard professional style'}
+RULES: ${campaignData.rules || campaignData.requirements || 'No specific rules'}
+ADDITIONAL INFO: ${campaignData.additionalInfo || campaignData.additional_info || 'None'}
+KNOWLEDGE BASE: ${campaignData.knowledgeBase || campaignData.knowledge_base || 'None'}
+REQUIRED URL: ${campaignData.campaignUrl || campaignData.url || 'Required'}
+
+═══════════════════════════════════════════════════════════════
+BANNED WORDS (MUST NOT appear):
+═══════════════════════════════════════════════════════════════
+${CONFIG.hardRequirements.bannedWords.concat(CONFIG.hardRequirements.rallyBannedPhrases).join(', ')}
+
+═══════════════════════════════════════════════════════════════
+CHECK EACH ITEM:
+═══════════════════════════════════════════════════════════════
+
+Return JSON format:
+{
+  "checks": {
+    "campaignDescription": {
+      "pass": true/false,
+      "reason": "explain why pass or fail"
+    },
+    "rules": {
+      "pass": true/false,
+      "reason": "explain why pass or fail"
+    },
+    "style": {
+      "pass": true/false,
+      "reason": "explain why pass or fail"
+    },
+    "additionalInfo": {
+      "pass": true/false,
+      "reason": "explain why pass or fail"
+    },
+    "knowledgeBase": {
+      "pass": true/false,
+      "reason": "explain why pass or fail"
+    },
+    "bannedWords": {
+      "pass": true/false,
+      "foundBannedWords": ["word1", "word2"] or [],
+      "reason": "explain why pass or fail"
+    },
+    "urlPresent": {
+      "pass": true/false,
+      "urlFound": "the url found" or "not found",
+      "reason": "explain why pass or fail"
+    }
+  },
+  "allPass": true/false,
+  "failedChecks": ["list of failed check names"],
+  "summary": "brief summary of compliance status"
+}`;
+
+  // Use callAI which uses SDK
+  const result = await callAI([
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: userPrompt }
+  ], { temperature: CONFIG.model.temperature.compliance || 0.1, maxTokens: 2000 });
+
+  const parsedResult = safeJsonParse(result.content);
+  
+  if (!parsedResult) {
+    throw new Error('Failed to parse compliance check result');
+  }
+  
+  // Ensure all checks exist
+  const defaultChecks = {
+    campaignDescription: { pass: false, reason: 'Not checked' },
+    rules: { pass: false, reason: 'Not checked' },
+    style: { pass: false, reason: 'Not checked' },
+    additionalInfo: { pass: false, reason: 'Not checked' },
+    knowledgeBase: { pass: false, reason: 'Not checked' },
+    bannedWords: { pass: false, reason: 'Not checked', foundBannedWords: [] },
+    urlPresent: { pass: false, reason: 'Not checked' }
+  };
+  
+  parsedResult.checks = { ...defaultChecks, ...(parsedResult.checks || {}) };
+  
+  // Recalculate allPass and failedChecks
+  const failedChecks = Object.entries(parsedResult.checks)
+    .filter(([key, check]) => check.pass !== true)
+    .map(([key]) => key);
+  
+  parsedResult.allPass = failedChecks.length === 0;
+  parsedResult.failedChecks = failedChecks;
+  parsedResult.success = true;
+  
+  // Display results
+  console.log('\n   ┌─────────────────────────────────────────────────────────┐');
+  console.log('   │              COMPLIANCE CHECK RESULTS                  │');
+  console.log('   ├─────────────────────────────────────────────────────────┤');
+  
+  const checkNames = {
+    campaignDescription: 'Description Match',
+    rules: 'Rules Followed',
+    style: 'Style Matched',
+    additionalInfo: 'Additional Info',
+    knowledgeBase: 'Knowledge Base',
+    bannedWords: 'No Banned Words',
+    urlPresent: 'URL Present'
+  };
+  
+  for (const [key, check] of Object.entries(parsedResult.checks)) {
+    const icon = check.pass ? '✅' : '❌';
+    const name = checkNames[key] || key;
+    console.log(`   │ ${icon} ${name.padEnd(20)} ${check.pass ? 'PASS' : 'FAIL'.padEnd(22)}│`);
+  }
+  
+  console.log('   ├─────────────────────────────────────────────────────────┤');
+  const statusIcon = parsedResult.allPass ? '✅' : '❌';
+  const statusText = parsedResult.allPass ? 'ALL PASSED' : `${failedChecks.length} FAILED`;
+  console.log(`   │              ${statusIcon} ${statusText.padEnd(30)}         │`);
+  console.log('   └─────────────────────────────────────────────────────────┘');
+  
+  if (!parsedResult.allPass && parsedResult.failedChecks.length > 0) {
+    console.log('\n   ⚠️  FAILED CHECKS:');
+    for (const checkName of parsedResult.failedChecks) {
+      const check = parsedResult.checks[checkName];
+      console.log(`      • ${checkName}: ${check?.reason || 'No reason provided'}`);
+    }
+  }
+  
+  return parsedResult;
+}
+
+/**
+ * BATCH QUICK JUDGE - Check compliance for multiple contents
+ */
+async function batchQuickJudge(llm, contents, campaignData) {
+  console.log('\n' + '═'.repeat(60));
+  console.log('⚡ BATCH QUICK JUDGE - Compliance Check for All Contents');
+  console.log('═'.repeat(60));
+  console.log(`   Checking ${contents.length} contents for compliance...`);
+  
+  const results = [];
+  
+  for (let i = 0; i < contents.length; i++) {
+    const contentItem = contents[i];
+    console.log(`\n   ─── Content #${contentItem.index} ───`);
+    
+    const complianceResult = await quickJudgeCompliance(llm, contentItem.content, campaignData);
+    
+    results.push({
+      index: contentItem.index,
+      content: contentItem.content,
+      variation: contentItem.variation,
+      compliance: complianceResult,
+      passed: complianceResult.allPass,
+      failedChecks: complianceResult.failedChecks || []
+    });
+    
+    // Use configured delay between quick judge checks
+    await delay(CONFIG.delays.betweenQuickJudge || 3000);
+  }
+  
+  // Summary
+  const passedCount = results.filter(r => r.passed).length;
+  console.log('\n' + '═'.repeat(60));
+  console.log('📊 QUICK JUDGE SUMMARY');
+  console.log('═'.repeat(60));
+  console.log(`   Total Checked: ${results.length}`);
+  console.log(`   ✅ Passed: ${passedCount}`);
+  console.log(`   ❌ Failed: ${results.length - passedCount}`);
+  
+  if (passedCount > 0) {
+    const passedIndices = results.filter(r => r.passed).map(r => r.index);
+    console.log(`   🎯 Contents that passed: #${passedIndices.join(', #')}`);
+  }
+  
+  return results;
+}
+
+// ============================================================================
+// JUDGING SYSTEM
 // ============================================================================
 
 async function runHybridJudging(llm, content, campaignData, competitorContents, attempt = 1) {
@@ -1538,7 +1937,7 @@ async function runHybridJudging(llm, content, campaignData, competitorContents, 
   
   await delay(CONFIG.delays.betweenJudges);
   
-  // Judge 4: Compliance (Enhanced - 10 checks)
+  // Judge 4: Compliance
   console.log('\n   ─── JUDGE 4: COMPREHENSIVE COMPLIANCE ───');
   const judge4Result = await llm.contextAwareJudge(
     getJudge4SystemPrompt(),
@@ -1566,7 +1965,7 @@ async function runHybridJudging(llm, content, campaignData, competitorContents, 
   
   await delay(CONFIG.delays.betweenJudges);
   
-  // Judge 6: Uniqueness (Python NLP Enhanced)
+  // Judge 6: Uniqueness
   console.log('\n   ─── JUDGE 6: UNIQUENESS VERIFIER (Hybrid) ───');
   const judge6Result = await llm.hybridJudge(
     getJudge6SystemPrompt(),
@@ -1851,7 +2250,6 @@ function parseJudge4Result(content) {
     };
   }
   
-  // Ensure all 10 checks exist
   const defaultChecks = {
     descriptionAlignment: { pass: false, reason: 'Not checked' },
     styleCompliance: { pass: false, reason: 'Not checked' },
@@ -1867,7 +2265,6 @@ function parseJudge4Result(content) {
   
   result.checks = { ...defaultChecks, ...(result.checks || {}) };
   
-  // Recalculate allPass
   const failedChecks = Object.entries(result.checks)
     .filter(([key, check]) => check.pass !== true)
     .map(([key]) => key);
@@ -1881,7 +2278,6 @@ function parseJudge4Result(content) {
 function parseJudge6Result(content, nlpAnalysis) {
   const result = safeJsonParse(content) || {};
   
-  // Enhance with NLP data
   if (nlpAnalysis) {
     result.nlpEnhanced = {
       similarity: nlpAnalysis.similarity?.primary?.max_similarity || 0,
@@ -1934,7 +2330,6 @@ function calculateJudge3Score(result) {
 function calculateJudge4Score(result) {
   if (!result || !result.checks) return 0;
   
-  // Each check is worth 1 point
   const passedCount = Object.values(result.checks)
     .filter(check => check.pass === true)
     .length;
@@ -1956,16 +2351,14 @@ function calculateJudge6Score(result) {
   if (!result) return 0;
   
   let score = 0;
-  score += (result.differentiation?.score || 0) * 1.5; // Max 15
-  score += (result.uniqueAngle?.score || 0); // Max 5
-  score += (result.emotionUniqueness?.score || 0); // Max 5
+  score += (result.differentiation?.score || 0) * 1.5;
+  score += (result.uniqueAngle?.score || 0);
+  score += (result.emotionUniqueness?.score || 0);
   
-  // Bonus for rare emotion combo
   if (result.nlpEnhanced?.rareCombo) {
     score += 2;
   }
   
-  // Penalty for high similarity
   if (result.nlpEnhanced?.similarity > 0.7) {
     score -= 5;
   }
@@ -1981,7 +2374,6 @@ function compileJudgeFeedback(results) {
     judgeFeedbacks: {}
   };
   
-  // Judge 1 feedback
   if (results.judges.judge1) {
     feedback.judgeFeedbacks.judge1 = results.judges.judge1.feedback || '';
     if (results.scores.gateUtama < CONFIG.thresholds.gateUtama.pass) {
@@ -1990,7 +2382,6 @@ function compileJudgeFeedback(results) {
     }
   }
   
-  // Judge 2 feedback
   if (results.judges.judge2) {
     feedback.judgeFeedbacks.judge2 = results.judges.judge2.feedback || '';
     if (results.scores.gateTambahan < CONFIG.thresholds.gateTambahan.pass) {
@@ -1999,7 +2390,6 @@ function compileJudgeFeedback(results) {
     }
   }
   
-  // Judge 3 feedback
   if (results.judges.judge3) {
     feedback.judgeFeedbacks.judge3 = results.judges.judge3.feedback || '';
     if (results.scores.penilaianInternal < CONFIG.thresholds.penilaianInternal.pass) {
@@ -2008,14 +2398,12 @@ function compileJudgeFeedback(results) {
     }
   }
   
-  // Judge 4 feedback (Critical - all must pass)
   if (results.judges.judge4) {
     feedback.judgeFeedbacks.judge4 = results.judges.judge4.feedback || '';
     if (!results.judges.judge4.allPass) {
       feedback.allPass = false;
       feedback.issues.push(`Compliance FAILED: ${results.judges.judge4.failedChecks?.join(', ')}`);
       
-      // Add specific feedback for each failed check
       for (const [checkName, checkResult] of Object.entries(results.judges.judge4.checks || {})) {
         if (checkResult.pass !== true) {
           feedback.suggestions.push(`${checkName}: ${checkResult.reason || 'Failed'}`);
@@ -2024,7 +2412,6 @@ function compileJudgeFeedback(results) {
     }
   }
   
-  // Judge 5 feedback
   if (results.judges.judge5) {
     feedback.judgeFeedbacks.judge5 = results.judges.judge5.feedback || '';
     if (results.scores.factCheck < CONFIG.thresholds.factCheck.pass) {
@@ -2032,7 +2419,6 @@ function compileJudgeFeedback(results) {
     }
   }
   
-  // Judge 6 feedback
   if (results.judges.judge6) {
     feedback.judgeFeedbacks.judge6 = results.judges.judge6.feedback || '';
     if (results.scores.uniqueness < CONFIG.thresholds.uniqueness.pass) {
@@ -2045,7 +2431,6 @@ function compileJudgeFeedback(results) {
     }
   }
   
-  // Add NLP suggestions
   if (results.nlpAnalysis?.hybridMetrics?.recommendations) {
     feedback.suggestions.push(...results.nlpAnalysis.hybridMetrics.recommendations);
   }
@@ -2054,7 +2439,6 @@ function compileJudgeFeedback(results) {
 }
 
 function determinePassStatus(results) {
-  // All thresholds must pass
   const gateUtamaPass = results.scores.gateUtama >= CONFIG.thresholds.gateUtama.pass;
   const gateTambahanPass = results.scores.gateTambahan >= CONFIG.thresholds.gateTambahan.pass;
   const penilaianInternalPass = results.scores.penilaianInternal >= CONFIG.thresholds.penilaianInternal.pass;
@@ -2073,37 +2457,29 @@ function displayJudgingSummary(results) {
   
   const thresholds = CONFIG.thresholds;
   
-  // Gate Utama
   const g1Status = results.scores.gateUtama >= thresholds.gateUtama.pass ? '✅' : '❌';
   console.log(`   ║ ${g1Status} Gate Utama:        ${results.scores.gateUtama.toString().padStart(2)}/${thresholds.gateUtama.max}  (need ${thresholds.gateUtama.pass})                    ║`);
   
-  // Gate Tambahan
   const g2Status = results.scores.gateTambahan >= thresholds.gateTambahan.pass ? '✅' : '❌';
   console.log(`   ║ ${g2Status} Gate Tambahan:     ${results.scores.gateTambahan.toString().padStart(2)}/${thresholds.gateTambahan.max}  (need ${thresholds.gateTambahan.pass})                    ║`);
   
-  // Penilaian Internal
   const g3Status = results.scores.penilaianInternal >= thresholds.penilaianInternal.pass ? '✅' : '❌';
   console.log(`   ║ ${g3Status} Penilaian Internal: ${results.scores.penilaianInternal.toString().padStart(2)}/${thresholds.penilaianInternal.max}  (need ${thresholds.penilaianInternal.pass})                   ║`);
   
-  // Compliance
   const g4Status = results.judges.judge4?.allPass ? '✅' : '❌';
   console.log(`   ║ ${g4Status} Compliance:        ${results.scores.compliance.toString().padStart(2)}/${thresholds.compliance.max}  (all must pass)                  ║`);
   
-  // Fact-Check
   const g5Status = results.scores.factCheck >= thresholds.factCheck.pass ? '✅' : '❌';
   console.log(`   ║ ${g5Status} Fact-Check:         ${results.scores.factCheck.toString().padStart(2)}/${thresholds.factCheck.max}  (need ${thresholds.factCheck.pass})                     ║`);
   
-  // Uniqueness
   const g6Status = results.scores.uniqueness >= thresholds.uniqueness.pass ? '✅' : '❌';
   console.log(`   ║ ${g6Status} Uniqueness:        ${results.scores.uniqueness.toString().padStart(2)}/${thresholds.uniqueness.max}  (need ${thresholds.uniqueness.pass})                    ║`);
   
   console.log('   ╠' + '─'.repeat(56) + '╣');
   
-  // Total
   const totalStatus = results.passed ? '✅ PASSED' : '❌ FAILED';
-  console.log(`   ║              TOTAL: ${results.totalScore.toString().padStart(3)}/100  ${totalStatus.padEnd(14)}║`);
+  console.log(`   ║              TOTAL: ${results.totalScore.toString().padStart(3)}/136  ${totalStatus.padEnd(14)}║`);
   
-  // NLP Quality
   if (results.nlpAnalysis?.hybridMetrics) {
     const grade = results.nlpAnalysis.hybridMetrics.qualityGrade;
     const quality = results.nlpAnalysis.hybridMetrics.overallQuality;
@@ -2112,7 +2488,6 @@ function displayJudgingSummary(results) {
   
   console.log('   ╚' + '═'.repeat(56) + '╝');
   
-  // Show issues if failed
   if (!results.passed && results.feedback?.issues?.length > 0) {
     console.log('\n   ⚠️  ISSUES:');
     results.feedback.issues.forEach(issue => {
@@ -2137,7 +2512,7 @@ async function fetchCampaignData(campaignAddress) {
   
   try {
     const response = await new Promise((resolve, reject) => {
-      const url = `${CONFIG.rallyApiBase}/campaigns/${campaignAddress}`;
+      let url = `${CONFIG.rallyApiBase}/campaigns/${campaignAddress}`;
       
       https.get(url, { headers: { 'User-Agent': CONFIG.userAgent } }, (res) => {
         let data = '';
@@ -2156,11 +2531,22 @@ async function fetchCampaignData(campaignAddress) {
       }).on('error', reject);
     });
     
+    const campaign = {
+      ...response,
+      description: response.goal || response.description || '',
+      campaignUrl: response.campaignUrl || `https://app.rally.fun/campaign/${response.intelligentContractAddress}`,
+      url: response.campaignUrl || `https://app.rally.fun/campaign/${response.intelligentContractAddress}`,
+      additionalInfo: response.adminNotice || response.additionalInfo || ''
+    };
+    
     console.log('   ✅ Campaign data fetched');
-    return response;
+    console.log(`   📋 Title: ${campaign.title}`);
+    console.log(`   🎨 Style: ${(campaign.style || 'Standard').substring(0, 50)}...`);
+    console.log(`   📜 Rules: ${(campaign.rules || 'Standard rules').substring(0, 50)}...`);
+    
+    return campaign;
   } catch (error) {
-    console.log(`   ⚠️ Failed to fetch campaign: ${error.message}`);
-    return null;
+    throw new Error(`Failed to fetch campaign: ${error.message}`);
   }
 }
 
@@ -2212,7 +2598,6 @@ async function revisionLoop(llm, content, campaignData, competitorContents, atte
   
   await delay(CONFIG.delays.beforeRevision);
   
-  // Generate revision with feedback
   const revisionPrompt = `REVISE this content based on judge feedback.
 
 ORIGINAL CONTENT:
@@ -2239,24 +2624,20 @@ Return JSON:
   "changes": ["change1", "change2", ...]
 }`;
 
-  try {
-    const response = await llm.chat([
-      { role: 'system', content: 'You are a content revision specialist. Fix issues while maintaining uniqueness.' },
-      { role: 'user', content: revisionPrompt }
-    ], { temperature: 0.6, maxTokens: 2000 });
-    
-    const result = safeJsonParse(response.content);
-    
-    if (result && result.revisedContent) {
-      console.log(`   ✅ Revision generated`);
-      console.log(`   📝 Changes: ${(result.changes || []).join(', ')}`);
-      return result.revisedContent;
-    }
-  } catch (error) {
-    console.log(`   ⚠️ Revision failed: ${error.message}`);
+  const response = await llm.chat([
+    { role: 'system', content: 'You are a content revision specialist. Fix issues while maintaining uniqueness.' },
+    { role: 'user', content: revisionPrompt }
+  ], { temperature: 0.6, maxTokens: 2000 });
+  
+  const result = safeJsonParse(response.content);
+  
+  if (!result || !result.revisedContent) {
+    throw new Error('Failed to generate revision');
   }
   
-  return null;
+  console.log(`   ✅ Revision generated`);
+  console.log(`   📝 Changes: ${(result.changes || []).join(', ')}`);
+  return result.revisedContent;
 }
 
 // ============================================================================
@@ -2272,9 +2653,6 @@ class MultiContentGenerator {
     this.rankings = [];
   }
   
-  /**
-   * GENERATE 5 KONTEN SEKALIGUS
-   */
   async generateMultipleContents(campaignData, competitorAnalysis, researchData) {
     console.log('\n' + '═'.repeat(60));
     console.log(`🚀 GENERATING ${this.config.multiContent.count} CONTENTS`);
@@ -2297,164 +2675,34 @@ class MultiContentGenerator {
       console.log(`   💫 Emotions: ${variation.emotions.join(' → ')}`);
       console.log(`   📖 Structure: ${variation.structure}`);
       
-      try {
-        const content = await this._generateSingleContent(
-          campaignData,
-          competitorAnalysis,
-          researchData,
-          variation
-        );
-        
-        if (content) {
-          this.generatedContents.push({
-            index: i + 1,
-            content: content,
-            variation: variation,
-            timestamp: new Date().toISOString()
-          });
-          console.log(`   ✅ Content ${i + 1} generated successfully`);
-        }
-      } catch (error) {
-        console.log(`   ❌ Content ${i + 1} failed: ${error.message}`);
+      const content = await this._generateSingleContent(
+        campaignData,
+        competitorAnalysis,
+        researchData,
+        variation
+      );
+      
+      if (content) {
+        this.generatedContents.push({
+          index: i + 1,
+          content: content,
+          variation: variation,
+          timestamp: new Date().toISOString()
+        });
+        console.log(`   ✅ Content ${i + 1} generated successfully`);
       }
       
-      await delay(2000);
+      // Use configured delay between content generation
+      await delay(this.config.delays.betweenContentGen || 5000);
+    }
+    
+    if (this.generatedContents.length === 0) {
+      throw new Error('Failed to generate any contents');
     }
     
     console.log(`\n📊 Generated ${this.generatedContents.length}/${this.config.multiContent.count} contents`);
     return this.generatedContents;
   }
-  
-  /**
-   * JUDGE SEMUA KONTEN DENGAN RANKING
-   */
-  async judgeAllContents(campaignData, competitorContents) {
-    console.log('\n' + '═'.repeat(60));
-    console.log('⚖️  BATCH JUDGING ALL CONTENTS');
-    console.log('═'.repeat(60));
-    
-    this.judgingResults = [];
-    
-    for (let i = 0; i < this.generatedContents.length; i++) {
-      const contentItem = this.generatedContents[i];
-      console.log(`\n${'─'.repeat(50)}`);
-      console.log(`📋 JUDGING CONTENT ${contentItem.index}`);
-      console.log(`${'─'.repeat(50)}`);
-      
-      try {
-        const result = await runHybridJudging(
-          this.llm,
-          contentItem.content,
-          campaignData,
-          competitorContents,
-          1
-        );
-        
-        this.judgingResults.push({
-          index: contentItem.index,
-          content: contentItem.content,
-          variation: contentItem.variation,
-          result: result,
-          passed: result.passed,
-          totalScore: result.totalScore
-        });
-        
-      } catch (error) {
-        console.log(`   ❌ Judging failed: ${error.message}`);
-        this.judgingResults.push({
-          index: contentItem.index,
-          content: contentItem.content,
-          variation: contentItem.variation,
-          result: null,
-          passed: false,
-          totalScore: 0,
-          error: error.message
-        });
-      }
-      
-      await delay(3000);
-    }
-    
-    this._calculateRankings();
-    return this.judgingResults;
-  }
-  
-  /**
-   * CALCULATE RANKINGS
-   */
-  _calculateRankings() {
-    console.log('\n' + '═'.repeat(60));
-    console.log('🏆 CALCULATING RANKINGS');
-    console.log('═'.repeat(60));
-    
-    this.rankings = [...this.judgingResults]
-      .filter(r => r.result !== null)
-      .sort((a, b) => b.totalScore - a.totalScore)
-      .map((r, rank) => ({
-        rank: rank + 1,
-        index: r.index,
-        totalScore: r.totalScore,
-        passed: r.passed,
-        grade: this._calculateGrade(r.totalScore),
-        variation: r.variation
-      }));
-    
-    console.log('\n┌─────────────────────────────────────────────────────────────────┐');
-    console.log('│                    📊 RANKING RESULTS                          │');
-    console.log('├─────────────────────────────────────────────────────────────────┤');
-    
-    this.rankings.forEach(r => {
-      const passIcon = r.passed ? '✅' : '❌';
-      const angle = r.variation?.angle?.substring(0, 15) || 'unknown';
-      console.log(`│  #${r.rank}  Content ${r.index}  │  ${r.grade.padEnd(3)}  │  ${r.totalScore.toString().padStart(3)}/136  │  ${passIcon}  ${angle.padEnd(15)}│`);
-    });
-    
-    console.log('└─────────────────────────────────────────────────────────────────┘');
-    
-    const best = this.rankings[0];
-    if (best) {
-      console.log(`\n🥇 BEST CONTENT: Content ${best.index} (Score: ${best.totalScore}, Grade: ${best.grade})`);
-    }
-  }
-  
-  /**
-   * GET BEST CONTENT
-   */
-  getBestContent() {
-    if (this.rankings.length === 0) return null;
-    
-    const bestRanking = this.rankings[0];
-    const bestResult = this.judgingResults.find(r => r.index === bestRanking.index);
-    
-    return {
-      content: bestResult.content,
-      score: bestRanking.totalScore,
-      grade: bestRanking.grade,
-      passed: bestRanking.passed,
-      rank: 1,
-      index: bestRanking.index,
-      variation: bestResult.variation
-    };
-  }
-  
-  /**
-   * GET ALL PASSING CONTENTS
-   */
-  getAllPassingContents() {
-    return this.judgingResults
-      .filter(r => r.passed)
-      .map(r => ({
-        content: r.content,
-        score: r.totalScore,
-        index: r.index,
-        variation: r.variation
-      }))
-      .sort((a, b) => b.score - a.score);
-  }
-  
-  // =========================================================================
-  // INTERNAL METHODS
-  // =========================================================================
   
   async _generateSingleContent(campaignData, competitorAnalysis, researchData, variation) {
     const persona = this._selectPersona(variation.angle);
@@ -2543,18 +2791,6 @@ Create unique content!`;
   _selectStructure(structureId) {
     return CONFIG.narrativeStructures.find(s => s.id === structureId) || CONFIG.narrativeStructures[0];
   }
-  
-  _calculateGrade(score) {
-    if (score >= 130) return 'A+';
-    if (score >= 125) return 'A';
-    if (score >= 120) return 'A-';
-    if (score >= 115) return 'B+';
-    if (score >= 110) return 'B';
-    if (score >= 105) return 'B-';
-    if (score >= 100) return 'C+';
-    if (score >= 95) return 'C';
-    return 'D';
-  }
 }
 
 // ============================================================================
@@ -2564,10 +2800,15 @@ Create unique content!`;
 async function mainMultiContent(campaignAddress) {
   console.log('\n' + '═'.repeat(70));
   console.log('║      RALLY WORKFLOW V9.8.1 - MULTI-CONTENT SYSTEM              ║');
-  console.log('║   Generate 5 Contents → Batch Judge → Select Best              ║');
+  console.log('║   Generate 5 → Quick Judge → Full Judge → Regenerate if Fail   ║');
   console.log('═'.repeat(70));
   
   const startTime = Date.now();
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PRE-FLIGHT CHECK - All dependencies required!
+  // ═══════════════════════════════════════════════════════════════════════════
+  await preflightCheck();
   
   // Initialize LLM
   const llm = new MultiProviderLLM(CONFIG);
@@ -2582,79 +2823,155 @@ async function mainMultiContent(campaignAddress) {
   console.log('\n📥 Fetching campaign data...');
   const campaignData = await fetchCampaignData(campaignAddress);
   
-  if (!campaignData) {
-    console.log('❌ Failed to fetch campaign data');
-    return null;
-  }
-  
   console.log(`\n   📋 Campaign: ${campaignData.title}`);
   console.log(`   🔗 URL: ${campaignData.campaignUrl || campaignData.url}`);
+  console.log(`   📝 Description: ${(campaignData.description || campaignData.goal || 'N/A').substring(0, 100)}...`);
+  console.log(`   🎨 Style: ${campaignData.style || 'Standard'}`);
+  console.log(`   📜 Rules: ${(campaignData.rules || 'Standard rules').substring(0, 50)}...`);
   
   // Fetch competitor submissions
   console.log('\n📥 Fetching competitor submissions...');
-  const submissions = await fetchSubmissions(campaignData.id);
+  const submissions = await fetchLeaderboard(campaignAddress);
   console.log(`   📊 Found ${submissions?.length || 0} submissions`);
   
-  // Deep competitor analysis
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Deep competitor analysis - MUST succeed!
+  // ═══════════════════════════════════════════════════════════════════════════
+  console.log('\n🔍 Running Deep Competitor Analysis...');
   const competitorAnalysis = await deepCompetitorContentAnalysis(llm, submissions, campaignData.title, campaignData);
+  console.log('   ✅ Competitor analysis completed');
   
-  // Multi-query research
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Multi-query research - MUST succeed!
+  // ═══════════════════════════════════════════════════════════════════════════
+  console.log('\n🔎 Running Multi-Query Deep Research...');
   const researchData = await multiQueryDeepResearch(llm, campaignData.title, campaignData);
+  console.log('   ✅ Research completed');
   
   // Get competitor contents for similarity checking
   const competitorContents = (competitorAnalysis?.competitorContent || []).slice(0, 10);
   
   // ═══════════════════════════════════════════════════════════════════════════
-  // MULTI-CONTENT GENERATION
+  // NEW v9.8.1 WORKFLOW: Quick judge → Full Judge → Regenerate
   // ═══════════════════════════════════════════════════════════════════════════
   
   const generator = new MultiContentGenerator(llm, CONFIG);
+  let generateAttempt = 0;
+  let finalContent = null;
+  let finalJudgingResult = null;
+  let allQuickJudgeResults = [];
+  let allFullJudgeResults = [];
   
-  // Generate 5 contents
-  await generator.generateMultipleContents(campaignData, competitorAnalysis, researchData);
+  const maxAttempts = CONFIG.multiContent.maxRegenerateAttempts || 5;
   
-  if (generator.generatedContents.length === 0) {
-    console.log('\n❌ No contents generated!');
-    return null;
+  while (generateAttempt < maxAttempts && !finalContent) {
+    generateAttempt++;
+    
+    console.log('\n' + '═'.repeat(70));
+    console.log(`║           🔄 GENERATION CYCLE ${generateAttempt}/${maxAttempts}                           ║`);
+    console.log('═'.repeat(70));
+    
+    // STEP 1: Generate 5 contents
+    console.log('\n📝 STEP 1: Generating 5 contents...');
+    await generator.generateMultipleContents(campaignData, competitorAnalysis, researchData);
+    
+    // STEP 2: Quick Judge (Compliance Check) all 5
+    console.log('\n⚡ STEP 2: Quick Judge - Compliance Check...');
+    const quickJudgeResults = await batchQuickJudge(llm, generator.generatedContents, campaignData);
+    allQuickJudgeResults.push(...quickJudgeResults);
+    
+    // STEP 3: Filter only contents that PASSED compliance
+    const passedCompliance = quickJudgeResults.filter(r => r.passed);
+    
+    if (passedCompliance.length === 0) {
+      console.log('\n   ❌ No contents passed compliance check!');
+      console.log('   🔄 Regenerating all 5 contents...');
+      generator.generatedContents = [];
+      await delay(CONFIG.delays.beforeRevision);
+      continue;
+    }
+    
+    console.log(`\n   ✅ ${passedCompliance.length} content(s) passed compliance check!`);
+    
+    // STEP 4: Full Judge for content that passed compliance
+    const contentToFullJudge = passedCompliance[0];
+    
+    console.log(`\n⚖️  STEP 3: Full Double Pass Judge for Content #${contentToFullJudge.index}...`);
+    const fullJudgeResult = await runHybridJudging(
+      llm,
+      contentToFullJudge.content,
+      campaignData,
+      competitorContents,
+      1
+    );
+    
+    allFullJudgeResults.push({
+      index: contentToFullJudge.index,
+      result: fullJudgeResult
+    });
+    
+    // STEP 5: Check if passed Full Judge
+    if (fullJudgeResult.passed) {
+      console.log('\n   ✅ FULL JUDGE PASSED!');
+      finalContent = contentToFullJudge.content;
+      finalJudgingResult = fullJudgeResult;
+    } else {
+      console.log('\n   ❌ Full Judge FAILED!');
+      console.log(`   Issues: ${fullJudgeResult.feedback?.issues?.join(', ') || 'Unknown'}`);
+      console.log('   🔄 Regenerating all 5 contents...');
+      generator.generatedContents = [];
+      await delay(CONFIG.delays.beforeRevision);
+    }
   }
   
-  // Judge all contents
-  await generator.judgeAllContents(campaignData, competitorContents);
+  // ═══════════════════════════════════════════════════════════════════════════
+  // FINAL RESULTS
+  // ═══════════════════════════════════════════════════════════════════════════
   
-  // Get best content
-  const bestContent = generator.getBestContent();
-  const allPassing = generator.getAllPassingContents();
-  
-  // Save results
   const endTime = Date.now();
   const duration = ((endTime - startTime) / 1000).toFixed(1);
   
   const finalResults = {
     campaign: campaignData.title,
-    bestContent: bestContent,
-    allPassingContents: allPassing,
-    totalGenerated: generator.generatedContents.length,
-    totalPassed: allPassing.length,
-    rankings: generator.rankings,
-    allJudgingResults: generator.judgingResults.map(r => ({
+    campaignData: {
+      title: campaignData.title,
+      description: campaignData.description,
+      style: campaignData.style,
+      rules: campaignData.rules,
+      url: campaignData.campaignUrl || campaignData.url
+    },
+    success: !!finalContent,
+    finalContent: finalContent,
+    finalJudgingResult: finalJudgingResult,
+    totalGenerateAttempts: generateAttempt,
+    quickJudgeResults: allQuickJudgeResults.map(r => ({
       index: r.index,
-      score: r.totalScore,
       passed: r.passed,
-      variation: r.variation
+      failedChecks: r.failedChecks
+    })),
+    fullJudgeResults: allFullJudgeResults.map(r => ({
+      index: r.index,
+      totalScore: r.result?.totalScore,
+      passed: r.result?.passed
     })),
     competitorAnalysis: {
       anglesUsed: competitorAnalysis?.anglesUsed?.slice(0, 5),
       saturatedElements: competitorAnalysis?.saturatedElements?.slice(0, 5)
     },
+    researchData: {
+      keyFacts: researchData?.synthesis?.keyFacts?.slice(0, 5),
+      uniqueAngles: researchData?.synthesis?.uniqueAngles?.slice(0, 3)
+    },
     metadata: {
-      version: '9.8.1-multi-content',
+      version: '9.8.1-sdk-only',
+      model: CONFIG.model.name,
       timestamp: new Date().toISOString(),
       duration: `${duration}s`
     }
   };
   
   // Save to file
-  const outputPath = `${CONFIG.outputDir}/rally-multi-content-${Date.now()}.json`;
+  const outputPath = `${CONFIG.outputDir}/rally-v9.8.1-${Date.now()}.json`;
   fs.writeFileSync(outputPath, JSON.stringify(finalResults, null, 2));
   console.log(`\n💾 Results saved to: ${outputPath}`);
   
@@ -2662,208 +2979,54 @@ async function mainMultiContent(campaignAddress) {
   console.log('\n' + '═'.repeat(70));
   console.log('║                    FINAL SUMMARY                                ║');
   console.log('═'.repeat(70));
-  console.log(`\n   📊 Total Generated: ${generator.generatedContents.length} contents`);
-  console.log(`   ✅ Total Passed: ${allPassing.length} contents`);
-  console.log(`   ⏱️  Duration: ${duration}s`);
   
-  if (bestContent) {
-    console.log(`\n   🥇 BEST CONTENT (Score: ${bestContent.score}, Grade: ${bestContent.grade}):`);
-    console.log('   ' + '─'.repeat(60));
-    console.log('   ' + bestContent.content.split('\n').join('\n   '));
-    console.log('   ' + '─'.repeat(60));
-  }
+  console.log(`\n   📊 Total Generate Attempts: ${generateAttempt}`);
+  console.log(`   ⚡ Quick Judge Results: ${allQuickJudgeResults.filter(r => r.passed).length}/${allQuickJudgeResults.length} passed`);
+  console.log(`   ⚖️  Full Judge Attempts: ${allFullJudgeResults.length}`);
+  console.log(`   ⏱️  Total Duration: ${duration}s`);
   
-  if (allPassing.length > 1) {
-    console.log(`\n   📋 ALL PASSING CONTENTS (${allPassing.length}):`);
-    allPassing.forEach((c, i) => {
-      console.log(`      ${i + 1}. Content ${c.index} - Score: ${c.score}`);
-    });
+  if (finalContent && finalJudgingResult) {
+    console.log(`\n   ✅ SUCCESS! Content passed all judges.`);
+    console.log(`   📊 Final Score: ${finalJudgingResult.totalScore}/136`);
+    console.log(`\n   📝 FINAL CONTENT:`);
+    console.log('   ' + '─'.repeat(60));
+    console.log('   ' + finalContent.split('\n').join('\n   '));
+    console.log('   ' + '─'.repeat(60));
+  } else {
+    console.log('\n   ❌ FAILED! No content passed all judges after maximum attempts.');
   }
   
   return finalResults;
 }
 
 // ============================================================================
-// MAIN WORKFLOW (Original v9.8.0 - Single Content)
-// ============================================================================
-
-async function main(campaignAddress) {
-  console.log('\n' + '═'.repeat(70));
-  console.log('║          RALLY WORKFLOW V9.8.1 - HYBRID SYSTEM                 ║');
-  console.log('║      JavaScript AI/SDK + Python NLP (Semantic Analysis)         ║');
-  console.log('═'.repeat(70));
-  
-  const startTime = Date.now();
-  
-  // Initialize LLM
-  const llm = new MultiProviderLLM(CONFIG);
-  await llm.loadAutoToken();
-  llm.displayTokenPoolStatus();
-  
-  // Check Python NLP Service
-  const nlpAnalyzer = llm.getNLPAnalyzer();
-  await nlpAnalyzer.checkService();
-  
-  // Fetch campaign data
-  const campaignData = await fetchCampaignData(campaignAddress);
-  if (!campaignData) {
-    console.log('❌ Failed to fetch campaign data');
-    process.exit(1);
-  }
-  
-  // Fetch leaderboard for competitor analysis
-  const leaderboard = await fetchLeaderboard(campaignAddress);
-  
-  // Deep competitor analysis (Python NLP enhanced)
-  const competitorAnalysis = await deepCompetitorContentAnalysis(
-    llm, 
-    leaderboard, 
-    campaignData.title, 
-    campaignData
-  );
-  
-  // Multi-query research
-  const researchData = await multiQueryDeepResearch(llm, campaignData.title, campaignData);
-  
-  // Generate unique content
-  const generatedContent = await generateUniqueContent(
-    llm, 
-    campaignData, 
-    competitorAnalysis, 
-    researchData,
-    1 // tweet count
-  );
-  
-  if (!generatedContent || !generatedContent.tweets || generatedContent.tweets.length === 0) {
-    console.log('❌ Failed to generate content');
-    process.exit(1);
-  }
-  
-  // Get the first tweet
-  let currentContent = generatedContent.tweets[0].content;
-  const competitorContents = competitorAnalysis.competitorContent || [];
-  
-  // Run judging with revision loop
-  let attempt = 1;
-  let judgingResults = await runHybridJudging(
-    llm, 
-    currentContent, 
-    campaignData, 
-    competitorContents,
-    attempt
-  );
-  
-  // Revision loop if failed
-  while (!judgingResults.passed && attempt < CONFIG.revision.maxAttempts) {
-    const revisedContent = await revisionLoop(
-      llm, 
-      currentContent, 
-      campaignData, 
-      competitorContents,
-      attempt,
-      judgingResults.feedback
-    );
-    
-    if (!revisedContent) break;
-    
-    currentContent = revisedContent;
-    attempt++;
-    
-    judgingResults = await runHybridJudging(
-      llm, 
-      currentContent, 
-      campaignData, 
-      competitorContents,
-      attempt
-    );
-  }
-  
-  // Save results
-  const endTime = Date.now();
-  const duration = ((endTime - startTime) / 1000).toFixed(1);
-  
-  const finalResults = {
-    campaign: campaignData.title,
-    content: currentContent,
-    judging: judgingResults,
-    generatedContent,
-    competitorAnalysis,
-    researchData: {
-      keyFacts: researchData?.synthesis?.keyFacts?.slice(0, 5),
-      uniqueAngles: researchData?.synthesis?.uniqueAngles?.slice(0, 3)
-    },
-    metadata: {
-      version: '9.8.0-hybrid',
-      timestamp: new Date().toISOString(),
-      duration: `${duration}s`,
-      attempts: attempt,
-      pythonNLPUsed: judgingResults.nlpAnalysis?.source === 'python_nlp'
-    }
-  };
-  
-  // Save to file
-  const outputPath = `${CONFIG.outputDir}/rally-hybrid-${Date.now()}.json`;
-  fs.writeFileSync(outputPath, JSON.stringify(finalResults, null, 2));
-  console.log(`\n💾 Results saved to: ${outputPath}`);
-  
-  // Final summary
-  console.log('\n' + '═'.repeat(70));
-  console.log('║                    FINAL SUMMARY                                ║');
-  console.log('═'.repeat(70));
-  console.log(`\n   📊 Total Score: ${judgingResults.totalScore}/100`);
-  console.log(`   🏆 Status: ${judgingResults.passed ? '✅ PASSED' : '❌ FAILED'}`);
-  console.log(`   ⏱️  Duration: ${duration}s`);
-  console.log(`   🔄 Attempts: ${attempt}`);
-  console.log(`   🐍 Python NLP: ${judgingResults.nlpAnalysis?.source === 'python_nlp' ? '✅ Used' : '⚠️ Fallback'}`);
-  
-  if (judgingResults.nlpAnalysis?.hybridMetrics) {
-    console.log(`   📈 NLP Quality: ${judgingResults.nlpAnalysis.hybridMetrics.qualityGrade} (${judgingResults.nlpAnalysis.hybridMetrics.overallQuality}/100)`);
-  }
-  
-  console.log('\n   📝 CONTENT:');
-  console.log('   ' + '─'.repeat(60));
-  console.log('   ' + currentContent.split('\n').join('\n   '));
-  console.log('   ' + '─'.repeat(60));
-  
-  return finalResults;
-}
-
-// ============================================================================
-// ENTRY POINT - v9.8.1: Support Single & Multi-Content Mode
+// ENTRY POINT
 // ============================================================================
 
 const campaignArg = process.argv[2] || 'internet-court-v0';
-const modeArg = process.argv[3] || 'multi';  // 'single' or 'multi'
+const modeArg = process.argv[3] || 'multi';
 
-// Choose mode based on argument
 if (modeArg === 'single') {
-  // Original v9.8.0 mode - Generate 1 content
-  console.log('\n📌 MODE: Single Content (v9.8.0 compatible)');
-  main(campaignArg)
-    .then(results => {
-      console.log('\n✅ Workflow completed successfully!');
-      process.exit(results.judging.passed ? 0 : 1);
-    })
-    .catch(error => {
-      console.error('\n❌ Workflow failed:', error);
-      process.exit(1);
-    });
+  console.log('\n📌 MODE: Single Content');
+  // Single content mode not implemented in this version
+  console.log('   ⚠️ Single mode not implemented. Use multi mode.');
+  process.exit(1);
 } else {
-  // NEW v9.8.1 mode - Generate 5 contents, select best
   console.log('\n📌 MODE: Multi-Content (v9.8.1)');
-  console.log('   Generate 5 contents → Batch Judge → Select Best');
+  console.log('   Generate 5 contents → Quick Judge → Full Judge → Select Best');
   mainMultiContent(campaignArg)
     .then(results => {
-      if (results && results.bestContent) {
+      if (results && results.success) {
         console.log('\n✅ Multi-Content Workflow completed successfully!');
-        process.exit(results.bestContent.passed ? 0 : 1);
+        process.exit(0);
       } else {
-        console.log('\n⚠️ No content passed!');
+        console.log('\n❌ No content passed all judges!');
         process.exit(1);
       }
     })
     .catch(error => {
-      console.error('\n❌ Workflow failed:', error);
+      console.error('\n❌ Workflow failed:', error.message);
+      console.error(error.stack);
       process.exit(1);
     });
 }
