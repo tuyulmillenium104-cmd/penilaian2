@@ -25,15 +25,24 @@
  * ✅ Select Best Content dari 5 konten
  * ✅ Total Score System (136 poin max)
  * ✅ SDK Only - No Fallbacks (All features must work!)
+ * ✅ Campaign Search by Name (not just address!)
  * 
  * BASED ON: v9.8.0 Hybrid System
  * 
  * Usage:
- *   1. Start Python NLP Service:
+ *   1. Start Python NLP Service (optional):
  *      cd scripts/hybrid-nlp && python nlp_service.py
  *   
  *   2. Run this workflow:
- *      node scripts/hybrid-nlp/rally-workflow-v9.8.1-complete.js [campaign]
+ *      # By campaign name (partial match supported)
+ *      node rally-workflow-v9.8.1-complete.js "Internet Court"
+ *      node rally-workflow-v9.8.1-complete.js "Code Runs, Disputes Don't"
+ *      
+ *      # By campaign address
+ *      node rally-workflow-v9.8.1-complete.js 0xAF5a5B459F4371c1781E3B8456214CDD063EeBA7
+ *      
+ *      # List all available campaigns
+ *      node rally-workflow-v9.8.1-complete.js list
  */
 
 const https = require('https');
@@ -3039,8 +3048,161 @@ function displayJudgingSummary(results) {
 }
 
 // ============================================================================
-// RALLY API FUNCTIONS
+// RALLY API FUNCTIONS - Campaign Search & Fetch
 // ============================================================================
+
+/**
+ * Fetch all campaigns from Rally API
+ */
+async function fetchAllCampaigns(limit = 50) {
+  return new Promise((resolve, reject) => {
+    const url = `${CONFIG.rallyApiBase}/campaigns?limit=${limit}`;
+    
+    https.get(url, { headers: { 'User-Agent': CONFIG.userAgent } }, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          try {
+            const result = JSON.parse(data);
+            resolve(result.campaigns || []);
+          } catch (e) {
+            reject(new Error('Failed to parse campaigns list'));
+          }
+        } else {
+          reject(new Error(`HTTP ${res.statusCode}`));
+        }
+      });
+    }).on('error', reject);
+  });
+}
+
+/**
+ * Search campaign by name (partial match, case-insensitive)
+ */
+async function searchCampaignByName(name) {
+  console.log(`\n🔍 Searching campaign: "${name}"...`);
+  
+  try {
+    const campaigns = await fetchAllCampaigns(100);
+    
+    const searchLower = name.toLowerCase().trim();
+    
+    // Try exact match first
+    let matches = campaigns.filter(c => 
+      c.title.toLowerCase() === searchLower
+    );
+    
+    // If no exact match, try partial match
+    if (matches.length === 0) {
+      matches = campaigns.filter(c => 
+        c.title.toLowerCase().includes(searchLower) ||
+        searchLower.includes(c.title.toLowerCase())
+      );
+    }
+    
+    // If still no match, try word match
+    if (matches.length === 0) {
+      const searchWords = searchLower.split(/\s+/);
+      matches = campaigns.filter(c => {
+        const titleLower = c.title.toLowerCase();
+        return searchWords.some(word => word.length > 3 && titleLower.includes(word));
+      });
+    }
+    
+    if (matches.length === 0) {
+      console.log('   ❌ No matching campaign found');
+      console.log('\n   💡 Tip: Use "list" command to see all available campaigns');
+      return null;
+    }
+    
+    // If multiple matches, show list
+    if (matches.length > 1) {
+      console.log(`\n   📋 Found ${matches.length} matching campaigns:`);
+      matches.forEach((c, i) => {
+        console.log(`   ${i + 1}. ${c.title}`);
+        console.log(`      Address: ${c.intelligentContractAddress}`);
+      });
+      console.log('\n   ℹ️ Using first match. To use specific campaign, provide the address.');
+    }
+    
+    const selected = matches[0];
+    console.log(`\n   ✅ Found: ${selected.title}`);
+    console.log(`   📍 Address: ${selected.intelligentContractAddress}`);
+    
+    return selected.intelligentContractAddress;
+    
+  } catch (error) {
+    throw new Error(`Failed to search campaigns: ${error.message}`);
+  }
+}
+
+/**
+ * List all available campaigns
+ */
+async function listCampaigns(limit = 20) {
+  console.log('\n' + '═'.repeat(70));
+  console.log('📋 AVAILABLE CAMPAIGNS');
+  console.log('═'.repeat(70));
+  
+  try {
+    const campaigns = await fetchAllCampaigns(limit);
+    
+    if (campaigns.length === 0) {
+      console.log('\n   No campaigns found.');
+      return;
+    }
+    
+    campaigns.forEach((c, i) => {
+      const status = new Date(c.endDate) > new Date() ? '🟢 Active' : '🔴 Ended';
+      console.log(`\n   ${i + 1}. ${c.title}`);
+      console.log(`      ${status} | Address: ${c.intelligentContractAddress}`);
+      if (c.campaignRewards?.length > 0) {
+        const reward = c.campaignRewards[0];
+        console.log(`      Reward: ${reward.totalAmount} ${reward.token?.symbol || 'tokens'}`);
+      }
+    });
+    
+    console.log('\n' + '═'.repeat(70));
+    console.log(`\n   💡 Usage:`);
+    console.log(`      node rally-workflow-v9.8.1-complete.js "<campaign name>"`);
+    console.log(`      node rally-workflow-v9.8.1-complete.js <campaign address>`);
+    console.log(`      node rally-workflow-v9.8.1-complete.js list`);
+    
+  } catch (error) {
+    console.error(`\n   ❌ Failed to list campaigns: ${error.message}`);
+  }
+}
+
+/**
+ * Check if input is a valid Ethereum address
+ */
+function isEthereumAddress(str) {
+  return /^0x[a-fA-F0-9]{40}$/.test(str);
+}
+
+/**
+ * Resolve campaign input (address or name) to campaign data
+ */
+async function resolveCampaign(input) {
+  // Handle "list" command
+  if (input.toLowerCase() === 'list') {
+    await listCampaigns();
+    process.exit(0);
+  }
+  
+  let campaignAddress = input;
+  
+  // If not an address, search by name
+  if (!isEthereumAddress(input)) {
+    campaignAddress = await searchCampaignByName(input);
+    if (!campaignAddress) {
+      throw new Error(`Campaign not found: "${input}"`);
+    }
+  }
+  
+  return campaignAddress;
+}
 
 async function fetchCampaignData(campaignAddress) {
   console.log(`\n📥 Fetching campaign data: ${campaignAddress}`);
@@ -3535,33 +3697,46 @@ async function mainMultiContent(campaignAddress) {
 }
 
 // ============================================================================
-// ENTRY POINT
+// ENTRY POINT - Supports both campaign address and campaign name
 // ============================================================================
 
-const campaignArg = process.argv[2] || 'internet-court-v0';
-const modeArg = process.argv[3] || 'multi';
-
-if (modeArg === 'single') {
-  console.log('\n📌 MODE: Single Content');
-  // Single content mode not implemented in this version
-  console.log('   ⚠️ Single mode not implemented. Use multi mode.');
-  process.exit(1);
-} else {
+async function main() {
+  const campaignArg = process.argv[2] || 'list';
+  const modeArg = process.argv[3] || 'multi';
+  
+  // Handle "list" command
+  if (campaignArg.toLowerCase() === 'list') {
+    await listCampaigns(30);
+    process.exit(0);
+  }
+  
+  if (modeArg === 'single') {
+    console.log('\n📌 MODE: Single Content');
+    console.log('   ⚠️ Single mode not implemented. Use multi mode.');
+    process.exit(1);
+  }
+  
   console.log('\n📌 MODE: Multi-Content (v9.8.1)');
   console.log('   Generate 5 contents → Quick Judge → Full Judge → Select Best');
-  mainMultiContent(campaignArg)
-    .then(results => {
-      if (results && results.success) {
-        console.log('\n✅ Multi-Content Workflow completed successfully!');
-        process.exit(0);
-      } else {
-        console.log('\n❌ No content passed all judges!');
-        process.exit(1);
-      }
-    })
-    .catch(error => {
-      console.error('\n❌ Workflow failed:', error.message);
-      console.error(error.stack);
+  
+  try {
+    // Resolve campaign (address or name)
+    const campaignAddress = await resolveCampaign(campaignArg);
+    
+    const results = await mainMultiContent(campaignAddress);
+    
+    if (results && results.success) {
+      console.log('\n✅ Multi-Content Workflow completed successfully!');
+      process.exit(0);
+    } else {
+      console.log('\n❌ No content passed all judges!');
       process.exit(1);
-    });
+    }
+  } catch (error) {
+    console.error('\n❌ Workflow failed:', error.message);
+    console.error(error.stack);
+    process.exit(1);
+  }
 }
+
+main();
