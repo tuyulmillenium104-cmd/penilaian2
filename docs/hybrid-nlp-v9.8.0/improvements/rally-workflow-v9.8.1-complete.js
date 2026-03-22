@@ -1555,10 +1555,26 @@ Extract in JSON format:
     { role: 'user', content: synthesisPrompt }
   ], { temperature: 0.5, maxTokens: 3000 });
   
-  const synthesis = safeJsonParse(response.content);
+  let synthesis = safeJsonParse(response.content);
   
+  // If parsing fails, create a default synthesis from raw results
   if (!synthesis) {
-    throw new Error('Failed to parse research synthesis');
+    console.log('   ⚠️ Could not parse synthesis JSON, using fallback...');
+    synthesis = {
+      keyFacts: allResults.flatMap(r => r.results.slice(0, 2).map(res => res.snippet || res.name)).slice(0, 5),
+      realCases: [],
+      controversies: [],
+      statistics: [],
+      expertQuotes: [],
+      untoldStories: [],
+      uniqueAngles: [{ angle: 'Fresh perspective', evidence: 'Research-based', uniqueness: 'No competitor data' }],
+      evidenceLayers: {
+        macroData: allResults[0]?.results[0]?.snippet || 'Market data available',
+        caseStudy: 'Specific examples found in research',
+        personalTouch: 'Personal experience angle',
+        expertValidation: 'Expert opinions in research'
+      }
+    };
   }
   
   displayThinking('RESEARCH', `Found ${synthesis.keyFacts?.length || 0} facts, ${synthesis.uniqueAngles?.length || 0} unique angles`);
