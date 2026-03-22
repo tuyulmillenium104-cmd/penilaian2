@@ -1230,14 +1230,28 @@ class MultiProviderLLM {
 
     console.log(`   🔎 Searching for data from ${currentYear} and earlier...`);
 
-    // Use SDK web search - MUST succeed!
-    const webSearchResults = await webSearchSDK(searchQuery);
+    // Use Direct DuckDuckGo search (no rate limits!)
+    let webSearchResults = await webSearchDirect(searchQuery);
+    
+    // If no results, try SDK as fallback
+    if (!webSearchResults || webSearchResults.length === 0) {
+      console.log('   🔄 Direct search no results, trying SDK fallback...');
+      try {
+        webSearchResults = await webSearchSDK(searchQuery);
+      } catch (e) {
+        console.log('   ⚠️ SDK also failed, continuing without web search data');
+        webSearchResults = [];
+      }
+    }
+    
     console.log(`   ✅ Web search: ${webSearchResults.length} results`);
 
     const enhancedPrompt = userPrompt + `\n\n═══════════════════════════════════════════════════════════════
 🔍 WEB SEARCH RESULTS FOR FACT VERIFICATION:
 ═══════════════════════════════════════════════════════════════
-${webSearchResults.slice(0, 3).map((r, i) => `${i+1}. ${r.name || 'Source'}: ${r.snippet || ''}\n   URL: ${r.url || 'N/A'}`).join('\n\n')}`;
+${webSearchResults.length > 0 
+  ? webSearchResults.slice(0, 3).map((r, i) => `${i+1}. ${r.name || 'Source'}: ${r.snippet || ''}\n   URL: ${r.url || 'N/A'}`).join('\n\n')
+  : 'No web search results available - use general knowledge'}`;
 
     const result = await callAI([
       { role: 'system', content: systemPrompt },
@@ -1249,7 +1263,7 @@ ${webSearchResults.slice(0, 3).map((r, i) => `${i+1}. ${r.name || 'Source'}: ${r
     return {
       content: result.content || '',
       thinking: result.thinking || null,
-      webSearchUsed: true,
+      webSearchUsed: webSearchResults.length > 0,
       provider: result.provider,
       model: CONFIG.model?.name || 'glm-5'
     };
