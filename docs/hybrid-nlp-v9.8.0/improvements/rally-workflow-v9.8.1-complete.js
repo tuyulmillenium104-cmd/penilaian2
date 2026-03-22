@@ -384,11 +384,77 @@ async function callAI(messages, options = {}) {
 }
 
 /**
- * Web Search - Direct HTTP (No SDK rate limits!)
+ * Web Search - SerpAPI (Google Results - Primary!)
+ * High quality search results with controlled rate limits
+ * Free tier: 100 searches/month
+ */
+async function webSearchSerpAPI(query) {
+  // SerpAPI key - get free at https://serpapi.com
+  const SERPAPI_KEY = process.env.SERPAPI_KEY || CONFIG.serpApiKey || null;
+  
+  if (!SERPAPI_KEY) {
+    console.log('   ⚠️ No SerpAPI key configured, skipping...');
+    return null; // Return null to indicate not configured
+  }
+  
+  console.log(`   🔍 SerpAPI (Google): "${query.substring(0, 50)}..."`);
+  
+  return new Promise((resolve, reject) => {
+    const searchUrl = `https://serpapi.com/search.json?q=${encodeURIComponent(query)}&api_key=${SERPAPI_KEY}&num=5`;
+    
+    https.get(searchUrl, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          if (res.statusCode !== 200) {
+            console.log(`   ⚠️ SerpAPI HTTP ${res.statusCode}`);
+            resolve(null);
+            return;
+          }
+          
+          const json = JSON.parse(data);
+          
+          // Check for API errors
+          if (json.error) {
+            console.log(`   ⚠️ SerpAPI error: ${json.error}`);
+            resolve(null);
+            return;
+          }
+          
+          // Parse organic results
+          const results = (json.organic_results || []).slice(0, 5).map(r => ({
+            url: r.link || '',
+            name: r.title || '',
+            snippet: r.snippet || '',
+            host_name: r.displayed_link || (r.link ? new URL(r.link).hostname : '')
+          }));
+          
+          if (results.length > 0) {
+            console.log(`   ✅ SerpAPI: ${results.length} results`);
+            resolve(results);
+          } else {
+            console.log('   ⚠️ SerpAPI: No results');
+            resolve(null);
+          }
+        } catch (e) {
+          console.log(`   ⚠️ SerpAPI parse error: ${e.message}`);
+          resolve(null);
+        }
+      });
+    }).on('error', (error) => {
+      console.log(`   ⚠️ SerpAPI error: ${error.message}`);
+      resolve(null);
+    });
+  });
+}
+
+/**
+ * Web Search - Direct HTTP (DuckDuckGo - Fallback)
  * Uses DuckDuckGo HTML search for reliable results
  */
-async function webSearchDirect(query) {
-  console.log(`   🔍 Web search (direct): "${query.substring(0, 50)}..."`);
+async function webSearchDuckDuckGo(query) {
+  console.log(`   🔍 DuckDuckGo: "${query.substring(0, 50)}..."`);
   
   return new Promise((resolve, reject) => {
     const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
@@ -440,24 +506,60 @@ async function webSearchDirect(query) {
           }
           
           if (results.length > 0) {
-            console.log(`   ✅ Found ${results.length} results`);
+            console.log(`   ✅ DuckDuckGo: ${results.length} results`);
             resolve(results);
           } else {
-            // Fallback: return empty results (will trigger AI fallback)
-            console.log('   ⚠️ No results from DuckDuckGo, using AI fallback');
+            console.log('   ⚠️ DuckDuckGo: No results');
             resolve([]);
           }
         } catch (e) {
-          console.log(`   ⚠️ Parse error: ${e.message}`);
+          console.log(`   ⚠️ DuckDuckGo parse error: ${e.message}`);
           resolve([]);
         }
       });
     }).on('error', (error) => {
-      console.log(`   ⚠️ Search error: ${error.message}`);
-      resolve([]); // Return empty to trigger fallback
+      console.log(`   ⚠️ DuckDuckGo error: ${error.message}`);
+      resolve([]);
     });
   });
 }
+
+/**
+ * Web Search - Smart Multi-Source (SerpAPI → DuckDuckGo → SDK)
+ * Priority: SerpAPI (best) → DuckDuckGo (good) → SDK (backup)
+ */
+async function webSearchSmart(query) {
+  console.log(`   🔎 Smart Web Search: "${query.substring(0, 50)}..."`);
+  
+  // 1. Try SerpAPI first (Google results - best quality)
+  const serpResults = await webSearchSerpAPI(query);
+  if (serpResults && serpResults.length > 0) {
+    return serpResults;
+  }
+  
+  // 2. Fallback to DuckDuckGo (no API key needed)
+  const ddgResults = await webSearchDuckDuckGo(query);
+  if (ddgResults && ddgResults.length > 0) {
+    return ddgResults;
+  }
+  
+  // 3. Last resort: SDK (may have rate limits)
+  console.log('   🔄 Trying SDK fallback...');
+  try {
+    const sdkResults = await webSearchSDK(query);
+    if (sdkResults && sdkResults.length > 0) {
+      return sdkResults;
+    }
+  } catch (e) {
+    console.log('   ⚠️ SDK fallback failed');
+  }
+  
+  // 4. Return empty array (will trigger AI fallback)
+  return [];
+}
+
+// Keep old function names for compatibility
+const webSearchDirect = webSearchDuckDuckGo;
 
 /**
  * Web Search - SDK with Multi-Token fallback (backup)
@@ -529,6 +631,12 @@ const CONFIG = {
   rallyApiBase: 'https://app.rally.fun/api',
   outputDir: '/home/z/my-project/download',
   userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SERPAPI - Google Search Results (Primary Web Search)
+  // Get free API key at: https://serpapi.com (100 searches/month free)
+  // ═══════════════════════════════════════════════════════════════════════════
+  serpApiKey: process.env.SERPAPI_KEY || null, // Set via env or paste here
   
   // ═══════════════════════════════════════════════════════════════════════════
   // MULTI-TOKEN POOL - For Rate Limit Handling
@@ -1230,19 +1338,8 @@ class MultiProviderLLM {
 
     console.log(`   🔎 Searching for data from ${currentYear} and earlier...`);
 
-    // Use Direct DuckDuckGo search (no rate limits!)
-    let webSearchResults = await webSearchDirect(searchQuery);
-    
-    // If no results, try SDK as fallback
-    if (!webSearchResults || webSearchResults.length === 0) {
-      console.log('   🔄 Direct search no results, trying SDK fallback...');
-      try {
-        webSearchResults = await webSearchSDK(searchQuery);
-      } catch (e) {
-        console.log('   ⚠️ SDK also failed, continuing without web search data');
-        webSearchResults = [];
-      }
-    }
+    // Smart search: SerpAPI → DuckDuckGo → SDK
+    const webSearchResults = await webSearchSmart(searchQuery);
     
     console.log(`   ✅ Web search: ${webSearchResults.length} results`);
 
@@ -1306,19 +1403,8 @@ ${webSearchResults.length > 0
     const currentYear = new Date().getFullYear();
     const enhancedQuery = `${query} ${currentYear} latest`;
     
-    // Try direct web search first (no rate limits!)
-    let result = await webSearchDirect(enhancedQuery);
-    
-    // If no results, try SDK as backup
-    if (!result || result.length === 0) {
-      console.log('   🔄 Direct search returned no results, trying SDK...');
-      try {
-        result = await webSearchSDK(enhancedQuery);
-      } catch (e) {
-        console.log('   ⚠️ SDK search also failed, using empty results');
-        result = [];
-      }
-    }
+    // Smart search: SerpAPI → DuckDuckGo → SDK
+    const result = await webSearchSmart(enhancedQuery);
     
     return result;
   }
