@@ -384,185 +384,18 @@ async function callAI(messages, options = {}) {
 }
 
 /**
- * Web Search - SerpAPI (Google Results - Primary!)
- * High quality search results with controlled rate limits
- * Free tier: 100 searches/month
- */
-async function webSearchSerpAPI(query) {
-  // SerpAPI key - get free at https://serpapi.com
-  const SERPAPI_KEY = process.env.SERPAPI_KEY || CONFIG.serpApiKey || null;
-  
-  if (!SERPAPI_KEY) {
-    console.log('   ⚠️ No SerpAPI key configured, skipping...');
-    return null; // Return null to indicate not configured
-  }
-  
-  console.log(`   🔍 SerpAPI (Google): "${query.substring(0, 50)}..."`);
-  
-  return new Promise((resolve, reject) => {
-    const searchUrl = `https://serpapi.com/search.json?q=${encodeURIComponent(query)}&api_key=${SERPAPI_KEY}&num=5`;
-    
-    https.get(searchUrl, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          if (res.statusCode !== 200) {
-            console.log(`   ⚠️ SerpAPI HTTP ${res.statusCode}`);
-            resolve(null);
-            return;
-          }
-          
-          const json = JSON.parse(data);
-          
-          // Check for API errors
-          if (json.error) {
-            console.log(`   ⚠️ SerpAPI error: ${json.error}`);
-            resolve(null);
-            return;
-          }
-          
-          // Parse organic results
-          const results = (json.organic_results || []).slice(0, 5).map(r => ({
-            url: r.link || '',
-            name: r.title || '',
-            snippet: r.snippet || '',
-            host_name: r.displayed_link || (r.link ? new URL(r.link).hostname : '')
-          }));
-          
-          if (results.length > 0) {
-            console.log(`   ✅ SerpAPI: ${results.length} results`);
-            resolve(results);
-          } else {
-            console.log('   ⚠️ SerpAPI: No results');
-            resolve(null);
-          }
-        } catch (e) {
-          console.log(`   ⚠️ SerpAPI parse error: ${e.message}`);
-          resolve(null);
-        }
-      });
-    }).on('error', (error) => {
-      console.log(`   ⚠️ SerpAPI error: ${error.message}`);
-      resolve(null);
-    });
-  });
-}
-
-/**
- * Web Search - Direct HTTP (DuckDuckGo - Fallback)
- * Uses DuckDuckGo HTML search for reliable results
- */
-async function webSearchDuckDuckGo(query) {
-  console.log(`   🔍 DuckDuckGo: "${query.substring(0, 50)}..."`);
-  
-  return new Promise((resolve, reject) => {
-    const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
-    
-    const options = {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'identity'
-      }
-    };
-    
-    https.get(searchUrl, options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          // Parse DuckDuckGo HTML results
-          const results = [];
-          const resultRegex = /<a[^>]*class="result__a"[^>]*href="([^"]*)"[^>]*>([^<]*)<\/a>/g;
-          const snippetRegex = /<a[^>]*class="result__snippet"[^>]*>([^<]*(?:<[^>]*>[^<]*)*)<\/a>/g;
-          
-          let match;
-          const urls = [];
-          const titles = [];
-          const snippets = [];
-          
-          // Extract URLs and titles
-          while ((match = resultRegex.exec(data)) !== null) {
-            urls.push(match[1]);
-            titles.push(match[2].trim());
-          }
-          
-          // Extract snippets
-          while ((match = snippetRegex.exec(data)) !== null) {
-            snippets.push(match[1].replace(/<[^>]*>/g, '').trim());
-          }
-          
-          // Combine into results
-          const count = Math.min(urls.length, titles.length, 5);
-          for (let i = 0; i < count; i++) {
-            results.push({
-              url: urls[i] || '',
-              name: titles[i] || '',
-              snippet: snippets[i] || '',
-              host_name: urls[i] ? new URL(urls[i].replace(/^\/\//, 'https://')).hostname : ''
-            });
-          }
-          
-          if (results.length > 0) {
-            console.log(`   ✅ DuckDuckGo: ${results.length} results`);
-            resolve(results);
-          } else {
-            console.log('   ⚠️ DuckDuckGo: No results');
-            resolve([]);
-          }
-        } catch (e) {
-          console.log(`   ⚠️ DuckDuckGo parse error: ${e.message}`);
-          resolve([]);
-        }
-      });
-    }).on('error', (error) => {
-      console.log(`   ⚠️ DuckDuckGo error: ${error.message}`);
-      resolve([]);
-    });
-  });
-}
-
-/**
- * Web Search - Smart Multi-Source (SerpAPI → DuckDuckGo → SDK)
- * Priority: SerpAPI (best) → DuckDuckGo (good) → SDK (backup)
+ * Web Search - Pure SDK with Multi-Token Fallback
+ * Uses z-ai-web-dev-sdk with 11 tokens for rate limit handling
  */
 async function webSearchSmart(query) {
-  console.log(`   🔎 Smart Web Search: "${query.substring(0, 50)}..."`);
+  console.log(`   🔍 Web Search (SDK): "${query.substring(0, 50)}..."`);
   
-  // 1. Try SerpAPI first (Google results - best quality)
-  const serpResults = await webSearchSerpAPI(query);
-  if (serpResults && serpResults.length > 0) {
-    return serpResults;
-  }
-  
-  // 2. Fallback to DuckDuckGo (no API key needed)
-  const ddgResults = await webSearchDuckDuckGo(query);
-  if (ddgResults && ddgResults.length > 0) {
-    return ddgResults;
-  }
-  
-  // 3. Last resort: SDK (may have rate limits)
-  console.log('   🔄 Trying SDK fallback...');
-  try {
-    const sdkResults = await webSearchSDK(query);
-    if (sdkResults && sdkResults.length > 0) {
-      return sdkResults;
-    }
-  } catch (e) {
-    console.log('   ⚠️ SDK fallback failed');
-  }
-  
-  // 4. Return empty array (will trigger AI fallback)
-  return [];
+  // Direct SDK call with multi-token fallback
+  return await webSearchSDK(query);
 }
 
-// Keep old function names for compatibility
-const webSearchDirect = webSearchDuckDuckGo;
-
 /**
- * Web Search - SDK with Multi-Token fallback (backup)
+ * Web Search - SDK with Multi-Token fallback
  */
 async function webSearchSDK(query) {
   if (!SDK_AVAILABLE) {
@@ -570,7 +403,6 @@ async function webSearchSDK(query) {
   }
   
   const tm = getTokenManager();
-  // Use token count + 5 extra retries for backoff
   const maxRetries = tm.getTokenCount() + 5;
   let lastError = null;
   let consecutiveRateLimits = 0;
@@ -631,12 +463,6 @@ const CONFIG = {
   rallyApiBase: 'https://app.rally.fun/api',
   outputDir: '/home/z/my-project/download',
   userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-  
-  // ═══════════════════════════════════════════════════════════════════════════
-  // SERPAPI - Google Search Results (Primary Web Search)
-  // Get free API key at: https://serpapi.com (100 searches/month free)
-  // ═══════════════════════════════════════════════════════════════════════════
-  serpApiKey: process.env.SERPAPI_KEY || null, // Set via env or paste here
   
   // ═══════════════════════════════════════════════════════════════════════════
   // MULTI-TOKEN POOL - For Rate Limit Handling
