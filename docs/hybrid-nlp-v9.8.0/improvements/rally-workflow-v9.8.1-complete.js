@@ -1550,26 +1550,91 @@ async function multiQueryDeepResearch(llm, campaignTitle, campaignData) {
   ];
   
   const allResults = [];
+  let webSearchFailed = false;
   
   for (let i = 0; i < searchQueries.length; i++) {
     console.log(`   🔍 Query ${i + 1}/${searchQueries.length}: "${searchQueries[i].substring(0, 50)}..."`);
     
-    const results = await llm.webSearch(searchQueries[i]);
-    
-    if (results && results.length > 0) {
-      allResults.push({
-        query: searchQueries[i],
-        queryType: ['basics', 'cases', 'controversies', 'statistics', 'expert', 'untold'][i],
-        results: results.slice(0, 3)
-      });
+    try {
+      const results = await llm.webSearch(searchQueries[i]);
+      
+      if (results && results.length > 0) {
+        allResults.push({
+          query: searchQueries[i],
+          queryType: ['basics', 'cases', 'controversies', 'statistics', 'expert', 'untold'][i],
+          results: results.slice(0, 3)
+        });
+      }
+      
+      // Use configured delay after web search
+      await delay(CONFIG.delays.afterWebSearch || 3000);
+      
+    } catch (error) {
+      if (isRateLimitError(error)) {
+        console.log('   ⚠️ Web search rate limited - switching to fallback research...');
+        webSearchFailed = true;
+        break; // Stop trying web searches
+      }
+      throw error;
     }
-    
-    // Use configured delay after web search
-    await delay(CONFIG.delays.afterWebSearch || 3000);
   }
   
-  if (allResults.length === 0) {
-    throw new Error('All research queries failed - no results found');
+  // If web search failed or returned no results, use AI-based research fallback
+  if (allResults.length === 0 || webSearchFailed) {
+    console.log('   📋 Using AI-based research fallback (no web search)...');
+    
+    const fallbackPrompt = `Generate research insights for creating unique content about "${campaignTitle}".
+
+CAMPAIGN CONTEXT:
+${campaignData.description || campaignData.goal || 'Not provided'}
+${campaignData.knowledgeBase ? '\nKNOWLEDGE BASE:\n' + campaignData.knowledgeBase : ''}
+
+Generate in JSON format:
+{
+  "keyFacts": ["<fact1>", "<fact2>", ...],
+  "realCases": ["<case1>", "<case2>", ...],
+  "controversies": ["<controversy1>", "<controversy2>", ...],
+  "statistics": ["<stat1>", "<stat2>", ...],
+  "expertQuotes": ["<quote1>", "<quote2>", ...],
+  "untoldStories": ["<story1>", "<story2>", ...],
+  "uniqueAngles": [{"angle": "<angle>", "evidence": "<supporting evidence>", "uniqueness": "<why unique>"}],
+  "evidenceLayers": {
+    "macroData": "<large scale data>",
+    "caseStudy": "<specific example>",
+    "personalTouch": "<relatable element>",
+    "expertValidation": "<expert source>"
+  }
+}`;
+
+    const response = await llm.chat([
+      { role: 'system', content: 'You are a research expert. Generate realistic, well-informed research insights based on general knowledge. Return JSON only.' },
+      { role: 'user', content: fallbackPrompt }
+    ], { temperature: 0.7, maxTokens: 3000 });
+    
+    let synthesis = safeJsonParse(response.content);
+    
+    if (!synthesis) {
+      console.log('   ⚠️ Could not parse fallback synthesis, using minimal data...');
+      synthesis = {
+        keyFacts: [`${campaignTitle} addresses structural problems in digital coordination`, 'Decentralized solutions are becoming mainstream'],
+        realCases: ['Users seeking dispute resolution without traditional courts'],
+        controversies: ['Traditional vs decentralized approaches'],
+        statistics: ['Growing adoption of decentralized systems'],
+        expertQuotes: ['Industry leaders see potential in this approach'],
+        untoldStories: ['The hidden costs of traditional dispute resolution'],
+        uniqueAngles: [{ angle: 'Fresh perspective on digital justice', evidence: 'Market trends', uniqueness: 'Underexplored angle' }],
+        evidenceLayers: {
+          macroData: 'Market growth data',
+          caseStudy: 'Real user experiences',
+          personalTouch: 'Relatable frustrations',
+          expertValidation: 'Industry analysis'
+        }
+      };
+    }
+    
+    displayThinking('RESEARCH', `Generated ${synthesis.keyFacts?.length || 0} facts, ${synthesis.uniqueAngles?.length || 0} unique angles (AI fallback)`);
+    
+    return { rawResults: [], synthesis, usedFallback: true };
   }
   
   const synthesisPrompt = `Synthesize these research findings for creating unique content about "${campaignTitle}":
