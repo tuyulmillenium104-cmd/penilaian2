@@ -392,8 +392,10 @@ async function webSearchSDK(query) {
   }
   
   const tm = getTokenManager();
-  const maxRetries = 3;
+  // Use token count + 5 extra retries for backoff
+  const maxRetries = tm.getTokenCount() + 5;
   let lastError = null;
+  let consecutiveRateLimits = 0;
   
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
@@ -412,16 +414,18 @@ async function webSearchSDK(query) {
       lastError = error;
       
       if (isRateLimitError(error)) {
-        console.log(`   ⚠️ Web search rate limit on ${tm.getCurrentLabel()}!`);
+        consecutiveRateLimits++;
+        console.log(`   ⚠️ Web search rate limit on ${tm.getCurrentLabel()}! (${consecutiveRateLimits} consecutive)`);
         
         if (tm.hasAlternativeTokens() && tm.switchToNextToken()) {
           console.log(`   🔄 Retrying web search with: ${tm.getCurrentLabel()}`);
-          await delay(2000);
+          await delay(3000);
           continue;
         }
         
-        const delayMs = 10000 * (1 + Math.random());
-        console.log(`   ⏳ Web search waiting ${(delayMs/1000).toFixed(1)}s...`);
+        // All tokens exhausted - use exponential backoff
+        const delayMs = Math.min(15000 * Math.pow(1.5, consecutiveRateLimits - tm.getTokenCount()), 60000);
+        console.log(`   ⏳ All tokens rate limited! Waiting ${(delayMs/1000).toFixed(1)}s...`);
         await delay(delayMs);
       } else {
         throw error; // Non-rate-limit errors fail immediately
