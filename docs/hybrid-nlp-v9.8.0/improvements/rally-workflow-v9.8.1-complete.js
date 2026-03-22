@@ -485,6 +485,39 @@ const CONFIG = {
       chatId: 'chat-9bb30393-aa72-4cd3-bd79-c2dfb485f782',
       userId: '97631263-5dba-4e16-b127-19212e012a9b',
       label: 'Akun A #3'
+    },
+    // ═══════════════════════════════════════════════════════════════════════════
+    // NEW TOKENS - Added for more rate limit capacity
+    // ═══════════════════════════════════════════════════════════════════════════
+    {
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjcwNmVhNjktYTM5Ny00ZjNmLTg3MDYtNWVhZjBkNmE3OTliIiwiY2hhdF9pZCI6ImNoYXQtMTRiNDI2MTAtYmEwMS00ODFlLTkxNjktMTdhMjI4OTcwNGE3In0.DufxnWsYgBGFr_0yggg03lHfonzHt2xC_bCzTfO_6fw',
+      chatId: 'chat-14b42610-ba01-481e-9169-17a2289704a7',
+      userId: '2706ea69-a397-4f3f-8706-5eaf0d6a799b',
+      label: 'Akun C #1'
+    },
+    {
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZTNiNmM4MDMtYzZjMi00NDY3LWFiMmItMGJkM2FiOWM2YTQ4IiwiY2hhdF9pZCI6ImNoYXQtZGI1ZmUxMDUtMmQwOC00YzlmLWJlY2ItNGU5NDQ4NDI4M2ZlIn0.e7ikn0PSE9iVuhuYr_nJ6lwqtJGAk0l3hlGaLTkuLCo',
+      chatId: 'chat-db5fe105-2d08-4c9f-becb-4e94484283fe',
+      userId: 'e3b6c803-c6c2-4467-ab2b-0bd3ab9c6a48',
+      label: 'Akun D #1'
+    },
+    {
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiOTc2MzEyNjMtNWRiYS00ZTE2LWIxMjctMTkyMTJlMDEyYTliIiwiY2hhdF9pZCI6ImNoYXQtNTZkZDc1NzEtZjAzNy00MjAyLWFlZTEtMDc5Y2ExMjc5NDNiIn0.RVJf0OF8DnMgs7mQd0K9VgWx8Xo0b2XyYfZJ65ZcJtI',
+      chatId: 'chat-56dd7571-f037-4202-aee1-079ca127943b',
+      userId: '97631263-5dba-4e16-b127-19212e012a9b',
+      label: 'Akun A #4'
+    },
+    {
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMWNkY2Y1NzktYzZlNS00ZWY3LTgyZDUtZDg2OWQ4Yzg1YTVlIiwiY2hhdF9pZCI6ImNoYXQtMDQ4YTVhODItZWRhMi00ZTQ0LTk4YWEtZmM5YTk0Y2UyNWZmIn0.asZolcXMp4kvy_2UqeA4BHvYx0gAsw7mNgNrRXKJrtw',
+      chatId: 'chat-048a5a82-eda2-4e44-98aa-fc9a94ce25ff',
+      userId: '1cdcf579-c6e5-4ef7-82d5-d869d8c85a5e',
+      label: 'Akun E #1'
+    },
+    {
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYmI4MjllYTMtMGQzNy00OTQ0LTg3MDUtMDAwOTBiZGUzNjcxIiwiY2hhdF9pZCI6ImNoYXQtYmRjYzg2YjEtMTEwNy00YTRiLWI5NTAtYjc0NDhhM2UwZjBmIn0.l3mEV0bkzGtzmzuqr_BwNhVpd6hxIJTjwYetig_HT9M',
+      chatId: 'chat-bdcc86b1-1107-4a4b-b950-b7448a3e0f0f',
+      userId: 'bb829ea3-0d37-4944-8705-00090bde3671',
+      label: 'Akun B #3'
     }
   ],
   
