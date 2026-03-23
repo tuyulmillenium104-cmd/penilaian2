@@ -1,5 +1,5 @@
 /**
- * RALLY WORKFLOW V9.8.1 - HYBRID JavaScript + Python NLP System
+ * RALLY WORKFLOW V9.8.2 - HYBRID JavaScript + Python NLP System
  * 
  * ═══════════════════════════════════════════════════════════════════════════
  * 🐍 HYBRID ARCHITECTURE - Python NLP + JavaScript AI/SDK
@@ -18,7 +18,17 @@
  * ✅ Content Depth Analysis
  * ✅ Anti-Template Detection (Semantic level)
  * 
- * NEW IN v9.8.1:
+ * NEW IN v9.8.2:
+ * ✅ G4 Originality Elements Detection (casual hook, parenthetical aside, contractions)
+ * ✅ Em Dash & Smart Quote Detection (forbidden punctuation)
+ * ✅ Gate Multiplier Formula (M_gate = 1 + 0.5 x (g_star - 1))
+ * ✅ X-Factor Differentiators (specific numbers, time specificity, embarrassing honesty)
+ * ✅ Claim Verification Template
+ * ✅ Pre-Submission Validation Checklist
+ * ✅ Mindset Framework (Target: Beat Top 10)
+ * ✅ Control Matrix (What you CAN vs CANNOT control)
+ * 
+ * FROM v9.8.1:
  * ✅ Multi-Content Generator (5 konten sekaligus)
  * ✅ Batch Judging dengan Ranking System
  * ✅ Model GLM-5 dengan Think + WebSearch
@@ -27,7 +37,7 @@
  * ✅ SDK Only - No Fallbacks (All features must work!)
  * ✅ Campaign Search by Name (not just address!)
  * 
- * BASED ON: v9.8.0 Hybrid System
+ * BASED ON: v9.8.1 + Rally Ultimate Master Guide V3
  * 
  * Usage:
  *   1. Start Python NLP Service (optional):
@@ -126,6 +136,12 @@ async function preflightCheck() {
   
   // Display token pool status
   displayTokenPoolStatus();
+  
+  // NEW v9.8.2: Display Mindset Framework
+  displayMindsetFramework();
+  
+  // NEW v9.8.2: Display Control Matrix
+  displayControlMatrix();
   
   console.log('═'.repeat(60));
   
@@ -762,7 +778,317 @@ const CONFIG = {
     'cold sweat', 'panic', 'anxiety', 'heart racing', 'stomach dropped', 
     'heart sank', 'chest tightened', 'jaw dropped', "couldn't believe",
     'blood boiled', 'hands shaking', 'breath caught'
-  ]
+  ],
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // NEW v9.8.2: G4 Originality Checklist (from Rally Master Guide V3)
+  // ═══════════════════════════════════════════════════════════════════════════
+  g4Checklist: {
+    // Elements that ADD to originality score
+    bonuses: {
+      casualHookOpening: {
+        patterns: ['ngl', 'tbh', 'honestly', 'fun story', 'okay so', 'look', 'real talk'],
+        description: 'Opens with casual/conversational hook',
+        weight: 0.15
+      },
+      parentheticalAside: {
+        patterns: ['(and this is embarrassing to admit)', '(just saying)', '(real talk)', 
+                   '(not gonna lie)', '(honestly)', '(for real)', '(seriously though)'],
+        description: 'Has parenthetical conversational aside',
+        weight: 0.15
+      },
+      contractions: {
+        patterns: ["don't", "can't", "it's", "they're", "won't", "i'm", "we're", 
+                   "isn't", "aren't", "wasn't", "weren't", "haven't", "hasn't",
+                   "wouldn't", "couldn't", "shouldn't", "let's", "that's", "what's"],
+        minCount: 3,
+        description: 'Uses 3+ contractions naturally',
+        weight: 0.20
+      },
+      sentenceFragments: {
+        description: 'Uses sentence fragments for casual effect',
+        weight: 0.15
+      },
+      personalAngle: {
+        patterns: ['i ', 'my ', 'me ', 'sat there', 'watched', 'spent', 'went from'],
+        description: 'Has personal story or angle',
+        weight: 0.20
+      },
+      conversationalEnding: {
+        patterns: ['tbh', 'worth checking', 'just saying', 'for real', 'honestly',
+                   'give it a shot', "can't hurt", 'what do you think'],
+        description: 'Ends with conversational tone',
+        weight: 0.15
+      }
+    },
+    // Elements that SUBTRACT from originality score
+    penalties: {
+      emDashes: {
+        patterns: ['—', '–', '―'],
+        description: 'Contains em dashes (AI indicator)',
+        weight: -0.30
+      },
+      smartQuotes: {
+        patterns: ['"', '"', ''', ''', '„', '‟'],
+        description: 'Contains smart/curly quotes (AI indicator)',
+        weight: -0.20
+      },
+      aiPhrases: {
+        patterns: ['delve', 'leverage', 'realm', 'tapestry', 'paradigm', 'landscape',
+                   'nuance', 'underscores', 'pivotal', 'crucial', 'embark', 'journey',
+                   'explore', 'unlock', 'harness', 'picture this', 'lets dive in',
+                   'in this thread', 'key takeaways', 'imagine a world'],
+        description: 'Contains AI-typical phrases',
+        weight: -0.20 // per occurrence
+      },
+      genericOpening: {
+        patterns: ['in the world of', 'in todays', 'in the digital', 'this is why',
+                   'here is how', 'there are many', 'it is important'],
+        description: 'Opens with generic/formulaic phrase',
+        weight: -0.30
+      },
+      formalEnding: {
+        patterns: ['in conclusion', 'to summarize', 'overall', 'in summary',
+                   'in the end', 'ultimately'],
+        description: 'Ends with formal/academic tone',
+        weight: -0.20
+      },
+      overExplaining: {
+        description: 'Over-explains concepts (trust the reader)',
+        weight: -0.20
+      }
+    }
+  },
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // NEW v9.8.2: Forbidden Punctuation (from Rally Master Guide V3)
+  // ═══════════════════════════════════════════════════════════════════════════
+  forbiddenPunctuation: {
+    emDashes: {
+      chars: ['—', '–', '―'],
+      name: 'Em Dash',
+      replaceWith: '-', // or use comma
+      reason: 'AI-generated content indicator'
+    },
+    smartQuotes: {
+      double: ['"', '"', '„', '‟'],
+      single: [''', '''],
+      name: 'Smart Quotes',
+      replaceWith: { double: '"', single: "'" },
+      reason: 'AI-generated content indicator'
+    },
+    ellipsis: {
+      char: '…',
+      name: 'Ellipsis character',
+      replaceWith: '...',
+      reason: 'May indicate AI generation'
+    }
+  },
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // NEW v9.8.2: Gate Multiplier Formula (Official Rally Formula)
+  // ═══════════════════════════════════════════════════════════════════════════
+  gateMultiplier: {
+    // Formula: M_gate = 1 + 0.5 x (g_star - 1)
+    // Where g_star = (G1 + G2 + G3 + G4) / 4
+    // 
+    // Examples:
+    // - All gates = 2.0 → g_star = 2.0 → M_gate = 1.5x (MAXIMUM, +50%)
+    // - All gates = 1.5 → g_star = 1.5 → M_gate = 1.25x (+25%)
+    // - All gates = 1.0 → g_star = 1.0 → M_gate = 1.0x (baseline)
+    // - Any gate = 0   → DISQUALIFIED (M_gate = 0.5x)
+    formula: 'M_gate = 1 + 0.5 * (g_star - 1)',
+    maxMultiplier: 1.5,
+    minMultiplier: 0.5,
+    disqualifiedMultiplier: 0.5
+  },
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // NEW v9.8.2: X-Factor Differentiators (from Rally Master Guide V3)
+  // ═══════════════════════════════════════════════════════════════════════════
+  xFactorDifferentiators: {
+    specificNumbers: {
+      description: 'Use exact figures, not estimates',
+      badExample: 'down a lot',
+      goodExample: 'down 47%',
+      detection: /\d+(%|\$|k|K|M|B|bn|m|k)/gi
+    },
+    timeSpecificity: {
+      description: 'Include exact durations',
+      badExample: 'watched for a while',
+      goodExample: 'watched for 25 minutes',
+      detection: /\d+\s*(minutes?|hours?|seconds?|days?|weeks?|months?|years?)\b/gi
+    },
+    embarrassingHonesty: {
+      description: 'Admit something relatable/embarrassing',
+      examples: [
+        'embarrassing to admit i watched for 25 mins',
+        'not proud of how long i spent on this',
+        'hate to say it but',
+        "i'll be honest, i was skeptical at first"
+      ],
+      patterns: ['embarrassing to admit', 'not proud', 'hate to admit', 'not gonna lie',
+                 "i'll be honest", "can't believe i'm saying this"]
+    },
+    insiderDetail: {
+      description: 'Share unique observation that shows real experience',
+      examples: [
+        'went from 68% to sweating bullets',
+        'watched the counter go from 12 to 847 in like 3 minutes',
+        'refreshed the page 47 times (yes i counted)'
+      ]
+    },
+    unexpectedAngle: {
+      description: 'Approach from surprising direction',
+      examples: [
+        'focus on entertainment value, not utility',
+        'talk about what went wrong, not what went right',
+        'share the boring details that matter'
+      ]
+    }
+  },
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // NEW v9.8.2: Claim Verification Template (from Rally Master Guide V3)
+  // ═══════════════════════════════════════════════════════════════════════════
+  claimVerification: {
+    redFlags: [
+      'Specific dates (launched yesterday, coming next week)',
+      'Specific numbers (TVL, users, volume)',
+      'Chain/platform claims (on Ethereum, on Base)',
+      'Feature claims (has X feature, supports Y)',
+      'Partnership claims (partnered with X, integrated with Y)',
+      'Token information (token name, symbol, price)'
+    ],
+    verificationSteps: [
+      'Fetch campaign details via API',
+      'Read knowledgeBase from campaign',
+      'Search project website for facts',
+      'Check project Twitter/X for announcements',
+      'Verify each specific claim independently',
+      'Document sources for each claim'
+    ],
+    actionsIfUnverified: [
+      'Option A: Remove the claim',
+      'Option B: Use general/vague language',
+      'Option C: Ask user for confirmation',
+      'NEVER: Assume or fabricate information'
+    ]
+  },
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // NEW v9.8.2: Pre-Submission Checklist (from Rally Master Guide V3)
+  // ═══════════════════════════════════════════════════════════════════════════
+  preSubmissionChecklist: {
+    mindset: [
+      'Target: BEAT Top 10',
+      'Effort: MAXIMUM',
+      'Ready to accept any result'
+    ],
+    informationVerification: [
+      'Fetched campaign knowledgeBase',
+      'Researched project website',
+      'Checked project Twitter',
+      'Verified all claims',
+      'No unverified statistics',
+      'No assumed information'
+    ],
+    gateAlignment: [
+      'Content matches campaign goal',
+      'Correct terminology used',
+      'Brand consistency'
+    ],
+    gateAccuracy: [
+      'All facts verified against sources',
+      'No misleading claims',
+      'Proper context provided'
+    ],
+    gateCompliance: [
+      'All required hashtags present',
+      'All required mentions present',
+      'Format requirements met'
+    ],
+    gateOriginality: [
+      'Casual hook opening',
+      'Parenthetical aside present',
+      '3+ contractions used',
+      'Sentence fragments included',
+      'Personal angle/story present',
+      'Conversational ending',
+      'NO em dashes',
+      'NO smart quotes',
+      'NO AI phrases'
+    ],
+    quality: [
+      'Strong hook',
+      'Good structure',
+      'Clean formatting'
+    ],
+    xFactors: [
+      'Specific numbers',
+      'Time specificity',
+      'Embarrassing honesty',
+      'Insider detail',
+      'Unexpected angle'
+    ],
+    final: [
+      'Read aloud test passed',
+      'All claims verified',
+      'Maximum effort given'
+    ]
+  },
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // NEW v9.8.2: Mindset Framework (from Rally Master Guide V3)
+  // ═══════════════════════════════════════════════════════════════════════════
+  mindsetFramework: {
+    target: 'BEAT Top 10',
+    effort: 'MAXIMIZE everything you control',
+    acceptance: 'Whatever result comes',
+    learning: 'From every outcome',
+    repeat: 'With improved knowledge',
+    keyInsight: 'The TRY matters more than the outcome. You control effort, not results.',
+    principles: {
+      wrongMindset: [
+        'Cannot beat Top 10, so why try hard?',
+        'Top 10 already maxed out, just match them',
+        'Just create content, results dont matter',
+        'If I dont beat Top 10, I failed',
+        'Same score as Top 10 = same quality'
+      ],
+      correctMindset: [
+        'I will TRY to beat Top 10 with max effort',
+        'I will MAXIMIZE everything I control',
+        'Results matter, but effort matters more',
+        'If I didnt try my best, I failed',
+        'Same score = good, improvement = better'
+      ]
+    }
+  },
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // NEW v9.8.2: Control Matrix (from Rally Master Guide V3)
+  // ═══════════════════════════════════════════════════════════════════════════
+  controlMatrix: {
+    canControl: {
+      G1_Alignment: { target: 2.0, how: 'Match campaign goal perfectly, use correct terminology' },
+      G2_Accuracy: { target: 2.0, how: 'Verify all facts against official sources' },
+      G3_Compliance: { target: 2.0, how: 'Include all required hashtags and mentions' },
+      G4_Originality: { target: 2.0, how: 'Apply all checklist items, use authentic voice' },
+      EP_Potential: { target: '4.5-5.0', how: 'Strong hook, good structure, conversation driver' },
+      TQ_Quality: { target: '4.5-5.0', how: 'Clean formatting, readable, platform-optimized' },
+      verifiedFacts: { target: 'ALL', how: 'Research thoroughly, verify each claim' }
+    },
+    cannotControl: {
+      Retweets: { reason: 'Depends on audience size, timing, virality', strategy: 'Create shareable content, hope for best' },
+      Likes: { reason: 'Algorithm dependent, audience mood', strategy: 'Focus on quality, let engagement happen' },
+      Replies: { reason: 'Requires active community participation', strategy: 'Ask questions, invite discussion' },
+      QR_QualityReplies: { reason: 'Depends on who replies', strategy: 'Post when active community is online' },
+      FR_FollowersRepliers: { reason: 'Depends on influential accounts engaging', strategy: 'Hope for quality engagement' },
+      ranking: { reason: 'Relative to other participants', strategy: 'Maximize what you control' },
+      algorithmTiming: { reason: 'Platform decides visibility', strategy: 'Post at optimal times if known' }
+    }
+  }
 };
 
 // ============================================================================
@@ -1419,6 +1745,616 @@ function extractKeywords(title) {
     .split(/\s+/)
     .filter(word => word.length > 2 && !stopWords.includes(word))
     .slice(0, 5);
+}
+
+// ============================================================================
+// NEW v9.8.2: G4 ORIGINALITY DETECTION FUNCTIONS
+// ============================================================================
+
+/**
+ * Detect G4 Originality Elements in content
+ * Returns detailed analysis of bonuses and penalties
+ */
+function detectG4Elements(content) {
+  const result = {
+    bonuses: {},
+    penalties: {},
+    totalBonus: 0,
+    totalPenalty: 0,
+    estimatedG4: 1.0, // Base score
+    issues: [],
+    recommendations: []
+  };
+  
+  if (!content || content.length === 0) {
+    return result;
+  }
+  
+  const contentLower = content.toLowerCase();
+  const first50Words = contentLower.split(/\s+/).slice(0, 50).join(' ');
+  const last50Words = contentLower.split(/\s+/).slice(-50).join(' ');
+  
+  // Check BONUSES
+  const g4Checklist = CONFIG.g4Checklist;
+  
+  // 1. Casual Hook Opening
+  const hasCasualHook = g4Checklist.bonuses.casualHookOpening.patterns.some(p => 
+    first50Words.includes(p.toLowerCase())
+  );
+  result.bonuses.casualHookOpening = hasCasualHook;
+  if (hasCasualHook) {
+    result.totalBonus += g4Checklist.bonuses.casualHookOpening.weight;
+  } else {
+    result.recommendations.push('Add casual hook opening (ngl, tbh, honestly, fun story)');
+  }
+  
+  // 2. Parenthetical Aside
+  const hasParenthetical = g4Checklist.bonuses.parentheticalAside.patterns.some(p =>
+    contentLower.includes(p.toLowerCase())
+  ) || /\([^)]*embarrassing[^)]*\)/i.test(content) || 
+     /\([^)]*honest[^)]*\)/i.test(content) ||
+     /\([^)]*just saying[^)]*\)/i.test(content);
+  result.bonuses.parentheticalAside = hasParenthetical;
+  if (hasParenthetical) {
+    result.totalBonus += g4Checklist.bonuses.parentheticalAside.weight;
+  } else {
+    result.recommendations.push('Add parenthetical aside (embarrassing to admit, just saying)');
+  }
+  
+  // 3. Contractions (need 3+)
+  const contractionCount = g4Checklist.bonuses.contractions.patterns.filter(p =>
+    contentLower.includes(p.toLowerCase())
+  ).length;
+  const hasEnoughContractions = contractionCount >= g4Checklist.bonuses.contractions.minCount;
+  result.bonuses.contractions = { count: contractionCount, passed: hasEnoughContractions };
+  if (hasEnoughContractions) {
+    result.totalBonus += g4Checklist.bonuses.contractions.weight;
+  } else {
+    result.recommendations.push(`Add more contractions (current: ${contractionCount}, need: 3+)`);
+  }
+  
+  // 4. Personal Angle/Story
+  const hasPersonalAngle = g4Checklist.bonuses.personalAngle.patterns.some(p =>
+    contentLower.includes(p.toLowerCase())
+  );
+  result.bonuses.personalAngle = hasPersonalAngle;
+  if (hasPersonalAngle) {
+    result.totalBonus += g4Checklist.bonuses.personalAngle.weight;
+  } else {
+    result.recommendations.push('Add personal story or angle (I, my, me, specific experience)');
+  }
+  
+  // 5. Conversational Ending
+  const hasConversationalEnding = g4Checklist.bonuses.conversationalEnding.patterns.some(p =>
+    last50Words.includes(p.toLowerCase())
+  );
+  result.bonuses.conversationalEnding = hasConversationalEnding;
+  if (hasConversationalEnding) {
+    result.totalBonus += g4Checklist.bonuses.conversationalEnding.weight;
+  } else {
+    result.recommendations.push('Add conversational ending (tbh, worth checking, what do you think)');
+  }
+  
+  // Check PENALTIES
+  
+  // 1. Em Dashes
+  const emDashCount = g4Checklist.penalties.emDashes.patterns.filter(p =>
+    content.includes(p)
+  ).length;
+  result.penalties.emDashes = { count: emDashCount, present: emDashCount > 0 };
+  if (emDashCount > 0) {
+    result.totalPenalty += Math.abs(g4Checklist.penalties.emDashes.weight);
+    result.issues.push(`EM DASHES DETECTED (${emDashCount}): Replace with hyphens or commas`);
+  }
+  
+  // 2. Smart Quotes
+  const smartQuoteCount = g4Checklist.penalties.smartQuotes.patterns.filter(p =>
+    content.includes(p)
+  ).length;
+  result.penalties.smartQuotes = { count: smartQuoteCount, present: smartQuoteCount > 0 };
+  if (smartQuoteCount > 0) {
+    result.totalPenalty += Math.abs(g4Checklist.penalties.smartQuotes.weight);
+    result.issues.push(`SMART QUOTES DETECTED (${smartQuoteCount}): Replace with straight quotes`);
+  }
+  
+  // 3. AI Phrases
+  const aiPhraseCount = g4Checklist.penalties.aiPhrases.patterns.filter(p =>
+    contentLower.includes(p.toLowerCase())
+  ).length;
+  result.penalties.aiPhrases = { count: aiPhraseCount, present: aiPhraseCount > 0 };
+  if (aiPhraseCount > 0) {
+    result.totalPenalty += Math.abs(g4Checklist.penalties.aiPhrases.weight) * Math.min(aiPhraseCount, 3);
+    result.issues.push(`AI PHRASES DETECTED (${aiPhraseCount}): Remove AI-typical language`);
+  }
+  
+  // 4. Generic Opening
+  const hasGenericOpening = g4Checklist.penalties.genericOpening.patterns.some(p =>
+    first50Words.includes(p.toLowerCase())
+  );
+  result.penalties.genericOpening = hasGenericOpening;
+  if (hasGenericOpening) {
+    result.totalPenalty += Math.abs(g4Checklist.penalties.genericOpening.weight);
+    result.issues.push('GENERIC OPENING: Start mid-thought instead');
+  }
+  
+  // 5. Formal Ending
+  const hasFormalEnding = g4Checklist.penalties.formalEnding.patterns.some(p =>
+    last50Words.includes(p.toLowerCase())
+  );
+  result.penalties.formalEnding = hasFormalEnding;
+  if (hasFormalEnding) {
+    result.totalPenalty += Math.abs(g4Checklist.penalties.formalEnding.weight);
+    result.issues.push('FORMAL ENDING: Use conversational ending instead');
+  }
+  
+  // Calculate estimated G4 score
+  result.estimatedG4 = Math.max(0, Math.min(2.0, 1.0 + result.totalBonus - result.totalPenalty));
+  
+  // Determine if G4 = 2.0 is achievable
+  result.canAchieveMaxScore = result.totalPenalty === 0 && result.totalBonus >= 0.8;
+  
+  return result;
+}
+
+/**
+ * Detect Forbidden Punctuation (Em Dashes, Smart Quotes)
+ */
+function detectForbiddenPunctuation(content) {
+  const result = {
+    emDashes: { found: false, count: 0, positions: [] },
+    smartQuotes: { found: false, count: 0, positions: [] },
+    ellipsis: { found: false, count: 0 },
+    totalIssues: 0,
+    sanitizedContent: content
+  };
+  
+  if (!content) return result;
+  
+  const forbidden = CONFIG.forbiddenPunctuation;
+  
+  // Check em dashes
+  forbidden.emDashes.chars.forEach(char => {
+    let pos = 0;
+    while ((pos = content.indexOf(char, pos)) !== -1) {
+      result.emDashes.found = true;
+      result.emDashes.count++;
+      result.emDashes.positions.push(pos);
+      pos++;
+    }
+  });
+  
+  // Check smart quotes
+  [...forbidden.smartQuotes.double, ...forbidden.smartQuotes.single].forEach(char => {
+    let pos = 0;
+    while ((pos = content.indexOf(char, pos)) !== -1) {
+      result.smartQuotes.found = true;
+      result.smartQuotes.count++;
+      result.smartQuotes.positions.push(pos);
+      pos++;
+    }
+  });
+  
+  // Check ellipsis character
+  if (content.includes(forbidden.ellipsis.char)) {
+    result.ellipsis.found = true;
+    result.ellipsis.count = (content.match(/\u2026/g) || []).length;
+  }
+  
+  result.totalIssues = result.emDashes.count + result.smartQuotes.count + result.ellipsis.count;
+  
+  // Generate sanitized content
+  if (result.totalIssues > 0) {
+    result.sanitizedContent = content
+      .replace(/[—–―]/g, '-') // Replace em dashes
+      .replace(/[""„‟]/g, '"') // Replace smart double quotes
+      .replace(/['']/g, "'") // Replace smart single quotes
+      .replace(/\u2026/g, '...'); // Replace ellipsis
+  }
+  
+  return result;
+}
+
+/**
+ * Calculate Gate Multiplier (Official Rally Formula)
+ * M_gate = 1 + 0.5 x (g_star - 1)
+ * Where g_star = (G1 + G2 + G3 + G4) / 4
+ */
+function calculateGateMultiplier(g1Score, g2Score, g3Score, g4Score) {
+  const config = CONFIG.gateMultiplier;
+  
+  // Check for disqualification (any gate = 0)
+  if (g1Score === 0 || g2Score === 0 || g3Score === 0 || g4Score === 0) {
+    return {
+      g_star: 0,
+      multiplier: config.disqualifiedMultiplier,
+      status: 'DISQUALIFIED',
+      bonus: '-50%',
+      description: 'At least one gate scored 0 - content disqualified'
+    };
+  }
+  
+  // Calculate g_star (average of 4 gates, normalized to 0-2 scale)
+  // Assuming scores are already on 0-2 scale
+  const g_star = (g1Score + g2Score + g3Score + g4Score) / 4;
+  
+  // Calculate multiplier
+  let multiplier = 1 + 0.5 * (g_star - 1);
+  multiplier = Math.max(config.minMultiplier, Math.min(config.maxMultiplier, multiplier));
+  
+  // Determine status
+  let status, bonus;
+  if (g_star === 2.0) {
+    status = 'MAXIMUM';
+    bonus = '+50%';
+  } else if (g_star >= 1.75) {
+    status = 'EXCELLENT';
+    bonus = `+${Math.round((multiplier - 1) * 100)}%`;
+  } else if (g_star >= 1.5) {
+    status = 'GOOD';
+    bonus = `+${Math.round((multiplier - 1) * 100)}%`;
+  } else if (g_star >= 1.0) {
+    status = 'BASELINE';
+    bonus = '0%';
+  } else {
+    status = 'BELOW_BASELINE';
+    bonus = `${Math.round((multiplier - 1) * 100)}%`;
+  }
+  
+  return {
+    g_star: g_star.toFixed(2),
+    multiplier: multiplier.toFixed(2),
+    status,
+    bonus,
+    description: `Gate average: ${g_star.toFixed(2)}/2.0, Multiplier: ${multiplier.toFixed(2)}x`
+  };
+}
+
+/**
+ * Detect X-Factor Differentiators in content
+ */
+function detectXFactors(content) {
+  const result = {
+    detected: [],
+    missing: [],
+    score: 0
+  };
+  
+  if (!content) return result;
+  
+  const xFactors = CONFIG.xFactorDifferentiators;
+  const contentLower = content.toLowerCase();
+  
+  // 1. Specific Numbers
+  const numberMatches = content.match(xFactors.specificNumbers.detection) || [];
+  if (numberMatches.length > 0) {
+    result.detected.push({
+      type: 'specificNumbers',
+      count: numberMatches.length,
+      examples: numberMatches.slice(0, 3),
+      description: xFactors.specificNumbers.description
+    });
+    result.score += 20;
+  } else {
+    result.missing.push({
+      type: 'specificNumbers',
+      description: 'Add specific numbers (47%, $1.2M, etc.)'
+    });
+  }
+  
+  // 2. Time Specificity
+  const timeMatches = content.match(xFactors.timeSpecificity.detection) || [];
+  if (timeMatches.length > 0) {
+    result.detected.push({
+      type: 'timeSpecificity',
+      count: timeMatches.length,
+      examples: timeMatches.slice(0, 3),
+      description: xFactors.timeSpecificity.description
+    });
+    result.score += 20;
+  } else {
+    result.missing.push({
+      type: 'timeSpecificity',
+      description: 'Add time specificity (25 minutes, 3 hours, etc.)'
+    });
+  }
+  
+  // 3. Embarrassing Honesty
+  const embarrassmentMatches = xFactors.embarrassingHonesty.patterns.filter(p =>
+    contentLower.includes(p.toLowerCase())
+  );
+  if (embarrassmentMatches.length > 0) {
+    result.detected.push({
+      type: 'embarrassingHonesty',
+      matches: embarrassmentMatches,
+      description: xFactors.embarrassingHonesty.description
+    });
+    result.score += 25;
+  } else {
+    result.missing.push({
+      type: 'embarrassingHonesty',
+      description: 'Add embarrassing honesty (embarrassing to admit, not proud of)'
+    });
+  }
+  
+  // 4. Insider Detail (check for specific patterns)
+  const insiderPatterns = [
+    /went from \d+%/i,
+    /\d+ to \d+/i,
+    /refreshed.*\d+ times/i,
+    /watched.*\d+/i,
+    /counted.*\d+/i
+  ];
+  const hasInsiderDetail = insiderPatterns.some(p => p.test(content));
+  if (hasInsiderDetail) {
+    result.detected.push({
+      type: 'insiderDetail',
+      description: xFactors.insiderDetail.description
+    });
+    result.score += 20;
+  } else {
+    result.missing.push({
+      type: 'insiderDetail',
+      description: 'Add insider detail (went from X to Y, counted Z times)'
+    });
+  }
+  
+  // 5. Unexpected Angle (harder to detect automatically)
+  // Check for contrast words that might indicate unexpected angle
+  const unexpectedIndicators = [
+    'but actually', 'surprisingly', 'unexpectedly', 'turns out',
+    'contrary to', 'not what youd expect', 'heres the thing'
+  ];
+  const hasUnexpectedAngle = unexpectedIndicators.some(p => contentLower.includes(p));
+  if (hasUnexpectedAngle) {
+    result.detected.push({
+      type: 'unexpectedAngle',
+      description: xFactors.unexpectedAngle.description
+    });
+    result.score += 15;
+  } else {
+    result.missing.push({
+      type: 'unexpectedAngle',
+      description: 'Consider unexpected angle (surprise twist, contrary view)'
+    });
+  }
+  
+  result.score = Math.min(100, result.score);
+  
+  return result;
+}
+
+/**
+ * Run Pre-Submission Validation
+ */
+function runPreSubmissionValidation(content, campaignData, judgingResult) {
+  const result = {
+    passed: true,
+    checks: {},
+    issues: [],
+    warnings: []
+  };
+  
+  const checklist = CONFIG.preSubmissionChecklist;
+  
+  // 1. Mindset Check (informational)
+  result.checks.mindset = {
+    status: 'INFO',
+    items: checklist.mindset
+  };
+  
+  // 2. Information Verification
+  const verificationIssues = [];
+  if (!campaignData?.knowledgeBase) {
+    verificationIssues.push('Campaign knowledgeBase not fetched');
+  }
+  result.checks.informationVerification = {
+    status: verificationIssues.length === 0 ? 'PASS' : 'WARN',
+    issues: verificationIssues
+  };
+  if (verificationIssues.length > 0) {
+    result.warnings.push(...verificationIssues);
+  }
+  
+  // 3. G4 Originality Check
+  const g4Result = detectG4Elements(content);
+  const g4Issues = [];
+  if (g4Result.issues.length > 0) {
+    g4Issues.push(...g4Result.issues);
+  }
+  if (!g4Result.bonuses.casualHookOpening) {
+    g4Issues.push('Missing casual hook opening');
+  }
+  if (!g4Result.bonuses.parentheticalAside) {
+    g4Issues.push('Missing parenthetical aside');
+  }
+  if (!g4Result.bonuses.contractions?.passed) {
+    g4Issues.push('Need 3+ contractions');
+  }
+  result.checks.gateOriginality = {
+    status: g4Issues.length === 0 ? 'PASS' : 'FAIL',
+    estimatedG4: g4Result.estimatedG4.toFixed(2),
+    issues: g4Issues,
+    recommendations: g4Result.recommendations
+  };
+  if (g4Issues.length > 0) {
+    result.issues.push(...g4Issues);
+    result.passed = false;
+  }
+  
+  // 4. Forbidden Punctuation Check
+  const punctuationResult = detectForbiddenPunctuation(content);
+  const punctuationIssues = [];
+  if (punctuationResult.emDashes.found) {
+    punctuationIssues.push(`Em dashes detected: ${punctuationResult.emDashes.count}`);
+  }
+  if (punctuationResult.smartQuotes.found) {
+    punctuationIssues.push(`Smart quotes detected: ${punctuationResult.smartQuotes.count}`);
+  }
+  result.checks.forbiddenPunctuation = {
+    status: punctuationIssues.length === 0 ? 'PASS' : 'FAIL',
+    issues: punctuationIssues,
+    sanitizedContent: punctuationResult.sanitizedContent
+  };
+  if (punctuationIssues.length > 0) {
+    result.issues.push(...punctuationIssues);
+    result.passed = false;
+  }
+  
+  // 5. X-Factor Check
+  const xFactorResult = detectXFactors(content);
+  result.checks.xFactors = {
+    status: xFactorResult.detected.length >= 3 ? 'PASS' : 'WARN',
+    detected: xFactorResult.detected,
+    missing: xFactorResult.missing,
+    score: xFactorResult.score
+  };
+  if (xFactorResult.detected.length < 3) {
+    result.warnings.push(`Only ${xFactorResult.detected.length}/5 X-Factors detected`);
+  }
+  
+  // 6. Gate Score Check (if judging result provided)
+  if (judgingResult) {
+    const gateCheckIssues = [];
+    if (judgingResult.scores?.gateUtama < CONFIG.thresholds.gateUtama.pass) {
+      gateCheckIssues.push('Gate Utama below threshold');
+    }
+    if (judgingResult.scores?.gateTambahan < CONFIG.thresholds.gateTambahan.pass) {
+      gateCheckIssues.push('Gate Tambahan below threshold');
+    }
+    if (judgingResult.scores?.penilaianInternal < CONFIG.thresholds.penilaianInternal.pass) {
+      gateCheckIssues.push('Penilaian Internal below threshold');
+    }
+    result.checks.gateScores = {
+      status: gateCheckIssues.length === 0 ? 'PASS' : 'FAIL',
+      issues: gateCheckIssues,
+      totalScore: judgingResult.totalScore
+    };
+    if (gateCheckIssues.length > 0) {
+      result.issues.push(...gateCheckIssues);
+      result.passed = false;
+    }
+    
+    // Calculate Gate Multiplier
+    const gateMultiplier = calculateGateMultiplier(
+      judgingResult.scores?.gateUtama / CONFIG.thresholds.gateUtama.max * 2,
+      judgingResult.scores?.gateTambahan / CONFIG.thresholds.gateTambahan.max * 2,
+      judgingResult.scores?.penilaianInternal / CONFIG.thresholds.penilaianInternal.max * 2,
+      g4Result.estimatedG4
+    );
+    result.gateMultiplier = gateMultiplier;
+  }
+  
+  return result;
+}
+
+/**
+ * Display Control Matrix (What you CAN vs CANNOT control)
+ */
+function displayControlMatrix() {
+  const matrix = CONFIG.controlMatrix;
+  
+  console.log('\n   ╔════════════════════════════════════════════════════════════╗');
+  console.log('   ║           🎮 CONTROL MATRIX - Focus Your Effort           ║');
+  console.log('   ╠════════════════════════════════════════════════════════════╣');
+  console.log('   ║                    ✅ YOU CAN CONTROL                     ║');
+  console.log('   ╠════════════════════════════════════════════════════════════╣');
+  
+  Object.entries(matrix.canControl).forEach(([key, value]) => {
+    const label = key.replace('_', ': ').padEnd(20);
+    console.log(`   ║  ${label} Target: ${value.target}          ║`);
+  });
+  
+  console.log('   ╠════════════════════════════════════════════════════════════╣');
+  console.log('   ║                   ❌ YOU CANNOT CONTROL                   ║');
+  console.log('   ╠════════════════════════════════════════════════════════════╣');
+  
+  Object.entries(matrix.cannotControl).forEach(([key, value]) => {
+    const label = key.padEnd(20);
+    console.log(`   ║  ${label} Strategy: ${value.strategy.substring(0, 20)}  ║`);
+  });
+  
+  console.log('   ╚════════════════════════════════════════════════════════════╝');
+}
+
+/**
+ * Display Mindset Framework
+ */
+function displayMindsetFramework() {
+  const mindset = CONFIG.mindsetFramework;
+  
+  console.log('\n   ╔════════════════════════════════════════════════════════════╗');
+  console.log('   ║              🧠 MINDSET FRAMEWORK                         ║');
+  console.log('   ╠════════════════════════════════════════════════════════════╣');
+  console.log(`   ║  TARGET:    ${mindset.target.padEnd(43)}║`);
+  console.log(`   ║  EFFORT:    ${mindset.effort.substring(0, 43).padEnd(43)}║`);
+  console.log(`   ║  ACCEPT:    ${mindset.acceptance.padEnd(43)}║`);
+  console.log(`   ║  LEARN:     ${mindset.learning.padEnd(43)}║`);
+  console.log(`   ║  REPEAT:    ${mindset.repeat.padEnd(43)}║`);
+  console.log('   ╠════════════════════════════════════════════════════════════╣');
+  console.log(`   ║  💡 "${mindset.keyInsight.substring(0, 48)}"║`);
+  console.log('   ╚════════════════════════════════════════════════════════════╝');
+}
+
+/**
+ * Display G4 Analysis Summary
+ */
+function displayG4Analysis(g4Result) {
+  console.log('\n   ╔════════════════════════════════════════════════════════════╗');
+  console.log('   ║              🔍 G4 ORIGINALITY ANALYSIS                    ║');
+  console.log('   ╠════════════════════════════════════════════════════════════╣');
+  
+  // Bonuses
+  console.log('   ║  ✅ BONUSES:                                              ║');
+  const bonusItems = [
+    ['Casual Hook', g4Result.bonuses.casualHookOpening],
+    ['Parenthetical', g4Result.bonuses.parentheticalAside],
+    ['Contractions', g4Result.bonuses.contractions?.passed || false],
+    ['Personal Angle', g4Result.bonuses.personalAngle],
+    ['Conv. Ending', g4Result.bonuses.conversationalEnding]
+  ];
+  bonusItems.forEach(([name, value]) => {
+    const status = value ? '✓' : '✗';
+    console.log(`   ║     ${status} ${name.padEnd(18)} ${value ? '+0.15-0.20' : 'MISSING'}             ║`);
+  });
+  
+  // Penalties
+  console.log('   ╠────────────────────────────────────────────────────────────╣');
+  console.log('   ║  ❌ PENALTIES:                                             ║');
+  const penaltyItems = [
+    ['Em Dashes', g4Result.penalties.emDashes?.present],
+    ['Smart Quotes', g4Result.penalties.smartQuotes?.present],
+    ['AI Phrases', g4Result.penalties.aiPhrases?.present],
+    ['Generic Open', g4Result.penalties.genericOpening],
+    ['Formal End', g4Result.penalties.formalEnding]
+  ];
+  penaltyItems.forEach(([name, value]) => {
+    const status = value ? '⚠️' : '✓';
+    console.log(`   ║     ${status} ${name.padEnd(18)} ${value ? 'PENALTY!' : 'OK'}                  ║`);
+  });
+  
+  // Summary
+  console.log('   ╠════════════════════════════════════════════════════════════╣');
+  console.log(`   ║  📊 Estimated G4 Score: ${g4Result.estimatedG4.toFixed(2)}/2.00                       ║`);
+  console.log(`   ║  📈 Total Bonus: +${g4Result.totalBonus.toFixed(2)}                                    ║`);
+  console.log(`   ║  📉 Total Penalty: -${g4Result.totalPenalty.toFixed(2)}                                  ║`);
+  console.log(`   ║  🎯 Can Achieve 2.0: ${g4Result.canAchieveMaxScore ? 'YES' : 'NO'}                              ║`);
+  console.log('   ╚════════════════════════════════════════════════════════════╝');
+  
+  // Issues
+  if (g4Result.issues.length > 0) {
+    console.log('\n   ⚠️  ISSUES TO FIX:');
+    g4Result.issues.forEach(issue => {
+      console.log(`      • ${issue}`);
+    });
+  }
+  
+  // Recommendations
+  if (g4Result.recommendations.length > 0) {
+    console.log('\n   💡 RECOMMENDATIONS:');
+    g4Result.recommendations.forEach(rec => {
+      console.log(`      • ${rec}`);
+    });
+  }
 }
 
 // ============================================================================
@@ -3773,22 +4709,44 @@ async function mainMultiContent(campaignAddress) {
       keyFacts: researchData?.synthesis?.keyFacts?.slice(0, 5),
       uniqueAngles: researchData?.synthesis?.uniqueAngles?.slice(0, 3)
     },
+    // NEW v9.8.2: Enhanced Analysis
+    v982Analysis: finalContent ? {
+      g4Originality: detectG4Elements(finalContent),
+      forbiddenPunctuation: detectForbiddenPunctuation(finalContent),
+      xFactors: detectXFactors(finalContent),
+      preSubmissionValidation: runPreSubmissionValidation(finalContent, campaignData, finalJudgingResult),
+      gateMultiplier: finalJudgingResult ? calculateGateMultiplier(
+        finalJudgingResult.scores?.gateUtama / CONFIG.thresholds.gateUtama.max * 2 || 1,
+        finalJudgingResult.scores?.gateTambahan / CONFIG.thresholds.gateTambahan.max * 2 || 1,
+        finalJudgingResult.scores?.penilaianInternal / CONFIG.thresholds.penilaianInternal.max * 2 || 1,
+        detectG4Elements(finalContent).estimatedG4
+      ) : null
+    } : null,
     metadata: {
-      version: '9.8.1-sdk-only',
+      version: '9.8.2-enhanced',
       model: CONFIG.model.name,
       timestamp: new Date().toISOString(),
-      duration: `${duration}s`
+      duration: `${duration}s`,
+      newFeatures: [
+        'G4 Originality Detection',
+        'Forbidden Punctuation Check',
+        'X-Factor Differentiators',
+        'Gate Multiplier Formula',
+        'Pre-Submission Validation',
+        'Mindset Framework',
+        'Control Matrix'
+      ]
     }
   };
   
   // Save to file
-  const outputPath = `${CONFIG.outputDir}/rally-v9.8.1-${Date.now()}.json`;
+  const outputPath = `${CONFIG.outputDir}/rally-v9.8.2-${Date.now()}.json`;
   fs.writeFileSync(outputPath, JSON.stringify(finalResults, null, 2));
   console.log(`\n💾 Results saved to: ${outputPath}`);
   
   // Final summary
   console.log('\n' + '═'.repeat(70));
-  console.log('║                    FINAL SUMMARY                                ║');
+  console.log('║                    FINAL SUMMARY - v9.8.2                      ║');
   console.log('═'.repeat(70));
   
   console.log(`\n   📊 Total Generate Attempts: ${generateAttempt}`);
@@ -3799,6 +4757,57 @@ async function mainMultiContent(campaignAddress) {
   if (finalContent && finalJudgingResult) {
     console.log(`\n   ✅ SUCCESS! Content passed all judges.`);
     console.log(`   📊 Final Score: ${finalJudgingResult.totalScore}/136`);
+    
+    // NEW v9.8.2: Display enhanced analysis
+    const g4Result = detectG4Elements(finalContent);
+    const xFactorResult = detectXFactors(finalContent);
+    const punctuationResult = detectForbiddenPunctuation(finalContent);
+    
+    displayG4Analysis(g4Result);
+    
+    // X-Factor Summary
+    console.log('\n   ╔════════════════════════════════════════════════════════════╗');
+    console.log('   ║              ⭐ X-FACTOR DIFFERENTIATORS                   ║');
+    console.log('   ╠════════════════════════════════════════════════════════════╣');
+    console.log(`   ║  Detected: ${xFactorResult.detected.length}/5    Score: ${xFactorResult.score}/100                              ║`);
+    if (xFactorResult.detected.length > 0) {
+      xFactorResult.detected.forEach(xf => {
+        console.log(`   ║    ✓ ${xf.type.padEnd(25)}                        ║`);
+      });
+    }
+    if (xFactorResult.missing.length > 0) {
+      console.log('   ╠────────────────────────────────────────────────────────────╣');
+      xFactorResult.missing.slice(0, 3).forEach(m => {
+        console.log(`   ║    ✗ ${m.type.padEnd(25)}                        ║`);
+      });
+    }
+    console.log('   ╚════════════════════════════════════════════════════════════╝');
+    
+    // Forbidden Punctuation Check
+    if (punctuationResult.totalIssues > 0) {
+      console.log('\n   ⚠️  FORBIDDEN PUNCTUATION DETECTED:');
+      if (punctuationResult.emDashes.found) {
+        console.log(`      • Em Dashes: ${punctuationResult.emDashes.count} found - Replace with hyphens`);
+      }
+      if (punctuationResult.smartQuotes.found) {
+        console.log(`      • Smart Quotes: ${punctuationResult.smartQuotes.count} found - Use straight quotes`);
+      }
+    } else {
+      console.log('\n   ✅ No forbidden punctuation detected');
+    }
+    
+    // Gate Multiplier Display
+    if (finalResults.v982Analysis?.gateMultiplier) {
+      const gm = finalResults.v982Analysis.gateMultiplier;
+      console.log('\n   ╔════════════════════════════════════════════════════════════╗');
+      console.log('   ║              📈 GATE MULTIPLIER (Official Formula)         ║');
+      console.log('   ╠════════════════════════════════════════════════════════════╣');
+      console.log(`   ║  g_star: ${gm.g_star}/2.0                                              ║`);
+      console.log(`   ║  Multiplier: ${gm.multiplier}x                                            ║`);
+      console.log(`   ║  Status: ${gm.status.padEnd(20)}  Bonus: ${gm.bonus}              ║`);
+      console.log('   ╚════════════════════════════════════════════════════════════╝');
+    }
+    
     console.log(`\n   📝 FINAL CONTENT:`);
     console.log('   ' + '─'.repeat(60));
     console.log('   ' + finalContent.split('\n').join('\n   '));
