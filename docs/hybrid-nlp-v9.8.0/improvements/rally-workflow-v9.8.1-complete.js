@@ -33,7 +33,7 @@
  * ✅ Batch Judging dengan Ranking System
  * ✅ Model GLM-5 dengan Think + WebSearch
  * ✅ Select Best Content dari 5 konten
- * ✅ Total Score System (136 poin max)
+ * ✅ Total Score System (141 poin max)
  * ✅ SDK Only - No Fallbacks (All features must work!)
  * ✅ Campaign Search by Name (not just address!)
  * 
@@ -614,12 +614,12 @@ const CONFIG = {
     }
   },
   
-  // Enhanced thresholds for Hybrid
+  // Enhanced thresholds for Hybrid (Updated for G4 Originality & X-Factor)
   thresholds: {
-    gateUtama: { pass: 16, max: 20 },
-    gateTambahan: { pass: 14, max: 16 },
+    gateUtama: { pass: 19, max: 24 },        // Updated: 6 criteria x 4 = 24 (was 20)
+    gateTambahan: { pass: 12, max: 16 },     // 4 criteria x 4 = 16 (includes X-Factor)
     penilaianInternal: { pass: 54, max: 60 },
-    compliance: { pass: 10, max: 10, allMustPass: true },
+    compliance: { pass: 11, max: 11, allMustPass: true },  // Updated: 11 checks (was 10)
     factCheck: { pass: 4, max: 5 },
     uniqueness: { pass: 20, max: 25 },
     readability: { min: 60, optimal: 70 },
@@ -829,7 +829,7 @@ const CONFIG = {
         weight: -0.30
       },
       smartQuotes: {
-        patterns: ['"', '"', ''', ''', '„', '‟'],
+        patterns: ['\u201c', '\u201d', '\u2018', '\u2019', '\u201e', '\u201f'],  // Smart quotes: " " ' ' „ ‟
         description: 'Contains smart/curly quotes (AI indicator)',
         weight: -0.20
       },
@@ -871,8 +871,8 @@ const CONFIG = {
       reason: 'AI-generated content indicator'
     },
     smartQuotes: {
-      double: ['"', '"', '„', '‟'],
-      single: [''', '''],
+      double: ['\u201c', '\u201d', '\u201e', '\u201f'],  // " " „ ‟
+      single: ['\u2018', '\u2019'],  // ' '
       name: 'Smart Quotes',
       replaceWith: { double: '"', single: "'" },
       reason: 'AI-generated content indicator'
@@ -3320,20 +3320,15 @@ SCORING GUIDE (1-4 for each criterion):
 
 📌 HOOK QUALITY (1-4)
 ────────────────────────────
-4 = EXCELLENT: Opening immediately grabs attention, feels natural, NOT formulaic
-3 = GOOD: Opening is engaging, minor improvements possible
+4 = EXCELLENT: Opens with CASUAL hook (ngl, tbh, honestly, fun story, look, real talk), immediately grabs attention, NOT formulaic
+3 = GOOD: Opening is engaging, has some casual element
 2 = FAIR: Opening exists but feels generic or weak
-1 = POOR: Opening is boring, clichéd, or template-like
+1 = POOR: Opens with template (Unpopular opinion, Hot take, Here's the thing) or boring
 
 Examples of EXCELLENT hooks:
-• "Last March, I lost $47,000 in 8 minutes."
-• "Three dead ends. That's what I hit."
-• "Everyone's wrong about this."
-
-Examples of POOR hooks:
-• "Unpopular opinion:"
-• "Here's the thing:"
-• "Let me explain..."
+• "ngl i spent 25 minutes just watching this thing"
+• "tbh didn't expect this to work"
+• "fun story - i almost scrolled past this"
 
 📌 EMOTIONAL IMPACT (1-4)
 ────────────────────────────
@@ -3349,11 +3344,11 @@ Examples of POOR hooks:
 2 = FAIR: Body feeling mentioned but not impactful
 1 = POOR: No physical sensation or feels fake
 
-Examples: "stomach dropped", "chest tightened", "cold sweat"
+Examples: "stomach dropped", "chest tightened", "cold sweat", "jaw dropped"
 
 📌 CTA QUALITY (1-4)
 ────────────────────────────
-4 = EXCELLENT: Natural CTA that makes readers WANT to engage
+4 = EXCELLENT: Natural CONVERSATIONAL CTA (tbh, worth checking, what do you think?, just saying)
 3 = GOOD: Clear CTA, somewhat engaging
 2 = FAIR: CTA exists but feels generic
 1 = POOR: No CTA or pushy/promotional
@@ -3364,6 +3359,28 @@ Examples: "stomach dropped", "chest tightened", "cold sweat"
 3 = GOOD: URL present and fits reasonably well
 2 = FAIR: URL present but feels forced
 1 = POOR: URL missing or poorly placed
+
+📌 G4 ORIGINALITY (1-4) - NEW!
+────────────────────────────
+4 = EXCELLENT: Has 4+ G4 elements (casual hook, parenthetical aside, 3+ contractions, personal angle, conversational ending)
+3 = GOOD: Has 3 G4 elements present
+2 = FAIR: Has 1-2 G4 elements
+1 = POOR: No G4 elements, sounds AI-generated or formal
+
+G4 Elements to check:
+• Casual hook opening (ngl, tbh, honestly, fun story, look, real talk)
+• Parenthetical aside ((embarrassing to admit), (just saying), (not gonna lie))
+• Contractions (don't, can't, it's, I'm, won't, wouldn't, let's, that's) - need 3+
+• Personal angle (I, my, me with specific experience)
+• Conversational ending (tbh, worth checking, what do you think?)
+
+═══════════════════════════════════════════════════════════════════════════════
+🚨 FORBIDDEN ELEMENTS (Auto -1 point each if found):
+═══════════════════════════════════════════════════════════════════════════════
+• Em dashes (— or –) - AI indicator
+• Smart quotes (" " ' ') - AI indicator
+• AI phrases: delve, leverage, realm, tapestry, paradigm, landscape, nuance
+• Template openings: "Unpopular opinion:", "Hot take:", "Picture this"
 
 ═══════════════════════════════════════════════════════════════════════════════
 OUTPUT FORMAT:
@@ -3376,6 +3393,8 @@ Return JSON:
   "bodyFeeling": {"score": N, "reason": "brief explanation"},
   "ctaQuality": {"score": N, "reason": "brief explanation"},
   "urlPresence": {"score": N, "reason": "brief explanation"},
+  "g4Originality": {"score": N, "reason": "which G4 elements present"},
+  "forbiddenElements": {"found": [], "penalty": N},
   "totalScore": N,
   "feedback": "overall assessment"
 }`;
@@ -3404,7 +3423,7 @@ SCORING GUIDE (1-4 for each criterion):
 
 📌 FACT QUALITY (1-4)
 ────────────────────────────
-4 = EXCELLENT: Multiple evidence layers (data, case study, personal, expert)
+4 = EXCELLENT: Multiple evidence layers (data, case study, personal, expert) with SPECIFIC NUMBERS
 3 = GOOD: Has supporting facts/data, credible
 2 = FAIR: Some facts present but weak or generic
 1 = POOR: No facts, unsubstantiated claims, or fake data
@@ -3417,14 +3436,14 @@ Evidence layers to look for:
 
 📌 ENGAGEMENT HOOK (1-4)
 ────────────────────────────
-4 = EXCELLENT: Content naturally invites replies and discussion
+4 = EXCELLENT: Content naturally invites replies and discussion with EMBARRASSING HONESTY
 3 = GOOD: Has engagement potential
 2 = FAIR: Some engagement elements
 1 = POOR: No reason for readers to engage
 
 📌 READABILITY (1-4)
 ────────────────────────────
-4 = EXCELLENT: Easy to read, good flow, appropriate length
+4 = EXCELLENT: Easy to read, good flow, appropriate length, uses contractions naturally
 3 = GOOD: Readable with minor issues
 2 = FAIR: Somewhat hard to follow or too long/short
 1 = POOR: Confusing, poor structure, or walls of text
@@ -3434,17 +3453,19 @@ Check for:
 • Good sentence variety
 • No jargon overload
 
-📌 ORIGINALITY (1-4)
+📌 X-FACTOR DIFFERENTIATORS (1-4) - NEW!
 ────────────────────────────
-4 = EXCELLENT: Unique angle, fresh perspective, NOT template-like
-3 = GOOD: Some original elements
-2 = FAIR: Derivative, seen similar content before
-1 = POOR: Completely generic, obvious template
+4 = EXCELLENT: Has 4+ X-Factors (specific numbers, time specificity, embarrassing honesty, insider detail, unexpected angle)
+3 = GOOD: Has 3 X-Factors present
+2 = FAIR: Has 1-2 X-Factors
+1 = POOR: No X-Factors, generic vague content
 
-Red flags for low originality:
-• Starts with "Unpopular opinion:" or "Hot take:"
-• Uses AI-sounding phrases
-• Same angle as countless other posts
+X-Factors to check:
+• SPECIFIC NUMBERS: Exact figures ("down 47%", "$1.2M", "3.5x") NOT vague ("down a lot")
+• TIME SPECIFICITY: Exact durations ("25 minutes", "3 hours") NOT vague ("a while")
+• EMBARRASSING HONESTY: Admits something relatable ("embarrassing to admit I watched for 25 mins")
+• INSIDER DETAIL: Unique observation ("went from 68% to sweating bullets", "refreshed 47 times")
+• UNEXPECTED ANGLE: Surprise twist or contrary view
 
 ═══════════════════════════════════════════════════════════════════════════════
 OUTPUT FORMAT:
@@ -3455,7 +3476,7 @@ Return JSON:
   "factQuality": {"score": N, "reason": "brief explanation"},
   "engagementHook": {"score": N, "reason": "brief explanation"},
   "readability": {"score": N, "reason": "brief explanation"},
-  "originality": {"score": N, "reason": "brief explanation"},
+  "xFactorDifferentiators": {"score": N, "reason": "which X-Factors present", "detected": []},
   "totalScore": N,
   "feedback": "overall assessment"
 }`;
@@ -3616,19 +3637,32 @@ FAIL: Contains AI-typical words or phrases
 AI red flags: delve, leverage, realm, tapestry, paradigm, landscape, nuance,
 "picture this", "let's dive in", "in today's digital landscape"
 
-📌 8. EVIDENCE DEPTH
+📌 8. NO FORBIDDEN PUNCTUATION - NEW!
 ────────────────────────────
-PASS: Has sufficient evidence/proof for claims
-FAIL: Makes claims without supporting evidence
+PASS: No em dashes or smart quotes detected
+FAIL: Contains AI indicator punctuation
 
-📌 9. ANTI-TEMPLATE
+🚨 FORBIDDEN (AI Indicators):
+• Em dashes (— or –): These are AI-generated indicators. Use hyphens (-) or commas instead.
+• Smart quotes (" " ' '): Use straight quotes (" and ') only.
+• Ellipsis character (…): Use three dots (...) instead.
+
+How to detect: Look for long dashes (—) which are different from hyphens (-).
+Look for curly quotes (" ") which are different from straight quotes (" ").
+
+📌 9. EVIDENCE DEPTH
 ────────────────────────────
-PASS: Not using formulaic/template structures
+PASS: Has sufficient evidence/proof for claims with SPECIFIC NUMBERS
+FAIL: Makes claims without supporting evidence or uses vague numbers
+
+📌 10. ANTI-TEMPLATE
+────────────────────────────
+PASS: Not using formulaic/template structures, has G4 elements (casual hook, parenthetical aside)
 FAIL: Uses obvious templates like "Unpopular opinion:", "Hot take:", etc.
 
-📌 10. QUALITY THRESHOLD
+📌 11. QUALITY THRESHOLD
 ────────────────────────────
-PASS: Meets minimum quality standards
+PASS: Meets minimum quality standards with X-Factors (specific numbers, time specificity)
 FAIL: Poor quality, many issues, needs major revision
 
 ═══════════════════════════════════════════════════════════════════════════════
@@ -3645,6 +3679,7 @@ Return JSON:
     "requiredUrl": {"pass": true/false, "reason": "brief explanation"},
     "noBannedWords": {"pass": true/false, "reason": "brief explanation"},
     "noAIPatterns": {"pass": true/false, "reason": "brief explanation"},
+    "noForbiddenPunctuation": {"pass": true/false, "reason": "em dashes/smart quotes found?", "details": ""},
     "evidenceDepth": {"pass": true/false, "reason": "brief explanation"},
     "antiTemplate": {"pass": true/false, "reason": "brief explanation"},
     "qualityThreshold": {"pass": true/false, "reason": "brief explanation"}
@@ -3852,6 +3887,7 @@ function parseJudge4Result(content) {
     requiredUrl: { pass: false, reason: 'Not checked' },
     noBannedWords: { pass: false, reason: 'Not checked' },
     noAIPatterns: { pass: false, reason: 'Not checked' },
+    noForbiddenPunctuation: { pass: false, reason: 'Not checked', details: '' },  // NEW
     evidenceDepth: { pass: false, reason: 'Not checked' },
     antiTemplate: { pass: false, reason: 'Not checked' },
     qualityThreshold: { pass: false, reason: 'Not checked' }
@@ -3887,14 +3923,24 @@ function parseJudge6Result(content, nlpAnalysis) {
 
 function calculateJudge1Score(result) {
   if (!result) return 0;
+  
+  // Base scores from judge
   const scores = [
     result.hookQuality?.score || 0,
     result.emotionalImpact?.score || 0,
     result.bodyFeeling?.score || 0,
     result.ctaQuality?.score || 0,
-    result.urlPresence?.score || 0
+    result.urlPresence?.score || 0,
+    result.g4Originality?.score || 0  // NEW: G4 Originality scoring
   ];
-  return scores.reduce((a, b) => a + b, 0);
+  
+  let total = scores.reduce((a, b) => a + b, 0);
+  
+  // Apply penalty for forbidden elements
+  const forbiddenPenalty = result.forbiddenElements?.penalty || 0;
+  total = Math.max(0, total - forbiddenPenalty);
+  
+  return total;
 }
 
 function calculateJudge2Score(result) {
@@ -3903,7 +3949,7 @@ function calculateJudge2Score(result) {
     result.factQuality?.score || 0,
     result.engagementHook?.score || 0,
     result.readability?.score || 0,
-    result.originality?.score || 0
+    result.xFactorDifferentiators?.score || 0  // NEW: X-Factor scoring (replaces originality)
   ];
   return scores.reduce((a, b) => a + b, 0);
 }
@@ -4072,7 +4118,7 @@ function displayJudgingSummary(results) {
   console.log('   ╠' + '─'.repeat(56) + '╣');
   
   const totalStatus = results.passed ? '✅ PASSED' : '❌ FAILED';
-  console.log(`   ║              TOTAL: ${results.totalScore.toString().padStart(3)}/136  ${totalStatus.padEnd(14)}║`);
+  console.log(`   ║              TOTAL: ${results.totalScore.toString().padStart(3)}/141  ${totalStatus.padEnd(14)}║`);
   
   if (results.nlpAnalysis?.hybridMetrics) {
     const grade = results.nlpAnalysis.hybridMetrics.qualityGrade;
@@ -4456,10 +4502,12 @@ class MultiContentGenerator {
     const narrativeStructure = this._selectStructure(variation.structure);
     const audience = selectUnaddressedAudience(competitorAnalysis, campaignData.title);
     const emotionCombo = { emotions: variation.emotions, hook: `${variation.emotions[0]} → ${variation.emotions[1]}` };
-    
+
     const systemPrompt = `You are an expert content creator for Rally.fun. Create UNIQUE, engaging content.
 
+═══════════════════════════════════════════════════════════════════════════════
 CRITICAL RULES:
+═══════════════════════════════════════════════════════════════════════════════
 1. NO TEMPLATES - Content must flow naturally
 2. NO AI-SOUNDING language (avoid: delve, leverage, realm, tapestry, paradigm, landscape, nuance)
 3. Use PERSONAL, CONVERSATIONAL tone
@@ -4469,21 +4517,57 @@ CRITICAL RULES:
 7. Use ${persona.name} persona (${persona.trait})
 8. Follow ${narrativeStructure.name} flow: ${narrativeStructure.flow}
 
+═══════════════════════════════════════════════════════════════════════════════
+🚨 FORBIDDEN - DO NOT USE (AI Indicators):
+═══════════════════════════════════════════════════════════════════════════════
+- EM DASHES (— or –): Use hyphens (-) or commas instead
+- SMART QUOTES (" " ' '): Use straight quotes (" and ') only
+- AI PHRASES: delve, leverage, realm, tapestry, paradigm, landscape, nuance, underscores, pivotal, crucial, embark, journey, explore, unlock, harness
+- TEMPLATE OPENINGS: "Unpopular opinion:", "Hot take:", "In today's", "Picture this", "Let's dive in"
+- FORMAL ENDINGS: "In conclusion", "To summarize", "Ultimately"
+
+═══════════════════════════════════════════════════════════════════════════════
+✅ REQUIRED G4 ORIGINALITY ELEMENTS (Must Include 4+):
+═══════════════════════════════════════════════════════════════════════════════
+1. CASUAL HOOK OPENING: Start with "ngl", "tbh", "honestly", "fun story", "okay so", "look", "real talk"
+2. PARENTHETICAL ASIDE: Add "(embarrassing to admit)", "(just saying)", "(not gonna lie)", "(for real)"
+3. CONTRACTIONS: Use 3+ contractions (don't, can't, it's, I'm, won't, wouldn't, let's, that's)
+4. PERSONAL ANGLE: Include "I", "my", "me" with specific experience
+5. CONVERSATIONAL ENDING: End with "tbh", "worth checking", "what do you think?", "just saying"
+
+═══════════════════════════════════════════════════════════════════════════════
+⭐ X-FACTOR DIFFERENTIATORS (Must Include 3+):
+═══════════════════════════════════════════════════════════════════════════════
+1. SPECIFIC NUMBERS: Use exact figures ("down 47%", "$1.2M", "3.5x") NOT vague ("down a lot")
+2. TIME SPECIFICITY: Include exact durations ("25 minutes", "3 hours") NOT vague ("a while")
+3. EMBARRASSING HONESTY: Admit something relatable ("embarrassing to admit I watched for 25 mins")
+4. INSIDER DETAIL: Share unique observation ("went from 68% to sweating bullets")
+5. UNEXPECTED ANGLE: Surprise twist or contrary view
+
 AVOID THESE OVERUSED ELEMENTS:
 ${(competitorAnalysis?.saturatedElements || []).slice(0, 5).join(', ') || 'None specific'}
 ${CONFIG.hardRequirements.templatePhrases.slice(0, 10).join(', ')}
 
 CONTENT REQUIREMENTS:
-- Hook: Natural, organic (NOT formulaic)
+- Hook: Natural, organic with CASUAL opening (NOT formulaic)
 - Emotions: At least 3 different emotions
 - Body Feeling: Physical sensation the reader feels
 - CTA: Question or reply bait
 - URL: MUST include ${campaignData.campaignUrl || campaignData.url || 'the campaign URL'}
-- Facts: Multi-layer evidence
+- Facts: Multi-layer evidence with SPECIFIC NUMBERS
+- X-Factors: At least 3 differentiators (specific numbers, time, embarrassing honesty, insider detail)
 
 Return JSON:
 {
-  "tweets": [{ "content": "<full tweet text>", "hook": "...", "emotions": [], "bodyFeeling": "...", "cta": "..." }],
+  "tweets": [{
+    "content": "<full tweet text>",
+    "hook": "...",
+    "emotions": [],
+    "bodyFeeling": "...",
+    "cta": "...",
+    "g4Elements": ["casualHook", "parentheticalAside", "contractions", "personalAngle", "conversationalEnding"],
+    "xFactors": ["specificNumbers", "timeSpecificity", "embarrassingHonesty", "insiderDetail"]
+  }],
   "strategyUsed": { "angle": "...", "differentiationPoint": "..." }
 }`;
 
@@ -4505,7 +4589,21 @@ ${researchData?.synthesis?.keyFacts?.slice(0, 5).join('\n') || 'No research data
 COMPETITOR ANGLES TO AVOID:
 ${(competitorAnalysis?.anglesUsed || []).slice(0, 5).join(', ') || 'None'}
 
-Create unique content!`;
+═══════════════════════════════════════════════════════════════════════════════
+CHECKLIST BEFORE SUBMITTING:
+═══════════════════════════════════════════════════════════════════════════════
+□ Opens with casual hook (ngl, tbh, honestly, fun story)?
+□ Has parenthetical aside (embarrassing to admit, just saying)?
+□ Uses 3+ contractions (don't, can't, I'm, won't)?
+□ Has personal angle (I, my, me)?
+□ Includes specific numbers (47%, $1.2M)?
+□ Has time specificity (25 minutes)?
+□ Shows embarrassing honesty?
+□ NO em dashes (— or –)?
+□ NO smart quotes (" " ' ')?
+□ NO AI phrases (delve, leverage, realm)?
+
+Create content that scores HIGH on G4 Originality and X-Factors!`;
 
     const response = await this.llm.chat([
       { role: 'system', content: systemPrompt },
@@ -4756,7 +4854,7 @@ async function mainMultiContent(campaignAddress) {
   
   if (finalContent && finalJudgingResult) {
     console.log(`\n   ✅ SUCCESS! Content passed all judges.`);
-    console.log(`   📊 Final Score: ${finalJudgingResult.totalScore}/136`);
+    console.log(`   📊 Final Score: ${finalJudgingResult.totalScore}/141`);
     
     // NEW v9.8.2: Display enhanced analysis
     const g4Result = detectG4Elements(finalContent);
