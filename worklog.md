@@ -1,12 +1,13 @@
-# RALLY WORKFLOW V9.8.2 - WORKLOG
+# RALLY WORKFLOW V9.8.0 - WORKLOG
 
 ## Informasi Versi
 
 | Item | Detail |
 |------|--------|
-| **Versi** | v9.8.2 Enhanced |
-| **Tanggal** | 2026-03-23 |
-| **File** | `/home/z/my-project/docs/hybrid-nlp-v9.8.0/improvements/rally-workflow-v9.8.1-complete.js` |
+| **Versi** | v9.8.0 Hybrid Complete |
+| **Tanggal** | 2026-03-24 |
+| **File Utama** | `/home/z/my-project/docs/hybrid-nlp-v9.8.0/rally-workflow-v9.8.0-hybrid.js` |
+| **File v9.8.2** | `/home/z/my-project/docs/hybrid-nlp-v9.8.0/improvements/rally-workflow-v9.8.2-complete.js` |
 | **GitHub** | https://github.com/tuyulmillenium104-cmd/penilaian2 |
 | **Based On** | Rally Ultimate Master Guide V3 |
 
@@ -15,22 +16,22 @@
 ## Cara Menjalankan
 
 ```bash
-# Masuk ke direktori
-cd /home/z/my-project/docs/hybrid-nlp-v9.8.0/improvements
+# Masuk ke direktori utama
+cd /home/z/my-project/docs/hybrid-nlp-v9.8.0
 
 # List semua campaign
-node rally-workflow-v9.8.1-complete.js list
+node rally-workflow-v9.8.0-hybrid.js list
 
 # Jalankan dengan nama campaign (partial match)
-node rally-workflow-v9.8.1-complete.js "Internet Court"
+node rally-workflow-v9.8.0-hybrid.js "Internet Court"
 
 # Jalankan dengan alamat campaign
-node rally-workflow-v9.8.1-complete.js 0xAF5a5B459F4371c1781E3B8456214CDD063EeBA7
+node rally-workflow-v9.8.0-hybrid.js 0xAF5a5B459F4371c1781E3B8456214CDD063EeBA7
 ```
 
 ---
 
-## 🆕 NEW v9.8.2 Features (from Rally Master Guide V3)
+## 🆕 FITUR LENGKAP v9.8.0 (Comprehensive Edition)
 
 ### 1. G4 Originality Elements Detection
 | Element | Weight | Description |
@@ -95,68 +96,120 @@ M_gate = 1 + 0.5 × (g_star - 1)
 | EP, TQ | Replies, QR, FR |
 | Verified Facts | Ranking, Algorithm |
 
----
-
-## Fitur dari v9.8.1
-
-### 1. Campaign Search by Name
-- Pencarian campaign dengan nama (partial match)
-- Tidak harus pakai alamat lagi
-
-### 2. Multi-Token Pool (11 Tokens)
+### 9. Multi-Token Pool (11 Tokens)
 | # | Label | User ID |
 |---|-------|---------|
 | 0 | Auto-Config (Primary) | auto |
 | 1 | Akun A #1 | 97631263-5dba-4e16-b127-19212e012a9b |
 | 2 | Akun B #1 | bb829ea3-0d37-4944-8705-00090bde3671 |
-| ... | ... | ... |
+| 3 | Akun A #2 | 97631263-5dba-4e16-b127-19212e012a9b |
+| 4 | Akun B #2 | bb829ea3-0d37-4944-8705-00090bde3671 |
+| 5 | Akun A #3 | 97631263-5dba-4e16-b127-19212e012a9b |
+| 6 | Akun C #1 | 2706ea69-a397-4f3f-8706-5eaf0d6a799b |
+| 7 | Akun D #1 | e3b6c803-c6c2-4467-ab2b-0bd3ab9c6a48 |
+| 8 | Akun A #4 | 97631263-5dba-4e16-b127-19212e012a9b |
+| 9 | Akun E #1 | 1cdcf579-c6e5-4ef7-82d5-d869d8c85a5e |
+| 10 | Akun B #3 | bb829ea3-0d37-4944-8705-00090bde3671 |
 
-### 3. Multi-Content Workflow
+### 10. Multi-Content Workflow
 - Generate 5 konten sekaligus
 - Quick Judge (compliance check)
 - Full Judge (6 gates × 2 passes)
 - Auto regenerate jika gagal
+- Ranking system untuk pilih terbaik
 
-### 4. Hybrid Approach
-- **Generator**: Tahu quality criteria
-- **Judge**: Independen, tidak tahu scoring details
+### 11. Campaign Search by Name
+- Pencarian campaign dengan nama (partial match)
+- Tidak harus pakai alamat lagi
 
-### 5. Web Search (SDK)
-- Pure SDK web search
-- Multi-token fallback untuk rate limit
+### 12. SDK Only Approach
+- Pure z-ai-web-dev-sdk
+- No HTTP fallbacks
+- All features must work!
+
+### 13. Python NLP Integration
+- VADER + TextBlob Sentiment Analysis
+- Semantic Similarity with Sentence Transformers
+- Multi-metric Readability Scoring (textstat)
+- Named Entity Recognition (spaCy)
+- Advanced Emotion Detection
+- Content Depth Analysis
+- Anti-Template Detection
 
 ---
 
-## Sistem Scoring (136 Poin Total)
+## Sistem Scoring (141 Poin Total)
 
 | Gate | Poin | Threshold |
 |------|------|-----------|
-| Gate Utama | 20 | 16 (80%) |
-| Gate Tambahan | 16 | 14 (87.5%) |
+| Gate Utama | 24 | 19 (79%) |
+| Gate Tambahan | 16 | 12 (75%) |
 | Penilaian Internal | 60 | 54 (90%) |
-| Compliance | 10 | 10 (100%) |
+| Compliance | 11 | 11 (100%) |
 | Fact-Check | 5 | 4 (80%) |
 | Uniqueness | 25 | 20 (80%) |
-| **TOTAL** | **136** | **118 (87%)** |
+| **TOTAL** | **141** | **120 (85%)** |
+
+---
+
+## File Structure
+
+```
+/home/z/my-project/docs/hybrid-nlp-v9.8.0/
+├── rally-workflow-v9.8.0-hybrid.js  # ✅ MAIN FILE (Updated)
+├── nlp_service.py                    # Python NLP Service
+├── python_nlp_client.js              # Python NLP Client
+├── requirements.txt                  # Python dependencies
+├── setup.sh                          # Setup script
+├── README.md                         # Documentation
+└── improvements/
+    ├── rally-workflow-v9.8.1-complete.js
+    ├── rally-workflow-v9.8.2-complete.js
+    ├── v9.8.1-multi-content-generator.js
+    └── CHANGELOG.md
+```
 
 ---
 
 ## Status: SIAP DIGUNAKAN
 
-Workflow siap dijalankan kapan saja. Jika rate limit, tunggu beberapa jam lalu jalankan lagi.
+Workflow siap dijalankan kapan saja. Jika rate limit, multi-token system akan otomatis berganti token.
 
 **Perintah untuk menjalankan:**
 ```bash
-cd /home/z/my-project/docs/hybrid-nlp-v9.8.0/improvements
-node rally-workflow-v9.8.1-complete.js "Internet Court"
+cd /home/z/my-project/docs/hybrid-nlp-v9.8.0
+node rally-workflow-v9.8.0-hybrid.js "Internet Court"
 ```
+
+---
+
+## Update History
+
+### 2026-03-24: Comprehensive Update
+- Updated v9.8.0-hybrid.js dengan semua fitur dari v9.8.2
+- G4 Originality Detection
+- Forbidden Punctuation Check
+- Gate Multiplier Formula
+- X-Factor Differentiators
+- Pre-Submission Validation
+- Mindset Framework & Control Matrix
+- Multi-Token Rate Limit Handler (11 tokens)
+- Campaign Search by Name
+- Multi-Content Generator (5 konten)
+- Batch Judging with Ranking
+
+### 2026-03-23: Initial v9.8.2 Features
+- G4 Originality Elements Detection
+- Forbidden Punctuation Detection
+- Gate Multiplier Formula
+- X-Factor Differentiators
 
 ---
 
 ## Git Commit Info
 
 ```
-deb565c feat: upgrade to v9.8.2 with Rally Master Guide V3 features
+feat: comprehensive update to v9.8.0-hybrid with all v9.8.2 features
 ```
 
 Push ke GitHub memerlukan autentikasi manual.
