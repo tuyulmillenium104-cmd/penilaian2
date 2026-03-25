@@ -1,0 +1,214 @@
+   ⚠️ Python NLP Client not available, using fallback
+
+📌 MODE: First Pass Wins (v9.8.3-final-v2)
+   Generate 3 contents PARALLEL → Judge with FAIL FAST → First pass wins
+
+
+╔════════════════════════════════════════════════════════════════╗
+║    RALLY WORKFLOW V9.8.3-FINAL - TRUE FIRST PASS WINS         ║
+╠════════════════════════════════════════════════════════════════╣
+║  🎯 Loop until 1 content passes all judges                     ║
+║  📊 High Standards: 90% Gate, 80% Facts, 87.5% Quality        ║
+║  🏆 First content to pass → STOP IMMEDIATELY (AbortController) ║
+╚════════════════════════════════════════════════════════════════╝
+
+════════════════════════════════════════════════════════════
+🔍 PRE-FLIGHT CHECK - HTTP Direct Mode
+════════════════════════════════════════════════════════════
+   ✅ HTTP Direct Mode: Ready (No SDK required)
+   ✅ Gateway: 172.25.136.210:8080, 172.25.136.193:8080
+   ✅ Tokens: 11 available
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║           🎫 MULTI-TOKEN RATE LIMIT HANDLER               ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║ ► #0: Auto-Config (Primary)                     ║
+   ║   #1: Akun A #1                                 ║
+   ║   #2: Akun B #1                                 ║
+   ║   #3: Akun A #2                                 ║
+   ║   #4: Akun B #2                                 ║
+   ║   #5: Akun A #3                                 ║
+   ║   #6: Akun C #1                                 ║
+   ║   #7: Akun D #1                                 ║
+   ║   #8: Akun A #4                                 ║
+   ║   #9: Akun E #1                                 ║
+   ║   #10: Akun B #3                                 ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  Total: 11 tokens available for rate limit fallback    ║
+   ╚════════════════════════════════════════════════════════════╝
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║              🧠 MINDSET FRAMEWORK                         ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  TARGET:    BEAT Top 10                                ║
+   ║  EFFORT:    MAXIMIZE everything you control            ║
+   ║  ACCEPT:    Whatever result comes                      ║
+   ║  LEARN:     From every outcome                         ║
+   ║  REPEAT:    With improved knowledge                    ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  💡 "The TRY matters more than the outcome. You contr"║
+   ╚════════════════════════════════════════════════════════════╝
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║           🎮 CONTROL MATRIX - Focus Your Effort           ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║                    ✅ YOU CAN CONTROL                     ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  G1: Alignment        Target: 2          ║
+   ║  G2: Accuracy         Target: 2          ║
+   ║  G3: Compliance       Target: 2          ║
+   ║  G4: Originality      Target: 2          ║
+   ║  EP: Potential        Target: 4.5-5.0          ║
+   ║  TQ: Quality          Target: 4.5-5.0          ║
+   ║  verifiedFacts        Target: ALL          ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║                   ❌ YOU CANNOT CONTROL                   ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  Retweets             Strategy: Create shareable con  ║
+   ║  Likes                Strategy: Focus on quality, le  ║
+   ║  Replies              Strategy: Ask questions, invit  ║
+   ║  QR_QualityReplies    Strategy: Post when active com  ║
+   ║  FR_FollowersRepliers Strategy: Hope for quality eng  ║
+   ║  ranking              Strategy: Maximize what you co  ║
+   ║  algorithmTiming      Strategy: Post at optimal time  ║
+   ╚════════════════════════════════════════════════════════════╝
+════════════════════════════════════════════════════════════
+
+🔍 Resolving campaign: Share, Refer, Earn Forever
+
+🔍 Searching campaign: "Share, Refer, Earn Forever"...
+
+   ✅ Found: Share, Refer, Earn Forever
+   📍 Address: 0xb98FEb296B811443aB9f845aD22105b8F8Cc1D7e
+
+📥 Fetching campaign data: 0xb98FEb296B811443aB9f845aD22105b8F8Cc1D7e
+   ✅ Campaign data fetched
+   📋 Title: Share, Refer, Earn Forever
+   🎨 Style: Post a banger!...
+   📜 Rules: **Check Mission Rules**...
+   ✅ Found: Share, Refer, Earn Forever
+   📍 Address: 0xb98FEb296B811443aB9f845aD22105b8F8Cc1D7e
+
+📊 HIGH STANDARDS THRESHOLDS:
+   Judge 1 (Gate Master):  18/20 (90%)
+   Judge 2 (Evidence):      3/5 (60%)
+   Judge 3 (Quality):      70/80 (87.5%)
+   Total Required:         91/105 (86.7%)
+
+📥 Fetching competitor submissions...
+
+📥 Fetching leaderboard...
+   ✅ Leaderboard fetched: 0 submissions
+   📊 Found 0 submissions
+
+🔍 Running Deep Competitor Analysis...
+
+────────────────────────────────────────────────────────────
+🔍 DEEP COMPETITOR CONTENT ANALYSIS
+────────────────────────────────────────────────────────────
+   ℹ️ No submissions to analyze - returning empty analysis
+
+🔎 Running Multi-Query Deep Research...
+
+────────────────────────────────────────────────────────────
+🔎 MULTI-QUERY DEEP RESEARCH
+────────────────────────────────────────────────────────────
+   🔍 Query 1/6: "Share, Refer, Earn Forever what is how it works 20..."
+   🔍 Web Search (Real): "Share, Refer, Earn Forever what is how it works 20..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 2/6: "share, refer, earn forever real cases examples suc..."
+   🔍 Web Search (Real): "share, refer, earn forever real cases examples suc..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 3/6: "share, refer, earn forever controversy debate prob..."
+   🔍 Web Search (Real): "share, refer, earn forever controversy debate prob..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 4/6: "share, refer, earn forever statistics data market ..."
+   🔍 Web Search (Real): "share, refer, earn forever statistics data market ..."
+   ⚠️ Web search timeout, retrying...
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 5/6: "share, refer, earn forever expert opinion quote an..."
+   🔍 Web Search (Real): "share, refer, earn forever expert opinion quote an..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 6/6: "share, refer, earn forever untold story hidden pro..."
+   🔍 Web Search (Real): "share, refer, earn forever untold story hidden pro..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   ✅ Response received (http-direct, token: auto)
+
+   ┌──────────────────────────────────────────────────────┐
+   │ 🧠 RESEARCH THINKING                                │
+   ├──────────────────────────────────────────────────────┤
+   │ Found 5 facts, 4 unique angles                       │
+   └──────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════
+🔄 CYCLE 1
+   📊 Stats: 0 generated, 0 failed
+════════════════════════════════════════════════════════════
+
+📝 Generating 3 contents in parallel...
+   📝 [17:48:01] Generating Content 1 (personal_story)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT #1 (v9.8.3 Diverse)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using DIVERSE hook #1: Specific Moment Hook
+   📋 Principle: Ground the reader in a specific time/place/situation
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Passive Income Seekers
+   💫 Emotion Combo: surprise + anger (very rare)
+   🎣 Hook Type: Specific Moment Hook
+   📝 [17:48:01] Generating Content 2 (data_driven)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT #2 (v9.8.3 Diverse)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using DIVERSE hook #2: Shocking Claim Hook
+   📋 Principle: Make a bold statement that challenges or reveals
+   🎭 Selected Persona: The Skeptic
+   📖 Narrative Structure: Contrast Frame
+   👥 Target Audience: Crypto Earners
+   💫 Emotion Combo: fear + empowerment (very rare)
+   🎣 Hook Type: Shocking Claim Hook
+   📝 [17:48:01] Generating Content 3 (contrarian)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT #3 (v9.8.3 Diverse)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using DIVERSE hook #3: Relatable Struggle Hook
+   📋 Principle: Connect through shared pain or frustration
+   🎭 Selected Persona: The Insider
+   📖 Narrative Structure: Case Study
+   👥 Target Audience: Web3 Early Adopters
+   💫 Emotion Combo: confusion + clarity (very rare)
+   🎣 Hook Type: Relatable Struggle Hook
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+
+   📄 CONTENT 2 PREVIEW:
+   ──────────────────────────────────────────────────
+   Most referral programs give you a one-time payout. Then it's over. For...
+   📏 Length: 583 chars
+   ──────────────────────────────────────────────────
+
+   ✅ [17:48:05] Content 2 generated
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+
+   📄 CONTENT 3 PREVIEW:
+   ──────────────────────────────────────────────────
+   My hands were shaking the first time I saw someone else's earnings das...
+   
+   This isn't just a referral program. It's building a network that pays ...
+   
+   The best part? The people you bring in today could be earning you pass...
+   
+   I've seen too many friends get burned by 'passive income' schemes that...
+   
+   ... (5 more lines)
+   📏 Length: 961 chars
+   ──────────────────────────────────────────────────
+
+   ✅ [17:48:09] Content 3 generated

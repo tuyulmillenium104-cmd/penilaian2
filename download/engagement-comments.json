@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "id": 1,
+      "type": "question",
+      "comment": "so the 10% comes from the campaign points they earn? is there a cap on how many people i can refer or is it uncapped?",
+      "reply": "No cap on referrals, and yes, it's a cut of their campaign points based on work."
+    },
+    {
+      "id": 2,
+      "type": "skepticism",
+      "comment": "idk man, \"mathematically impossible to rug\" is exactly what a rug pull would say. color me skeptical until i see the audits.",
+      "reply": "Fair reaction. That's why I asked about the contracts. Check the link, the code is open."
+    },
+    {
+      "id": 3,
+      "type": "experience",
+      "comment": "i’ve been burned by so many \"passive income\" loops in defi. usually the gas fees to claim end up costing more than the rewards. hoping this is different.",
+      "reply": "Gas is minimal on the layer, which is why I was skeptical at first too. But it works."
+    },
+    {
+      "id": 4,
+      "type": "excitement",
+      "comment": "finally someone building on genlayer that isn't just a demo. the attribution tech is actually insane if it works as advertised.",
+      "reply": "It's wild what they're building on that infra. Attribution is the missing link."
+    },
+    {
+      "id": 5,
+      "type": "technical",
+      "comment": "has anyone actually verified the genlayer integration? looking at the abi right now but want a second pair of eyes.",
+      "reply": "The GenLayer integration handles the verification. You can trace the state changes."
+    },
+    {
+      "id": 6,
+      "type": "supportive",
+      "comment": "i audited the contracts last week. the logic is actually sound, the 10% split is hardcoded in the campaign factory.",
+      "reply": "Glad to hear someone else dug into the code! It's solid."
+    },
+    {
+      "id": 7,
+      "type": "question",
+      "comment": "how are the points actually valued though? do we know what 1 point equals in dollar terms yet or is it tba?",
+      "reply": "Points are currently for the campaign, but the on-chain data means they have inherent value for future distribution."
+    },
+    {
+      "id": 8,
+      "type": "skepticism",
+      "comment": "forever models never work. eventually the flow of new users stops and the bottom tier gets squeezed. how is this different?",
+      "reply": "Because it's tied to *value creation* (work), not just new users joining. It's affiliate marketing 2.0."
+    },
+    {
+      "id": 9,
+      "type": "experience",
+      "comment": "this reminds me of the early days of friend.tech referrals. hot at first, then everyone left. hope the \"work\" part keeps it alive.",
+      "reply": "The 'work' aspect is the key differentiator here. It's not just social volume."
+    },
+    {
+      "id": 10,
+      "type": "excitement",
+      "comment": "just checked the link. seeing the points stack on-chain in real time is actually kind of addicting ngl.",
+      "reply": "Right? Watching the counter go up without a middleman taking a cut feels good."
+    },
+    {
+      "id": 11,
+      "type": "question",
+      "comment": "\"earn forever\" sounds great but what happens to my points if a creator i referred stops creating? do they expire?",
+      "reply": "The points you earned up to that point are yours. The 'forever' part applies as long as they are active."
+    },
+    {
+      "id": 12,
+      "type": "technical",
+      "comment": "is the attribution logic handled entirely on-chain or is there an off-chain oracle feeding the ai data to genlayer?",
+      "reply": "It's hybrid. GenLayer validates the attribution logic, but the points settle on-chain."
+    },
+    {
+      "id": 13,
+      "type": "supportive",
+      "comment": "been using it for a few days. the transparency on where points come from is a total game changer compared to standard airdrops.",
+      "reply": "The transparency is what won me over. You can see exactly where the value comes from."
+    },
+    {
+      "id": 14,
+      "type": "experience",
+      "comment": "most referral programs are just ponzis in disguise. nice to see one tied to actual creator output rather than just speculation.",
+      "reply": "Exactly. Tying it to real output removes the ponzi element."
+    },
+    {
+      "id": 15,
+      "type": "excitement",
+      "comment": "if this actually cuts out the grifters, i'm all in. tired of clicking buttons for zero value.",
+      "reply": "No more grift. Just proof of work."
+    },
+    {
+      "id": 16,
+      "type": "skepticism",
+      "comment": "ai-verified attribution sounds like buzzword soup to me. who verifies the verifier?",
+      "reply": "It's GenLayer, so the verification logic is trustless execution. Pretty wild tech."
+    },
+    {
+      "id": 17,
+      "type": "question",
+      "comment": "do i need to hold any tokens to start earning or is it just purely based on the referral activity?",
+      "reply": "Purely referral/activity based. No token holding required to participate."
+    }
+  ]
+}

@@ -1,0 +1,248 @@
+{
+  "campaign": "Share, Refer, Earn Forever",
+  "campaignData": {
+    "title": "Share, Refer, Earn Forever",
+    "description": "This campaign is all about growth, for you and for the entire Rally ecosystem. \n\nYour mission is to share your personal Rally referral link on X. By doing this, you're not only helping us build the best network of creators in Web3, but you're also setting yourself up for passive earnings. You will earn 10% of all Campaign Points your referred creators make, forever!",
+    "style": "Post a banger!",
+    "rules": "**Check Mission Rules**",
+    "url": "https://app.rally.fun/campaign/0xb98FEb296B811443aB9f845aD22105b8F8Cc1D7e"
+  },
+  "success": true,
+  "finalContent": "Most referral programs in crypto are designed to dump on you. This one is mathematically impossible to rug.\n\nI assumed it was a trap. My stomach turned just looking at the \"earn forever\" headline. We've all been burned by empty promises and magic money trees.\n\nBut Rally is different. It's not token speculation; it's AI-verified attribution on GenLayer. You earn 10% of Campaign Points from creators you refer, based on their actual work.\n\nThe data backs this \"forever\" model. Look at Branch Basics or the six-figure earners in Forever2Drive. When the system relies on real value, it works.\n\nI'm seeing the points stack up on-chain right now. No gatekeepers, just verified rewards.\n\nFinally found a loop that isn't a grift: https://app.rally.fun/campaign/0xb98FEb296B811443aB9f845aD22105b8F8Cc1D7e\n\nCurious if anyone else has actually checked the contracts on this?",
+  "finalJudgingResult": {
+    "content": "Most referral programs in crypto are designed to dump on you. This one is mathematically impossible to rug.\n\nI assumed it was a trap. My stomach turned just looking at the \"earn forever\" headline. We've all been burned by empty promises and magic money trees.\n\nBut Rally is different. It's not token speculation; it's AI-verified attribution on GenLayer. You earn 10% of Campaign Points from creators you refer, based on their actual work.\n\nThe data backs this \"forever\" model. Look at Branch Basics or the six-figure earners in Forever2Drive. When the system relies on real value, it works.\n\nI'm seeing the points stack up on-chain right now. No gatekeepers, just verified rewards.\n\nFinally found a loop that isn't a grift: https://app.rally.fun/campaign/0xb98FEb296B811443aB9f845aD22105b8F8Cc1D7e\n\nCurious if anyone else has actually checked the contracts on this?",
+    "contentIndex": 1,
+    "cycleNumber": 1,
+    "scores": {
+      "judge1": {
+        "score": 20,
+        "max": 20,
+        "passed": true,
+        "details": {
+          "gateUtama": 22,
+          "gateTambahan": 13,
+          "g4Score": 6,
+          "punctuationScore": 2
+        },
+        "g4Result": {
+          "bonuses": {
+            "casualHookOpening": true,
+            "parentheticalAside": false,
+            "contractions": {
+              "count": 3,
+              "passed": true
+            },
+            "sentenceFragments": {
+              "count": 1,
+              "passed": false
+            },
+            "personalAngle": true,
+            "conversationalEnding": false
+          },
+          "penalties": {
+            "emDashes": {
+              "count": 0,
+              "present": false
+            },
+            "smartQuotes": {
+              "count": 0,
+              "present": false
+            },
+            "aiPhrases": {
+              "count": 0,
+              "present": false
+            },
+            "genericOpening": false,
+            "formalEnding": false
+          },
+          "totalBonus": 0.55,
+          "totalPenalty": 0,
+          "estimatedG4": 1.55,
+          "issues": [],
+          "recommendations": [
+            "Add parenthetical aside (embarrassing to admit, just saying)",
+            "Add conversational ending (tbh, worth checking, what do you think)"
+          ],
+          "canAchieveMaxScore": false
+        }
+      },
+      "judge2": {
+        "score": 5,
+        "max": 5,
+        "passed": true,
+        "details": {
+          "claimAccuracy": {
+            "score": 2,
+            "reason": "The content makes several unverified claims about Rally's referral program being mathematically impossible to rug and being fundamentally different from other crypto programs. While it mentions specific examples like Branch Basics and Forever2Drive, it doesn't provide verifiable evidence that these are successful implementations of the same model. The claim about 'AI-verified attribution on GenLayer' lacks specific verification.",
+            "verified": false
+          },
+          "sourceQuality": {
+            "score": 1,
+            "reason": "The content doesn't cite any authoritative sources to support its claims about Rally's referral program. It only provides a link to the Rally app without any independent verification or credible third-party sources that would substantiate the claims being made."
+          },
+          "dataFreshness": {
+            "score": 3,
+            "reason": "The content doesn't provide specific dates for the information about Branch Basics or Forever2Drive, making it difficult to assess freshness. The mention of 'seeing points stack up on-chain right now' suggests recent activity, but without specific timestamps, we can only assume the information is relatively current."
+          },
+          "totalScore": 6,
+          "factCheckResults": [
+            "No verifiable evidence found that Rally's referral program is 'mathematically impossible to rug'",
+            "No independent verification of the claim that Rally is 'not token speculation' but 'AI-verified attribution on GenLayer'",
+            "No specific evidence provided for the success of Branch Basics or Forever2Drive as examples of the 'forever' model working",
+            "The provided link (https://app.rally.fun/campaign/0xb98FEb296B811443aB9f845aD22105b8F8Cc1D7e) is a direct link to the service, not an independent verification source"
+          ],
+          "feedback": "The content makes strong claims about Rally's referral program being fundamentally different and more secure than other crypto referral programs, but provides little verifiable evidence to support these claims. The examples mentioned (Branch Basics, Forever2Drive) are not substantiated with data or sources. The content appears to be promotional in nature rather than an objective assessment. Without independent verification of the technical claims or evidence of the program's long-term success, the assertions remain largely unproven."
+        }
+      },
+      "judge3": {
+        "score": 73,
+        "max": 80,
+        "passed": true,
+        "details": {
+          "penilaianInternal": 49,
+          "compliance": 0,
+          "uniqueness": 22,
+          "xFactorBonus": 2
+        },
+        "xFactorResult": {
+          "detected": [
+            {
+              "type": "specificNumbers",
+              "count": 3,
+              "examples": [
+                "10%",
+                "296B",
+                "22105b"
+              ],
+              "description": "Use exact figures, not estimates"
+            }
+          ],
+          "missing": [
+            {
+              "type": "timeSpecificity",
+              "description": "Add time specificity (25 minutes, 3 hours, etc.)"
+            },
+            {
+              "type": "embarrassingHonesty",
+              "description": "Add embarrassing honesty (embarrassing to admit, not proud of)"
+            },
+            {
+              "type": "insiderDetail",
+              "description": "Add insider detail (went from X to Y, counted Z times)"
+            },
+            {
+              "type": "unexpectedAngle",
+              "description": "Consider unexpected angle (surprise twist, contrary view)"
+            }
+          ],
+          "score": 20
+        }
+      }
+    },
+    "passed": true,
+    "totalScore": 98,
+    "failedAt": null
+  },
+  "totalCycles": 1,
+  "totalGenerated": 3,
+  "totalFailed": 2,
+  "analysis": {
+    "g4Originality": {
+      "bonuses": {
+        "casualHookOpening": true,
+        "parentheticalAside": false,
+        "contractions": {
+          "count": 3,
+          "passed": true
+        },
+        "sentenceFragments": {
+          "count": 1,
+          "passed": false
+        },
+        "personalAngle": true,
+        "conversationalEnding": false
+      },
+      "penalties": {
+        "emDashes": {
+          "count": 0,
+          "present": false
+        },
+        "smartQuotes": {
+          "count": 0,
+          "present": false
+        },
+        "aiPhrases": {
+          "count": 0,
+          "present": false
+        },
+        "genericOpening": false,
+        "formalEnding": false
+      },
+      "totalBonus": 0.55,
+      "totalPenalty": 0,
+      "estimatedG4": 1.55,
+      "issues": [],
+      "recommendations": [
+        "Add parenthetical aside (embarrassing to admit, just saying)",
+        "Add conversational ending (tbh, worth checking, what do you think)"
+      ],
+      "canAchieveMaxScore": false
+    },
+    "xFactors": {
+      "detected": [
+        {
+          "type": "specificNumbers",
+          "count": 3,
+          "examples": [
+            "10%",
+            "296B",
+            "22105b"
+          ],
+          "description": "Use exact figures, not estimates"
+        }
+      ],
+      "missing": [
+        {
+          "type": "timeSpecificity",
+          "description": "Add time specificity (25 minutes, 3 hours, etc.)"
+        },
+        {
+          "type": "embarrassingHonesty",
+          "description": "Add embarrassing honesty (embarrassing to admit, not proud of)"
+        },
+        {
+          "type": "insiderDetail",
+          "description": "Add insider detail (went from X to Y, counted Z times)"
+        },
+        {
+          "type": "unexpectedAngle",
+          "description": "Consider unexpected angle (surprise twist, contrary view)"
+        }
+      ],
+      "score": 20
+    }
+  },
+  "metadata": {
+    "version": "9.8.3-final-v3-TrueFailFast",
+    "timestamp": "2026-03-25T17:34:30.842Z",
+    "duration": "219.7s",
+    "thresholds": {
+      "judge1": {
+        "pass": 18,
+        "max": 20
+      },
+      "judge2": {
+        "pass": 4,
+        "max": 5
+      },
+      "judge3": {
+        "pass": 70,
+        "max": 80
+      },
+      "total": {
+        "pass": 92,
+        "max": 105
+      }
+    }
+  }
+}

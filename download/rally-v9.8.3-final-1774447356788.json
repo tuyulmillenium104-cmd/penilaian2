@@ -1,0 +1,239 @@
+{
+  "campaign": "Rally Owns the Narrative",
+  "campaignData": {
+    "title": "Rally Owns the Narrative",
+    "description": "Rally's Beta is live and real tokens are moving on-chain. \n\nThis is the moment to understand what Rally is, why it's built differently, and what being early to a protocol like this has historically meant. Share your perspective on Rally with your audience on X.",
+    "style": "Post a banger!",
+    "rules": "-",
+    "url": "https://app.rally.fun/campaign/0xd6174FCf9a69837846860CCaC6394D3E6645CC22"
+  },
+  "success": true,
+  "finalContent": "The influencer marketing industry is a joke. Projects pay agencies who pay KOLs who post generic content. Everyone gets paid except the people actually creating the value. That's about to change. Rally's beta is LIVE and creators are earning real tokens for their tweets. No gatekeepers. No agencies. Just AI evaluation and on-chain rewards. I've been playing with the platform for 2 weeks now. The moment you submit your tweet and see the AI score... cold sweat down my back. It's actually real. The infrastructure works. The rewards are transparent. And right now, early creators are getting rewarded for quality, not follower count. This isn't another task platform. It's influence infrastructure built on Base and zkSync with GenLayer handling the AI verification. If you've ever felt ripped off as a creator, this matters. Curious if anyone else has tried the beta yet? Still processing how different this feels from traditional influencer marketing. Worth checking out if you're tired of the broken system: https://app.rally.fun/campaign/0xd6174FCf9a69837846860CCaC6394D3E6645CC22",
+  "finalJudgingResult": {
+    "content": "The influencer marketing industry is a joke. Projects pay agencies who pay KOLs who post generic content. Everyone gets paid except the people actually creating the value. That's about to change. Rally's beta is LIVE and creators are earning real tokens for their tweets. No gatekeepers. No agencies. Just AI evaluation and on-chain rewards. I've been playing with the platform for 2 weeks now. The moment you submit your tweet and see the AI score... cold sweat down my back. It's actually real. The infrastructure works. The rewards are transparent. And right now, early creators are getting rewarded for quality, not follower count. This isn't another task platform. It's influence infrastructure built on Base and zkSync with GenLayer handling the AI verification. If you've ever felt ripped off as a creator, this matters. Curious if anyone else has tried the beta yet? Still processing how different this feels from traditional influencer marketing. Worth checking out if you're tired of the broken system: https://app.rally.fun/campaign/0xd6174FCf9a69837846860CCaC6394D3E6645CC22",
+    "contentIndex": 1,
+    "cycleNumber": 1,
+    "scores": {
+      "judge1": {
+        "score": 20,
+        "max": 20,
+        "passed": true,
+        "details": {
+          "gateUtama": 22,
+          "gateTambahan": 15,
+          "g4Score": 6,
+          "punctuationScore": 2
+        },
+        "g4Result": {
+          "bonuses": {
+            "casualHookOpening": false,
+            "parentheticalAside": false,
+            "contractions": {
+              "count": 3,
+              "passed": true
+            },
+            "personalAngle": true,
+            "conversationalEnding": true
+          },
+          "penalties": {
+            "emDashes": {
+              "count": 0,
+              "present": false
+            },
+            "smartQuotes": {
+              "count": 0,
+              "present": false
+            },
+            "aiPhrases": {
+              "count": 0,
+              "present": false
+            },
+            "genericOpening": false,
+            "formalEnding": false
+          },
+          "totalBonus": 0.55,
+          "totalPenalty": 0,
+          "estimatedG4": 1.55,
+          "issues": [],
+          "recommendations": [
+            "Add casual hook opening (ngl, tbh, honestly, fun story)",
+            "Add parenthetical aside (embarrassing to admit, just saying)"
+          ],
+          "canAchieveMaxScore": false
+        }
+      },
+      "judge2": {
+        "score": 4,
+        "max": 5,
+        "passed": true,
+        "details": {
+          "claimAccuracy": {
+            "score": 1,
+            "reason": "The content makes numerous unsubstantiated claims about Rally.fun being a revolutionary influencer marketing platform with AI evaluation and token rewards, but provides no verifiable evidence. The claims about the platform's functionality, rewards system, and technological infrastructure cannot be verified through the provided search results.",
+            "verified": false
+          },
+          "sourceQuality": {
+            "score": 1,
+            "reason": "The content contains no credible sources or citations to support its claims about Rally.fun. It appears to be promotional content without any external verification or references to established sources that would confirm the platform's existence, functionality, or rewards system.",
+            "verified": false
+          },
+          "dataFreshness": {
+            "score": 2,
+            "reason": "The content mentions being in beta and the author having used it for 2 weeks, suggesting recent activity. However, the provided search results are not relevant to verifying this specific platform or its claims, making it impossible to confirm the freshness of the information about Rally.fun.",
+            "verified": false
+          },
+          "totalScore": 4,
+          "factCheckResults": [
+            "No verifiable information found about Rally.fun's beta being live or its functionality",
+            "No evidence found supporting claims about AI evaluation of tweets and token rewards",
+            "No verification of the technological infrastructure claims (Base, zkSync, GenLayer)",
+            "No confirmation of the campaign link or its legitimacy",
+            "The search results provided are unrelated to the content being fact-checked"
+          ],
+          "feedback": "The content appears to be promotional material for a platform called Rally.fun, making numerous unsubstantiated claims about its revolutionary approach to influencer marketing. Without credible sources or verifiable evidence, these claims cannot be confirmed. The provided search results do not contain any information relevant to fact-checking this specific content about Rally.fun. The content lacks transparency about who created it and what evidence supports its claims."
+        }
+      },
+      "judge3": {
+        "score": 73,
+        "max": 80,
+        "passed": true,
+        "details": {
+          "penilaianInternal": 47,
+          "compliance": 0,
+          "uniqueness": 24,
+          "xFactorBonus": 2
+        },
+        "xFactorResult": {
+          "detected": [
+            {
+              "type": "timeSpecificity",
+              "count": 1,
+              "examples": [
+                "2 weeks"
+              ],
+              "description": "Include exact durations"
+            }
+          ],
+          "missing": [
+            {
+              "type": "specificNumbers",
+              "description": "Add specific numbers (47%, $1.2M, etc.)"
+            },
+            {
+              "type": "embarrassingHonesty",
+              "description": "Add embarrassing honesty (embarrassing to admit, not proud of)"
+            },
+            {
+              "type": "insiderDetail",
+              "description": "Add insider detail (went from X to Y, counted Z times)"
+            },
+            {
+              "type": "unexpectedAngle",
+              "description": "Consider unexpected angle (surprise twist, contrary view)"
+            }
+          ],
+          "score": 20
+        }
+      }
+    },
+    "passed": true,
+    "totalScore": 97,
+    "failedAt": null
+  },
+  "totalCycles": 1,
+  "totalGenerated": 2,
+  "totalFailed": 1,
+  "analysis": {
+    "g4Originality": {
+      "bonuses": {
+        "casualHookOpening": false,
+        "parentheticalAside": false,
+        "contractions": {
+          "count": 3,
+          "passed": true
+        },
+        "personalAngle": true,
+        "conversationalEnding": true
+      },
+      "penalties": {
+        "emDashes": {
+          "count": 0,
+          "present": false
+        },
+        "smartQuotes": {
+          "count": 0,
+          "present": false
+        },
+        "aiPhrases": {
+          "count": 0,
+          "present": false
+        },
+        "genericOpening": false,
+        "formalEnding": false
+      },
+      "totalBonus": 0.55,
+      "totalPenalty": 0,
+      "estimatedG4": 1.55,
+      "issues": [],
+      "recommendations": [
+        "Add casual hook opening (ngl, tbh, honestly, fun story)",
+        "Add parenthetical aside (embarrassing to admit, just saying)"
+      ],
+      "canAchieveMaxScore": false
+    },
+    "xFactors": {
+      "detected": [
+        {
+          "type": "timeSpecificity",
+          "count": 1,
+          "examples": [
+            "2 weeks"
+          ],
+          "description": "Include exact durations"
+        }
+      ],
+      "missing": [
+        {
+          "type": "specificNumbers",
+          "description": "Add specific numbers (47%, $1.2M, etc.)"
+        },
+        {
+          "type": "embarrassingHonesty",
+          "description": "Add embarrassing honesty (embarrassing to admit, not proud of)"
+        },
+        {
+          "type": "insiderDetail",
+          "description": "Add insider detail (went from X to Y, counted Z times)"
+        },
+        {
+          "type": "unexpectedAngle",
+          "description": "Consider unexpected angle (surprise twist, contrary view)"
+        }
+      ],
+      "score": 20
+    }
+  },
+  "metadata": {
+    "version": "9.8.3-final-v3-TrueFailFast",
+    "timestamp": "2026-03-25T14:02:36.787Z",
+    "duration": "312.4s",
+    "thresholds": {
+      "judge1": {
+        "pass": 18,
+        "max": 20
+      },
+      "judge2": {
+        "pass": 4,
+        "max": 5
+      },
+      "judge3": {
+        "pass": 70,
+        "max": 80
+      },
+      "total": {
+        "pass": 92,
+        "max": 105
+      }
+    }
+  }
+}

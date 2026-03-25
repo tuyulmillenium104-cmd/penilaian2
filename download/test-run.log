@@ -1,0 +1,303 @@
+   ⚠️ Python NLP Client not available, using fallback
+
+📌 MODE: First Pass Wins (v9.8.3-final-v2)
+   Generate 3 contents PARALLEL → Judge with FAIL FAST → First pass wins
+
+
+╔════════════════════════════════════════════════════════════════╗
+║    RALLY WORKFLOW V9.8.3-FINAL - TRUE FIRST PASS WINS         ║
+╠════════════════════════════════════════════════════════════════╣
+║  🎯 Loop until 1 content passes all judges                     ║
+║  📊 High Standards: 90% Gate, 80% Facts, 87.5% Quality        ║
+║  🏆 First content to pass → STOP IMMEDIATELY (AbortController) ║
+╚════════════════════════════════════════════════════════════════╝
+
+════════════════════════════════════════════════════════════
+🔍 PRE-FLIGHT CHECK - HTTP Direct Mode
+════════════════════════════════════════════════════════════
+   ✅ HTTP Direct Mode: Ready (No SDK required)
+   ✅ Gateway: 172.25.136.210:8080, 172.25.136.193:8080
+   ✅ Tokens: 11 available
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║           🎫 MULTI-TOKEN RATE LIMIT HANDLER               ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║ ► #0: Auto-Config (Primary)                     ║
+   ║   #1: Akun A #1                                 ║
+   ║   #2: Akun B #1                                 ║
+   ║   #3: Akun A #2                                 ║
+   ║   #4: Akun B #2                                 ║
+   ║   #5: Akun A #3                                 ║
+   ║   #6: Akun C #1                                 ║
+   ║   #7: Akun D #1                                 ║
+   ║   #8: Akun A #4                                 ║
+   ║   #9: Akun E #1                                 ║
+   ║   #10: Akun B #3                                 ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  Total: 11 tokens available for rate limit fallback    ║
+   ╚════════════════════════════════════════════════════════════╝
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║              🧠 MINDSET FRAMEWORK                         ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  TARGET:    BEAT Top 10                                ║
+   ║  EFFORT:    MAXIMIZE everything you control            ║
+   ║  ACCEPT:    Whatever result comes                      ║
+   ║  LEARN:     From every outcome                         ║
+   ║  REPEAT:    With improved knowledge                    ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  💡 "The TRY matters more than the outcome. You contr"║
+   ╚════════════════════════════════════════════════════════════╝
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║           🎮 CONTROL MATRIX - Focus Your Effort           ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║                    ✅ YOU CAN CONTROL                     ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  G1: Alignment        Target: 2          ║
+   ║  G2: Accuracy         Target: 2          ║
+   ║  G3: Compliance       Target: 2          ║
+   ║  G4: Originality      Target: 2          ║
+   ║  EP: Potential        Target: 4.5-5.0          ║
+   ║  TQ: Quality          Target: 4.5-5.0          ║
+   ║  verifiedFacts        Target: ALL          ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║                   ❌ YOU CANNOT CONTROL                   ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  Retweets             Strategy: Create shareable con  ║
+   ║  Likes                Strategy: Focus on quality, le  ║
+   ║  Replies              Strategy: Ask questions, invit  ║
+   ║  QR_QualityReplies    Strategy: Post when active com  ║
+   ║  FR_FollowersRepliers Strategy: Hope for quality eng  ║
+   ║  ranking              Strategy: Maximize what you co  ║
+   ║  algorithmTiming      Strategy: Post at optimal time  ║
+   ╚════════════════════════════════════════════════════════════╝
+════════════════════════════════════════════════════════════
+
+🔍 Resolving campaign: Rally Owns the Narrative
+
+🔍 Searching campaign: "Rally Owns the Narrative"...
+
+   ✅ Found: Rally Owns the Narrative
+   📍 Address: 0xd6174FCf9a69837846860CCaC6394D3E6645CC22
+
+📥 Fetching campaign data: 0xd6174FCf9a69837846860CCaC6394D3E6645CC22
+   ✅ Campaign data fetched
+   📋 Title: Rally Owns the Narrative
+   🎨 Style: Post a banger!...
+   📜 Rules: -...
+   ✅ Found: Rally Owns the Narrative
+   📍 Address: 0xd6174FCf9a69837846860CCaC6394D3E6645CC22
+
+📊 HIGH STANDARDS THRESHOLDS:
+   Judge 1 (Gate Master):  18/20 (90%)
+   Judge 2 (Evidence):      4/5 (80%)
+   Judge 3 (Quality):      70/80 (87.5%)
+   Total Required:         92/105 (87.6%)
+
+📥 Fetching competitor submissions...
+
+📥 Fetching leaderboard...
+   ✅ Leaderboard fetched: 0 submissions
+   📊 Found 0 submissions
+
+🔍 Running Deep Competitor Analysis...
+
+────────────────────────────────────────────────────────────
+🔍 DEEP COMPETITOR CONTENT ANALYSIS
+────────────────────────────────────────────────────────────
+   ℹ️ No submissions to analyze - returning empty analysis
+
+🔎 Running Multi-Query Deep Research...
+
+────────────────────────────────────────────────────────────
+🔎 MULTI-QUERY DEEP RESEARCH
+────────────────────────────────────────────────────────────
+   🔍 Query 1/6: "Rally Owns the Narrative what is how it works 2026..."
+   🔍 Web Search (Real): "Rally Owns the Narrative what is how it works 2026..."
+   ⚠️ Web search rate limited on Akun A #1, trying next token...
+   ✅ Web Search: 10 results (token: Akun B #1)
+   🔍 Query 2/6: "rally owns narrative real cases examples success s..."
+   🔍 Web Search (Real): "rally owns narrative real cases examples success s..."
+   ✅ Web Search: 10 results (token: Akun B #1)
+   🔍 Query 3/6: "rally owns narrative controversy debate problems i..."
+   🔍 Web Search (Real): "rally owns narrative controversy debate problems i..."
+   ✅ Web Search: 10 results (token: Akun B #1)
+   🔍 Query 4/6: "rally owns narrative statistics data market size g..."
+   🔍 Web Search (Real): "rally owns narrative statistics data market size g..."
+   ✅ Web Search: 10 results (token: Akun B #1)
+   🔍 Query 5/6: "rally owns narrative expert opinion quote analysis..."
+   🔍 Web Search (Real): "rally owns narrative expert opinion quote analysis..."
+   ✅ Web Search: 10 results (token: Akun B #1)
+   🔍 Query 6/6: "rally owns narrative untold story hidden problem n..."
+   🔍 Web Search (Real): "rally owns narrative untold story hidden problem n..."
+   ✅ Web Search: 10 results (token: Akun B #1)
+   ✅ Response received (http-direct, token: auto)
+
+   ┌──────────────────────────────────────────────────────┐
+   │ 🧠 RESEARCH THINKING                                │
+   ├──────────────────────────────────────────────────────┤
+   │ Found 5 facts, 3 unique angles                       │
+   └──────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════
+🔄 CYCLE 1
+   📊 Stats: 0 generated, 0 failed
+════════════════════════════════════════════════════════════
+
+📝 Generating 3 contents in parallel...
+   📝 [13:49:39] Generating Content 1 (personal_story)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT
+────────────────────────────────────────────────────────────
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   📝 [13:49:39] Generating Content 2 (data_driven)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT
+────────────────────────────────────────────────────────────
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   📝 [13:49:39] Generating Content 3 (contrarian)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT
+────────────────────────────────────────────────────────────
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 2/8, waiting 3.4s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 3/8, waiting 4.4s...
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+   ✅ [13:49:49] Content 2 generated
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 4/8, waiting 5.7s...
+   ⚠️ Rate limit, switching token...
+   ⚠️ Too many consecutive rate limits (5), aborting...
+   ❌ [13:49:56] Content 1 failed: All tokens rate limited - please wait before retrying
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+   ✅ [13:50:50] Content 3 generated
+   ✅ Generated 2/3 contents
+
+⚖️ Judging contents (TRUE parallel with fail-fast)...
+
+   ⚖️ [13:50:50] Judging Content 2 (Cycle 1)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context
+
+   ⚖️ [13:50:50] Judging Content 3 (Cycle 1)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context
+   ✅ Judge 1-GateUtama success!
+
+   🔒 TRUE BLIND JUDGE 2-GateTambahan - Fresh Context
+   ✅ Judge 2-GateTambahan success!
+   📊 Judge 1: 20/20 (✅ PASS)
+   ✅ Judge 1-GateUtama success!
+
+   🔒 TRUE BLIND JUDGE 2-GateTambahan - Fresh Context
+   🔍 Judge 2 (Evidence Master)...
+
+   🔍 FACT-CHECK JUDGE 5-FactCheck - With Web Search
+   🔎 Searching for data from 2026 and earlier...
+   🔍 Web Search (Real): "verify facts 2026 latest..."
+   ✅ Judge 2-GateTambahan success!
+   📊 Judge 1: 20/20 (✅ PASS)
+   ✅ Web Search: 10 results (token: Akun D #1)
+   ✅ Web search: 10 results
+   ✅ Fact-Check Judge 5-FactCheck success!
+   📊 Judge 2: 2/5 (❌ FAIL)
+   🔍 Judge 2 (Evidence Master)...
+
+   🔍 FACT-CHECK JUDGE 5-FactCheck - With Web Search
+   🔎 Searching for data from 2026 and earlier...
+   🔍 Web Search (Real): "verify facts 2026 latest..."
+   ✅ Web Search: 10 results (token: Akun D #1)
+   ✅ Web search: 10 results
+   ✅ Fact-Check Judge 5-FactCheck success!
+   📊 Judge 2: 2/5 (❌ FAIL)
+
+   📊 Cycle 1 complete: All 2 contents failed
+   🔄 Generating new contents...
+
+════════════════════════════════════════════════════════════
+🔄 CYCLE 2
+   📊 Stats: 2 generated, 2 failed
+════════════════════════════════════════════════════════════
+
+📝 Generating 3 contents in parallel...
+   📝 [13:51:54] Generating Content 1 (personal_story)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT
+────────────────────────────────────────────────────────────
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   📝 [13:51:54] Generating Content 2 (data_driven)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT
+────────────────────────────────────────────────────────────
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   📝 [13:51:54] Generating Content 3 (contrarian)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT
+────────────────────────────────────────────────────────────
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 2/8, waiting 3.4s...
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+   ✅ [13:52:00] Content 2 generated
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+   ✅ [13:52:04] Content 1 generated
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+   ✅ [13:52:13] Content 3 generated
+   ✅ Generated 3/3 contents
+
+⚖️ Judging contents (TRUE parallel with fail-fast)...
+
+   ⚖️ [13:52:13] Judging Content 1 (Cycle 2)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context
+
+   ⚖️ [13:52:13] Judging Content 2 (Cycle 2)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context
+
+   ⚖️ [13:52:13] Judging Content 3 (Cycle 2)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context

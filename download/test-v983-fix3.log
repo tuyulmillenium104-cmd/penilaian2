@@ -1,0 +1,301 @@
+   ⚠️ Python NLP Client not available, using fallback
+
+📌 MODE: First Pass Wins (v9.8.3-final-v2)
+   Generate 3 contents PARALLEL → Judge with FAIL FAST → First pass wins
+
+
+╔════════════════════════════════════════════════════════════════╗
+║    RALLY WORKFLOW V9.8.3-FINAL - TRUE FIRST PASS WINS         ║
+╠════════════════════════════════════════════════════════════════╣
+║  🎯 Loop until 1 content passes all judges                     ║
+║  📊 High Standards: 90% Gate, 80% Facts, 87.5% Quality        ║
+║  🏆 First content to pass → STOP IMMEDIATELY (AbortController) ║
+╚════════════════════════════════════════════════════════════════╝
+
+════════════════════════════════════════════════════════════
+🔍 PRE-FLIGHT CHECK - HTTP Direct Mode
+════════════════════════════════════════════════════════════
+   ✅ HTTP Direct Mode: Ready (No SDK required)
+   ✅ Gateway: 172.25.136.210:8080, 172.25.136.193:8080
+   ✅ Tokens: 11 available
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║           🎫 MULTI-TOKEN RATE LIMIT HANDLER               ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║ ► #0: Auto-Config (Primary)                     ║
+   ║   #1: Akun A #1                                 ║
+   ║   #2: Akun B #1                                 ║
+   ║   #3: Akun A #2                                 ║
+   ║   #4: Akun B #2                                 ║
+   ║   #5: Akun A #3                                 ║
+   ║   #6: Akun C #1                                 ║
+   ║   #7: Akun D #1                                 ║
+   ║   #8: Akun A #4                                 ║
+   ║   #9: Akun E #1                                 ║
+   ║   #10: Akun B #3                                 ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  Total: 11 tokens available for rate limit fallback    ║
+   ╚════════════════════════════════════════════════════════════╝
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║              🧠 MINDSET FRAMEWORK                         ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  TARGET:    BEAT Top 10                                ║
+   ║  EFFORT:    MAXIMIZE everything you control            ║
+   ║  ACCEPT:    Whatever result comes                      ║
+   ║  LEARN:     From every outcome                         ║
+   ║  REPEAT:    With improved knowledge                    ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  💡 "The TRY matters more than the outcome. You contr"║
+   ╚════════════════════════════════════════════════════════════╝
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║           🎮 CONTROL MATRIX - Focus Your Effort           ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║                    ✅ YOU CAN CONTROL                     ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  G1: Alignment        Target: 2          ║
+   ║  G2: Accuracy         Target: 2          ║
+   ║  G3: Compliance       Target: 2          ║
+   ║  G4: Originality      Target: 2          ║
+   ║  EP: Potential        Target: 4.5-5.0          ║
+   ║  TQ: Quality          Target: 4.5-5.0          ║
+   ║  verifiedFacts        Target: ALL          ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║                   ❌ YOU CANNOT CONTROL                   ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  Retweets             Strategy: Create shareable con  ║
+   ║  Likes                Strategy: Focus on quality, le  ║
+   ║  Replies              Strategy: Ask questions, invit  ║
+   ║  QR_QualityReplies    Strategy: Post when active com  ║
+   ║  FR_FollowersRepliers Strategy: Hope for quality eng  ║
+   ║  ranking              Strategy: Maximize what you co  ║
+   ║  algorithmTiming      Strategy: Post at optimal time  ║
+   ╚════════════════════════════════════════════════════════════╝
+════════════════════════════════════════════════════════════
+
+🔍 Resolving campaign: Share, Refer, Earn Forever
+
+🔍 Searching campaign: "Share, Refer, Earn Forever"...
+
+   ✅ Found: Share, Refer, Earn Forever
+   📍 Address: 0xb98FEb296B811443aB9f845aD22105b8F8Cc1D7e
+
+📥 Fetching campaign data: 0xb98FEb296B811443aB9f845aD22105b8F8Cc1D7e
+   ✅ Campaign data fetched
+   📋 Title: Share, Refer, Earn Forever
+   🎨 Style: Post a banger!...
+   📜 Rules: **Check Mission Rules**...
+   ✅ Found: Share, Refer, Earn Forever
+   📍 Address: 0xb98FEb296B811443aB9f845aD22105b8F8Cc1D7e
+
+📊 HIGH STANDARDS THRESHOLDS:
+   Judge 1 (Gate Master):  18/20 (90%)
+   Judge 2 (Evidence):      3/5 (60%)
+   Judge 3 (Quality):      70/80 (87.5%)
+   Total Required:         91/105 (86.7%)
+
+📥 Fetching competitor submissions...
+
+📥 Fetching leaderboard...
+   ✅ Leaderboard fetched: 0 submissions
+   📊 Found 0 submissions
+
+🔍 Running Deep Competitor Analysis...
+
+────────────────────────────────────────────────────────────
+🔍 DEEP COMPETITOR CONTENT ANALYSIS
+────────────────────────────────────────────────────────────
+   ℹ️ No submissions to analyze - returning empty analysis
+
+🔎 Running Multi-Query Deep Research...
+
+────────────────────────────────────────────────────────────
+🔎 MULTI-QUERY DEEP RESEARCH
+────────────────────────────────────────────────────────────
+   🔍 Query 1/6: "Share, Refer, Earn Forever what is how it works 20..."
+   🔍 Web Search (Real): "Share, Refer, Earn Forever what is how it works 20..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 2/6: "share, refer, earn forever real cases examples suc..."
+   🔍 Web Search (Real): "share, refer, earn forever real cases examples suc..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 3/6: "share, refer, earn forever controversy debate prob..."
+   🔍 Web Search (Real): "share, refer, earn forever controversy debate prob..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 4/6: "share, refer, earn forever statistics data market ..."
+   🔍 Web Search (Real): "share, refer, earn forever statistics data market ..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 5/6: "share, refer, earn forever expert opinion quote an..."
+   🔍 Web Search (Real): "share, refer, earn forever expert opinion quote an..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 6/6: "share, refer, earn forever untold story hidden pro..."
+   🔍 Web Search (Real): "share, refer, earn forever untold story hidden pro..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   ✅ Response received (http-direct, token: auto)
+   ⚠️ Could not parse synthesis JSON, using fallback...
+
+   ┌──────────────────────────────────────────────────────┐
+   │ 🧠 RESEARCH THINKING                                │
+   ├──────────────────────────────────────────────────────┤
+   │ Found 5 facts, 1 unique angles                       │
+   └──────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════
+🔄 CYCLE 1
+   📊 Stats: 0 generated, 0 failed
+════════════════════════════════════════════════════════════
+
+📝 Generating 3 contents in parallel...
+   📝 [17:41:35] Generating Content 1 (personal_story)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT #1 (v9.8.3 Diverse)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using DIVERSE hook #1: Specific Moment Hook
+   📋 Principle: Ground the reader in a specific time/place/situation
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Passive Income Seekers
+   💫 Emotion Combo: surprise + anger (very rare)
+   🎣 Hook Type: Specific Moment Hook
+   📝 [17:41:35] Generating Content 2 (data_driven)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT #2 (v9.8.3 Diverse)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using DIVERSE hook #2: Shocking Claim Hook
+   📋 Principle: Make a bold statement that challenges or reveals
+   🎭 Selected Persona: The Skeptic
+   📖 Narrative Structure: Contrast Frame
+   👥 Target Audience: Crypto Earners
+   💫 Emotion Combo: fear + empowerment (very rare)
+   🎣 Hook Type: Shocking Claim Hook
+   📝 [17:41:35] Generating Content 3 (contrarian)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT #3 (v9.8.3 Diverse)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using DIVERSE hook #3: Relatable Struggle Hook
+   📋 Principle: Connect through shared pain or frustration
+   🎭 Selected Persona: The Insider
+   📖 Narrative Structure: Case Study
+   👥 Target Audience: Web3 Early Adopters
+   💫 Emotion Combo: confusion + clarity (very rare)
+   🎣 Hook Type: Relatable Struggle Hook
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+
+   📄 CONTENT 3 PREVIEW:
+   ──────────────────────────────────────────────────
+   The creator economy feels rigged sometimes. You pour your heart into c...
+   📏 Length: 812 chars
+   ──────────────────────────────────────────────────
+
+   ✅ [17:41:41] Content 3 generated
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+
+   📄 CONTENT 2 PREVIEW:
+   ──────────────────────────────────────────────────
+   I assumed this was another pyramid scheme.
+   
+   Most referral programs in crypto make my skin crawl. You know the type...
+   
+   But Rally is different. You don't buy a token. You refer creators who ...
+   
+   The AI verifies the quality on-chain. You earn 10% of the points they ...
+   
+   ... (7 more lines)
+   📏 Length: 767 chars
+   ──────────────────────────────────────────────────
+
+   ✅ [17:42:01] Content 2 generated
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+
+   📄 CONTENT 1 PREVIEW:
+   ──────────────────────────────────────────────────
+   Last Tuesday at 2:17am, I was staring at my phone screen, frustrated a...
+   📏 Length: 932 chars
+   ──────────────────────────────────────────────────
+
+   ✅ [17:42:49] Content 1 generated
+   ✅ Generated 3/3 contents
+
+⚖️ Judging contents (TRUE parallel with fail-fast)...
+
+   ⚖️ [17:42:49] Judging Content 1 (Cycle 1)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context
+
+   ⚖️ [17:42:49] Judging Content 2 (Cycle 1)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context
+
+   ⚖️ [17:42:49] Judging Content 3 (Cycle 1)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ✅ Judge 1-GateUtama success!
+
+   🔒 TRUE BLIND JUDGE 2-GateTambahan - Fresh Context
+   ✅ Judge 1-GateUtama success!
+
+   🔒 TRUE BLIND JUDGE 2-GateTambahan - Fresh Context
+   ✅ Judge 2-GateTambahan success!
+   📊 Judge 1: 20/20 (✅ PASS)
+   🔍 Judge 2 (Evidence Master)...
+
+   🔍 FACT-CHECK JUDGE 5-FactCheck - With Web Search
+   🔎 Searching for data from 2026 and earlier...
+   🔍 Web Search (Real): "verify facts 2026 latest..."
+   ✅ Web Search: 10 results (token: Akun A #2)
+   ✅ Web search: 10 results
+   ✅ Judge 1-GateUtama success!
+
+   🔒 TRUE BLIND JUDGE 2-GateTambahan - Fresh Context
+   ✅ Judge 2-GateTambahan success!
+   📊 Judge 1: 20/20 (✅ PASS)
+   ✅ Fact-Check Judge 5-FactCheck success!
+   📊 Judge 2: 2/5 (❌ FAIL)
+   🔍 Judge 2 (Evidence Master)...
+
+   🔍 FACT-CHECK JUDGE 5-FactCheck - With Web Search
+   🔎 Searching for data from 2026 and earlier...
+   🔍 Web Search (Real): "verify facts 2026 latest..."
+   ✅ Web Search: 10 results (token: Akun A #2)
+   ✅ Web search: 10 results
+   ✅ Judge 2-GateTambahan success!
+   📊 Judge 1: 20/20 (✅ PASS)
+   🔍 Judge 2 (Evidence Master)...
+
+   🔍 FACT-CHECK JUDGE 5-FactCheck - With Web Search
+   🔎 Searching for data from 2026 and earlier...
+   🔍 Web Search (Real): "verify facts 2026 latest..."
+   ✅ Web Search: 10 results (token: Akun A #2)
+   ✅ Web search: 10 results
+   ✅ Fact-Check Judge 5-FactCheck success!
+   ⚠️ parseJudgeResult: JSON parse failed for Unknown
+   📊 Extracted score from text: 3
+   📊 Judge 2: 3/5 (✅ PASS)
+   🔍 Judge 3 (Quality Master)...
+
+   🔒 TRUE BLIND JUDGE 3-PenilaianInternal - Fresh Context
+   ✅ Judge 3-PenilaianInternal success!
+
+   🔒 TRUE BLIND JUDGE 4-Compliance - Fresh Context
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ✅ Judge 4-Compliance success!
+
+   🔒 TRUE BLIND JUDGE 6-Uniqueness - Fresh Context
+   ✅ Fact-Check Judge 5-FactCheck success!
+   ⚠️ parseJudgeResult: JSON parse failed for Unknown
+   📊 Extracted score from text: 1
+   📊 Judge 2: 1/5 (❌ FAIL)

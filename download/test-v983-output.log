@@ -1,0 +1,490 @@
+   ⚠️ Python NLP Client not available, using fallback
+
+📌 MODE: First Pass Wins (v9.8.3-final-v2)
+   Generate 3 contents PARALLEL → Judge with FAIL FAST → First pass wins
+
+
+╔════════════════════════════════════════════════════════════════╗
+║    RALLY WORKFLOW V9.8.3-FINAL - TRUE FIRST PASS WINS         ║
+╠════════════════════════════════════════════════════════════════╣
+║  🎯 Loop until 1 content passes all judges                     ║
+║  📊 High Standards: 90% Gate, 80% Facts, 87.5% Quality        ║
+║  🏆 First content to pass → STOP IMMEDIATELY (AbortController) ║
+╚════════════════════════════════════════════════════════════════╝
+
+════════════════════════════════════════════════════════════
+🔍 PRE-FLIGHT CHECK - HTTP Direct Mode
+════════════════════════════════════════════════════════════
+   ✅ HTTP Direct Mode: Ready (No SDK required)
+   ✅ Gateway: 172.25.136.210:8080, 172.25.136.193:8080
+   ✅ Tokens: 11 available
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║           🎫 MULTI-TOKEN RATE LIMIT HANDLER               ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║ ► #0: Auto-Config (Primary)                     ║
+   ║   #1: Akun A #1                                 ║
+   ║   #2: Akun B #1                                 ║
+   ║   #3: Akun A #2                                 ║
+   ║   #4: Akun B #2                                 ║
+   ║   #5: Akun A #3                                 ║
+   ║   #6: Akun C #1                                 ║
+   ║   #7: Akun D #1                                 ║
+   ║   #8: Akun A #4                                 ║
+   ║   #9: Akun E #1                                 ║
+   ║   #10: Akun B #3                                 ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  Total: 11 tokens available for rate limit fallback    ║
+   ╚════════════════════════════════════════════════════════════╝
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║              🧠 MINDSET FRAMEWORK                         ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  TARGET:    BEAT Top 10                                ║
+   ║  EFFORT:    MAXIMIZE everything you control            ║
+   ║  ACCEPT:    Whatever result comes                      ║
+   ║  LEARN:     From every outcome                         ║
+   ║  REPEAT:    With improved knowledge                    ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  💡 "The TRY matters more than the outcome. You contr"║
+   ╚════════════════════════════════════════════════════════════╝
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║           🎮 CONTROL MATRIX - Focus Your Effort           ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║                    ✅ YOU CAN CONTROL                     ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  G1: Alignment        Target: 2          ║
+   ║  G2: Accuracy         Target: 2          ║
+   ║  G3: Compliance       Target: 2          ║
+   ║  G4: Originality      Target: 2          ║
+   ║  EP: Potential        Target: 4.5-5.0          ║
+   ║  TQ: Quality          Target: 4.5-5.0          ║
+   ║  verifiedFacts        Target: ALL          ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║                   ❌ YOU CANNOT CONTROL                   ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  Retweets             Strategy: Create shareable con  ║
+   ║  Likes                Strategy: Focus on quality, le  ║
+   ║  Replies              Strategy: Ask questions, invit  ║
+   ║  QR_QualityReplies    Strategy: Post when active com  ║
+   ║  FR_FollowersRepliers Strategy: Hope for quality eng  ║
+   ║  ranking              Strategy: Maximize what you co  ║
+   ║  algorithmTiming      Strategy: Post at optimal time  ║
+   ╚════════════════════════════════════════════════════════════╝
+════════════════════════════════════════════════════════════
+
+🔍 Resolving campaign: Share, Refer, Earn Forever
+
+🔍 Searching campaign: "Share, Refer, Earn Forever"...
+
+   ✅ Found: Share, Refer, Earn Forever
+   📍 Address: 0xb98FEb296B811443aB9f845aD22105b8F8Cc1D7e
+
+📥 Fetching campaign data: 0xb98FEb296B811443aB9f845aD22105b8F8Cc1D7e
+   ✅ Campaign data fetched
+   📋 Title: Share, Refer, Earn Forever
+   🎨 Style: Post a banger!...
+   📜 Rules: **Check Mission Rules**...
+   ✅ Found: Share, Refer, Earn Forever
+   📍 Address: 0xb98FEb296B811443aB9f845aD22105b8F8Cc1D7e
+
+📊 HIGH STANDARDS THRESHOLDS:
+   Judge 1 (Gate Master):  18/20 (90%)
+   Judge 2 (Evidence):      4/5 (80%)
+   Judge 3 (Quality):      70/80 (87.5%)
+   Total Required:         92/105 (87.6%)
+
+📥 Fetching competitor submissions...
+
+📥 Fetching leaderboard...
+   ✅ Leaderboard fetched: 0 submissions
+   📊 Found 0 submissions
+
+🔍 Running Deep Competitor Analysis...
+
+────────────────────────────────────────────────────────────
+🔍 DEEP COMPETITOR CONTENT ANALYSIS
+────────────────────────────────────────────────────────────
+   ℹ️ No submissions to analyze - returning empty analysis
+
+🔎 Running Multi-Query Deep Research...
+
+────────────────────────────────────────────────────────────
+🔎 MULTI-QUERY DEEP RESEARCH
+────────────────────────────────────────────────────────────
+   🔍 Query 1/6: "Share, Refer, Earn Forever what is how it works 20..."
+   🔍 Web Search (Real): "Share, Refer, Earn Forever what is how it works 20..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 2/6: "share, refer, earn forever real cases examples suc..."
+   🔍 Web Search (Real): "share, refer, earn forever real cases examples suc..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 3/6: "share, refer, earn forever controversy debate prob..."
+   🔍 Web Search (Real): "share, refer, earn forever controversy debate prob..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 4/6: "share, refer, earn forever statistics data market ..."
+   🔍 Web Search (Real): "share, refer, earn forever statistics data market ..."
+   ⚠️ Web search timeout, retrying...
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 5/6: "share, refer, earn forever expert opinion quote an..."
+   🔍 Web Search (Real): "share, refer, earn forever expert opinion quote an..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   🔍 Query 6/6: "share, refer, earn forever untold story hidden pro..."
+   🔍 Web Search (Real): "share, refer, earn forever untold story hidden pro..."
+   ✅ Web Search: 10 results (token: Akun A #1)
+   ✅ Response received (http-direct, token: auto)
+
+   ┌──────────────────────────────────────────────────────┐
+   │ 🧠 RESEARCH THINKING                                │
+   ├──────────────────────────────────────────────────────┤
+   │ Found 4 facts, 4 unique angles                       │
+   └──────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════
+🔄 CYCLE 1
+   📊 Stats: 0 generated, 0 failed
+════════════════════════════════════════════════════════════
+
+📝 Generating 3 contents in parallel...
+   📝 [16:09:32] Generating Content 1 (personal_story)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT (v9.8.4 Enhanced)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using default: Specific Moment Hook
+   📋 Principle: Ground the reader in a specific time/place/situation
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   🎣 Hook Type: Specific Moment Hook
+   📝 [16:09:32] Generating Content 2 (data_driven)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT (v9.8.4 Enhanced)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using default: Specific Moment Hook
+   📋 Principle: Ground the reader in a specific time/place/situation
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   🎣 Hook Type: Specific Moment Hook
+   📝 [16:09:32] Generating Content 3 (contrarian)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT (v9.8.4 Enhanced)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using default: Specific Moment Hook
+   📋 Principle: Ground the reader in a specific time/place/situation
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   🎣 Hook Type: Specific Moment Hook
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 2/8, waiting 3.4s...
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+   ✅ [16:09:39] Content 2 generated
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+   ✅ [16:09:41] Content 3 generated
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+   ✅ [16:09:50] Content 1 generated
+   ✅ Generated 3/3 contents
+
+⚖️ Judging contents (TRUE parallel with fail-fast)...
+
+   ⚖️ [16:09:50] Judging Content 1 (Cycle 1)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context
+
+   ⚖️ [16:09:50] Judging Content 2 (Cycle 1)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context
+
+   ⚖️ [16:09:50] Judging Content 3 (Cycle 1)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 2/8, waiting 3.4s...
+   ✅ Judge 1-GateUtama success!
+
+   🔒 TRUE BLIND JUDGE 2-GateTambahan - Fresh Context
+   ✅ Judge 2-GateTambahan success!
+   📊 Judge 1: 20/20 (✅ PASS)
+   ✅ Judge 1-GateUtama success!
+
+   🔒 TRUE BLIND JUDGE 2-GateTambahan - Fresh Context
+   ✅ Judge 2-GateTambahan success!
+   📊 Judge 1: 20/20 (✅ PASS)
+   🔍 Judge 2 (Evidence Master)...
+
+   🔍 FACT-CHECK JUDGE 5-FactCheck - With Web Search
+   🔎 Searching for data from 2026 and earlier...
+   🔍 Web Search (Real): "verify facts 2026 latest..."
+   🔍 Judge 2 (Evidence Master)...
+
+   🔍 FACT-CHECK JUDGE 5-FactCheck - With Web Search
+   🔎 Searching for data from 2026 and earlier...
+   🔍 Web Search (Real): "verify facts 2026 latest..."
+   ✅ Web Search: 10 results (token: Akun D #1)
+   ✅ Web search: 10 results
+   ✅ Web Search: 10 results (token: Akun D #1)
+   ✅ Web search: 10 results
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 2/8, waiting 3.4s...
+   ✅ Fact-Check Judge 5-FactCheck success!
+   📊 Judge 2: 2/5 (❌ FAIL)
+   ✅ Fact-Check Judge 5-FactCheck success!
+   📊 Judge 2: 5/5 (✅ PASS)
+   ✅ Judge 1-GateUtama success!
+
+   🔒 TRUE BLIND JUDGE 2-GateTambahan - Fresh Context
+   🔍 Judge 3 (Quality Master)...
+
+   🔒 TRUE BLIND JUDGE 3-PenilaianInternal - Fresh Context
+   ✅ Judge 3-PenilaianInternal success!
+
+   🔒 TRUE BLIND JUDGE 4-Compliance - Fresh Context
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ✅ Judge 4-Compliance success!
+
+   🔒 TRUE BLIND JUDGE 6-Uniqueness - Fresh Context
+   ✅ Judge 2-GateTambahan success!
+   📊 Judge 1: 20/20 (✅ PASS)
+   🔍 Judge 2 (Evidence Master)...
+
+   🔍 FACT-CHECK JUDGE 5-FactCheck - With Web Search
+   🔎 Searching for data from 2026 and earlier...
+   🔍 Web Search (Real): "verify facts 2026 latest..."
+   ✅ Web Search: 10 results (token: Akun B #3)
+   ✅ Web search: 10 results
+   ✅ Judge 6-Uniqueness success!
+   📊 Judge 3: 60/80 (❌ FAIL)
+   ✅ Fact-Check Judge 5-FactCheck success!
+   📊 Judge 2: 3/5 (❌ FAIL)
+
+   📊 Cycle 1 complete: All 3 contents failed
+   🔄 Generating new contents...
+
+════════════════════════════════════════════════════════════
+🔄 CYCLE 2
+   📊 Stats: 3 generated, 3 failed
+════════════════════════════════════════════════════════════
+
+📝 Generating 3 contents in parallel...
+   📝 [16:12:01] Generating Content 1 (personal_story)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT (v9.8.4 Enhanced)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using default: Specific Moment Hook
+   📋 Principle: Ground the reader in a specific time/place/situation
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   🎣 Hook Type: Specific Moment Hook
+   📝 [16:12:01] Generating Content 2 (data_driven)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT (v9.8.4 Enhanced)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using default: Specific Moment Hook
+   📋 Principle: Ground the reader in a specific time/place/situation
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   🎣 Hook Type: Specific Moment Hook
+   📝 [16:12:01] Generating Content 3 (contrarian)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT (v9.8.4 Enhanced)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using default: Specific Moment Hook
+   📋 Principle: Ground the reader in a specific time/place/situation
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   🎣 Hook Type: Specific Moment Hook
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 2/8, waiting 3.4s...
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+   ✅ [16:12:07] Content 1 generated
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 3/8, waiting 4.4s...
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+   ✅ [16:12:09] Content 2 generated
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+   ✅ [16:12:19] Content 3 generated
+   ✅ Generated 3/3 contents
+
+⚖️ Judging contents (TRUE parallel with fail-fast)...
+
+   ⚖️ [16:12:19] Judging Content 1 (Cycle 2)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context
+
+   ⚖️ [16:12:19] Judging Content 2 (Cycle 2)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context
+
+   ⚖️ [16:12:19] Judging Content 3 (Cycle 2)
+   🔍 Judge 1 (Gate Master)...
+
+   🔒 TRUE BLIND JUDGE 1-GateUtama - Fresh Context
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 2/8, waiting 3.4s...
+   ✅ Judge 1-GateUtama success!
+
+   🔒 TRUE BLIND JUDGE 2-GateTambahan - Fresh Context
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 3/8, waiting 4.4s...
+   ✅ Judge 1-GateUtama success!
+
+   🔒 TRUE BLIND JUDGE 2-GateTambahan - Fresh Context
+   ✅ Judge 2-GateTambahan success!
+   📊 Judge 1: 20/20 (✅ PASS)
+   ✅ Judge 2-GateTambahan success!
+   📊 Judge 1: 20/20 (✅ PASS)
+   🔍 Judge 2 (Evidence Master)...
+
+   🔍 FACT-CHECK JUDGE 5-FactCheck - With Web Search
+   🔎 Searching for data from 2026 and earlier...
+   🔍 Web Search (Real): "verify facts 2026 latest..."
+   ✅ Web Search: 10 results (token: Akun A #4)
+   ✅ Web search: 10 results
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   🔍 Judge 2 (Evidence Master)...
+
+   🔍 FACT-CHECK JUDGE 5-FactCheck - With Web Search
+   🔎 Searching for data from 2026 and earlier...
+   🔍 Web Search (Real): "verify facts 2026 latest..."
+   ✅ Web Search: 10 results (token: Akun E #1)
+   ✅ Web search: 10 results
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 2/8, waiting 3.4s...
+   ✅ Fact-Check Judge 5-FactCheck success!
+   📊 Judge 2: 2/5 (❌ FAIL)
+   ✅ Fact-Check Judge 5-FactCheck success!
+   📊 Judge 2: 4/5 (✅ PASS)
+   ✅ Judge 1-GateUtama success!
+
+   🔒 TRUE BLIND JUDGE 2-GateTambahan - Fresh Context
+   🔍 Judge 3 (Quality Master)...
+
+   🔒 TRUE BLIND JUDGE 3-PenilaianInternal - Fresh Context
+   ✅ Judge 3-PenilaianInternal success!
+
+   🔒 TRUE BLIND JUDGE 4-Compliance - Fresh Context
+   ✅ Judge 2-GateTambahan success!
+   📊 Judge 1: 20/20 (✅ PASS)
+   ✅ Judge 4-Compliance success!
+
+   🔒 TRUE BLIND JUDGE 6-Uniqueness - Fresh Context
+   🔍 Judge 2 (Evidence Master)...
+
+   🔍 FACT-CHECK JUDGE 5-FactCheck - With Web Search
+   🔎 Searching for data from 2026 and earlier...
+   🔍 Web Search (Real): "verify facts 2026 latest..."
+   ✅ Judge 6-Uniqueness success!
+   📊 Judge 3: 69/80 (❌ FAIL)
+   ✅ Web Search: 10 results (token: Akun A #1)
+   ✅ Web search: 10 results
+   ✅ Fact-Check Judge 5-FactCheck success!
+   📊 Judge 2: 2/5 (❌ FAIL)
+
+   📊 Cycle 2 complete: All 3 contents failed
+   🔄 Generating new contents...
+
+════════════════════════════════════════════════════════════
+🔄 CYCLE 3
+   📊 Stats: 6 generated, 6 failed
+════════════════════════════════════════════════════════════
+
+📝 Generating 3 contents in parallel...
+   📝 [16:13:31] Generating Content 1 (personal_story)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT (v9.8.4 Enhanced)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using default: Specific Moment Hook
+   📋 Principle: Ground the reader in a specific time/place/situation
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   🎣 Hook Type: Specific Moment Hook
+   📝 [16:13:31] Generating Content 2 (data_driven)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT (v9.8.4 Enhanced)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using default: Specific Moment Hook
+   📋 Principle: Ground the reader in a specific time/place/situation
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   🎣 Hook Type: Specific Moment Hook
+   📝 [16:13:31] Generating Content 3 (contrarian)...
+
+────────────────────────────────────────────────────────────
+✨ GENERATING UNIQUE CONTENT (v9.8.4 Enhanced)
+────────────────────────────────────────────────────────────
+   🎣 No competitor data - using default: Specific Moment Hook
+   📋 Principle: Ground the reader in a specific time/place/situation
+   🎭 Selected Persona: The Contrarian
+   📖 Narrative Structure: Mystery Reveal
+   👥 Target Audience: Crypto Users Who Got Scammed
+   💫 Emotion Combo: surprise + anger (very rare)
+   🎣 Hook Type: Specific Moment Hook
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 1/8, waiting 2.6s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 2/8, waiting 3.4s...
+   ⚠️ Rate limit, switching token...
+   ⏳ Rate limit retry 2/8, waiting 2.6s...
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+   ✅ [16:13:42] Content 1 generated
+   ✅ Response received (http-direct, token: auto)
+   ✅ Generated 1 tweets
+   ✅ [16:13:46] Content 3 generated
