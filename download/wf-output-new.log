@@ -1,0 +1,640 @@
+
+══════════════════════════════════════════════════════════════════════
+║      RALLY WORKFLOW V9.8.3 - 3 AI JUDGES + HTTP-ONLY               ║
+║   Gate 1 → Judge 2 → Judge 3 → Highest Score Selection             ║
+══════════════════════════════════════════════════════════════════════
+   ✅ Auto-token loaded from /etc/.z-ai-config
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║      🚀 HTTP-ONLY RATE LIMIT HANDLER v9.8.3               ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  🔗 Mode: HTTP Direct (No SDK)                            ║
+   ║  🌐 IP Rotation: Enabled                                  ║
+   ║  ⏱️  QPS Limiter: 5 req/sec                               ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  TOKEN POOL (Primary + Backup):                           ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║ ▶ # 0: Token #0             [Primary]║
+   ║ ▶ # 1: Akun A #1            [Primary]║
+   ║ ▶ # 2: Akun B #1            [Primary]║
+   ║ ▶ # 3: Akun A #2            [Primary]║
+   ║ ▶ # 4: Akun B #2            [Primary]║
+   ║ ◇ # 5: Akun A #3            [Backup]║
+   ║ ◇ # 6: Akun B #3            [Backup]║
+   ║ ◇ # 7: Akun A #4            [Backup]║
+   ║ ◇ # 8: Akun C #1            [Backup]║
+   ║ ◇ # 9: Akun D #1            [Backup]║
+   ║ ◇ #10: Akun E #1            [Backup]║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  📊 Total: 10 tokens (~3000 req/day)             ║
+   ║  ✅ Quota Tracking: Real-time from headers                ║
+   ╚════════════════════════════════════════════════════════════╝
+
+🔍 Resolving campaign...
+   ✅ Found: Rally Owns the Narrative
+   📍 Address: 0xd6174FCf9a69837846860CCaC6394D3E6645CC22
+
+📥 Fetching competitor submissions...
+   ✅ Found 0 submissions
+
+🔍 Analyzing Competitors...
+   ℹ️ No submissions to analyze
+
+══════════════════════════════════════════════════════════════════════
+║           🔄 GENERATION CYCLE 1/5                           ║
+══════════════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════
+🚀 GENERATING 5 CONTENTS
+════════════════════════════════════════════════════════════
+
+📝 Generating Content 1/5...
+   🎭 Angle: personal_story
+   💫 Emotions: curiosity → surprise
+   📖 Structure: hero_journey
+   🌐 IPRotator: Initialized with IP 47.86.93.224
+   🔗 HTTP: Token #0 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Token #0: Daily=114, UserDaily=314
+   ✅ Response received (http, token: Token #0)
+   ✅ Content 1 generated successfully
+
+📝 Generating Content 2/5...
+   🎭 Angle: data_driven
+   💫 Emotions: fear → hope
+   📖 Structure: problem_solution
+   🔗 HTTP: Akun A #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #1: Daily=170, UserDaily=84
+   ✅ Response received (http, token: Akun A #1)
+   ✅ Content 2 generated successfully
+
+📝 Generating Content 3/5...
+   🎭 Angle: contrarian
+   💫 Emotions: anger → trust
+   📖 Structure: before_after
+   🔗 HTTP: Akun B #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #1: Daily=165, UserDaily=212
+   ✅ Response received (http, token: Akun B #1)
+   ✅ Content 3 generated successfully
+
+📝 Generating Content 4/5...
+   🎭 Angle: insider_perspective
+   💫 Emotions: sadness → anticipation
+   📖 Structure: mystery_reveal
+   🔗 HTTP: Akun A #2 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #2: Daily=194, UserDaily=83
+   ✅ Response received (http, token: Akun A #2)
+   ✅ Content 4 generated successfully
+
+📝 Generating Content 5/5...
+   🎭 Angle: case_study
+   💫 Emotions: surprise → joy
+   📖 Structure: case_study
+   🔗 HTTP: Akun B #2 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #2: Daily=161, UserDaily=211
+   ✅ Response received (http, token: Akun B #2)
+   ✅ Content 5 generated successfully
+
+📊 Generated 2/5 contents
+
+════════════════════════════════════════════════════════════
+⚖️  JUDGING ALL CONTENTS
+════════════════════════════════════════════════════════════
+
+--- Content 2 ---
+
+   ─── JUDGE 1: GATE (Campaign Requirements) ───
+   🔗 HTTP: Akun A #3 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #3: Daily=228, UserDaily=82
+   ✅ Response received (http, token: Akun A #3)
+   📊 JUDGE 1: 19/20 (✅ PASS)
+
+   ─── JUDGE 2: FACT-CHECK ───
+   🔗 HTTP: Akun B #3 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #3: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 1/5
+   🔗 HTTP: Akun A #4 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #4: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 2/5
+   🔗 HTTP: Akun C #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun C #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 3/5
+   🔗 HTTP: Akun D #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun D #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 4/5
+   🔗 HTTP: Akun E #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun E #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 5/5
+   ⚠️ Judge 2 error: HTTP 401: {"error":"invalid X-Token"}
+
+--- Content 4 ---
+
+   ─── JUDGE 1: GATE (Campaign Requirements) ───
+   🔗 HTTP: Token #0 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Token #0: Daily=113, UserDaily=313
+   ✅ Response received (http, token: Token #0)
+   📊 JUDGE 1: 19/20 (✅ PASS)
+
+   ─── JUDGE 2: FACT-CHECK ───
+   🔗 HTTP: Akun A #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #1: Daily=169, UserDaily=81
+   ✅ Response received (http, token: Akun A #1)
+
+════════════════════════════════════════════════════════════
+🏆 SELECTING BEST CONTENT (Highest Score)
+════════════════════════════════════════════════════════════
+   ❌ No content passed all judges
+
+🔄 No passing content, regenerating...
+
+══════════════════════════════════════════════════════════════════════
+║           🔄 GENERATION CYCLE 2/5                           ║
+══════════════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════
+🚀 GENERATING 5 CONTENTS
+════════════════════════════════════════════════════════════
+
+📝 Generating Content 1/5...
+   🎭 Angle: personal_story
+   💫 Emotions: curiosity → surprise
+   📖 Structure: hero_journey
+   🔗 HTTP: Akun B #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #1: Daily=164, UserDaily=210
+   ✅ Response received (http, token: Akun B #1)
+   ✅ Content 1 generated successfully
+
+📝 Generating Content 2/5...
+   🎭 Angle: data_driven
+   💫 Emotions: fear → hope
+   📖 Structure: problem_solution
+   🔗 HTTP: Akun A #2 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #2: Daily=193, UserDaily=80
+   ✅ Response received (http, token: Akun A #2)
+   ✅ Content 2 generated successfully
+
+📝 Generating Content 3/5...
+   🎭 Angle: contrarian
+   💫 Emotions: anger → trust
+   📖 Structure: before_after
+   🔗 HTTP: Akun B #2 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #2: Daily=160, UserDaily=209
+   ✅ Response received (http, token: Akun B #2)
+   ✅ Content 3 generated successfully
+
+📝 Generating Content 4/5...
+   🎭 Angle: insider_perspective
+   💫 Emotions: sadness → anticipation
+   📖 Structure: mystery_reveal
+   🔗 HTTP: Akun A #3 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #3: Daily=227, UserDaily=79
+   ✅ Response received (http, token: Akun A #3)
+   ✅ Content 4 generated successfully
+
+📝 Generating Content 5/5...
+   🎭 Angle: case_study
+   💫 Emotions: surprise → joy
+   📖 Structure: case_study
+   🔗 HTTP: Akun B #3 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #3: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 1/5
+   🔗 HTTP: Akun A #4 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #4: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 2/5
+   🔗 HTTP: Akun C #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun C #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 3/5
+   🔗 HTTP: Akun D #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun D #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 4/5
+   🔗 HTTP: Akun E #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun E #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 5/5
+   ❌ Content 5 failed: HTTP 401: {"error":"invalid X-Token"}
+
+📊 Generated 2/5 contents
+
+════════════════════════════════════════════════════════════
+⚖️  JUDGING ALL CONTENTS
+════════════════════════════════════════════════════════════
+
+--- Content 1 ---
+
+   ─── JUDGE 1: GATE (Campaign Requirements) ───
+   🔗 HTTP: Token #0 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Token #0: Daily=112, UserDaily=312
+   ✅ Response received (http, token: Token #0)
+   📊 JUDGE 1: 4/20 (❌ FAIL)
+
+--- Content 3 ---
+
+   ─── JUDGE 1: GATE (Campaign Requirements) ───
+   🔗 HTTP: Akun A #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #1: Daily=168, UserDaily=78
+   ✅ Response received (http, token: Akun A #1)
+   📊 JUDGE 1: 17/20 (✅ PASS)
+
+   ─── JUDGE 2: FACT-CHECK ───
+   🔗 HTTP: Akun B #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #1: Daily=163, UserDaily=208
+   ✅ Response received (http, token: Akun B #1)
+
+════════════════════════════════════════════════════════════
+🏆 SELECTING BEST CONTENT (Highest Score)
+════════════════════════════════════════════════════════════
+   ❌ No content passed all judges
+
+🔄 No passing content, regenerating...
+
+══════════════════════════════════════════════════════════════════════
+║           🔄 GENERATION CYCLE 3/5                           ║
+══════════════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════
+🚀 GENERATING 5 CONTENTS
+════════════════════════════════════════════════════════════
+
+📝 Generating Content 1/5...
+   🎭 Angle: personal_story
+   💫 Emotions: curiosity → surprise
+   📖 Structure: hero_journey
+   🔗 HTTP: Akun A #2 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #2: Daily=192, UserDaily=77
+   ✅ Response received (http, token: Akun A #2)
+   ✅ Content 1 generated successfully
+
+📝 Generating Content 2/5...
+   🎭 Angle: data_driven
+   💫 Emotions: fear → hope
+   📖 Structure: problem_solution
+   🔗 HTTP: Akun B #2 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #2: Daily=159, UserDaily=207
+   ✅ Response received (http, token: Akun B #2)
+   ✅ Content 2 generated successfully
+
+📝 Generating Content 3/5...
+   🎭 Angle: contrarian
+   💫 Emotions: anger → trust
+   📖 Structure: before_after
+   🔗 HTTP: Akun A #3 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #3: Daily=226, UserDaily=76
+   ✅ Response received (http, token: Akun A #3)
+   ✅ Content 3 generated successfully
+
+📝 Generating Content 4/5...
+   🎭 Angle: insider_perspective
+   💫 Emotions: sadness → anticipation
+   📖 Structure: mystery_reveal
+   🔗 HTTP: Akun B #3 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #3: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 1/5
+   🔗 HTTP: Akun A #4 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #4: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 2/5
+   🔗 HTTP: Akun C #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun C #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 3/5
+   🔗 HTTP: Akun D #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun D #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 4/5
+   🔗 HTTP: Akun E #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun E #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 5/5
+   ❌ Content 4 failed: HTTP 401: {"error":"invalid X-Token"}
+
+📝 Generating Content 5/5...
+   🎭 Angle: case_study
+   💫 Emotions: surprise → joy
+   📖 Structure: case_study
+   🔗 HTTP: Token #0 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Token #0: Daily=111, UserDaily=311
+   ✅ Response received (http, token: Token #0)
+   ✅ Content 5 generated successfully
+
+📊 Generated 3/5 contents
+
+════════════════════════════════════════════════════════════
+⚖️  JUDGING ALL CONTENTS
+════════════════════════════════════════════════════════════
+
+--- Content 1 ---
+
+   ─── JUDGE 1: GATE (Campaign Requirements) ───
+   🔗 HTTP: Akun A #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #1: Daily=167, UserDaily=75
+   ✅ Response received (http, token: Akun A #1)
+   📊 JUDGE 1: 4/20 (❌ FAIL)
+
+--- Content 3 ---
+
+   ─── JUDGE 1: GATE (Campaign Requirements) ───
+   🔗 HTTP: Akun B #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #1: Daily=162, UserDaily=206
+   ✅ Response received (http, token: Akun B #1)
+   📊 JUDGE 1: 18/20 (✅ PASS)
+
+   ─── JUDGE 2: FACT-CHECK ───
+   🔗 HTTP: Akun A #2 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #2: Daily=191, UserDaily=74
+   ✅ Response received (http, token: Akun A #2)
+
+--- Content 5 ---
+
+   ─── JUDGE 1: GATE (Campaign Requirements) ───
+   🔗 HTTP: Akun B #2 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #2: Daily=158, UserDaily=205
+   ✅ Response received (http, token: Akun B #2)
+   📊 JUDGE 1: 19/20 (✅ PASS)
+
+   ─── JUDGE 2: FACT-CHECK ───
+   🔗 HTTP: Akun A #3 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #3: Daily=225, UserDaily=73
+   ✅ Response received (http, token: Akun A #3)
+
+════════════════════════════════════════════════════════════
+🏆 SELECTING BEST CONTENT (Highest Score)
+════════════════════════════════════════════════════════════
+   ❌ No content passed all judges
+
+🔄 No passing content, regenerating...
+
+══════════════════════════════════════════════════════════════════════
+║           🔄 GENERATION CYCLE 4/5                           ║
+══════════════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════
+🚀 GENERATING 5 CONTENTS
+════════════════════════════════════════════════════════════
+
+📝 Generating Content 1/5...
+   🎭 Angle: personal_story
+   💫 Emotions: curiosity → surprise
+   📖 Structure: hero_journey
+   🔗 HTTP: Akun B #3 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #3: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 1/5
+   🔗 HTTP: Akun A #4 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #4: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 2/5
+   🔗 HTTP: Akun C #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun C #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 3/5
+   🔗 HTTP: Akun D #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun D #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 4/5
+   🔗 HTTP: Akun E #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun E #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 5/5
+   ❌ Content 1 failed: HTTP 401: {"error":"invalid X-Token"}
+
+📝 Generating Content 2/5...
+   🎭 Angle: data_driven
+   💫 Emotions: fear → hope
+   📖 Structure: problem_solution
+   🔗 HTTP: Token #0 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Token #0: Daily=109, UserDaily=309
+   ✅ Response received (http, token: Token #0)
+   ✅ Content 2 generated successfully
+
+📝 Generating Content 3/5...
+   🎭 Angle: contrarian
+   💫 Emotions: anger → trust
+   📖 Structure: before_after
+   🔗 HTTP: Akun A #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #1: Daily=165, UserDaily=70
+   ✅ Response received (http, token: Akun A #1)
+   ✅ Content 3 generated successfully
+
+📝 Generating Content 4/5...
+   🎭 Angle: insider_perspective
+   💫 Emotions: sadness → anticipation
+   📖 Structure: mystery_reveal
+   🔗 HTTP: Akun B #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #1: Daily=160, UserDaily=202
+   ✅ Response received (http, token: Akun B #1)
+   ✅ Content 4 generated successfully
+
+📝 Generating Content 5/5...
+   🎭 Angle: case_study
+   💫 Emotions: surprise → joy
+   📖 Structure: case_study
+   🔗 HTTP: Akun A #2 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #2: Daily=189, UserDaily=68
+   ✅ Response received (http, token: Akun A #2)
+   ✅ Content 5 generated successfully
+
+📊 Generated 2/5 contents
+
+════════════════════════════════════════════════════════════
+⚖️  JUDGING ALL CONTENTS
+════════════════════════════════════════════════════════════
+
+--- Content 3 ---
+
+   ─── JUDGE 1: GATE (Campaign Requirements) ───
+   🔗 HTTP: Akun B #2 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #2: Daily=156, UserDaily=201
+   ✅ Response received (http, token: Akun B #2)
+   📊 JUDGE 1: 4/20 (❌ FAIL)
+
+--- Content 5 ---
+
+   ─── JUDGE 1: GATE (Campaign Requirements) ───
+   🔗 HTTP: Akun A #3 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #3: Daily=223, UserDaily=67
+   ✅ Response received (http, token: Akun A #3)
+   📊 JUDGE 1: 19/20 (✅ PASS)
+
+   ─── JUDGE 2: FACT-CHECK ───
+   🔗 HTTP: Akun B #3 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #3: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 1/5
+   🔗 HTTP: Akun A #4 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #4: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 2/5
+   🔗 HTTP: Akun C #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun C #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 3/5
+   🔗 HTTP: Akun D #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun D #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 4/5
+   🔗 HTTP: Akun E #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun E #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 5/5
+   ⚠️ Judge 2 error: HTTP 401: {"error":"invalid X-Token"}
+
+════════════════════════════════════════════════════════════
+🏆 SELECTING BEST CONTENT (Highest Score)
+════════════════════════════════════════════════════════════
+   ❌ No content passed all judges
+
+🔄 No passing content, regenerating...
+
+══════════════════════════════════════════════════════════════════════
+║           🔄 GENERATION CYCLE 5/5                           ║
+══════════════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════
+🚀 GENERATING 5 CONTENTS
+════════════════════════════════════════════════════════════
+
+📝 Generating Content 1/5...
+   🎭 Angle: personal_story
+   💫 Emotions: curiosity → surprise
+   📖 Structure: hero_journey
+   🔗 HTTP: Token #0 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Token #0: Daily=107, UserDaily=307
+   ✅ Response received (http, token: Token #0)
+   ✅ Content 1 generated successfully
+
+📝 Generating Content 2/5...
+   🎭 Angle: data_driven
+   💫 Emotions: fear → hope
+   📖 Structure: problem_solution
+   🔗 HTTP: Akun A #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #1: Daily=163, UserDaily=65
+   ✅ Response received (http, token: Akun A #1)
+   ✅ Content 2 generated successfully
+
+📝 Generating Content 3/5...
+   🎭 Angle: contrarian
+   💫 Emotions: anger → trust
+   📖 Structure: before_after
+   🔗 HTTP: Akun B #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #1: Daily=158, UserDaily=199
+   ✅ Response received (http, token: Akun B #1)
+   ✅ Content 3 generated successfully
+
+📝 Generating Content 4/5...
+   🎭 Angle: insider_perspective
+   💫 Emotions: sadness → anticipation
+   📖 Structure: mystery_reveal
+   🔗 HTTP: Akun A #2 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #2: Daily=187, UserDaily=63
+   ✅ Response received (http, token: Akun A #2)
+   ✅ Content 4 generated successfully
+
+📝 Generating Content 5/5...
+   🎭 Angle: case_study
+   💫 Emotions: surprise → joy
+   📖 Structure: case_study
+   🔗 HTTP: Akun B #2 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #2: Daily=154, UserDaily=197
+   ✅ Response received (http, token: Akun B #2)
+   ✅ Content 5 generated successfully
+
+📊 Generated 3/5 contents
+
+════════════════════════════════════════════════════════════
+⚖️  JUDGING ALL CONTENTS
+════════════════════════════════════════════════════════════
+
+--- Content 1 ---
+
+   ─── JUDGE 1: GATE (Campaign Requirements) ───
+   🔗 HTTP: Akun A #3 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #3: Daily=221, UserDaily=61
+   ✅ Response received (http, token: Akun A #3)
+   📊 JUDGE 1: 4/20 (❌ FAIL)
+
+--- Content 3 ---
+
+   ─── JUDGE 1: GATE (Campaign Requirements) ───
+   🔗 HTTP: Akun B #3 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun B #3: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 1/5
+   🔗 HTTP: Akun A #4 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun A #4: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 2/5
+   🔗 HTTP: Akun C #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun C #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 3/5
+   🔗 HTTP: Akun D #1 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun D #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 4/5
+   🔗 HTTP: Akun E #1 on http://172.25.136.193:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Akun E #1: Daily=300, UserDaily=500
+   ⚠️ Error: HTTP 401: {"error":"invalid X-Token"}. Retry 5/5
+   ⚠️ Judge 1 AI error: HTTP 401: {"error":"invalid X-Token"}
+   📊 JUDGE 1: 4/20 (❌ FAIL)
+
+--- Content 5 ---
+
+   ─── JUDGE 1: GATE (Campaign Requirements) ───
+   🔗 HTTP: Token #0 on http://172.25.136.210:8080/v1
+   🌐 IP: 47.86.93.224
+   📊 Token #0: Daily=105, UserDaily=305
+   ✅ Response received (http, token: Token #0)
+   📊 JUDGE 1: 4/20 (❌ FAIL)
+
+════════════════════════════════════════════════════════════
+🏆 SELECTING BEST CONTENT (Highest Score)
+════════════════════════════════════════════════════════════
+   ❌ No content passed all judges
+
+❌ FAILED: Could not generate passing content after all cycles

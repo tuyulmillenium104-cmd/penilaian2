@@ -1,0 +1,36 @@
+
+╔════════════════════════════════════════════════════════════════╗
+║    RALLY WORKFLOW V9.9.4 - FINAL (OPTIMIZED STANDARDS)        ║
+╠════════════════════════════════════════════════════════════════╣
+║  📊 Gate: 18/20 (90%) | Facts: 2/5 (40%) | Quality: 70/80 (88%)║
+║  🏆 First content to pass → STOP & OUTPUT                      ║
+╚════════════════════════════════════════════════════════════════╝
+   ✅ ZAI SDK initialized
+
+🔍 Finding campaign: Rally
+   ✅ Rally Owns the Narrative
+
+══════════════════════════════════════════════════
+🔄 Attempt #1
+══════════════════════════════════════════════════
+   📝 Generating (data_driven)...
+   ✅ Generated: "Tbh, the data’s pretty wild—Rally’s totally owning the narra..."
+
+   ⚖️ Judge 1 (Gate)...
+   📊 20/20 ✅ PASS
+   ⚖️ Judge 2 (Facts)...
+   📊 3/5 ✅ PASS
+   ⚖️ Judge 3 (Quality)...
+   📊 49/80 ❌ FAIL
+
+══════════════════════════════════════════════════
+🔄 Attempt #2
+══════════════════════════════════════════════════
+   📝 Generating (contrarian)...
+   ✅ Generated: "Tbh, everyone’s trying to control the story these days but R..."
+
+   ⚖️ Judge 1 (Gate)...
+   📊 20/20 ✅ PASS
+   ⚖️ Judge 2 (Facts)...
+   📊 3/5 ✅ PASS
+   ⚖️ Judge 3 (Quality)...

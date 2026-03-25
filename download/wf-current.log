@@ -1,0 +1,57 @@
+
+══════════════════════════════════════════════════════════════════════
+║      RALLY WORKFLOW V9.8.3 - 3 AI JUDGES + HTTP-ONLY               ║
+║   Gate 1 → Judge 2 → Judge 3 → Highest Score Selection             ║
+══════════════════════════════════════════════════════════════════════
+   ✅ Auto-token loaded from /etc/.z-ai-config
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║      🚀 HTTP-ONLY RATE LIMIT HANDLER v9.8.3               ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  🔗 Mode: HTTP Direct (No SDK)                            ║
+   ║  🌐 IP Rotation: Enabled                                  ║
+   ║  ⏱️  QPS Limiter: 5 req/sec                               ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  TOKEN POOL (Primary + Backup):                           ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║ ▶ # 0: Token #0             [Primary]║
+   ║ ▶ # 1: Akun A #1            [Primary]║
+   ║ ▶ # 2: Akun B #1            [Primary]║
+   ║ ▶ # 3: Akun A #2            [Primary]║
+   ║ ▶ # 4: Akun B #2            [Primary]║
+   ║ ◇ # 5: Akun A #3            [Backup]║
+   ║ ◇ # 6: Akun B #3            [Backup]║
+   ║ ◇ # 7: Akun A #4            [Backup]║
+   ║ ◇ # 8: Akun C #1            [Backup]║
+   ║ ◇ # 9: Akun D #1            [Backup]║
+   ║ ◇ #10: Akun E #1            [Backup]║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  📊 Total: 10 tokens (~3000 req/day)             ║
+   ║  ✅ Quota Tracking: Real-time from headers                ║
+   ╚════════════════════════════════════════════════════════════╝
+
+🔍 Resolving campaign...
+   ✅ Found: Rally Owns the Narrative
+   📍 Address: 0xd6174FCf9a69837846860CCaC6394D3E6645CC22
+
+📥 Fetching competitor submissions...
+   ✅ Found 0 submissions
+
+🔍 Analyzing Competitors...
+   ℹ️ No submissions to analyze
+
+══════════════════════════════════════════════════════════════════════
+║           🔄 GENERATION CYCLE 1/5                           ║
+══════════════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════
+🚀 GENERATING 5 CONTENTS
+════════════════════════════════════════════════════════════
+
+📝 Generating Content 1/5...
+   🎭 Angle: personal_story
+   💫 Emotions: curiosity → surprise
+   📖 Structure: hero_journey
+   🌐 IPRotator: Initialized with IP 43.99.35.102
+   🔗 HTTP: Token #0 on http://172.25.136.210:8080/v1
+   🌐 IP: 43.99.35.102

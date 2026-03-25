@@ -1,0 +1,21 @@
+
+╔════════════════════════════════════════════════════════════════╗
+║    RALLY WORKFLOW V9.9.1 - FIRST PASS WINS (HIGH STANDARDS)   ║
+╠════════════════════════════════════════════════════════════════╣
+║  📊 Gate: 18/20 (90%) | Facts: 4/5 (80%) | Quality: 70/80 (88%)║
+║  🏆 First content to pass → STOP & OUTPUT                      ║
+╚════════════════════════════════════════════════════════════════╝
+   ✅ Auto-token loaded
+
+🔍 Finding campaign: Rally
+   ✅ Rally Owns the Narrative
+
+══════════════════════════════════════════════════
+🔄 Attempt #1
+══════════════════════════════════════════════════
+   📝 Generating (data_driven)...
+   🔗 [T#0] 172.25.136.210:8080
+   ✅ Generated: "Honestly, watching the stats drop is terrifying. But the dat..."
+
+   ⚖️ Judge 1 (Gate)...
+   🔗 [A#1] 172.25.136.193:8080

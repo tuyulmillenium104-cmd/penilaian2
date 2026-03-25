@@ -1,0 +1,156 @@
+   ⚠️ Python NLP Client not available, using fallback
+
+📌 MODE: Multi-Content (v9.8.0)
+   First Pass Wins: Generate → Judge → Stop when ONE passes
+
+🔍 Searching campaign: "Rally"...
+
+   📋 Found 12 matching campaigns:
+   1. Rally Owns the Narrative
+      Address: 0xd6174FCf9a69837846860CCaC6394D3E6645CC22
+   2. RALLY BETA IS LIVE , SAY IT LOUD
+      Address: 0xFDF8c86f228a6b0C115ab9CF5c5B2F85B8778f0C
+   3. RALLY BETA IS LIVE , SAY IT LOUD
+      Address: 0x28F08cd159294529Dc0A92946368352C2330d9A7
+   4. The Rally Joke Contest
+      Address: 0x995cCf676c0b8E64B53fF0A0DcCF7e39241E3C87
+   5. InfoFi is Dead. Rally Keeps Rallying
+      Address: 0x6e4f1b7aed8144A857890AC481882374f0F2840E
+   6. GenLayer 🤝 Rally
+      Address: 0x75741D0deA7c5Edd978A355f9E663DeFBB4170Ac
+   7. JOIN RALLY: SPREAD THE WORD!
+      Address: 0xA4A3c3aF1a37118A1fBF8B8C591Ef56915cB525A
+   8. Make Rally Bigger!
+      Address: 0x06c8c549c44000A76B67c752AE01977536270F2C
+   9. GenLayer 🤝 Rally
+      Address: 0x4b6C256932dCEFab55151038f61eE9be4b1E2275
+   10. Asked Claude for Better. Got Rally
+      Address: 0x4000F678da08E72838CC647Ec4c2991D77165B14
+   11. Rally Alpha Rush 🔥
+      Address: 0x5346e44Fd647B7aC1C7474f1E286fC5E3484aEc2
+   12. Rally Beta Incoming
+      Address: 0x464931f3f96F20EcDFb6D90C46E03AB374A938f5
+
+   ℹ️ Using first match. To use specific campaign, provide the address.
+
+   ✅ Found: Rally Owns the Narrative
+   📍 Address: 0xd6174FCf9a69837846860CCaC6394D3E6645CC22
+
+══════════════════════════════════════════════════════════════════════
+║      RALLY WORKFLOW V9.8.3 - HIGH STANDARDS                 ║
+║   First Pass Wins: Generate → Judge → STOP when ONE passes    ║
+══════════════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════
+🔍 PRE-FLIGHT CHECK - All Dependencies Required!
+════════════════════════════════════════════════════════════
+   ✅ z-ai-web-dev-sdk loaded successfully
+   ✅ z-ai-web-dev-sdk: Available
+   ⚠️ Python NLP Client: Not available (optional)
+
+   🎯 All required dependencies available!
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║           🎫 MULTI-TOKEN RATE LIMIT HANDLER               ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║ ► #0: Auto-Config (Primary)                     ║
+   ║   #1: Akun A #1                                 ║
+   ║   #2: Akun B #1                                 ║
+   ║   #3: Akun A #2                                 ║
+   ║   #4: Akun B #2                                 ║
+   ║   #5: Akun A #3                                 ║
+   ║   #6: Akun C #1                                 ║
+   ║   #7: Akun D #1                                 ║
+   ║   #8: Akun A #4                                 ║
+   ║   #9: Akun E #1                                 ║
+   ║   #10: Akun B #3                                 ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  Total: 11 tokens available for rate limit fallback    ║
+   ╚════════════════════════════════════════════════════════════╝
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║              🧠 MINDSET FRAMEWORK                         ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  TARGET:    BEAT Top 10                                ║
+   ║  EFFORT:    MAXIMIZE everything you control            ║
+   ║  ACCEPT:    Whatever result comes                      ║
+   ║  LEARN:     From every outcome                         ║
+   ║  REPEAT:    With improved knowledge                    ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  💡 "The TRY matters more than the outcome. You contr"║
+   ╚════════════════════════════════════════════════════════════╝
+
+   ╔════════════════════════════════════════════════════════════╗
+   ║           🎮 CONTROL MATRIX - Focus Your Effort           ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║                    ✅ YOU CAN CONTROL                     ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  G1: Alignment        Target: 2          ║
+   ║  G2: Accuracy         Target: 2          ║
+   ║  G3: Compliance       Target: 2          ║
+   ║  G4: Originality      Target: 2          ║
+   ║  EP: Potential        Target: 4.5-5.0          ║
+   ║  TQ: Quality          Target: 4.5-5.0          ║
+   ║  verifiedFacts        Target: ALL          ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║                   ❌ YOU CANNOT CONTROL                   ║
+   ╠════════════════════════════════════════════════════════════╣
+   ║  Retweets             Strategy: Create shareable con  ║
+   ║  Likes                Strategy: Focus on quality, le  ║
+   ║  Replies              Strategy: Ask questions, invit  ║
+   ║  QR_QualityReplies    Strategy: Post when active com  ║
+   ║  FR_FollowersRepliers Strategy: Hope for quality eng  ║
+   ║  ranking              Strategy: Maximize what you co  ║
+   ║  algorithmTiming      Strategy: Post at optimal time  ║
+   ╚════════════════════════════════════════════════════════════╝
+════════════════════════════════════════════════════════════
+   ✅ Auto-token loaded from /etc/.z-ai-config
+   ⚠️ Python NLP Client not available - using basic analysis
+
+📥 Fetching campaign data...
+
+📥 Fetching campaign data: 0xd6174FCf9a69837846860CCaC6394D3E6645CC22
+   ✅ Campaign data fetched
+   📋 Title: Rally Owns the Narrative
+   🎨 Style: Post a banger!...
+   📜 Rules: -...
+
+   📋 Campaign: Rally Owns the Narrative
+   🔗 URL: https://app.rally.fun/campaign/0xd6174FCf9a69837846860CCaC6394D3E6645CC22
+   📝 Description: Rally's Beta is live and real tokens are moving on-chain. 
+
+This is the moment to understand what Ra...
+   🎨 Style: Post a banger!
+   📜 Rules: -...
+
+📥 Fetching competitor submissions...
+
+📥 Fetching leaderboard...
+   ✅ Leaderboard fetched: 0 submissions
+   📊 Found 0 submissions
+
+🔍 Running Deep Competitor Analysis...
+
+────────────────────────────────────────────────────────────
+🔍 DEEP COMPETITOR CONTENT ANALYSIS
+────────────────────────────────────────────────────────────
+   ℹ️ No submissions to analyze - returning empty analysis
+   ✅ Competitor analysis completed
+
+🔎 Running Multi-Query Deep Research...
+
+────────────────────────────────────────────────────────────
+🔎 MULTI-QUERY DEEP RESEARCH
+────────────────────────────────────────────────────────────
+   🔍 Query 1/6: "Rally Owns the Narrative what is how it works 2026..."
+   🔍 Web Search (SDK): "Rally Owns the Narrative what is how it works 2026..."
+   🔍 Query 2/6: "rally owns narrative real cases examples success s..."
+   🔍 Web Search (SDK): "rally owns narrative real cases examples success s..."
+   🔍 Query 3/6: "rally owns narrative controversy debate problems i..."
+   🔍 Web Search (SDK): "rally owns narrative controversy debate problems i..."
+   🔍 Query 4/6: "rally owns narrative statistics data market size g..."
+   🔍 Web Search (SDK): "rally owns narrative statistics data market size g..."
+   🔍 Query 5/6: "rally owns narrative expert opinion quote analysis..."
+   🔍 Web Search (SDK): "rally owns narrative expert opinion quote analysis..."
+   🔍 Query 6/6: "rally owns narrative untold story hidden problem n..."
+   🔍 Web Search (SDK): "rally owns narrative untold story hidden problem n..."

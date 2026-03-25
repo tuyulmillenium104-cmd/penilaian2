@@ -1,0 +1,60 @@
+
+╔════════════════════════════════════════════════════════════════╗
+║    RALLY WORKFLOW V9.9.4 - FINAL (OPTIMIZED STANDARDS)        ║
+╠════════════════════════════════════════════════════════════════╣
+║  📊 Gate: 18/20 (90%) | Facts: 2/5 (40%) | Quality: 50/80 (62%)║
+║  🏆 First content to pass → STOP & OUTPUT                      ║
+╚════════════════════════════════════════════════════════════════╝
+   ✅ ZAI SDK initialized
+
+🔍 Finding campaign: Rally
+   ✅ Rally Owns the Narrative
+
+══════════════════════════════════════════════════
+🔄 Attempt #1
+══════════════════════════════════════════════════
+   📝 Generating (data_driven)...
+   ✅ Generated: "tbh we’re seeing real data back Rally owning the narrative—c..."
+
+   ⚖️ Judge 1 (Gate)...
+   📊 20/20 ✅ PASS
+   ⚖️ Judge 2 (Facts)...
+   📊 4/5 ✅ PASS
+   ⚖️ Judge 3 (Quality)...
+   📊 42/80 ❌ FAIL
+
+══════════════════════════════════════════════════
+🔄 Attempt #2
+══════════════════════════════════════════════════
+   📝 Generating (contrarian)...
+   ✅ Generated: "tbh everyone’s obsessed with being right, but Rally owns the..."
+
+   ⚖️ Judge 1 (Gate)...
+   📊 20/20 ✅ PASS
+   ⚖️ Judge 2 (Facts)...
+   📊 2/5 ✅ PASS
+   ⚖️ Judge 3 (Quality)...
+   📊 58/80 ✅ PASS
+
+
+╔════════════════════════════════════════════════════════════════╗
+║                    🎉 WINNER FOUND! 🎉                         ║
+╠════════════════════════════════════════════════════════════════╣
+║  ⏱️  Time: 19.9s | Attempts: 2                            
+║  📊 Score: 80/105                                           
+╠════════════════════════════════════════════════════════════════╣
+║  📝 CONTENT:                                                   ║
+║  tbh everyone’s obsessed with being right, but Rally ow  ║
+║  ns the narrative by letting you control it. Jump in he  ║
+║  re https://app.rally.fun/campaign/0xd6174FCf9a69837846  ║
+║  860CCaC6394D3E6645CC22 and tell me—whose story are you  ║
+║   actually writing?                                      ║
+╚════════════════════════════════════════════════════════════════╝
+
+
+🏆 FINAL OUTPUT:
+────────────────────────────────────────────────────────────
+tbh everyone’s obsessed with being right, but Rally owns the narrative by letting you control it. Jump in here https://app.rally.fun/campaign/0xd6174FCf9a69837846860CCaC6394D3E6645CC22 and tell me—whose story are you actually writing?
+────────────────────────────────────────────────────────────
+
+💾 Saved to: /home/z/my-project/download/winner-content.txt

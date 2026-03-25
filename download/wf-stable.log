@@ -1,0 +1,24 @@
+
+╔════════════════════════════════════════════════════════════════╗
+║    RALLY WORKFLOW V9.9.2 - STABLE (HIGH STANDARDS)            ║
+╠════════════════════════════════════════════════════════════════╣
+║  📊 Gate: 18/20 (90%) | Facts: 4/5 (80%) | Quality: 70/80 (88%)║
+║  🏆 First content to pass → STOP & OUTPUT                      ║
+╚════════════════════════════════════════════════════════════════╝
+
+🔍 Finding campaign: Rally
+   ✅ Rally Owns the Narrative
+
+══════════════════════════════════════════════════
+🔄 Attempt #1
+══════════════════════════════════════════════════
+   📝 Generating (data_driven)...
+   ✅ Generated: "Honestly, the data doesn't lie. Creators owning their own na..."
+
+   ⚖️ Judge 1 (Gate)...
+   📊 4/20 ❌ FAIL
+
+══════════════════════════════════════════════════
+🔄 Attempt #2
+══════════════════════════════════════════════════
+   📝 Generating (contrarian)...

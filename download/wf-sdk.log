@@ -1,0 +1,97 @@
+
+╔════════════════════════════════════════════════════════════════╗
+║    RALLY WORKFLOW V9.9.3 - SDK VERSION (HIGH STANDARDS)       ║
+╠════════════════════════════════════════════════════════════════╣
+║  📊 Gate: 18/20 (90%) | Facts: 4/5 (80%) | Quality: 70/80 (88%)║
+║  🏆 First content to pass → STOP & OUTPUT                      ║
+╚════════════════════════════════════════════════════════════════╝
+   ✅ ZAI SDK initialized
+
+🔍 Finding campaign: Rally
+   ✅ Rally Owns the Narrative
+
+══════════════════════════════════════════════════
+🔄 Attempt #1
+══════════════════════════════════════════════════
+   📝 Generating (data_driven)...
+   ✅ Generated: "Honestly, Rally’s latest campaign stats are insane—they’re l..."
+
+   ⚖️ Judge 1 (Gate)...
+   📊 20/20 ✅ PASS
+   ⚖️ Judge 2 (Facts)...
+   📊 1/5 ❌ FAIL
+
+══════════════════════════════════════════════════
+🔄 Attempt #2
+══════════════════════════════════════════════════
+   📝 Generating (contrarian)...
+   ✅ Generated: "Honestly, everyone’s obsessed with who “controls” the narrat..."
+
+   ⚖️ Judge 1 (Gate)...
+   📊 20/20 ✅ PASS
+   ⚖️ Judge 2 (Facts)...
+   📊 0/5 ❌ FAIL
+
+══════════════════════════════════════════════════
+🔄 Attempt #3
+══════════════════════════════════════════════════
+   📝 Generating (insider_perspective)...
+   ✅ Generated: "Tbh, Rally’s owning the narrative rn and it’s wild to watch ..."
+
+   ⚖️ Judge 1 (Gate)...
+   📊 20/20 ✅ PASS
+   ⚖️ Judge 2 (Facts)...
+   📊 0/5 ❌ FAIL
+
+══════════════════════════════════════════════════
+🔄 Attempt #4
+══════════════════════════════════════════════════
+   📝 Generating (case_study)...
+   ✅ Generated: "tbh this case study is wild—Rally literally owns the narrati..."
+
+   ⚖️ Judge 1 (Gate)...
+Failed to make API request: Error: API request failed with status 429: {"error":"Too many requests, please try again later"}
+    at ZAI.createChatCompletion (file:///home/z/my-project/node_modules/z-ai-web-dev-sdk/dist/index.js:100:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async callAI (/home/z/my-project/download/rally-workflow-v9.9.3-sdk.js:27:18)
+    at async judge1 (/home/z/my-project/download/rally-workflow-v9.9.3-sdk.js:103:17)
+    at async main (/home/z/my-project/download/rally-workflow-v9.9.3-sdk.js:238:18)
+   ⚠️ Judge1 error: API request failed with status 429: {"error":"Too many requests, please try again later"}
+   📊 4/20 ❌ FAIL
+
+══════════════════════════════════════════════════
+🔄 Attempt #5
+══════════════════════════════════════════════════
+   📝 Generating (personal_story)...
+   ✅ Generated: "Honestly, I used to sit back and let others control the stor..."
+
+   ⚖️ Judge 1 (Gate)...
+Failed to make API request: Error: API request failed with status 429: {"error":"Too many requests, please try again later"}
+    at ZAI.createChatCompletion (file:///home/z/my-project/node_modules/z-ai-web-dev-sdk/dist/index.js:100:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async callAI (/home/z/my-project/download/rally-workflow-v9.9.3-sdk.js:27:18)
+    at async judge1 (/home/z/my-project/download/rally-workflow-v9.9.3-sdk.js:103:17)
+    at async main (/home/z/my-project/download/rally-workflow-v9.9.3-sdk.js:238:18)
+   ⚠️ Judge1 error: API request failed with status 429: {"error":"Too many requests, please try again later"}
+   📊 4/20 ❌ FAIL
+
+══════════════════════════════════════════════════
+🔄 Attempt #6
+══════════════════════════════════════════════════
+   📝 Generating (data_driven)...
+   ✅ Generated: "Honestly, the numbers don't lie—Rally's owning the narrative..."
+
+   ⚖️ Judge 1 (Gate)...
+Failed to make API request: Error: API request failed with status 429: {"error":"Too many requests, please try again later"}
+    at ZAI.createChatCompletion (file:///home/z/my-project/node_modules/z-ai-web-dev-sdk/dist/index.js:100:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async callAI (/home/z/my-project/download/rally-workflow-v9.9.3-sdk.js:27:18)
+    at async judge1 (/home/z/my-project/download/rally-workflow-v9.9.3-sdk.js:103:17)
+    at async main (/home/z/my-project/download/rally-workflow-v9.9.3-sdk.js:238:18)
+   ⚠️ Judge1 error: API request failed with status 429: {"error":"Too many requests, please try again later"}
+   📊 4/20 ❌ FAIL
+
+══════════════════════════════════════════════════
+🔄 Attempt #7
+══════════════════════════════════════════════════
+   📝 Generating (contrarian)...
